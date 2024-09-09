@@ -5,10 +5,9 @@ import Home from '../pages/home.jsx';
 import App from '../pages/App.js';
 function routers() {
     return (
-        <div className="routers">
+        <div className="routers bg-[#7C93C3] h-screen">
             <BrowserRouter>
                 <div>
-                    ở đây dành cho thanh tác vụ file router có thể import và gọi như home vd : gọi app
                     <App />
                 </div>
                 <Routes>

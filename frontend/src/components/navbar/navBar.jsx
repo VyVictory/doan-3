@@ -2,10 +2,10 @@ import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuIt
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 const navigation = [
-    { name: 'Dashboard', href: '#', current: true },
-    { name: 'Team', href: '#', current: false },
-    { name: 'Projects', href: '#', current: false },
-    { name: 'Calendar', href: '#', current: false },
+    { name: 'Trang chủ', href: '#', current: true },
+    { name: 'Bạn bè', href: '#', current: false },
+    { name: 'Đăng tin', href: '#', current: false },
+    { name: 'Nhắn tin', href: '#', current: false },
 ]
 
 function classNames(...classes) {
@@ -14,7 +14,7 @@ function classNames(...classes) {
 
 export default function NavBar() {
     return (
-        <Disclosure as="nav" className="bg-gray-800">
+        <Disclosure as="nav" className="bg-[#1E2A5E]">
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
                 <div className="relative flex h-16 items-center justify-between">
                     <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -81,17 +81,17 @@ export default function NavBar() {
                             >
                                 <MenuItem>
                                     <a href="#" className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100">
-                                        Your Profile
+                                        Trang cá nhân
                                     </a>
                                 </MenuItem>
                                 <MenuItem>
                                     <a href="#" className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100">
-                                        Settings
+                                        cài đặt
                                     </a>
                                 </MenuItem>
                                 <MenuItem>
                                     <a href="#" className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100">
-                                        Sign out
+                                        Đăng xuất
                                     </a>
                                 </MenuItem>
                             </MenuItems>
