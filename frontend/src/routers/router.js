@@ -5,7 +5,7 @@ import Home from '../pages/home.jsx';
 import App from '../pages/App.js';
 function routers() {
     return (
-        <div className="routers bg-[#7C93C3] h-screen">
+        <div className="routers bg-[#7C93C3] h-full">
             <BrowserRouter>
                 <div>
                     <App />

@@ -27,7 +27,7 @@ export default function ModalStatus({ status }) {
                                         Bạn muốn đăng gì ?
                                     </DialogTitle>
                                     <div className="mt-2">
-                                        <input type="text" name="" id="" />
+                                        <textarea className='p-2' rows="5" cols="55" placeholder="Viết nội dung bài viết ở đây..."></textarea>
                                     </div>
                                 </div>
                             </div>

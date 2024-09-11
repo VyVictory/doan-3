@@ -8,6 +8,7 @@ function Home() {
             </div>
             <div className="bg-[#55679C] mt-5 mx-16 rounded-md">
                 <Post />
+                <Post />
             </div>
         </>
     );
