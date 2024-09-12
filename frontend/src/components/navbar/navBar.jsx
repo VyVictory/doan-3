@@ -1,11 +1,12 @@
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
+
 const navigation = [
-    { name: 'Trang chủ', href: '#', current: true },
-    { name: 'Bạn bè', href: '#', current: false },
+    { name: 'Trang chủ', href: '/', current: true },
+    { name: 'Bạn bè', href: '/friend', current: false },
     { name: 'Đăng tin', href: '#', current: false },
-    { name: 'Nhắn tin', href: '#', current: false },
+    { name: 'Nhắn tin', href: '/messges', current: false },
 ]
 
 function classNames(...classes) {
