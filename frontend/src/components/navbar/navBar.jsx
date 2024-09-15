@@ -3,7 +3,7 @@ import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 
 const navigation = [
-    { name: 'Trang chủ', href: '/', current: true },
+    { name: 'Trang chủ', href: '/', current: false },
     { name: 'Bạn bè', href: '/friend', current: false },
     { name: 'Đăng tin', href: '#', current: false },
     { name: 'Nhắn tin', href: '/messges', current: false },
@@ -15,7 +15,7 @@ function classNames(...classes) {
 
 export default function NavBar() {
     return (
-        <Disclosure as="nav" className="bg-[#1E2A5E]">
+        <Disclosure as="nav" className="bg-[#0f172a] sticky z-10 top-0 ">
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
                 <div className="relative flex h-16 items-center justify-between">
                     <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -81,7 +81,7 @@ export default function NavBar() {
                                 className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                             >
                                 <MenuItem>
-                                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100">
+                                    <a href="user" className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100">
                                         Trang cá nhân
                                     </a>
                                 </MenuItem>
@@ -101,7 +101,7 @@ export default function NavBar() {
                 </div>
             </div>
 
-            <DisclosurePanel className="sm:hidden">
+            <DisclosurePanel className="">
                 <div className="space-y-1 px-2 pb-3 pt-2">
                     {navigation.map((item) => (
                         <DisclosureButton

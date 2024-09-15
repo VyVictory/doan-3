@@ -6,8 +6,8 @@ export default function PostStatus() {
     setOpen(!open);
   }
   return (
-    <div className='flex justify-center'>
-      <button className='bg-gray-100 border-gray-500 border-[1px] rounded-2xl py-2 px-96' onClick={handleStatus}>Bạn muốn đăng gì ?</button>
+    <div className='flex justify-center  py-4 bg-[#0f172a] rounded-lg'>
+      <button className='bg-[#1e293b] border-[#334155]  rounded-2xl py-2 px-96' onClick={handleStatus}>Bạn muốn đăng gì ?</button>
       {open ? <ModalStatus status={handleStatus} /> : ''}
     </div>
   )

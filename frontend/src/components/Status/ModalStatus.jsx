@@ -1,8 +1,7 @@
-'use client'
-
+import { Textarea } from '@headlessui/react'
 import { useState } from 'react'
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
-import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
+import clsx from 'clsx'
 
 export default function ModalStatus({ status }) {
     const [open, setOpen] = useState(true)
@@ -27,7 +26,14 @@ export default function ModalStatus({ status }) {
                                         Bạn muốn đăng gì ?
                                     </DialogTitle>
                                     <div className="mt-2">
-                                        <textarea className='p-2' rows="5" cols="55" placeholder="Viết nội dung bài viết ở đây..."></textarea>
+                                        <Textarea
+                                            className={clsx(
+                                                'mt-3 block w-full min-w-[420px] resize-none rounded-lg border-2 border-black bg-white/5 py-1.5 px-3 text-sm/6 text-black',
+                                                'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
+                                            )}
+                                            rows={3}
+                                            placeholder='Viết nội dung của bạn...'
+                                        />
                                     </div>
                                 </div>
                             </div>

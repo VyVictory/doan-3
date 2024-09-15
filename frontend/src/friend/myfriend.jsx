@@ -7,15 +7,15 @@ import Friendinvitation from './friendinvitation'
 
 export default function Myfriend() {
     return (
-        <div className='bg-white mt-5 mx-32 h-screen'>
+        <div className='bg-[#0f172a] mt-5 mx-32 h-full'>
             <TabGroup>
-                <TabList className={"flex justify-around bg-gray-200"}>
-                    <Tab className={"w-full h-full border-r-gray-600 border-2 p-3 hover:bg-gray-400"}>Tất cả bạn bè</Tab>
-                    <Tab className={"w-full h-full border-l-gray-600 border-2 p-3 hover:bg-gray-400"}>Lời mời kết bạn</Tab>
+                <TabList className={"flex justify-around bg-[#0f172a]"}>
+                    <Tab className={"w-full h-full  border-b-8 border-r-4 border-[#020617] p-4 hover:bg-[#1e293b]"}>Tất cả bạn bè</Tab>
+                    <Tab className={"w-full h-full  border-b-8 border-l-4 border-[#020617] p-4 hover:bg-[#1e293b]"}>Lời mời kết bạn</Tab>
                 </TabList>
                 <TabPanels>
-                    <TabPanel className={"grid grid-cols-4"}> <Allfriend /> <Allfriend /> <Allfriend /> <Allfriend /> <Allfriend /> </TabPanel>
-                    <TabPanel className={"grid grid-cols-4"}><Friendinvitation /></TabPanel>
+                    <TabPanel className={"grid grid-cols-5"}> <Allfriend /> <Allfriend /> <Allfriend /> <Allfriend /> <Allfriend /> <Allfriend /> </TabPanel>
+                    <TabPanel className={"grid grid-cols-5"}><Friendinvitation /><Friendinvitation /><Friendinvitation /><Friendinvitation /> <Friendinvitation /> <Friendinvitation /></TabPanel>
                 </TabPanels>
             </TabGroup>
         </div>
