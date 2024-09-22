@@ -18,7 +18,7 @@ export default function Post() {
                     width={500}
                     height={500}
                     src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnzOw4JGD9VHLQ46a6nQS4uhdw9QFlA7s0Mg&s" />
-                <div className='flex gap-24'>
+                <div className='flex gap-36'>
                     <Button className={"flex items-end gap-1"}>
                         <HandThumbUpIcon className="size-5" />
                         <span>1</span>

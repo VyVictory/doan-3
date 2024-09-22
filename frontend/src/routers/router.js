@@ -6,15 +6,17 @@ import Myfriend from "../friend/myfriend.jsx";
 import Layout from "../pages/Layout.js"
 import Authencation from "../auth/index.jsx";
 import Personal from "../user/personal/index.jsx";
-import HeadProfile from "../components/HeadProfile.jsx";
+import AboutProfile from "../components/AboutProfile.jsx";
+import MenuProfile from "../components/MenuProfile.jsx";
 function routers() {
     return (
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Home />} />
-                    <Route path="friend" element={<Myfriend />}></Route>
+                    <Route path="friend" element={<Myfriend />} />
                     <Route path="user" element={<Personal />}>
+                        <Route path="about" element={<AboutProfile />} />
                     </Route>
                     {/* <Route path="*" element={<NoPage />} /> */}
                 </Route>
