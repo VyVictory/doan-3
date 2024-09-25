@@ -1,10 +1,9 @@
 import React from 'react'
-import MenuProfile from '../../components/MenuProfile'
-import HeadProfile from '../../components/HeadProfile'
+import HeadProfile from '../../components/Profile/HeadProfile'
 import { Outlet } from 'react-router-dom'
 export default function Personal() {
     return (
-        <div className='h-screen'>
+        <div className=''>
             <HeadProfile />
             <Outlet />
         </div>

@@ -7,7 +7,7 @@ import { ShareIcon } from '@heroicons/react/24/outline'
 export default function Post() {
     return (
         <div className='flex items-start  p-6 bg-[#0f172a] rounded-lg gap-4'>
-            <img className='rounded-full '
+            <img className='rounded-full'
                 width={50}
                 height={50}
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQj9FMNt-22NsZArpe8LemUtt3BHDQVJtiQwA&s" />

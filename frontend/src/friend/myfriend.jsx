@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '@headlessui/react'
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
-import Allfriend from './allfriend'
+import Allfriend from '.'
 import Friendinvitation from './friendinvitation'
 
 export default function Myfriend() {
