@@ -9,9 +9,9 @@ import { UserSchema } from './schemas/user.schemas';
 
 @Global()
 @Module({
-  imports:[
+  imports: [
     PassportModule.register({
-      defaultStrategy: 'jwt'
+      defaultStrategy: 'jwt',
     }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -19,13 +19,13 @@ import { UserSchema } from './schemas/user.schemas';
       useFactory: (config: ConfigService) => {
         return {
           secret: config.get<string>('JWT_SECRET'),
-          signOptions:{
-            expiresIn: config.get<string | number> ('JWT_EXPIRES'),
+          signOptions: {
+            expiresIn: config.get<string | number>('JWT_EXPIRES'),
           },
         };
       },
     }),
-    MongooseModule.forFeature([{name: 'User',schema: UserSchema}]),
+    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
   ],
   controllers: [UserController],
   providers: [UserService],

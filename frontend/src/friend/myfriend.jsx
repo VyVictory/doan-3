@@ -5,6 +5,7 @@ import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
 import Allfriend from '../components/friend/Allfriend'
 import Friendinvitation from '../components/friend/friendinvitation'
 
+
 export default function Myfriend() {
     return (
         <div className='bg-[#0f172a] mx-32 '>
