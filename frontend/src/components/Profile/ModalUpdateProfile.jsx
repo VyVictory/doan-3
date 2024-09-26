@@ -3,11 +3,16 @@ import React, { useState } from "react";
 import { CameraIcon } from "@heroicons/react/20/solid";
 // import { MdCloudUpload } from "react-icons/md";
 import { CloudArrowUpIcon } from "@heroicons/react/20/solid";
-import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
+import { Dialog, DialogBackdrop, DialogPanel, DialogTitle, Input } from '@headlessui/react'
 import clsx from 'clsx'
+import moment from 'moment';
 import { Select } from '@headlessui/react'
+import FormUpdateProfile from "./FormUpdateProfile";
 
 const ModalUpdateProfile = ({ update }) => {
+    //format date dd/mm/yyyy
+
+    //
     const [open, setOpen] = useState(true)
     const [formData, setFormData] = useState({
         profilePicture: null,
@@ -28,10 +33,10 @@ const ModalUpdateProfile = ({ update }) => {
         validateField(name, value);
     };
 
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        setFormData({ ...formData, profilePicture: file });
-    };
+    // const handleFileChange = (e) => {
+    //     const file = e.target.files[0];
+    //     setFormData({ ...formData, profilePicture: file });
+    // };
 
     const validateField = (name, value) => {
         let newErrors = { ...errors };
@@ -96,33 +101,33 @@ const ModalUpdateProfile = ({ update }) => {
         //         <label className="block text-sm font-medium text-gray-700 mb-2">
         //             Profile Picture
         //         </label>
-        //         <div className="relative h-48 bg-gray-100 rounded-lg overflow-hidden">
-        //             {formData.profilePicture ? (
-        //                 <img
-        //                     src={URL.createObjectURL(formData.profilePicture)}
-        //                     alt="Profile"
-        //                     className="w-full h-full object-cover"
-        //                 />
-        //             ) : (
-        //                 <div className="flex items-center justify-center h-full">
-        //                     {/* <MdCloudUpload className="text-4xl text-gray-400" /> */}
-        //                 </div>
-        //             )}
-        //             <input
-        //                 type="file"
-        //                 accept="image/*"
-        //                 onChange={handleFileChange}
-        //                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-        //                 aria-label="Upload profile picture"
-        //             />
-        //             <button
-        //                 type="button"
-        //                 className="absolute bottom-2 right-2 bg-white p-2 rounded-full shadow-md"
-        //                 aria-label="Take photo"
-        //             >
-        //                 {/* <FaCamera className="text-gray-600" /> */}
-        //             </button>
-        //         </div>
+                // <div className="relative h-48 bg-gray-100 rounded-lg overflow-hidden">
+                //     {formData.profilePicture ? (
+                //         <img
+                //             src={URL.createObjectURL(formData.profilePicture)}
+                //             alt="Profile"
+                //             className="w-full h-full object-cover"
+                //         />
+                //     ) : (
+                //         <div className="flex items-center justify-center h-full">
+                //             {/* <MdCloudUpload className="text-4xl text-gray-400" /> */}
+                //         </div>
+                //     )}
+                //     <input
+                //         type="file"
+                //         accept="image/*"
+                //         onChange={handleFileChange}
+                //         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                //         aria-label="Upload profile picture"
+                //     />
+                //     <button
+                //         type="button"
+                //         className="absolute bottom-2 right-2 bg-white p-2 rounded-full shadow-md"
+                //         aria-label="Take photo"
+                //     >
+                //         {/* <FaCamera className="text-gray-600" /> */}
+                //     </button>
+                // </div>
         //     </div>
         //     <div className="w-full md:w-2/3 space-y-4">
         //         <div>
@@ -152,39 +157,39 @@ const ModalUpdateProfile = ({ update }) => {
         //                 </p>
         //             )}
         //         </div>
-        //         <div>
-        //             <label
-        //                 htmlFor="email"
-        //                 className="block text-sm font-medium text-gray-700 mb-1"
-        //             >
-        //                 Email Address
-        //             </label>
-        //             <input
-        //                 type="email"
-        //                 id="email"
-        //                 name="email"
-        //                 value={formData.email}
-        //                 onChange={handleInputChange}
-        //                 className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.email ? "border-red-500" : "border-gray-300"}`}
-        //                 aria-invalid={errors.email ? "true" : "false"}
-        //                 aria-describedby={errors.email ? "email-error" : undefined}
-        //                 list="email-suggestions"
-        //             />
-        //             <datalist id="email-suggestions">
-        //                 <option value="@gmail.com" />
-        //                 <option value="@outlook.com" />
-        //                 <option value="@yahoo.com" />
-        //             </datalist>
-        //             {errors.email && (
-        //                 <p
-        //                     id="email-error"
-        //                     className="mt-1 text-sm text-red-600"
-        //                     role="alert"
-        //                 >
-        //                     {errors.email}
-        //                 </p>
-        //             )}
-        //         </div>
+                // <div>
+                    // <label
+                    //     htmlFor="email"
+                    //     className="block text-sm font-medium text-gray-700 mb-1"
+                    // >
+                    //     Email Address
+                    // </label>
+                    // <input
+                    //     type="email"
+                    //     id="email"
+                    //     name="email"
+                    //     value={formData.email}
+                    //     onChange={handleInputChange}
+                    //     className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.email ? "border-red-500" : "border-gray-300"}`}
+                    //     aria-invalid={errors.email ? "true" : "false"}
+                    //     aria-describedby={errors.email ? "email-error" : undefined}
+                    //     list="email-suggestions"
+                    // />
+                    // <datalist id="email-suggestions">
+                    //     <option value="@gmail.com" />
+                    //     <option value="@outlook.com" />
+                    //     <option value="@yahoo.com" />
+                    // </datalist>
+                    // {errors.email && (
+                    //     <p
+                    //         id="email-error"
+                    //         className="mt-1 text-sm text-red-600"
+                    //         role="alert"
+                    //     >
+                    //         {errors.email}
+                    //     </p>
+                    // )}
+                // </div>
         //     </div>
         // </div>
         // <div className="space-y-4">
@@ -323,7 +328,7 @@ const ModalUpdateProfile = ({ update }) => {
             />
 
             <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-                <form className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
                     <DialogPanel
                         transition
                         className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 sm:w-full sm:max-w-xl data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
@@ -335,208 +340,14 @@ const ModalUpdateProfile = ({ update }) => {
                                         Cập nhật thông tin cá nhân
                                     </DialogTitle>
                                     <div className="mt-5">
-                                        <div className="flex flex-col md:flex-row md:space-x-4">
-                                            <div className="w-full md:w-[250px] mb-4 md:mb-0">
-                                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                                    Ảnh đại diện
-                                                </label>
-                                                <div className="relative h-48 w-48 bg-gray-100 rounded-md overflow-hidden">
-                                                    {formData.profilePicture ? (
-                                                        <img
-                                                            src={URL.createObjectURL(formData.profilePicture)}
-                                                            alt="Profile"
-                                                            className="w-full h-full object-cover"
-                                                        />
-                                                    ) : (
-                                                        <div className="flex items-center justify-center h-full">
-                                                            {/* <MdCloudUpload className="text-4xl text-gray-400" /> */}
-                                                            <CloudArrowUpIcon className="size-[80%] text-gray-400" />
-                                                        </div>
-                                                    )}
-                                                    <input
-                                                        type="file"
-                                                        accept="image/*"
-                                                        onChange={handleFileChange}
-                                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                                        aria-label="Upload profile picture"
-                                                    />
-                                                    <button
-                                                        type="button"
-                                                        className="absolute bottom-2 right-2 bg-white p-2 rounded-full shadow-md"
-                                                        aria-label="Take photo"
-                                                    >
-                                                        {/* <FaCamera className="text-gray-600" /> */}
-                                                        <CameraIcon className=" size-6 text-gray-600" />
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <div className="w-full md:w-4/3 space-y-4">
-                                                <div>
-                                                    <label
-                                                        htmlFor="username"
-                                                        className="block text-sm font-medium text-gray-700 mb-1"
-                                                    >
-                                                        Họ tên
-                                                    </label>
-                                                    <input
-                                                        type="text"
-                                                        id="name"
-                                                        name="name"
-                                                        value={formData.name}
-                                                        onChange={handleInputChange}
-                                                        className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.username ? "border-red-500" : "border-gray-300"}`}
-                                                        aria-invalid={errors.name ? "true" : "false"}
-                                                        aria-describedby={errors.name ? "name-error" : undefined}
-                                                    />
-                                                    {errors.username && (
-                                                        <p
-                                                            id="username-error"
-                                                            className="mt-1 text-sm text-red-600"
-                                                            role="alert"
-                                                        >
-                                                            {errors.name}
-                                                        </p>
-                                                    )}
-                                                </div>
-                                                <div>
-                                                    <label
-                                                        htmlFor="text"
-                                                        className="block text-sm font-medium text-gray-700 mb-1"
-                                                    >
-                                                        Biệt danh
-                                                    </label>
-                                                    <input
-                                                        type="text"
-                                                        id="text"
-                                                        name="nickname"
-                                                        value={formData.nickname}
-                                                        onChange={handleInputChange}
-                                                        className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.nickname ? "border-red-500" : "border-gray-300"}`}
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label
-                                                        htmlFor="text"
-                                                        className="block text-sm font-medium text-gray-700 mb-1"
-                                                    >
-                                                        Giới tính
-                                                    </label>
-                                                    <Select className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`} aria-label="Project status">
-                                                        <option value="Nam">Nam</option>
-                                                        <option value="Nu">Nữ</option>
-                                                    </Select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="space-y-4">
-                                            <div>
-                                                <label
-                                                    htmlFor="currentPassword"
-                                                    className="block text-sm font-medium text-gray-700 mb-1"
-                                                >
-                                                    Current Password
-                                                </label>
-                                                <input
-                                                    type="password"
-                                                    id="currentPassword"
-                                                    name="currentPassword"
-                                                    value={formData.currentPassword}
-                                                    onChange={handleInputChange}
-                                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label
-                                                    htmlFor="newPassword"
-                                                    className="block text-sm font-medium text-gray-700 mb-1"
-                                                >
-                                                    New Password
-                                                </label>
-                                                <div className="relative">
-                                                    <input
-                                                        type={showPassword ? "text" : "password"}
-                                                        id="newPassword"
-                                                        name="newPassword"
-                                                        value={formData.newPassword}
-                                                        onChange={handleInputChange}
-                                                        className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.newPassword ? "border-red-500" : "border-gray-300"}`}
-                                                        aria-invalid={errors.newPassword ? "true" : "false"}
-                                                        aria-describedby={errors.newPassword ? "newPassword-error" : undefined}
-                                                    />
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => setShowPassword(!showPassword)}
-                                                        className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                                                        aria-label={showPassword ? "Hide password" : "Show password"}
-                                                    >
-                                                        {/* {showPassword ? (
-                                    <FaEyeSlash className="text-gray-500" />
-                                ) : (
-                                    <FaEye className="text-gray-500" />
-                                )} */}
-                                                    </button>
-                                                </div>
-                                                {errors.newPassword && (
-                                                    <p
-                                                        id="newPassword-error"
-                                                        className="mt-1 text-sm text-red-600"
-                                                        role="alert"
-                                                    >
-                                                        {errors.newPassword}
-                                                    </p>
-                                                )}
-                                            </div>
-                                            <div>
-                                                <label
-                                                    htmlFor="confirmNewPassword"
-                                                    className="block text-sm font-medium text-gray-700 mb-1"
-                                                >
-                                                    Confirm New Password
-                                                </label>
-                                                <input
-                                                    type="password"
-                                                    id="confirmNewPassword"
-                                                    name="confirmNewPassword"
-                                                    value={formData.confirmNewPassword}
-                                                    onChange={handleInputChange}
-                                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.confirmNewPassword ? "border-red-500" : "border-gray-300"}`}
-                                                    aria-invalid={errors.confirmNewPassword ? "true" : "false"}
-                                                    aria-describedby={errors.confirmNewPassword ? "confirmNewPassword-error" : undefined}
-                                                />
-                                                {errors.confirmNewPassword && (
-                                                    <p
-                                                        id="confirmNewPassword-error"
-                                                        className="mt-1 text-sm text-red-600"
-                                                        role="alert"
-                                                    >
-                                                        {errors.confirmNewPassword}
-                                                    </p>
-                                                )}
-                                            </div>
-                                        </div>
+                                        <FormUpdateProfile />
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                            <button
-                                type="button"
-                                onClick={update}
-                                className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-                            >
-                                Chỉnh sửa
-                            </button>
-                            <button
-                                type="button"
-                                data-autofocus
-                                onClick={update}
-                                className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                            >
-                                Hủy đăng
-                            </button>
+
                         </div>
                     </DialogPanel>
-                </form>
+                </div>
             </div>
         </Dialog>
     );

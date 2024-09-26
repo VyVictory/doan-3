@@ -2,12 +2,13 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '@headlessui/react'
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
-import Allfriend from '.'
-import Friendinvitation from './friendinvitation'
+import Allfriend from '../components/friend/Allfriend'
+import Friendinvitation from '../components/friend/friendinvitation'
+
 
 export default function Myfriend() {
     return (
-        <div className='bg-[#0f172a] mt-5 mx-32 h-full'>
+        <div className='bg-[#0f172a] mx-32 '>
             <TabGroup>
                 <TabList className={"flex justify-around bg-[#0f172a]"}>
                     <Tab className={"w-full h-full  border-b-8 border-r-4 border-[#020617] p-4 hover:bg-[#1e293b]"}>Tất cả bạn bè</Tab>

@@ -6,7 +6,7 @@ const navigation = [
     { name: 'Trang chủ', href: '/', current: false },
     { name: 'Bạn bè', href: '/friend', current: false },
     { name: 'Đăng tin', href: '#', current: false },
-    { name: 'Nhắn tin', href: '/messges', current: false },
+    { name: 'Nhắn tin', href: '/messenger', current: false },
 ]
 
 function classNames(...classes) {
@@ -15,7 +15,7 @@ function classNames(...classes) {
 
 export default function NavBar() {
     return (
-        <Disclosure as="nav" className="bg-gradient-to-r from-[#0e1c26] from-40% via-[#2a454b] to-[#294861] sticky z-10 top-0 border-b-[1px] border-zinc-500">
+        <Disclosure as="nav" className="w-screen bg-gradient-to-r from-[#0e1c26] from-40% via-[#2a454b] to-[#294861] fixed z-10 top-0 border-b-[1px] border-zinc-500" style={{marginBottom:"-16px"}}>
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
                 <div className="relative flex h-16 items-center justify-between">
                     <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">

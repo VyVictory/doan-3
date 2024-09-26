@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '@headlessui/react'
-import DropdownMyfriend from '../components/friend/DropdownMyfriend'
+import DropdownMyfriend from './DropdownMyfriend'
 export default function Allfriend() {
     return (
         <div className='bg-[#1e293b] max-w-56 max-h-96 h-80 rounded-lg m-5'>
