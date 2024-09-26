@@ -1,56 +1,56 @@
-
-
-import { Schema, Prop, SchemaFactory } from "@nestjs/mongoose";
-import { Types,Document } from "mongoose";
+import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
+import { Types, Document } from 'mongoose';
 
 @Schema({
-    timestamps: true
+  timestamps: true,
 })
+export class User extends Document {
+  @Prop({
+    unique: [
+      true,
+      'The phone number has been created, please try with another number',
+    ],
+  })
+  numberPhone: string;
 
-export class User extends Document{
+  @Prop()
+  email: string;
 
-    @Prop({unique:[true, 'The phone number has been created, please try with another number']})
-    numberPhone: string;
+  @Prop()
+  password: string;
 
-    @Prop()
-    email: string;
+  @Prop()
+  firstName: string;
 
-    @Prop()
-    password: string;
+  @Prop()
+  lastName: string;
 
-    @Prop()
-    firstName: string;
-    
-    @Prop()
-    lastName: string;
+  @Prop()
+  address: string;
 
-    @Prop()
-    address: string
-    
-    @Prop()
-    gender: boolean;//true is male, false is female
+  @Prop()
+  gender: boolean; //true is male, false is female
 
-    @Prop()
-    birthday: string;
+  @Prop()
+  birthday: string;
 
-    @Prop()
-    friends: string;
+  @Prop()
+  friends: string;
 
-    @Prop()
-    avatar:string
+  @Prop()
+  avatar: string;
 
-    @Prop()
-    follows:string;
+  @Prop()
+  follows: string;
 
-    @Prop()
-    post: string;
+  @Prop()
+  post: string;
 
-    @Prop({default:false})
-    role: boolean;
+  @Prop({ default: false })
+  role: boolean;
 
-    @Prop({default:true})
-    isActive: boolean;
-
+  @Prop({ default: true })
+  isActive: boolean;
 }
 
-export const UserSchema = SchemaFactory.createForClass(User)
+export const UserSchema = SchemaFactory.createForClass(User);
