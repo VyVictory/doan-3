@@ -26,6 +26,7 @@ function routers() {
                         <Route path="user" element={<Personal />}>
                             <Route index element={<MyPosts />} />
                             <Route path="about" element={<AboutProfile />} />
+                            <Route path="friend" element={<FriendProfile />} />
                         </Route>
                         {/* <Route path="*" element={<NoPage />} /> */}
                         <Route path="messenger" element={<Messenger />} />

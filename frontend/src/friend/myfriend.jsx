@@ -8,7 +8,7 @@ import Friendinvitation from '../components/friend/friendinvitation'
 
 export default function Myfriend() {
     return (
-        <div className='bg-[#0f172a] mx-32 '>
+        <div className='bg-[#0f172a] mx-32 mt-2'>
             <TabGroup>
                 <TabList className={"flex justify-around bg-[#0f172a]"}>
                     <Tab className={"w-full h-full  border-b-8 border-r-4 border-[#020617] p-4 hover:bg-[#1e293b]"}>Tất cả bạn bè</Tab>
