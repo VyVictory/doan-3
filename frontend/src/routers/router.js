@@ -8,6 +8,7 @@ import Authencation from "../auth/index.jsx";
 import Personal from "../user/personal/index.jsx";
 import AboutProfile from "../components/Profile/AboutProfile.jsx"
 import MyPosts from "../components/Profile/MyPosts.jsx";
+
 function routers() {
     return (
         <BrowserRouter>
