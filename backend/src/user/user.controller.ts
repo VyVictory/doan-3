@@ -4,18 +4,17 @@ import { RegisterDto } from './dto/register.dto';
 import { User } from './schemas/user.schemas';
 import { LoginDto } from './dto/login.dto';
 
-
 @Controller('user')
 export class UserController {
-    constructor(private userService:UserService,){}
+  constructor(private userService: UserService) {}
 
-    @Post('register')
-    signUp(@Body() registerDto:RegisterDto): Promise<User>{
-        return this.userService.register(registerDto);
-    }
+  @Post('register')
+  signUp(@Body() registerDto: RegisterDto): Promise<User> {
+    return this.userService.register(registerDto);
+  }
 
-    @Post('login')
-    login(@Body() loginDto:LoginDto){
-        return this.userService.login(loginDto)
-    }
+  @Post('login')
+  login(@Body() loginDto: LoginDto) {
+    return this.userService.login(loginDto);
+  }
 }
