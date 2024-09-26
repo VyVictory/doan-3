@@ -8,6 +8,7 @@ import Authencation from "../auth/index.jsx";
 import Personal from "../user/personal/index.jsx";
 import AboutProfile from "../components/Profile/AboutProfile.jsx"
 import MyPosts from "../components/Profile/MyPosts.jsx";
+import FriendProfile from "../components/Profile/FriendProfile.jsx";
 
 function routers() {
     return (
@@ -19,6 +20,7 @@ function routers() {
                     <Route path="user" element={<Personal />}>
                         <Route index element={<MyPosts />} />
                         <Route path="about" element={<AboutProfile />} />
+                        <Route path="friend" element={<FriendProfile />} />
                     </Route>
                     {/* <Route path="*" element={<NoPage />} /> */}
                 </Route>
