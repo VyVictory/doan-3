@@ -6,6 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserSchema } from './schemas/user.schemas';
+import { FriendRequest, FriendRequestSchema } from './schemas/friend.schema';
 
 @Global()
 @Module({
@@ -26,6 +27,7 @@ import { UserSchema } from './schemas/user.schemas';
       },
     }),
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
+    MongooseModule.forFeature([{ name: 'FriendRequest', schema:FriendRequestSchema}]),
   ],
   controllers: [UserController],
   providers: [UserService],

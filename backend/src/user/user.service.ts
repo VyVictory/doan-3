@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -12,12 +13,13 @@ import { User } from './schemas/user.schemas';
 import { RegisterDto } from './dto/register.dto';
 import * as bcrypt from 'bcryptjs';
 import { LoginDto } from './dto/login.dto';
+import { FriendRequest } from './schemas/friend.schema';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel(User.name)
-    private UserModel: Model<User>,
+    @InjectModel(User.name) private UserModel: Model<User>,
+    @InjectModel(FriendRequest.name) private FriendRequestModel: Model<FriendRequest>,
     private jwtService: JwtService,
     private configService: ConfigService,
   ) {}
@@ -98,4 +100,31 @@ export class UserService {
     }
     return user;
   }
+   
+  async FriendsRequest(senderID:string, ReceiverId: string) {
+      const exitingRequest =  await this.FriendRequestModel.findById({sender:senderID, receiver:ReceiverId})
+      if(exitingRequest){
+        throw new ConflictException('request has been sent');
+      }
+      const newRequest = new this.FriendRequestModel({
+        sender:senderID,
+        receiver:ReceiverId,
+        status: 'waitinng'
+      })
+      return newRequest.save()
+  }
+
+  async acceptRequestFriends(FriendsRequestId: string){
+    //dầu tiên tìm yêu cầu kết bạn dựa trên ID Request
+    const FriendsRequestId = await this.FriendRequestModel.findById({friendsRequestId:FriendsRequestId})
+    if(!FriendsRequestId){
+      throw new NotFoundException('no has Friends Request')
+    }
+    if(FriendsRequestId){
+      // const acception = await this.FriendRequestModel.findByIdAndDelete
+      await this.UserModel.findByIdAndUpdate({_id:senderId })
+    }
+
+  }
+
 }
