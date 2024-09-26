@@ -17,6 +17,9 @@ export class Post extends Document {
   @Prop({ default: 0 }) // Số lượng lượt thích
   likes: number;
 
+  @Prop({ default: 0 }) // Số lượng lượt thích
+  dislikes: number;
+
   @Prop({ default: [] }) // Mảng để lưu các comment
   comments: string[];
 
