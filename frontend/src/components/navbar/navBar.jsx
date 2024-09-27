@@ -15,7 +15,7 @@ function classNames(...classes) {
 
 export default function NavBar() {
     return (
-        <Disclosure as="nav" className="w-screen bg-gradient-to-r from-[#0e1c26] from-40% via-[#2a454b] to-[#294861] fixed z-10 top-0 border-b-[1px] border-zinc-500" style={{marginBottom:"-16px"}}>
+        <Disclosure as="nav" className="w-screen bg-gradient-to-r from-[#0e1c26] from-40% via-[#2a454b] to-[#294861] fixed z-10 top-0 border-b-[1px] border-zinc-500" style={{ marginBottom: "-16px" }}>
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
                 <div className="relative flex h-16 items-center justify-between">
                     <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -31,8 +31,8 @@ export default function NavBar() {
                         <div className="flex flex-shrink-0 items-center">
                             <img
                                 alt="Your Company"
-                                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                                className="h-8 w-auto"
+                                src="https://i.pinimg.com/564x/e3/e5/dc/e3e5dc4143d77b3dcea61776d372928c.jpg"
+                                className="h-8 w-auto rounded-full"
                             />
                         </div>
                         <div className="hidden sm:ml-6 sm:block">
