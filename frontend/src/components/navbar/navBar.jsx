@@ -1,6 +1,7 @@
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import Notification from '../Notification/Notification'
+import SearchBar from './SearchBar'
 
 const navigation = [
     { name: 'Trang chủ', href: '/', current: false },
@@ -53,7 +54,8 @@ export default function NavBar() {
                             </div>
                         </div>
                     </div>
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                    <div className="absolute inset-y-0 right-0 flex justify-center gap-4 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                        <SearchBar />
                         <Notification />
                         {/* Profile dropdown */}
                         <Menu as="div" className="relative ml-3">
@@ -64,7 +66,7 @@ export default function NavBar() {
                                     <img
                                         alt=""
                                         src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                        className="h-10 w-10 rounded-full"
+                                        className="h-10 w-14 rounded-full bg-contain"
                                     />
                                 </MenuButton>
                             </div>
