@@ -3,7 +3,7 @@ import { PaperAirplaneIcon } from '@heroicons/react/16/solid';
 import { Textarea } from '@headlessui/react'
 import LeftMessenger from "./LeftMessenger";
 import clsx from 'clsx'
-import CentterMessenger from "./CentterMessenger";
+import CentterMessenger from "../CentterMessenger";
 const Messenger = () => {
     const [windowSize, setWindowSize] = useState({
         width: window.innerWidth,

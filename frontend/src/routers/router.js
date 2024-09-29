@@ -11,7 +11,7 @@ import MyPosts from "../components/Profile/MyPosts.jsx";
 
 import FriendProfile from "../components/Profile/FriendProfile.jsx";
 
-import Messenger from "../components/messenger/Messenger.jsx";
+import Messenger from "../pages/messenger/Messenger.jsx";
 
 function routers() {
     return (
