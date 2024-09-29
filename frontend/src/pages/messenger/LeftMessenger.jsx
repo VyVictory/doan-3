@@ -1,7 +1,7 @@
 
 const LeftMessenger = ({bt_chanetransfer}) => {
     const messages = [
-        { name: 'John Doe', message: 'Hey! How are you?', img: 'https://placehold.co/40' },
+        { name: 'John Doe', message: 'Hey! How are yHeyyHey! How are you?Hey! How ayHey! How are you?Hey! How ayHey! How are you?Hey! How ayHey! How are you?Hey! How a! How are you?Hey! How are you?Hey! How are you?ou?', img: 'https://placehold.co/40' },
         { name: 'Jane Smith', message: 'Hi there!', img: 'https://placehold.co/40' },
         { name: 'Alice Johnson', message: 'Good morning!', img: 'https://placehold.co/40' },
         { name: 'Bob Brown', message: 'What’s up?', img: 'https://placehold.co/40' },
@@ -19,7 +19,7 @@ const LeftMessenger = ({bt_chanetransfer}) => {
                             <li key={index}>
                                 <button onClick={bt_chanetransfer} className="flex items-center py-2">
                                     <img src={msg.img} alt="user" className="w-10 h-10 rounded-full mr-2" />
-                                    <div className='text-start'>
+                                    <div className='text-start line-clamp-3'>
                                         <h3 className="text-primary font-semibold">{msg.name}</h3>
                                         <p className="text-secondary">{msg.message}</p>
                                     </div>
