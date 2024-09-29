@@ -2,6 +2,7 @@ import { Outlet, Link } from "react-router-dom";
 import NavBar from "../components/navbar/navBar";
 import Footer from "../components/footer/Footer"
 export default function Layout() {
+
     return (
         <div className=" grid justify-items-center bg-[#020617]  text-[#f8fafc]" >
             <NavBar />
