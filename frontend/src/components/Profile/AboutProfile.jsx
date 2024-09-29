@@ -9,7 +9,7 @@ export default function About() {
         setOpen(!open);
     }
     return (
-        <div className='mx-60 py-4 px-10 bg-gradient-to-r from-[#0e0725] from-10% to-[#5c03bc] rounded-lg border-[1px] border-[#f4e5f0]'>
+        <div className='w-full py-4 px-10 bg-gradient-to-r from-[#0e0725] from-10% to-[#5c03bc] rounded-lg border-[1px] border-[#f4e5f0]'>
             <div className="px-4 sm:px-0 text-white flex justify-between">
                 <h3 className="text-base font-semibold leading-7 ">Thông tin cá nhân</h3>
                 <Button onClick={handleUpdate}><PencilSquareIcon className='size-8' /></Button>

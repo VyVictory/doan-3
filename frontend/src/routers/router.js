@@ -8,21 +8,18 @@ import Authencation from "../auth/index.jsx";
 import Personal from "../user/personal/index.jsx";
 import AboutProfile from "../components/Profile/AboutProfile.jsx"
 import MyPosts from "../components/Profile/MyPosts.jsx";
-
 import FriendProfile from "../components/Profile/FriendProfile.jsx";
-
 import Messenger from "../components/messenger/Messenger.jsx";
-
+import Searchpage from "../search/index.jsx";
 function routers() {
     return (
-        <div className="">
-
-
+        <div className="box-border">
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<Layout />}>
                         <Route index element={<Home />} />
                         <Route path="friend" element={<Myfriend />} />
+                        <Route path="search" element={<Searchpage />} />
                         <Route path="user" element={<Personal />}>
                             <Route index element={<MyPosts />} />
                             <Route path="about" element={<AboutProfile />} />
@@ -30,7 +27,6 @@ function routers() {
                         </Route>
                         {/* <Route path="*" element={<NoPage />} /> */}
                         <Route path="messenger" element={<Messenger />} />
-
                     </Route>
                     <Route path="auth" element={<Authencation />}>
                         <Route index element={<Authencation />} />
@@ -38,7 +34,7 @@ function routers() {
                     </Route>
                 </Routes>
             </BrowserRouter>
-        </div>
+        </div >
     );
 }
 

@@ -3,7 +3,7 @@ import { EnvelopeIcon, PhoneIcon } from '@heroicons/react/16/solid'
 
 const Footer = () => {
     return (
-        <footer className="bg-[#023047] text-gray-300">
+        <footer className="bg-[#023047] text-gray-300 w-full">
             <div className="max-w-6xl mx-auto px-4 py-10 md:py-10">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     <div className="mb-8 md:mb-0">
