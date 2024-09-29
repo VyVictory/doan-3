@@ -9,6 +9,7 @@ const Messenger = () => {
         width: window.innerWidth,
         height: window.innerHeight,
     });
+    const [textareaHeight, setTextareaHeight] = useState(0);
     const [transfer, setTransfer] = useState(true)
     useEffect(() => {
         // Hàm cập nhật kích thước màn hình
@@ -74,30 +75,33 @@ const Messenger = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex items-center relative">
-                                <div className='w-full'>
-                                    <Textarea
-                                        className={clsx(
-                                            'mt-3 block w-full resize-none rounded-t-lg pt-2 bg-white pb-0 py-1.5 px-3 text-sm/6 text-black',
-                                            'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
-                                        )}
-                                        rows={1}
-                                        style={{ height: 'auto', maxHeight: '6rem' }} // Thiết lập chiều cao tối đa (khoảng 3 hàng)
-                                        onInput={(e) => {
-                                            const textarea = e.target;
-                                            textarea.style.height = 'auto'; // Reset height để tính toán lại
-                                            textarea.style.height = `${textarea.scrollHeight}px`; // Đặt chiều cao dựa trên nội dung
-                                        }}
-                                    />
-                                    <div className='w-full bg-white block float-end rounded-b-lg border-t-gray-500'>
-                                        <button className="block float-end mb-1 mr-1">
-                                            <PaperAirplaneIcon className='size-8 fill-sky-500' />
-                                        </button>
+                            <div className='bg-white pt-1 rounded-xl pr-1 pl-1'>
+                                <div className={`w-full flex ${textareaHeight > 50 ? 'flex-col' : 'flex-row'} rounded-xl`}>
+                                        <Textarea
+                                            className={clsx(
+                                                'block w-full resize-none bg-white pt-1 text-sm5 text-black rounded-t-none rounded-xl',
+                                                'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
+                                            )}
+                                            rows={1} // Số hàng tối thiểu
+                                            style={{ height: 'auto', maxHeight: '6rem' }} // Thiết lập chiều cao tối đa
+                                            onInput={(e) => {
+                                                const textarea = e.target;
+                                                textarea.style.height = 'auto'; // Reset height để tính toán lại
+                                                textarea.style.height = `${textarea.scrollHeight}px`; // Đặt chiều cao dựa trên nội dung
+                                                setTextareaHeight(textarea.scrollHeight); // Cập nhật chiều cao hiện tại
+                                            }}
+                                        />
+                                    <div className={`${textareaHeight > 50?'border-t border-t-gray-400':'pt-0' } p-1`}>
+                                        <div className='flex float-end'> {/* Căn giữa nút */}
+                                            <button>
+                                                <PaperAirplaneIcon className=' h-8 w-8 fill-sky-500' />
+                                            </button>
+                                        </div>
                                     </div>
-
                                 </div>
-
                             </div>
+
+
                         </div>
                     </div>
                 )}
