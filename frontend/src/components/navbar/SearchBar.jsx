@@ -33,7 +33,7 @@ export default function SearchBar({ query }) {
                 type="text"
                 value={searchTerm}
                 onChange={handleInputChange}
-                className="rounded-xl pr-10 pl-10 py-2 text-white input input-bordered w-24 md:w-auto"
+                className="rounded-xl pr-10 pl-10 py-2 text-white input input-bordered w-24 md:w-auto bg-[#4A4A4A]"
                 placeholder="Tìm kiếm..."
             />
             {searchTerm && (

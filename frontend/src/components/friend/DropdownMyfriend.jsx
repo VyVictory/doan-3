@@ -13,7 +13,7 @@ export default function DropdownMyfriend() {
             <MenuButton>
                 <ChevronDownIcon className="size-7 fill-white/60" />
             </MenuButton>
-            <MenuItems anchor="bottom" className="w-52 bg-[#18181b] rounded-md p-1">
+            <MenuItems anchor="bottom" className="w-52 bg-[#343455] rounded-md p-1">
                 <MenuItem>
                     <a className="text-white block data-[focus]:bg-[#3f3f46] p-2 rounded-md flex items-center gap-2" href="#">
                         <HeartIcon className="size-5 fill-red-600" />

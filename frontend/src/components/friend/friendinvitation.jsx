@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { Button } from '@headlessui/react'
 export default function Friendinvitation() {
     return (
-        <div className=' bg-[#1e293b] max-w-56 max-h-80 h-80 rounded-lg m-5'>
+        <div className=' bg-[#242526] max-w-56 max-h-80 h-80 rounded-lg'>
             <Link>
                 <img className='h-52 w-full p-2'
                     src="https://www.didongmy.com/vnt_upload/news/05_2024/anh-27-meme-dang-yeu-didongmy.jpg" />
