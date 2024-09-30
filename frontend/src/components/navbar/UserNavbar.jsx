@@ -8,7 +8,7 @@ import { UserCircleIcon, ArrowRightStartOnRectangleIcon } from '@heroicons/react
 export default function UserNavbar() {
     return (
         <div>
-            <div className="navbar bg-blue-300 fixed z-10">
+            <div className="navbar bg-[#242526] fixed z-10">
                 <div className="flex-1">
                     <div className="dropdown">
                         <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -35,7 +35,10 @@ export default function UserNavbar() {
                             <li><a>dddd</a></li>
                         </ul>
                     </div>
-                    <Link to={"/"} className="btn btn-ghost text-xl">LOGO</Link>
+                    <Link to={"/"} className="btn btn-ghost ">
+                        <img src="https://i.pinimg.com/564x/e3/e5/dc/e3e5dc4143d77b3dcea61776d372928c.jpg"
+                            className='h-12 w-14 rounded-full' />
+                    </Link>
                     <div className=" hidden lg:flex">
                         <ul className="menu menu-horizontal px-2 gap-4">
                             <li><Link to={"/"}>Trang chủ</Link></li>
