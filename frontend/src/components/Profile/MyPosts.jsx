@@ -1,5 +1,5 @@
 import React from 'react'
-import Post from '../Post'
+import Post from '../post/Post'
 import PostStatus from '../Status/PostStatus'
 
 export default function MyPosts() {

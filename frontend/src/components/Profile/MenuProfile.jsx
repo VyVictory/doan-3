@@ -14,7 +14,7 @@ export default function MenuProfile() {
         },
         {
             name: 'Bạn bè',
-            href: '/user/friend'
+            href: '/user/friends'
         },
     ];
     const currentTab = categories.find((category) => location.pathname === category.href);

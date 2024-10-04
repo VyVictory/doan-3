@@ -42,7 +42,7 @@ export default function UserNavbar() {
                     <div className=" hidden lg:flex">
                         <ul className="menu menu-horizontal px-2 gap-4">
                             <li><Link to={"/"}>Trang chủ</Link></li>
-                            <li><Link to={"friend"}>Bạn bè</Link></li>
+                            <li><Link to={"friends/list"}>Bạn bè</Link></li>
                             <li><Link to={"messenger"}>Nhắn tin</Link></li>
                             <li><a>Đã lưu</a></li>
                         </ul>
