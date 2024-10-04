@@ -3,22 +3,18 @@ import React from 'react'
 import { HandThumbUpIcon } from '@heroicons/react/24/outline'
 import { ChatBubbleLeftIcon } from '@heroicons/react/24/outline'
 import { ShareIcon } from '@heroicons/react/24/outline'
+import AVTUser from './AVTUser'
 
 export default function Post() {
     return (
         <div className='flex items-start  p-6 bg-[#242526] rounded-lg gap-3 max-w-[1000px]'>
-            <img className='rounded-full'
-                width={50}
-                height={50}
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQj9FMNt-22NsZArpe8LemUtt3BHDQVJtiQwA&s" />
-            <div className='grid gap-4'>
-                <article className='text-wrap'>
-                    <a className='font-bold' href="#">Tên người đăng</a>
+            <AVTUser />
+            <div className='grid gap-2'>
+                <article className='text-wrap grid gap-1'>
+                    <a className='font-bold text-lg hover:link' href="#">Tên người đăng</a>
                     <p> cách dùng  nên tôi tranh thủ làm tí highlight đỉnh cao cho anh em giải trí buổi chiều ạ 😇 cách dùng  nên tôi tranh thủ làm tí highlight đỉnh cao cho anh em giải trí buổi chiều ạ 😇 cách dùng  nên tôi tranh thủ làm tí highlight đỉnh cao cho anh em giải trí buổi chiều ạ 😇 cách dùng  nên tôi tranh thủ làm tí highlight đỉnh cao cho anh em giải trí buổi chiều ạ 😇 cách dùng  nên tôi tranh thủ làm tí highlight đỉnh cao cho anh em giải trí buổi chiều ạ 😇.</p>
                 </article>
-                <img className='rounded-xl'
-                    width={500}
-                    height={500}
+                <img className='rounded-xl w-full h-[400px]'
                     src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnzOw4JGD9VHLQ46a6nQS4uhdw9QFlA7s0Mg&s" />
                 <div className='flex justify-around'>
                     <Button className={"flex items-end gap-1"}>
