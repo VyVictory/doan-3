@@ -14,6 +14,7 @@ import { RegisterDto } from './dto/register.dto';
 import * as bcrypt from 'bcryptjs';
 import { LoginDto } from './dto/login.dto';
 import { FriendRequest } from './schemas/friend.schema';
+import { ChangePasswordDto } from './dto/changePassword.dto';
 
 @Injectable()
 export class UserService {
@@ -64,7 +65,10 @@ export class UserService {
     
     const refreshToken = this.jwtService.sign(
       { userId }, 
-      { secret: this.configService.get<string>('JWT_REFRESH_SECRET'), expiresIn: this.configService.get<string | number>('JWT_REFRESH_EXPIRES') } 
+      { 
+        secret: this.configService.get<string>('JWT_REFRESH_SECRET'), 
+        expiresIn: this.configService.get<string | number>('JWT_REFRESH_EXPIRES') 
+      } 
     );
     await this.UserModel.findByIdAndUpdate(userId, { refreshToken });
     return {
@@ -188,6 +192,70 @@ export class UserService {
     // Bước 4: Trả về thông báo thành công
     return { message: 'Friend request rejected successfully' };
   }
+  
+  async updateUser(userId: string, updateData: any): Promise<User> {
+    // Tìm người dùng theo ID
+    const user = await this.UserModel.findById(userId);
+  
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+  
+    // Loại bỏ các trường không được phép cập nhật như role, isActive, refreshToken
+    const restrictedFields = ['role', 'isActive', 'refreshToken'];
+    restrictedFields.forEach(field => {
+      if (field in updateData) {
+        delete updateData[field];
+      }
+    });
+  
+    // Cập nhật thông tin người dùng
+    Object.assign(user, updateData);
+  
+    // Lưu thay đổi vào cơ sở dữ liệu
+    return await user.save();
+  }
+
+  async changePassword(userId: string, changePasswordDto: ChangePasswordDto): Promise<{ message: string }> {
+    const { currentPassword, newPassword } = changePasswordDto;
+
+    try {
+        // Find user by ID
+        const user = await this.UserModel.findById(userId);
+        if (!user) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        }
+
+        // Check current password
+        const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+        if (!isPasswordValid) {
+            throw new HttpException('Current password is incorrect', HttpStatus.UNAUTHORIZED);
+        }
+
+        // Check if new password is the same as the current password
+        const isNewPasswordSameAsCurrent = await bcrypt.compare(newPassword, user.password);
+        if (isNewPasswordSameAsCurrent) {
+            throw new HttpException('New password cannot be the same as the current password', HttpStatus.BAD_REQUEST);
+        }
+
+        // Hash the new password
+        user.password = await bcrypt.hash(newPassword, 10);
+
+        // Save changes to the database
+        await user.save();
+
+        return { message: 'Password updated successfully' };
+    } catch (error) {
+        // Handle error and return a message without logging it
+        if (error instanceof HttpException) {
+            throw error; // If error is an HttpException, rethrow it
+        }
+
+        // For any unexpected errors, return a generic message
+        throw new HttpException('Password update failed', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+}
+
   
 
 }

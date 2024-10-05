@@ -15,8 +15,8 @@ export class Comment extends Document {
   @Prop({ type: Types.ObjectId, ref: 'Post', required: true }) // Liên kết tới Post
   post: Types.ObjectId; // ID của bài viết mà bình luận này thuộc về
 
-  @Prop({ required: true })
-  commendId: string; // ID của bình luận 
+  // @Prop({ required: true }) // không cần vì mỗi object của mongodb đều có id riêng
+  // commendId: string; // ID của bình luận 
 
   @Prop({ default: true }) // Trạng thái bình luận có đang hoạt động hay không
   isActive: boolean;
@@ -27,8 +27,8 @@ export class Comment extends Document {
   @Prop({ default: 0 }) // Số lượng lượt thích của bình luận
   likes: number;
 
-  @Prop({ type: [String], validate: [validate, 'Invalid media type'] })
-  media: string[];
+  // @Prop({ type: [String], validate: [validate, 'Invalid media type'] })
+  // media: string[];
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);

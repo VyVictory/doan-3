@@ -20,45 +20,42 @@ export class AuthGuardD implements CanActivate {
     const request = context.switchToHttp().getRequest();
 
     try {
-      // 1) Lấy token từ header
-      const authorizationHeader = request.headers.authorization;
-      if (!authorizationHeader || !authorizationHeader.startsWith('Bearer ')) {
-        throw new ForbiddenException('Please provide a valid access token');
-      }
+        const authorizationHeader = request.headers.authorization;
+        if (!authorizationHeader || !authorizationHeader.startsWith('Bearer ')) {
+            throw new ForbiddenException('Please provide a valid access token');
+        }
 
-      const token = authorizationHeader.split(' ')[1];
-      if (!token) {
-        throw new ForbiddenException('Token missing from authorization header');
-      }
+        const token = authorizationHeader.split(' ')[1];
+        if (!token) {
+            throw new ForbiddenException('Token missing from authorization header');
+        }
 
-      // 2) Xác minh token
-      const payload = await this.jwtService.verifyAsync(token, {
-        secret: process.env.JWT_SECRET,
-      });
+        // Xác minh token
+        const payload = await this.jwtService.verifyAsync(token, {
+            secret: process.env.JWT_SECRET,
+        });
 
-      // 3) Tìm người dùng từ cơ sở dữ liệu bằng token
-      const user = await this.userService.findById(payload.userId);
-      if (!user) {
-        throw new BadRequestException(
-          'User not found for the token, please try again',
-        );
-      }
+        // Tìm người dùng từ cơ sở dữ liệu
+        const user = await this.userService.findById(payload.userId);
+        //console.log('Authenticated User:', user); // Log thông tin người dùng tìm thấy
 
-      // Gắn người dùng hiện tại vào request
-      request.currentUser = user;
+        if (!user) {
+            throw new BadRequestException('User not found for the token, please try again');
+        }
+
+        // Gán người dùng hiện tại vào request
+        request.currentUser = user;
+        //console.log('User set in request:', request.currentUser); // Log để kiểm tra
     } catch (error) {
-      console.error('Error in AuthGuardD:', error);
-
-      // Kiểm tra nếu lỗi là TokenExpiredError
-      if (error instanceof TokenExpiredError) {
-        throw new ForbiddenException('Token has expired, please log in again');
-      }
-
-      throw new ForbiddenException('Invalid token or expired');
+        console.error('Error in AuthGuardD:', error);
+        if (error instanceof TokenExpiredError) {
+            throw new ForbiddenException('Token has expired, please log in again');
+        }
+        throw new ForbiddenException('Invalid token or expired');
     }
 
     return true;
-  }
+}
 }
 
 

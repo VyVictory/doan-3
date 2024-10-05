@@ -2,7 +2,7 @@ import { Global, Module } from '@nestjs/common';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { PassportModule } from '@nestjs/passport';
-import { JwtModule } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserSchema } from './schemas/user.schemas';
@@ -31,5 +31,6 @@ import { FriendRequest, FriendRequestSchema } from './schemas/friend.schema';
   ],
   controllers: [UserController],
   providers: [UserService],
+  exports:[UserService,JwtModule]
 })
 export class UserModule {}
