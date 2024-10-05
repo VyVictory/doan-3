@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user.service';
+import { TokenExpiredError } from 'jsonwebtoken'; // Import TokenExpiredError
 
 @Injectable()
 export class AuthGuardD implements CanActivate {
@@ -21,13 +22,13 @@ export class AuthGuardD implements CanActivate {
     try {
       // 1) Lấy token từ header
       const authorizationHeader = request.headers.authorization;
-      if (!authorizationHeader) {
-        throw new ForbiddenException('Please provide access token');
+      if (!authorizationHeader || !authorizationHeader.startsWith('Bearer ')) {
+        throw new ForbiddenException('Please provide a valid access token');
       }
 
       const token = authorizationHeader.split(' ')[1];
       if (!token) {
-        throw new ForbiddenException('Please provide access token');
+        throw new ForbiddenException('Token missing from authorization header');
       }
 
       // 2) Xác minh token
@@ -42,136 +43,76 @@ export class AuthGuardD implements CanActivate {
           'User not found for the token, please try again',
         );
       }
+
+      // Gắn người dùng hiện tại vào request
       request.currentUser = user;
     } catch (error) {
-      console.error('Error in AuthGuardD:', error); // Thêm nhật ký lỗi để kiểm tra
+      console.error('Error in AuthGuardD:', error);
+
+      // Kiểm tra nếu lỗi là TokenExpiredError
+      if (error instanceof TokenExpiredError) {
+        throw new ForbiddenException('Token has expired, please log in again');
+      }
+
       throw new ForbiddenException('Invalid token or expired');
     }
+
     return true;
   }
 }
 
 
 // import {
-//     CanActivate,
-//     ExecutionContext,
-//     Inject,
-//     Logger,
-//     mixin,
-//     Optional,
-//     UnauthorizedException
-//   } from '@nestjs/common';
-//   import * as passport from 'passport';
-//   import { Type } from './interfaces';
-//   import {
-//     AuthModuleOptions,
-//     IAuthModuleOptions
-//   } from './interfaces/auth-module.options';
-//   import { defaultOptions } from './options';
-//   import { memoize } from './utils/memoize.util';
+//   BadRequestException,
+//   CanActivate,
+//   ExecutionContext,
+//   ForbiddenException,
+//   Injectable,
+//   UnauthorizedException,
+// } from '@nestjs/common';
+// import { JwtService } from '@nestjs/jwt';
+// import { UserService } from '../user.service';
 
-//   export type IAuthGuard = CanActivate & {
-//     logIn<TRequest extends { logIn: Function } = any>(
-//       request: TRequest
-//     ): Promise<void>;
-//     handleRequest<TUser = any>(
-//       err: any,
-//       user: any,
-//       info: any,
-//       context: ExecutionContext,
-//       status?: any
-//     ): TUser;
-//     getAuthenticateOptions(
-//       context: ExecutionContext
-//     ): IAuthModuleOptions | undefined;
-//     getRequest(context: ExecutionContext): any;
-//   };
+// @Injectable()
+// export class AuthGuardD implements CanActivate {
+//   constructor(
+//     private jwtService: JwtService,
+//     private userService: UserService,
+//   ) {}
 
-//   export const AuthGuard: (type?: string | string[]) => Type<IAuthGuard> =
-//     memoize(createAuthGuard);
+//   async canActivate(context: ExecutionContext): Promise<boolean> {
+//     const request = context.switchToHttp().getRequest();
 
-//   const NO_STRATEGY_ERROR = `In order to use "defaultStrategy", please, ensure to import PassportModule in each place where AuthGuard() is being used. Otherwise, passport won't work correctly.`;
-//   const authLogger = new Logger('AuthGuard');
-
-//   function createAuthGuard(type?: string | string[]): Type<IAuthGuard> {
-//     class MixinAuthGuard<TUser = any> implements CanActivate {
-//       @Optional()
-//       @Inject(AuthModuleOptions)
-//       protected options: AuthModuleOptions = {};
-
-//       constructor(@Optional() options?: AuthModuleOptions) {
-//         this.options = options ?? this.options;
-//         if (!type && !this.options.defaultStrategy) {
-//           authLogger.error(NO_STRATEGY_ERROR);
-//         }
+//     try {
+//       // 1) Lấy token từ header
+//       const authorizationHeader = request.headers.authorization;
+//       if (!authorizationHeader) {
+//         throw new UnauthorizedException('Please provide access token');
 //       }
 
-//       async canActivate(context: ExecutionContext): Promise<boolean> {
-//         const options = {
-//           ...defaultOptions,
-//           ...this.options,
-//           ...(await this.getAuthenticateOptions(context))
-//         };
-//         const [request, response] = [
-//           this.getRequest(context),
-//           this.getResponse(context)
-//         ];
-//         const passportFn = createPassportContext(request, response);
-//         const user = await passportFn(
-//           type || this.options.defaultStrategy,
-//           options,
-//           (err, user, info, status) =>
-//             this.handleRequest(err, user, info, context, status)
-//         );
-//         request[options.property || defaultOptions.property] = user;
-//         return true;
+//       const token = authorizationHeader.split(' ')[1];
+//       if (!token) {
+//         throw new ForbiddenException('Please provide access token');
 //       }
 
-//       getRequest<T = any>(context: ExecutionContext): T {
-//         return context.switchToHttp().getRequest();
-//       }
+//       // 2) Xác minh token
+//       const payload = await this.jwtService.verifyAsync(token, {
+//         secret: process.env.JWT_SECRET,
+//       });
 
-//       getResponse<T = any>(context: ExecutionContext): T {
-//         return context.switchToHttp().getResponse();
-//       }
-
-//       async logIn<TRequest extends { logIn: Function } = any>(
-//         request: TRequest
-//       ): Promise<void> {
-//         const user = request[this.options.property || defaultOptions.property];
-//         await new Promise<void>((resolve, reject) =>
-//           request.logIn(user, this.options, (err) =>
-//             err ? reject(err) : resolve()
-//           )
+//       // 3) Tìm người dùng từ cơ sở dữ liệu bằng token
+//       const user = await this.userService.findById(payload.userId);
+//       if (!user) {
+//         throw new BadRequestException(
+//           'User not found for the token, please try again',
 //         );
 //       }
-
-//       handleRequest(err, user, info, context, status): TUser {
-//         if (err || !user) {
-//           throw err || new UnauthorizedException();
-//         }
-//         return user;
-//       }
-
-//       getAuthenticateOptions(
-//         context: ExecutionContext
-//       ): Promise<IAuthModuleOptions> | IAuthModuleOptions | undefined {
-//         return undefined;
-//       }
+//       request.currentUser = user;
+//     } catch (error) {
+//       console.error('Error in AuthGuardD:', error); // Thêm nhật ký lỗi để kiểm tra
+//       throw new ForbiddenException('Invalid token or expired');
 //     }
-//     const guard = mixin(MixinAuthGuard);
-//     return guard as Type<IAuthGuard>;
+//     return true;
 //   }
+// }
 
-//   const createPassportContext =
-//     (request, response) => (type, options, callback: Function) =>
-//       new Promise<void>((resolve, reject) =>
-//         passport.authenticate(type, options, (err, user, info, status) => {
-//           try {
-//             request.authInfo = info;
-//             return resolve(callback(err, user, info, status));
-//           } catch (err) {
-//             reject(err);
-//           }
-//         })(request, response, (err) => (err ? reject(err) : resolve()))
-//       );
