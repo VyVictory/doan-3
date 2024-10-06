@@ -1,7 +1,7 @@
 import UserNavbar from "./UserNavbar";
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom'
-export const NavBar = () => {
+export default function Navbar() {
     const [transferUserNavbar, setTransferUserNavbar] = useState(true)
     const blocklist = ['auth', 'admin'];
     const location = useLocation();
