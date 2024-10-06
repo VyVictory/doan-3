@@ -17,7 +17,7 @@ import Friendinvitation from "../components/friend/friendinvitation.jsx";
 
 function routers() {
     return (
-        <div className="bg-sky-100 min-h-screen text-white">
+        <div className="bg-[#18191A] min-h-screen text-white">
             <BrowserRouter>
                 <Navbar />
                 <Routes>
