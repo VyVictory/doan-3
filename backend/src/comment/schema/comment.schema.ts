@@ -16,7 +16,7 @@ export class Comment extends Document {
   post: Types.ObjectId; // ID của bài viết mà bình luận này thuộc về
 
   // @Prop({ required: true }) // không cần vì mỗi object của mongodb đều có id riêng
-  // commendId: string; // ID của bình luận 
+  // commendId: string; // ID của bình luận
 
   @Prop({ default: true }) // Trạng thái bình luận có đang hoạt động hay không
   isActive: boolean;

@@ -5,8 +5,6 @@ import { Types, Document } from 'mongoose';
   timestamps: true, // Tự động thêm createdAt và updatedAt
 })
 export class Post extends Document {
-  @Prop({ required: true })
-  title: string;
 
   @Prop({ required: true })
   content: string;
@@ -14,14 +12,17 @@ export class Post extends Document {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true }) // Liên kết tới User
   author: Types.ObjectId;
 
-  @Prop({ default: 0 }) // Số lượng lượt thích
-  likes: number;
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] }) // Mảng lưu người đã like
+  likes: Types.ObjectId[];
 
-  @Prop({ default: 0 }) // Số lượng lượt thích  
-  dislikes: number;
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] }) // Mảng lưu người đã dislike
+  dislikes: Types.ObjectId[];
 
-  @Prop({type: Types.ObjectId, ref: 'Comment', required: true}) // Mảng để lưu các comment
-  comments:Types.ObjectId;
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Comment' }] }) // Mảng để lưu các comment
+  comments: Types.ObjectId[];
+
+  @Prop({ type: [String], default: [] }) // Mảng để lưu các URL của ảnh
+  img: string[];
 
   @Prop({ default: true }) // Trạng thái bài viết có đang hoạt động hay không
   isActive: boolean;

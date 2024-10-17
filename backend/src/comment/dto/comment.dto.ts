@@ -15,9 +15,9 @@ export class CommentDto {
     @IsNumber()
     readonly likes: number;
 
-    @ApiProperty()
-    @IsNotEmpty()
-    readonly media?: string;
+    // @ApiProperty()
+    // @IsNotEmpty()
+    // readonly media?: string
     
     @ApiProperty()
     @IsNotEmpty()
