@@ -11,7 +11,7 @@ import MyPosts from "../components/Profile/MyPosts.jsx";
 import FriendProfile from "../components/Profile/FriendProfile.jsx";
 import Messenger from "../pages/messenger/Messenger.jsx";
 import Searchpage from "../pages/search/index.jsx";
-import { NavBar } from "../components/navbar/NavBar.jsx";
+import Navbar from "../components/navbar/navBar.jsx";
 import Allfriend from "../components/friend/Allfriend.jsx";
 import Friendinvitation from "../components/friend/friendinvitation.jsx";
 
@@ -19,7 +19,7 @@ function routers() {
     return (
         <div className="bg-[#18191A] min-h-screen text-white">
             <BrowserRouter>
-                <NavBar />
+                <Navbar />
                 <Routes>
                     <Route path="/" element={<Layout />}>
                         <Route index element={<Home />} />
@@ -35,11 +35,13 @@ function routers() {
                         </Route>
                         {/* <Route path="*" element={<NoPage />} /> */}
                         <Route path="messenger" element={<Messenger />} />
+
                     </Route>
                     <Route path="auth" element={<Authencation />}>
                         <Route index element={<Authencation />} />
                         {/* <Route path="*" element={<NoPage />} /> */}
                     </Route>
+
                 </Routes>
 
             </BrowserRouter>
