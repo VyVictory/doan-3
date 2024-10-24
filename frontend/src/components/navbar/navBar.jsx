@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom'
 export default function Navbar() {
     const [transferUserNavbar, setTransferUserNavbar] = useState(true)
-    const blocklist = ['auth', 'admin'];
+    const blocklist = ['login', 'admin', 'register'];
     const location = useLocation();
 
     // Extracting the path name
