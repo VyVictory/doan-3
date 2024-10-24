@@ -7,11 +7,12 @@ import {
     UserMinusIcon
 } from '@heroicons/react/16/solid'
 
-export default function DropdownMyfriend() {
+export default function DropdownMyfriend({ nameBTN }) {
     return (
         <Menu>
             <MenuButton>
-                <ChevronDownIcon className="size-7 fill-white/60" />
+                {/* <ChevronDownIcon className="size-7 fill-white/60" /> */}
+                {nameBTN}
             </MenuButton>
             <MenuItems anchor="bottom" className="w-52 bg-[#343455] rounded-md p-1">
                 <MenuItem>
@@ -40,5 +41,12 @@ export default function DropdownMyfriend() {
                 </MenuItem>
             </MenuItems>
         </Menu>
+        // <div className="dropdown dropdown-hover">
+        //     <div tabIndex={0} role="button" className="btn m-1">Hover</div>
+        //     <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+        //         <li><a>Item 1</a></li>
+        //         <li><a>Item 2</a></li>
+        //     </ul>
+        // </div>
     )
 }

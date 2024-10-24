@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '@headlessui/react'
 import DropdownMyfriend from './DropdownMyfriend'
+import { ChevronDownIcon } from '@heroicons/react/24/outline'
 export default function Allfriend() {
     return (
         <div className='bg-[#242526] max-w-56 max-h-96 h-80 rounded-lg '>
@@ -16,7 +17,8 @@ export default function Allfriend() {
                 >
                     Xem trang cá nhân
                 </Button>
-                <DropdownMyfriend />
+
+                <DropdownMyfriend nameBTN={<ChevronDownIcon className="size-7 fill-white/60" />} />
             </div>
         </div>
     )
