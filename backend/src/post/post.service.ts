@@ -27,8 +27,6 @@ export class PostService {
             dislikes: [],
             isActive: true,
         });
-    
-        // Nếu có file hình ảnh, upload lên Cloudinary
         if (files && files.length > 0) {
             try {
                 // Tải tất cả các hình ảnh lên Cloudinary

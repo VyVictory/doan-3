@@ -14,9 +14,9 @@ export class PostController {
     ){}
 
     @UseGuards(AuthGuardD)
-@Post('createPost')
-@UseInterceptors(FileFieldsInterceptor([{ name: 'files', maxCount: 10 }]))
-async createPost(
+    @Post('createPost')
+    @UseInterceptors(FileFieldsInterceptor([{ name: 'files', maxCount: 10 }]))
+    async createPost(
     @CurrentUser() currentUser: User,
     @Body() createPostDto: CreatePostDto, 
     @UploadedFiles() files: { files: Express.Multer.File[] } // Điều chỉnh ở đây
