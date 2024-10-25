@@ -19,19 +19,16 @@ export class PostController {
     async createPost(
     @CurrentUser() currentUser: User,
     @Body() createPostDto: CreatePostDto, 
-    @UploadedFiles() files: { files: Express.Multer.File[] } // Điều chỉnh ở đây
+    @UploadedFiles() files: { files: Express.Multer.File[] } 
 ) {
-    // Kiểm tra nếu currentUser không tồn tại
+    
     if (!currentUser) {
         throw new HttpException('User not found or not authenticated', HttpStatus.UNAUTHORIZED);
     }
-
-    // Log thông tin người dùng hiện tại để kiểm tra
     console.log('Current User:', currentUser);
-    console.log('Uploaded Files:', files); // Log để kiểm tra
+    console.log('Uploaded Files:', files); 
 
-    // Gọi phương thức tạo bài viết trong PostService
-    return this.postService.createPost(createPostDto, currentUser._id.toString(), files.files); // Truyền files.files
+    return this.postService.createPost(createPostDto, currentUser._id.toString(), files.files); 
 }
 
 }

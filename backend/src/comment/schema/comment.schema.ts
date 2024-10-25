@@ -7,28 +7,23 @@ import { validate } from 'class-validator';
 })
 export class Comment extends Document {
   @Prop({ required: true })
-  content: string; // Nội dung bình luận
+  content: string; 
 
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true }) // Liên kết tới User
-  author: Types.ObjectId; // ID của tác giả bình luận
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true }) 
+  author: Types.ObjectId; 
 
-  @Prop({ type: Types.ObjectId, ref: 'Post', required: true }) // Liên kết tới Post
-  post: Types.ObjectId; // ID của bài viết mà bình luận này thuộc về
+  @Prop({ type: Types.ObjectId, ref: 'Post', required: true }) 
+  post: Types.ObjectId; 
 
-  // @Prop({ required: true }) // không cần vì mỗi object của mongodb đều có id riêng
-  // commendId: string; // ID của bình luận
-
-  @Prop({ default: true }) // Trạng thái bình luận có đang hoạt động hay không
+  @Prop({ default: true }) 
   isActive: boolean;
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'Comment' }] }) // Liên kết tới Comment (tự liên kết để tạo cây bình luận)
-  replyTo : Types.ObjectId; // Danh sách các bình luận phản hồi (nếu có)
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Comment' }] }) 
+  replyTo : Types.ObjectId; 
 
-  @Prop({ default: 0 }) // Số lượng lượt thích của bình luận
+  @Prop({ default: 0 }) 
   likes: number;
 
-  // @Prop({ type: [String], validate: [validate, 'Invalid media type'] })
-  // media: string[];
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);
