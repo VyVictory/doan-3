@@ -1,6 +1,6 @@
 import { Body, Controller, HttpException, HttpStatus, Post, Req, UploadedFiles, UseGuards,UseInterceptors,  } from '@nestjs/common';
 import { PostService } from './post.service';
-import { AuthGuardD } from 'src/user/guard/auth.guard';
+import { AuthGuardD } from '../user/guard/auth.guard';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CreatePostDto } from './dto/createpost.dto';
 import { CurrentUser } from '../user/decorator/currentUser.decorator';
@@ -30,6 +30,8 @@ export class PostController {
 
     return this.postService.createPost(createPostDto, currentUser._id.toString(), files.files); 
 }
+
+
 
 }
 

@@ -1,15 +1,10 @@
 import { IsNotEmpty, IsString, IsNumber, IsOptional } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+
+export class ReplyCmtDto {
 
 
-
-
-export class CommentDto {
-
-
-    @ApiProperty()
     @IsString()
-    @IsOptional()
+    @IsNotEmpty()
     readonly content?: string;
 
     // @ApiProperty()
@@ -20,7 +15,7 @@ export class CommentDto {
     // @ApiProperty()
     // @IsNumber()
     // readonly likes: number;
-    @ApiProperty()
+
     @IsOptional()
     @IsString()
     readonly img?:string[]

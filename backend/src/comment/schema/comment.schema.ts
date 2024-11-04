@@ -24,6 +24,9 @@ export class Comment extends Document {
   @Prop({ default: 0 }) 
   likes: number;
 
+  @Prop({ type: [String], default: [] }) 
+  img: string[];
+
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);

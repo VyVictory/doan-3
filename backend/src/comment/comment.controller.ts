@@ -1,19 +1,36 @@
-
-import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards, UseInterceptors, UploadedFiles, HttpException, HttpStatus } from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { CommentDto } from './dto/comment.dto';
 import { AuthGuardD } from '../user/guard/auth.guard';
 import { CurrentUser } from '../user/decorator/currentUser.decorator';
-import { User } from '../user/schemas/user.schemas';
+import { User } from '../user/schemas/user.schemas'
+import { RolesGuard } from '../user/guard/role.guard';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
 @Controller('comments')
 @UseGuards(AuthGuardD)
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
-  @Post()
-  async create(@Body() createCommentDto: CommentDto, @CurrentUser() user: User) {
-    return await this.commentService.create({ ...createCommentDto, author: user._id as string });  
+
+
+  @UseGuards(AuthGuardD)
+  @Post(':postId')  
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'files', maxCount: 10 }]))
+  async createCmt(
+    @Param('postId') postId: string, 
+    @CurrentUser() currentUser: User,
+    @Body() commetDto: CommentDto,
+    @UploadedFiles() files: { files: Express.Multer.File[] }
+  ) {
+    if (!currentUser) {
+      throw new HttpException('User not found or not authenticated', HttpStatus.UNAUTHORIZED);
+    }
+  
+    console.log('Current User:', currentUser);
+    console.log('Uploaded Files:', files);
+
+    return this.commentService.create(currentUser._id.toString(), postId, commetDto, files.files);
   }
 
   @Get()
@@ -41,10 +58,10 @@ export class CommentController {
     return await this.commentService.update(id, updateCommentDto);
   }
 
-  @Post(':id/reply')
-  async reply(@Param('id') id: string, @Body() replyDto: CommentDto, @CurrentUser() user: User) {
-    return await this.commentService.reply(id, { ...replyDto, author: user._id as string });
-  }
+  // @Post(':id/reply')
+  // async reply(@Param('id') id: string, @Body() replyDto: CommentDto, @CurrentUser() user: User) {
+  //   return await this.commentService.reply(id, { ...replyDto, author: user._id as string });
+  // }
 }
 
 

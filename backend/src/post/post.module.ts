@@ -8,7 +8,7 @@ import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 @Module({
   imports:[
     MongooseModule.forFeature([{name: 'Post' , schema: PostSchema }]),
-    CloudinaryModule
+    CloudinaryModule,
   ],
   controllers: [PostController],
   providers: [PostService],
