@@ -13,7 +13,7 @@ import { UpdatePostDto } from './dto/updatePost.dto';
 export class PostService {
     constructor(
         @InjectModel(Post.name) private PostModel: Model<Post>,
-        @InjectModel(Post.name) private UserModel: Model<User>,
+        @InjectModel(User.name) private UserModel: Model<User>,
         private cloudinaryService: CloudinaryService,
         private jwtService: JwtService
     ){}

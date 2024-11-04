@@ -21,8 +21,8 @@ export class Comment extends Document {
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Comment' }] }) 
   replyTo : Types.ObjectId; 
 
-  @Prop({ default: 0 }) 
-  likes: number;
+  @Prop() 
+  likes: string[];
 
   @Prop({ type: [String], default: [] }) 
   img: string[];

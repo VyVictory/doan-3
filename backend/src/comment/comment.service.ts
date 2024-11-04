@@ -8,14 +8,18 @@ import { promises } from 'dns';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { User } from '../user/schemas/user.schemas';
 import { JwtService } from '@nestjs/jwt';
+import { PostService } from 'src/post/post.service';
+import { Post } from '../post/schemas/post.schema';
 
 @Injectable()
 export class CommentService {
   constructor(
     @InjectModel(Comment.name) private readonly commentModel: Model<Comment>,
-    @InjectModel(Comment.name) private readonly UserModel: Model<User>,
+    @InjectModel(User.name) private readonly UserModel: Model<User>,
+    @InjectModel(Post.name) private readonly postModel: Model<Post>,
     private cloudinaryService: CloudinaryService,
-    private jwtService: JwtService
+    private postService: PostService,
+    private jwtService: JwtService,
   ) {}
 
   //tạo cmt lần đầu
@@ -35,7 +39,13 @@ export class CommentService {
         throw new HttpException('Filed to upload images please try again', HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
-      return await newCmt.save()
+      const saveCMT =  await newCmt.save();
+      await this.postModel.findByIdAndUpdate(
+        postId,
+        { $push: { comments: saveCMT._id } }, 
+        { new: true } 
+      );
+      return saveCMT;
   }
 
 

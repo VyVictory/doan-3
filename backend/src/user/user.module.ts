@@ -31,6 +31,6 @@ import { FriendRequest, FriendRequestSchema } from './schemas/friend.schema';
   ],
   controllers: [UserController],
   providers: [UserService],
-  exports:[UserService,JwtModule]
+  exports:[UserService,JwtModule,UserModule, MongooseModule]
 })
 export class UserModule {}
