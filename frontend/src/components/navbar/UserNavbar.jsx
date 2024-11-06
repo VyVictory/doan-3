@@ -2,6 +2,7 @@ import SearchBar from './SearchBar'
 import { Link } from 'react-router-dom'
 
 import DropdownProfile from './DropdownProfile'
+import authToken from '../../Module/authToken'
 
 export default function UserNavbar() {
     return (
@@ -83,7 +84,15 @@ export default function UserNavbar() {
                                 Đăng xuất
                             </Link></li>
                         </ul> */}
-                    <DropdownProfile />
+                    {
+                        authToken.getToken() !== null ? (
+                            <DropdownProfile />
+                        ) : (
+                            <div className="m-1">
+                                <Link to={"/login"} className='bg-[#007bff] px-3 py-3 rounded-lg'>Đăng nhập</Link>
+                            </div>
+                        )
+                    }
                 </div>
             </div>
         </div>

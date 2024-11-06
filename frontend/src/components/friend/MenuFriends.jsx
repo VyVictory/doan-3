@@ -19,9 +19,9 @@ export default function MenuFriends() {
 
     return (
         <TabGroup>
-            <TabList className={"flex justify-between mb-4"}>
+            <TabList className={"flex justify-between mt-2"}>
                 {categories.map(({ name, href }) => (
-                    <Link to={href} className={`w-full mx-2 bg-[#242526] py-4 px-4 text-sm/6 font-semibold text-white focus:outline-none ${currentTab?.href === href ? 'bg-white/10' : ''}`}>{name}</Link>
+                    <Link to={href} className={`w-full mx-2  py-4 px-4 text-sm/6 font-semibold  focus:outline-none ${currentTab?.href === href ? 'bg-gray-200' : ''}`}>{name}</Link>
                 ))}
             </TabList>
         </TabGroup>

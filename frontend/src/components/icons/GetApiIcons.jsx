@@ -2,12 +2,11 @@ import axios from 'axios';
 
 const GetApiIcons = async () => {
   try {
-    const response = await axios.get(
-      'https://emoji-api.com/emojis?access_key=7668efaa974863e4d390acfc5503f0f23253e3cb'
-    );
-    return response.data; // Trả về dữ liệu từ API
+    // Lấy dữ liệu từ file JSON trong thư mục public
+    const response = await axios.get('/icons.json'); // Lấy file JSON từ thư mục public
+    return response.data; // Trả về dữ liệu từ file JSON
   } catch (error) {
-    console.error('Error fetching the emojis:', error);
+    console.error('Error fetching the emojis from local file:', error);
     return [];
   }
 };

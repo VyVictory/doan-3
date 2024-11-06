@@ -13,7 +13,7 @@ const LeftMessenger = ({ bt_chanetransfer }) => {
         { name: 'Charlie Davis', message: 'Long time no see!', img: 'https://placehold.co/40' },
     ];
     return (<>
-        <div class=" border-r-gray-300 border-r text-black h-full flex flex-col">
+        <div class=" border-r-gray-300 border-r  h-full flex flex-col">
             <h2 className="text-lg font-semibold flex justify-center py-1 border-b border-gray-300">List Friends</h2>
             <ul
                 className='h-full flex flex-col px-2'
@@ -28,7 +28,7 @@ const LeftMessenger = ({ bt_chanetransfer }) => {
                         <button onClick={bt_chanetransfer} className="flex items-center py-2">
                             <img src={msg.img} alt="user" className="w-10 h-10 rounded-full mr-2" />
                             <div className='text-start line-clamp-3'>
-                                <h3 className="text-black font-semibold">{msg.name}</h3>
+                                <h3 className=" font-semibold">{msg.name}</h3>
                                 <p className="text-gray-400">{msg.message}</p>
                             </div>
                         </button>

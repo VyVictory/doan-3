@@ -18,7 +18,7 @@ import Register from "../auth/register/index.jsx";
 
 function routers() {
     return (
-        <div className="bg-[#18191A] min-h-screen text-white">
+        <div className="bg-white min-h-screen text-white">
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<Layout />}>

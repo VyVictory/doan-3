@@ -5,7 +5,7 @@ export default function Layout() {
     return (
         <>
             <Navbar />
-            <div className="grid justify-items-center">
+            <div className="grid justify-items-center text-black">
                 <Outlet />
             </div>
         </>

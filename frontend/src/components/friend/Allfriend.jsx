@@ -5,7 +5,7 @@ import DropdownMyfriend from './DropdownMyfriend'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 export default function Allfriend() {
     return (
-        <div className='bg-[#242526] max-w-56 max-h-96 h-80 rounded-lg '>
+        <div className='border border-gray-300 shadow-lg max-w-56 max-h-96 h-80 rounded-lg '>
             <Link>
                 <img className='h-52 w-full p-2'
                     src="https://www.didongmy.com/vnt_upload/news/05_2024/anh-27-meme-dang-yeu-didongmy.jpg" />
