@@ -1,7 +1,20 @@
 import UserNavbar from "./UserNavbar";
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom'
+
+import NavbarLogin from "./NavbarLogin";
 export default function Navbar() {
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    useEffect(() => {
+        const token = localStorage.getItem('accessToken');
+        console.log(token)
+        if (token) {
+            setIsAuthenticated(true);
+        } else {
+            setIsAuthenticated(false);
+        }
+    }, []); // Empty dependency array means this effect runs once on mount
+
     // const [transferUserNavbar, setTransferUserNavbar] = useState(true)
     // const blocklist = ['login', 'admin', 'register'];
     // const location = useLocation();
@@ -20,14 +33,15 @@ export default function Navbar() {
     // }, [lastSegment, blocklist]); // Re-run when the URL changes
     return (
         <>
-
-            {/* {transferUserNavbar && ( */}
-            <>
-                <UserNavbar />
-                <div className="h-[68px]">
-                </div>
-            </>
-            {/* )} */}
+            {isAuthenticated && (
+                <>
+                    <UserNavbar />
+                    <div className="h-[68px]"></div>
+                </>
+            )}
+            <NavbarLogin />
+            <div className="h-[68px]"></div>
         </>
+
     );
 }
