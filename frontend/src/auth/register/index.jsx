@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon } from '@heroicons/react/24/outline';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export default function Register() {
     const [formData, setFormData] = useState({
@@ -11,13 +11,15 @@ export default function Register() {
         gender: '',
         birthday: '',
         password: '',
-        confirmPassword: ''
+        // confirmPassword: '',
     });
+    // const user = async () = await axios
+    const navigate = useNavigate();
 
     const [errors, setErrors] = useState({});
 
     const validateForm = () => {
-        const errors = {};
+
         if (!formData.password) errors.password = 'Bắt buộc nhập mật khẩu';
         if (formData.password.length < 8) {
             errors.password = 'Mật khẩu quá ngắn';
@@ -28,12 +30,31 @@ export default function Register() {
         return errors;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const validationErrors = validateForm();
         if (Object.keys(validationErrors).length === 0) {
-            console.log('Form data:', formData);
-            alert('Form submitted successfully!');
+            try {
+                const { confirmPassword, ...dataToSubmit } = formData;
+                const response = await axios.post('http://localhost:3001/user/register', dataToSubmit);
+
+                if (response.status === 201) {
+                    alert('Đăng ký thành công!');
+                    navigate('/login')
+                }
+
+                // Xử lý thành công (ví dụ: chuyển hướng sang trang khác)
+            } catch (error) {
+                if (error.response && error.response.data && error.response.data.message) {
+                    // Check for specific error message from the API
+                    if (error.response.status === 409) {
+                        alert('Số điện thoại đã tồn tại, vui lòng sử dụng số điện thoại khác.');
+                    }
+                } else {
+                    alert('Đăng ký thất bại, vui lòng thử lại!');
+                }
+                console.error('Lỗi:', error.response ? error.response.data : error.message);
+            }
         } else {
             setErrors(validationErrors);
         }
@@ -48,12 +69,12 @@ export default function Register() {
     };
 
     return (
-        <div className='bg-gradient-to-r from-[#514A9D] to-[#24C6DC] h-screen'>
-            <form
+        <div className='bg-gradient-to-r from-[#514A9D] to-[#24C6DC] h-screen grid place-items-center'>
+            <form method='POST'
                 onSubmit={handleSubmit}
-                className='text-black pt-[15px] px-[48px] fixed rounded-2xl top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 bg-white h-[90%] w-[35%]'
+                className='text-black rounded-2xl bg-white px-10 py-8'
             >
-                <h1 className='font-bold text-3xl text-center pt-[10px]'>Đăng ký</h1>
+                <h1 className='font-bold text-3xl text-center pt-[15px]'>Đăng ký</h1>
                 <div className='flex gap-20 mt-6 mb-4'>
                     <input
                         type="text"
@@ -109,9 +130,8 @@ export default function Register() {
                         required
                     >
                         <option disabled value="">Giới tính</option>
-                        <option value="nam">Nam</option>
-                        <option value="nu">Nữ</option>
-                        <option value="khac">Khác</option>
+                        <option value="true">Nam</option>
+                        <option value="false">Nữ</option>
                     </select>
                     <input
                         type="password"
@@ -139,7 +159,7 @@ export default function Register() {
                         Đăng ký
                     </button>
                 </div>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mt-4">
                     <span className="inline-block align-baseline">Bạn đã có tài khoản?</span>
                     <Link to="/login" className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
                         Đăng nhập ngay
