@@ -6,7 +6,7 @@ export default function Navbar() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
-        const token = localStorage.getItem('accessToken');
+        const token = localStorage.getItem('token');
         console.log(token)
         if (token) {
             setIsAuthenticated(true);
@@ -33,15 +33,19 @@ export default function Navbar() {
     // }, [lastSegment, blocklist]); // Re-run when the URL changes
     return (
         <>
-            {isAuthenticated && (
+            {isAuthenticated ? (
                 <>
                     <UserNavbar />
                     <div className="h-[68px]"></div>
                 </>
+            ) : (
+                <>
+                    <NavbarLogin />
+                    <div className="h-[68px]"></div>
+                </>
             )}
-            <NavbarLogin />
-            <div className="h-[68px]"></div>
         </>
+
 
     );
 }

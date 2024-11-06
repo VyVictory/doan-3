@@ -26,6 +26,13 @@ export default function DropdownProfile() {
                         Trang cá nhân
                     </Link>
                 </MenuItem>
+                <MenuItem>
+                    <Link to={"/logout"} className="group flex w-full items-center gap-2 rounded-lg p-3 data-[focus]:bg-white/10">
+                        {/* <PencilIcon className="size-4 fill-white/30" /> */}
+
+                        Đăng xuất
+                    </Link>
+                </MenuItem>
 
             </MenuItems>
         </Menu>
