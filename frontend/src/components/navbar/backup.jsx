@@ -1,4 +1,4 @@
-import { React, useState } from 'react'
+import {React,useState} from 'react'
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Link } from 'react-router-dom'
 import { UserCircleIcon } from '@heroicons/react/24/outline'
@@ -39,6 +39,13 @@ export default function DropdownProfile() {
 
                             Đăng xuất
                         </Link>
+                        {
+                            logout ?(
+                                <LogOut btnOffLogout={sys}/>
+                            ):(
+                                ""
+                            )
+                        }
                     </MenuItem>
                 </MenuItems>
             ) : (
@@ -54,19 +61,12 @@ export default function DropdownProfile() {
                         </Link>
                     </MenuItem>
                 </MenuItems>
-                //                     {transfer && (
-                //     <div className={`${chanecontainer ? 'w-1/4' : 'w-full'}  h-full`}>
-                //         <LeftMessenger bt_chanetransfer={chanetransfer} />
-                //     </div>
-                // )}
+            //                     {transfer && (
+            //     <div className={`${chanecontainer ? 'w-1/4' : 'w-full'}  h-full`}>
+            //         <LeftMessenger bt_chanetransfer={chanetransfer} />
+            //     </div>
+            // )}
             )}
-            {
-                logout ? (
-                    <LogOut btnOffLogout={sys} />
-                ) : (
-                    ""
-                )
-            }
         </Menu>
     )
 }

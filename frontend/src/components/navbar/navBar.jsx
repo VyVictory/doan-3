@@ -2,13 +2,12 @@ import UserNavbar from "./UserNavbar";
 import React, { useState, useEffect } from 'react';
 
 import NavbarLogin from "./NavbarLogin";
+import authToken from "../../Module/authToken";
 export default function Navbar() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        console.log(token)
-        if (token) {
+        if (authToken.getToken()) {
             setIsAuthenticated(true);
         } else {
             setIsAuthenticated(false);

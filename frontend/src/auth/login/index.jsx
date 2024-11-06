@@ -3,10 +3,11 @@ import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react';
 import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon } from '@heroicons/react/24/outline'
+import authToken from '../../Module/authToken';
 export default function Login() {
     const [formData, setFormData] = useState({
         numberPhone: '',
-        password: '',
+        password: 'Adsadsads',
     });
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
@@ -25,9 +26,11 @@ export default function Login() {
             try {
                 const response = await axios.post('http://localhost:3001/user/login', formData);
                 if (response.status === 201) {
-                    alert('Đăng nhập thành công!');
+                    
                     // Store the authentication token
-                    localStorage.setItem('token', response.data.accessToken);
+                    // localStorage.setItem('token', response.data.accessToken);
+                    authToken.setToken(response.data.accessToken);
+                    alert('Đăng nhập thành công! '+ authToken.getToken());
                     navigate('/');
                 }
             } catch (error) {
