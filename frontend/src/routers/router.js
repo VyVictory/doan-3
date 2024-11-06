@@ -20,7 +20,6 @@ function routers() {
     return (
         <div className="bg-[#18191A] min-h-screen text-white">
             <BrowserRouter>
-                <Navbar />
                 <Routes>
                     <Route path="/" element={<Layout />}>
                         <Route index element={<Home />} />
@@ -36,7 +35,6 @@ function routers() {
                         </Route>
                         {/* <Route path="*" element={<NoPage />} /> */}
                         <Route path="messenger" element={<Messenger />} />
-
                     </Route>
                     <Route path="login" element={<Login />}>
                         {/* <Route path="*" element={<NoPage />} /> */}

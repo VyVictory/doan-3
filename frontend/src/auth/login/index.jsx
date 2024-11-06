@@ -28,7 +28,7 @@ export default function Login() {
                 if (response.status === 201) {
                     alert('Đăng nhập thành công!');
                     // Store the authentication token
-                    localStorage.setItem('token', response.data.token);
+                    localStorage.setItem('token', response.data.accessToken);
                     navigate('/');
                 }
             } catch (error) {
