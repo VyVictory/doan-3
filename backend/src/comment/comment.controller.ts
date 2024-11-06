@@ -10,15 +10,15 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 @Controller('comments')
 @UseGuards(AuthGuardD)
 export class CommentController {
-  constructor(private readonly commentService: CommentService) {}
+  constructor(private readonly commentService: CommentService) { }
 
 
 
   @UseGuards(AuthGuardD)
-  @Post(':postId')  
+  @Post(':postId')
   @UseInterceptors(FileFieldsInterceptor([{ name: 'files', maxCount: 10 }]))
   async createCmt(
-    @Param('postId') postId: string, 
+    @Param('postId') postId: string,
     @CurrentUser() currentUser: User,
     @Body() commetDto: CommentDto,
     @UploadedFiles() files: { files: Express.Multer.File[] }
@@ -26,7 +26,7 @@ export class CommentController {
     if (!currentUser) {
       throw new HttpException('User not found or not authenticated', HttpStatus.UNAUTHORIZED);
     }
-  
+
     console.log('Current User:', currentUser);
     console.log('Uploaded Files:', files);
 
@@ -54,8 +54,19 @@ export class CommentController {
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() updateCommentDto: CommentDto) {
-    return await this.commentService.update(id, updateCommentDto);
+  @UseGuards(AuthGuardD)
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'files', maxCount: 2 }]))
+  async update(
+    @Param('id') id: string,
+    @CurrentUser() currentUser: User,
+    @Body() updateCommentDto: CommentDto,
+    @UploadedFiles() files: { files: Express.Multer.File[] }
+  ) {
+    if (!currentUser) {
+      throw new HttpException('User not found or not authenticated', HttpStatus.UNAUTHORIZED);
+    }
+
+    return await this.commentService.update(id, currentUser._id.toString(), updateCommentDto, files.files);
   }
 
   // @Post(':id/reply')

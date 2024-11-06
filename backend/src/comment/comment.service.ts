@@ -79,13 +79,31 @@ export class CommentService {
     return deletedComment;
   }
 
-  async update(id: string, commentDto: CommentDto): Promise<Comment> {
-    const updatedComment = await this.commentModel.findByIdAndUpdate(id, commentDto, { new: true }).exec();
-    if (!updatedComment) {
-      throw new NotFoundException(`Bình luận có ID "${id}" không tồn tại`);
+  async update(id: string, userId: string, commentDto: CommentDto, files?: Express.Multer.File[]): Promise<Comment> {
+    const comment = await this.commentModel.findById(id);
+
+    if (!comment) {
+        throw new NotFoundException(`Bình luận có ID "${id}" không tồn tại`);
     }
-    return updatedComment;
-  }
+
+    if (comment.author.toString() !== userId) {
+        throw new HttpException('Bạn không có quyền cập nhật bình luận này', HttpStatus.UNAUTHORIZED);
+    }
+
+    comment.content = commentDto.content || comment.content;
+
+    if (files && files.length > 0) {
+        try {
+            const uploadedImages = await Promise.all(files.map(file => this.cloudinaryService.uploadFile(file)));
+            comment.img = uploadedImages;
+        } catch (error) {
+            console.error('Error uploading images to Cloudinary:', error);
+            throw new HttpException('Failed to upload images', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    return await comment.save();
+}
 
   async reply(parentCommentId: string, replyDto: CommentDto): Promise<Comment> {
     const parentComment = await this.findById(parentCommentId);

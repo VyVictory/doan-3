@@ -23,7 +23,7 @@ export class UserService {
     @InjectModel(FriendRequest.name) private FriendRequestModel: Model<FriendRequest>,
     private jwtService: JwtService,
     private configService: ConfigService,
-  ) {}
+  ) { }
 
   async register(registerDto: RegisterDto): Promise<User> {
     const {
@@ -60,15 +60,15 @@ export class UserService {
     return user;
   }
 
-  async generateToken(userId): Promise<{ accessToken: string, refreshToken:string }> {
+  async generateToken(userId): Promise<{ accessToken: string, refreshToken: string }> {
     const accessToken = this.jwtService.sign({ userId });
-    
+
     const refreshToken = this.jwtService.sign(
-      { userId }, 
-      { 
-        secret: this.configService.get<string>('JWT_REFRESH_SECRET'), 
-        expiresIn: this.configService.get<string | number>('JWT_REFRESH_EXPIRES') 
-      } 
+      { userId },
+      {
+        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+        expiresIn: this.configService.get<string | number>('JWT_REFRESH_EXPIRES')
+      }
     );
     await this.UserModel.findByIdAndUpdate(userId, { refreshToken });
     return {
@@ -79,12 +79,12 @@ export class UserService {
 
   async refreshToken(userId: string, refreshToken: string): Promise<{ accessToken: string }> {
     const user = await this.UserModel.findById(userId);
-    
+
     // Kiểm tra xem người dùng có tồn tại và refresh token có hợp lệ không
     if (!user || user.refreshToken !== refreshToken) {
       throw new HttpException('Invalid refresh token', HttpStatus.UNAUTHORIZED);
     }
-  
+
     // Xác thực refresh token bằng secret cho refresh token
     try {
       this.jwtService.verify(refreshToken, {
@@ -93,13 +93,13 @@ export class UserService {
     } catch (error) {
       throw new HttpException('Refresh token expired', HttpStatus.UNAUTHORIZED);
     }
-  
+
     // Tạo mới access token (không cần truyền secret và expiresIn vì đã cấu hình trong module)
     const accessToken = this.jwtService.sign({ userId });
-  
+
     return { accessToken };
   }
-  
+
 
   async login(loginDto: LoginDto): Promise<{ accessToken: string }> {
     const { numberPhone, email, password } = loginDto;
@@ -122,7 +122,7 @@ export class UserService {
     if (!isPasswordValid) {
       throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
     }
-
+    
     // Trả về token nếu đăng nhập thành công
     return this.generateToken(user._id);
   }
@@ -132,75 +132,75 @@ export class UserService {
     const user = await this.UserModel.findById(userId)
       .select('-password -isActive -role -createdAt -updatedAt') // Không trả về các trường này
       .exec();
-  
+
     if (!user) {
       throw new NotFoundException('404: user not found');
     }
-  
+
     return user;
   }
-   
-  async FriendsRequest(senderID:string, ReceiverId: string) {
-      const exitingRequest =  await this.FriendRequestModel.findById({sender:senderID, receiver:ReceiverId})
-      if(exitingRequest){
-        throw new ConflictException('request has been sent');
-      }
-      const newRequest = new this.FriendRequestModel({
-        sender:senderID,
-        receiver:ReceiverId,
-        status: 'waitinng'
-      })
-      return newRequest.save()
+
+  async FriendsRequest(senderID: string, ReceiverId: string) {
+    const exitingRequest = await this.FriendRequestModel.findById({ sender: senderID, receiver: ReceiverId })
+    if (exitingRequest) {
+      throw new ConflictException('request has been sent');
+    }
+    const newRequest = new this.FriendRequestModel({
+      sender: senderID,
+      receiver: ReceiverId,
+      status: 'waitinng'
+    })
+    return newRequest.save()
   }
 
-  async acceptRequestFriends(FriendsRequestId: string){
+  async acceptRequestFriends(FriendsRequestId: string) {
     //dầu tiên tìm yêu cầu kết bạn dựa trên ID Request
-    const friendRequest = await this.FriendRequestModel.findById({FriendsRequestId})
-    if(!friendRequest){
+    const friendRequest = await this.FriendRequestModel.findById({ FriendsRequestId })
+    if (!friendRequest) {
       throw new NotFoundException('no has Friends Request')
     }
     const { sender, receiver } = friendRequest;
     // thim bạng vào list friend của người rửi và người nhặn
     //cái nầy là thim dô người nhận 
     await this.UserModel.findByIdAndUpdate(
-      receiver,{
-        $addToSet: { friends: sender}
-      }
+      receiver, {
+      $addToSet: { friends: sender }
+    }
     );
     await this.UserModel.findByIdAndUpdate(
       sender,
       {
-          $addToSet: { friends: receiver }
+        $addToSet: { friends: receiver }
       }
     );
     await this.FriendRequestModel.findByIdAndDelete(FriendsRequestId);
-    return { message: 'friend request accepted successfully'}
+    return { message: 'friend request accepted successfully' }
   }
 
   async rejectFriendRequest(FriendsRequestId: string) {
     // Bước 1: Tìm yêu cầu kết bạn dựa trên ID
     const friendRequest = await this.FriendRequestModel.findById(FriendsRequestId);
-    
+
     // Bước 2: Kiểm tra xem yêu cầu kết bạn có tồn tại không
     if (!friendRequest) {
       throw new NotFoundException('No such friend request found');
     }
-  
+
     // Bước 3: Xóa yêu cầu kết bạn
     await this.FriendRequestModel.findByIdAndDelete(FriendsRequestId);
-  
+
     // Bước 4: Trả về thông báo thành công
     return { message: 'Friend request rejected successfully' };
   }
-  
+
   async updateUser(userId: string, updateData: any): Promise<User> {
     // Tìm người dùng theo ID
     const user = await this.UserModel.findById(userId);
-  
+
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
-  
+
     // Loại bỏ các trường không được phép cập nhật như role, isActive, refreshToken
     const restrictedFields = ['role', 'isActive', 'refreshToken'];
     restrictedFields.forEach(field => {
@@ -208,10 +208,10 @@ export class UserService {
         delete updateData[field];
       }
     });
-  
+
     // Cập nhật thông tin người dùng
     Object.assign(user, updateData);
-  
+
     // Lưu thay đổi vào cơ sở dữ liệu
     return await user.save();
   }
@@ -220,42 +220,39 @@ export class UserService {
     const { currentPassword, newPassword } = changePasswordDto;
 
     try {
-        // Find user by ID
-        const user = await this.UserModel.findById(userId);
-        if (!user) {
-            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-        }
+      // Find user by ID
+      const user = await this.UserModel.findById(userId);
+      if (!user) {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
 
-        // Check current password
-        const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
-        if (!isPasswordValid) {
-            throw new HttpException('Current password is incorrect', HttpStatus.UNAUTHORIZED);
-        }
+      // Check current password
+      const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+      if (!isPasswordValid) {
+        throw new HttpException('Current password is incorrect', HttpStatus.UNAUTHORIZED);
+      }
 
-        // Check if new password is the same as the current password
-        const isNewPasswordSameAsCurrent = await bcrypt.compare(newPassword, user.password);
-        if (isNewPasswordSameAsCurrent) {
-            throw new HttpException('New password cannot be the same as the current password', HttpStatus.BAD_REQUEST);
-        }
+      // Check if new password is the same as the current password
+      const isNewPasswordSameAsCurrent = await bcrypt.compare(newPassword, user.password);
+      if (isNewPasswordSameAsCurrent) {
+        throw new HttpException('New password cannot be the same as the current password', HttpStatus.BAD_REQUEST);
+      }
 
-        // Hash the new password
-        user.password = await bcrypt.hash(newPassword, 10);
+      // Hash the new password
+      user.password = await bcrypt.hash(newPassword, 10);
 
-        // Save changes to the database
-        await user.save();
+      // Save changes to the database
+      await user.save();
 
-        return { message: 'Password updated successfully' };
+      return { message: 'Password updated successfully' };
     } catch (error) {
-        // Handle error and return a message without logging it
-        if (error instanceof HttpException) {
-            throw error; // If error is an HttpException, rethrow it
-        }
+      // Handle error and return a message without logging it
+      if (error instanceof HttpException) {
+        throw error; // If error is an HttpException, rethrow it
+      }
 
-        // For any unexpected errors, return a generic message
-        throw new HttpException('Password update failed', HttpStatus.INTERNAL_SERVER_ERROR);
+      // For any unexpected errors, return a generic message
+      throw new HttpException('Password update failed', HttpStatus.INTERNAL_SERVER_ERROR);
     }
-}
-
-  
-
+  }
 }
