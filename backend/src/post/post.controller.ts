@@ -1,10 +1,11 @@
-import { Body, Controller, HttpException, HttpStatus, Post, Req, UploadedFiles, UseGuards,UseInterceptors,  } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Req, UploadedFiles, UseGuards,UseInterceptors,  } from '@nestjs/common';
 import { PostService } from './post.service';
 import { AuthGuardD } from '../user/guard/auth.guard';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CreatePostDto } from './dto/createpost.dto';
 import { CurrentUser } from '../user/decorator/currentUser.decorator';
 import { User } from '../user/schemas/user.schemas';
+import { get } from 'http';
 
 @Controller('post')
 export class PostController {
@@ -31,6 +32,13 @@ export class PostController {
     return this.postService.createPost(createPostDto, currentUser._id.toString(), files.files); 
 }
 
+    @UseGuards(AuthGuardD)
+    @Get('crpost')
+    async getCurrentPost(
+        @CurrentUser() currentUser : User,
+    ){
+        return this.postService.findPostCurrentUser(currentUser._id.toString())
+    }
 
 
 }

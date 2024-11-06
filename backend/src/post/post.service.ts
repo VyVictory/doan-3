@@ -8,6 +8,7 @@ import { CreatePostDto } from './dto/createpost.dto';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { settingPrivacyDto } from './dto/settingPrivacy.dto'; 
 import { UpdatePostDto } from './dto/updatePost.dto';
+import { Exception } from 'handlebars';
 
 @Injectable()
 export class PostService {
@@ -100,13 +101,11 @@ export class PostService {
                 throw new HttpException('Allowed users must be provided for specific privacy', HttpStatus.BAD_REQUEST);
             }
             post.privacy = settingPrivacyDto.privacy;
-
             if (settingPrivacyDto.privacy === 'specific') {
                 post.allowedUsers = settingPrivacyDto.allowedUsers;
             } else {
                 post.allowedUsers = [];
             }
-    
             return await post.save();
         } catch (error) {
             // Bắt lỗi và ném lại lỗi dưới dạng HttpException nếu có lỗi
@@ -117,6 +116,16 @@ export class PostService {
             );
         }
     }
-    
 
+    async findPostCurrentUser(userId:string){
+        try {
+            const userPosts  = await this.PostModel.find({author: userId}).exec();
+            return userPosts
+        } catch (error) {
+            console.error('errol', error)
+            throw new HttpException('Could not retrieve posts', HttpStatus.INTERNAL_SERVER_ERROR)
+        }
+    }
+    
+    
 }

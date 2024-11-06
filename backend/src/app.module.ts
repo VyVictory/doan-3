@@ -7,6 +7,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PostModule } from './post/post.module';
 import { CommentModule } from './comment/comment.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { OtpController } from './otp/otp.controller';
+import { OtpModule } from './otp/otp.module';
 
 @Global()
 @Module({
@@ -20,8 +22,9 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
     PostModule,
     CommentModule,
     CloudinaryModule,
+    OtpModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, OtpController],
   providers: [AppService],
 })
 export class AppModule {}
