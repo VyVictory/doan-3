@@ -20,17 +20,17 @@ export class CommentService {
     private cloudinaryService: CloudinaryService,
     private postService: PostService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   //tạo cmt lần đầu
-  async create(userId: string, postId: string, commentDto: CommentDto, files? : Express.Multer.File[]): Promise<Comment> {
+  async create(userId: string, postId: string, commentDto: CommentDto, files?: Express.Multer.File[]): Promise<Comment> {
     const newCmt = new this.commentModel({
       content: commentDto.content,
       author: userId,
       post: postId,
-      likes : [],
+      likes: [],
     });
-    if (files && files.length > 0){
+    if (files && files.length > 0) {
       try {
         const uploadImages = await Promise.all(files.map(file => this.cloudinaryService.uploadFile(file)));
         newCmt.img = uploadImages;
@@ -39,13 +39,13 @@ export class CommentService {
         throw new HttpException('Filed to upload images please try again', HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
-      const saveCMT =  await newCmt.save();
-      await this.postModel.findByIdAndUpdate(
-        postId,
-        { $push: { comments: saveCMT._id } }, 
-        { new: true } 
-      );
-      return saveCMT;
+    const saveCMT = await newCmt.save();
+    await this.postModel.findByIdAndUpdate(
+      postId,
+      { $push: { comments: saveCMT._id } },
+      { new: true }
+    );
+    return saveCMT;
   }
 
 
@@ -83,36 +83,54 @@ export class CommentService {
     const comment = await this.commentModel.findById(id);
 
     if (!comment) {
-        throw new NotFoundException(`Bình luận có ID "${id}" không tồn tại`);
+      throw new NotFoundException(`Bình luận có ID "${id}" không tồn tại`);
     }
 
     if (comment.author.toString() !== userId) {
-        throw new HttpException('Bạn không có quyền cập nhật bình luận này', HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Bạn không có quyền cập nhật bình luận này', HttpStatus.UNAUTHORIZED);
     }
 
     comment.content = commentDto.content || comment.content;
 
     if (files && files.length > 0) {
-        try {
-            const uploadedImages = await Promise.all(files.map(file => this.cloudinaryService.uploadFile(file)));
-            comment.img = uploadedImages;
-        } catch (error) {
-            console.error('Error uploading images to Cloudinary:', error);
-            throw new HttpException('Failed to upload images', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+      try {
+        const uploadedImages = await Promise.all(files.map(file => this.cloudinaryService.uploadFile(file)));
+        comment.img = uploadedImages;
+      } catch (error) {
+        console.error('Error uploading images to Cloudinary:', error);
+        throw new HttpException('Failed to upload images', HttpStatus.INTERNAL_SERVER_ERROR);
+      }
     }
 
     return await comment.save();
-}
+  }
 
-  async reply(parentCommentId: string, replyDto: CommentDto): Promise<Comment> {
-    const parentComment = await this.findById(parentCommentId);
-    const reply = new this.commentModel({
-      ...replyDto,
-      replyTo: parentCommentId,
+  async reply(parentCommentId: string, userId: string, replyDto: CommentDto, files?: Express.Multer.File[]): Promise<Comment> {
+    const parentComment = await this.commentModel.findById(parentCommentId);
+
+    if (!parentComment) {
+      throw new NotFoundException(`Bình luận có ID "${parentCommentId}" không tồn tại`);
+    }
+
+    const newReply = new this.commentModel({
+      content: replyDto.content,
+      author: userId,
       post: parentComment.post,
+      replyTo: parentCommentId,
+      likes: [],
     });
-    return reply.save();
+
+    if (files && files.length > 0) {
+      try {
+        const uploadedImages = await Promise.all(files.map(file => this.cloudinaryService.uploadFile(file)));
+        newReply.img = uploadedImages;
+      } catch (error) {
+        console.error('Error uploading images to Cloudinary:', error);
+        throw new HttpException('Failed to upload images', HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+
+    return await newReply.save();
   }
 }
 

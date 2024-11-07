@@ -8,7 +8,6 @@ import { CreatePostDto } from './dto/createpost.dto';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { settingPrivacyDto } from './dto/settingPrivacy.dto'; 
 import { UpdatePostDto } from './dto/updatePost.dto';
-import { Exception } from 'handlebars';
 
 @Injectable()
 export class PostService {
