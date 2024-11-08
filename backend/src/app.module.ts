@@ -9,6 +9,11 @@ import { CommentModule } from './comment/comment.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { OtpController } from './otp/otp.controller';
 import { OtpModule } from './otp/otp.module';
+import { MailModule } from './mail/mail.module';
+import { MailController } from './mail/mail.controller';
+import { MailService } from './mail/mail.service';
+import { OtpService } from './otp/otp.service';
+
 
 @Global()
 @Module({
@@ -23,8 +28,9 @@ import { OtpModule } from './otp/otp.module';
     CommentModule,
     CloudinaryModule,
     OtpModule,
+    MailModule,
   ],
-  controllers: [AppController, OtpController],
-  providers: [AppService],
+  controllers: [AppController, OtpController, MailController],
+  providers: [AppService, MailService, OtpService],
 })
 export class AppModule {}

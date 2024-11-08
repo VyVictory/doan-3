@@ -7,6 +7,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserSchema } from './schemas/user.schemas';
 import { FriendRequest, FriendRequestSchema } from './schemas/friend.schema';
+import { OtpModule } from '../otp/otp.module';
+import { OtpService } from 'src/otp/otp.service';
 
 @Global()
 @Module({
@@ -26,11 +28,12 @@ import { FriendRequest, FriendRequestSchema } from './schemas/friend.schema';
         };
       },
     }),
+    OtpModule,
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
     MongooseModule.forFeature([{ name: 'FriendRequest', schema:FriendRequestSchema}]),
   ],
   controllers: [UserController],
-  providers: [UserService],
+  providers: [UserService, OtpService],
   exports:[UserService,JwtModule,UserModule, MongooseModule]
 })
 export class UserModule {}

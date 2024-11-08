@@ -57,6 +57,13 @@ export class User extends Document {
 
   @Prop()
   refreshToken?: string;
+
+  @Prop()
+  otp: string
+
+  @Prop()
+  otpExpirationTime: Date
 }
+
 
 export const UserSchema = SchemaFactory.createForClass(User);
