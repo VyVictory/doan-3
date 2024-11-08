@@ -4,7 +4,7 @@ import { Outlet } from 'react-router-dom'
 import HeadProfile from '../components/HeadProfile'
 import MenuProfile from '../components/MenuProfile'
 
-import LeftMessenger from '../../messenger/LeftMessenger'
+import LeftMessenger from '../../messenger/components/LeftMessenger'
 
 export default function Personal() {
     return (

@@ -1,4 +1,3 @@
-
 const LeftMessenger = ({ bt_chanetransfer }) => {
     const messages = [
         { name: 'John Doe', message: 'Hey! How are yHeyyHey! How are you?Hey! How ayHey! How are you?Hey! How ayHey! How are you?Hey! How ayHey! How are you?Hey! How a! How are you?Hey! How are you?Hey! How are you?ou?', img: 'https://placehold.co/40' },

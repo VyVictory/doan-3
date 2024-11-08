@@ -7,7 +7,7 @@ import AVTUser from './AVTUser'
 
 export default function Post() {
     return (
-        <div className='flex items-start  p-6 bg-white border border-gray-300 text-black rounded-lg gap-3 max-w-[1000px]'>
+        <div className='flex items-start  p-6 border border-gray-300 rounded-lg shadow-sm shadow-zinc-300 gap-3 max-w-[1000px]'>
             <AVTUser />
             <div className='grid gap-2'>
                 <article className='text-wrap grid gap-1'>

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { PaperAirplaneIcon } from '@heroicons/react/16/solid';
 import { Textarea } from '@headlessui/react'
-import LeftMessenger from "./LeftMessenger";
+import LeftMessenger from "./components/LeftMessenger";
 import clsx from 'clsx'
 import GetApiIcons from '../../module/icons/GetApiIcons';
 const Messenger = () => {
