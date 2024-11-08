@@ -1,26 +1,25 @@
 
 // import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from '../pages/home.jsx';
-import Myfriend from "../pages/friend/myfriend.jsx";
-import Layout from "../pages/Layout.js"
-import Personal from "../user/personal/index.jsx";
-import AboutProfile from "../components/Profile/AboutProfile.jsx"
-import MyPosts from "../components/Profile/MyPosts.jsx";
-import FriendProfile from "../components/Profile/FriendProfile.jsx";
-import Messenger from "../pages/messenger/Messenger.jsx";
-import Searchpage from "../pages/search/index.jsx";
-import Navbar from "../components/navbar/navBar.jsx";
-import Allfriend from "../components/friend/Allfriend.jsx";
-import Friendinvitation from "../components/friend/friendinvitation.jsx";
+import Home from '../views/home/home.jsx';
+import Myfriend from "../views/friend/myfriend.jsx";
+import Layout from "../views/Layout.js"
+import Personal from "../views/profile/personal/index.jsx";
+import AboutProfile from "../views/profile/components/AboutProfile.jsx";
+import MyPosts from "../views/profile/components/MyPosts.jsx";
+import FriendProfile from "../views/friend/FriendProfile.jsx";
+import Messenger from "../views/messenger/Messenger.jsx";
+import Searchpage from "../views/search/index.jsx";
+// import Navbar from "../components/navbar/navBar.jsx";
+import Allfriend from "../views/friend/Allfriend.jsx";
+import Friendinvitation from "../views/friend/friendinvitation.jsx";
 import Login from "../auth/login/index.jsx";
 import Register from "../auth/register/index.jsx";
 
 function routers() {
     return (
-        <div className="bg-[#18191A] min-h-screen text-white">
+        <div className="bg-white min-h-screen text-black">
             <BrowserRouter>
-                <Navbar />
                 <Routes>
                     <Route path="/" element={<Layout />}>
                         <Route index element={<Home />} />
@@ -36,7 +35,6 @@ function routers() {
                         </Route>
                         {/* <Route path="*" element={<NoPage />} /> */}
                         <Route path="messenger" element={<Messenger />} />
-
                     </Route>
                     <Route path="login" element={<Login />}>
                         {/* <Route path="*" element={<NoPage />} /> */}

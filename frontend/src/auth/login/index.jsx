@@ -1,23 +1,91 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom'
+import { useState } from 'react';
 import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon } from '@heroicons/react/24/outline'
+import authToken from '../../components/authToken';
 export default function Login() {
+    const [formData, setFormData] = useState({
+        numberPhone: '01672258884',
+        password: 'Adsadsads',
+    });
+    const [errors, setErrors] = useState({});
+    const navigate = useNavigate();
+    //checkFormdatavalidate
+    const validateForm = () => {
+        const validationErrors = {};
+        if (!formData.numberPhone) validationErrors.numberPhone = 'Bắt buộc nhập số điện thoại';
+        if (!formData.password) validationErrors.password = 'Bắt buộc nhập mật khẩu';
+        return validationErrors;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const validationErrors = validateForm();
+        if (Object.keys(validationErrors).length === 0) {
+            try {
+                const response = await axios.post('http://localhost:3001/user/login', formData);
+                if (response.status === 201) {
+                    
+                    // Store the authentication token
+                    // localStorage.setItem('token', response.data.accessToken);
+                    authToken.setToken(response.data.accessToken);
+                    alert('Đăng nhập thành công! '+ authToken.getToken());
+                    navigate('/');
+                }
+            } catch (error) {
+                if (error.response && error.response.data && error.response.data.message) {
+                    alert('Đăng nhập thất bại, vui lòng thử lại!');
+                }
+                console.error('Lỗi:', error.response ? error.response.data : error.message);
+            }
+        } else {
+            setErrors(validationErrors);
+        }
+    };
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value
+        });
+    };
     return (
-        <div className='bg-gradient-to-r from-[#24C6DC] to-[#514A9D] h-screen'>
-            <form className='text-black pt-[32px] px-[48px] fixed rounded-2xl top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 bg-white h-[80%] w-[35%]'>
+        <div className='bg-gradient-to-r from-[#24C6DC] to-[#514A9D] h-screen grid place-items-center'>
+            <form
+                onSubmit={handleSubmit}
+                method='POST'
+                className='text-black  rounded-2xl bg-white px-12 py-8 min-w-[500px]'
+            >
                 <h1 className='font-bold text-3xl text-center pt-[48px]'>Đăng nhập</h1>
-                <div className="mb-4 pt-[24px]">
-                    <label for="email" className="block text-gray-700 text-sm font-bold mb-2">Tài khoản</label>
-                    <input type="text" id="email" className="bg-white shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Nhập email/sđt" />
+
+                <div className='mb-4 pt-[24px]'>
+                    <label for="numberPhone" className="block text-gray-700 text-sm font-bold mb-2">Tài khoản</label>
+                    <input
+                        type="text"
+                        name="numberPhone"
+                        value={formData.numberPhone}
+                        onChange={handleChange}
+                        className="bg-white shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline "
+                        placeholder="Nhập số điện thoại" />
+                    {errors.numberPhone && <p style={{ color: 'red' }} className="error">{errors.numberPhone}</p>}
                 </div>
-                <div className="mb-6">
+                <div className='mb-4'>
                     <label for="password" className="block text-gray-700 text-sm font-bold mb-2">
                         Mật khẩu
-                        <a href="#" className="float-right font-normal text-gray-500 hover:text-gray-700">Quên mật khẩu?</a>
+                        <Link to="#" className="float-right font-normal text-gray-500 hover:text-gray-700">Quên mật khẩu?</Link>
                     </label>
-                    <input type="password" id="password" className=" bg-white shadow appearance-none border border-red rounded w-full py-4 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" placeholder="Nhập mật khẩu" />
+                    <input
+                        type="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        className=" bg-white shadow appearance-none border border-red rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        placeholder="Nhập mật khẩu"
+                    />
+                    {errors.password && <p style={{ color: 'red' }} className="error">{errors.password}</p>}
                 </div>
-                <button className="btn btn-primary w-full mb-8">Đăng nhập</button>
+                <button type="submit" className="btn btn-primary w-full mb-8">Đăng nhập</button>
                 <div className='flex justify-center items-center mb-2'>
                     <ChevronDoubleLeftIcon className='size-5' />
                     <div>hoặc đăng nhập bằng</div>

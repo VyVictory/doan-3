@@ -16,7 +16,7 @@ export class CommentController {
 
   @UseGuards(AuthGuardD)
   @Post(':postId')
-  @UseInterceptors(FileFieldsInterceptor([{ name: 'files', maxCount: 10 }]))
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'files', maxCount: 2 }]))
   async createCmt(
     @Param('postId') postId: string,
     @CurrentUser() currentUser: User,
@@ -69,10 +69,21 @@ export class CommentController {
     return await this.commentService.update(id, currentUser._id.toString(), updateCommentDto, files.files);
   }
 
-  // @Post(':id/reply')
-  // async reply(@Param('id') id: string, @Body() replyDto: CommentDto, @CurrentUser() user: User) {
-  //   return await this.commentService.reply(id, { ...replyDto, author: user._id as string });
-  // }
+  @Post(':id/reply')
+  @UseGuards(AuthGuardD)
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'files', maxCount: 2 }]))
+  async reply(
+    @Param('id') id: string,
+    @CurrentUser() currentUser: User,
+    @Body() replyDto: CommentDto,
+    @UploadedFiles() files: { files: Express.Multer.File[] }
+  ) {
+    if (!currentUser) {
+      throw new HttpException('User not found or not authenticated', HttpStatus.UNAUTHORIZED);
+    }
+
+    return await this.commentService.reply(id, currentUser._id.toString(), replyDto, files.files);
+  }
 }
 
 
