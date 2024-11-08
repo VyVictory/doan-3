@@ -5,6 +5,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  MinLength,
   ValidateIf,
 } from 'class-validator';
 
@@ -41,5 +42,6 @@ export class RegisterDto {
 
   @IsString()
   @IsNotEmpty()
+  @MinLength(8)
   readonly password: string;
 }

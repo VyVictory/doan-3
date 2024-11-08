@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   HttpException,
   HttpStatus,
@@ -15,6 +16,8 @@ import * as bcrypt from 'bcryptjs';
 import { LoginDto } from './dto/login.dto';
 import { FriendRequest } from './schemas/friend.schema';
 import { ChangePasswordDto } from './dto/changePassword.dto';
+import { OtpService } from '../otp/otp.service';
+import { ResetPasswordDto } from './dto/resetPassword.dto';
 
 @Injectable()
 export class UserService {
@@ -23,6 +26,7 @@ export class UserService {
     @InjectModel(FriendRequest.name) private FriendRequestModel: Model<FriendRequest>,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private otpService: OtpService,
   ) { }
 
   async register(registerDto: RegisterDto): Promise<User> {
@@ -114,22 +118,13 @@ export class UserService {
   } else if (email) {
     user = await this.UserModel.findOne({ email }).exec();
   }
-  
-  // const user = await this.UserModel.findOne({
-  //   $or: [
-  //     numberPhone ? { numberPhone } : {},
-  //     email ? { email } : {},
-  //   ],
-  // }).exec();
-  //   console.log(numberPhone)
 
-    // Nếu người dùng không tồn tại
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
     // Kiểm tra mật khẩu
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    console.log(user);
+
     if (!isPasswordValid) {
       throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
     }
@@ -138,9 +133,9 @@ export class UserService {
   }
 
 
-  async findById(userId: string): Promise<Omit<User, 'password' | 'isActive' | 'role' | 'createdAt' | 'updatedAt'>> {
+  async findById(userId: string): Promise<Omit<User, 'password' | 'isActive' | 'createdAt' | 'updatedAt'>> {
     const user = await this.UserModel.findById(userId)
-      .select('-password -isActive -role -createdAt -updatedAt') // Không trả về các trường này
+      .select('-password -isActive  -createdAt -updatedAt') // Không trả về các trường này
       .exec();
 
     if (!user) {
@@ -228,41 +223,69 @@ export class UserService {
 
   async changePassword(userId: string, changePasswordDto: ChangePasswordDto): Promise<{ message: string }> {
     const { currentPassword, newPassword } = changePasswordDto;
-
     try {
-      // Find user by ID
+
       const user = await this.UserModel.findById(userId);
       if (!user) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
 
-      // Check current password
       const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
       if (!isPasswordValid) {
         throw new HttpException('Current password is incorrect', HttpStatus.UNAUTHORIZED);
       }
 
-      // Check if new password is the same as the current password
       const isNewPasswordSameAsCurrent = await bcrypt.compare(newPassword, user.password);
       if (isNewPasswordSameAsCurrent) {
         throw new HttpException('New password cannot be the same as the current password', HttpStatus.BAD_REQUEST);
       }
 
-      // Hash the new password
       user.password = await bcrypt.hash(newPassword, 10);
 
-      // Save changes to the database
       await user.save();
-
       return { message: 'Password updated successfully' };
     } catch (error) {
-      // Handle error and return a message without logging it
+
       if (error instanceof HttpException) {
-        throw error; // If error is an HttpException, rethrow it
+        throw error;
       }
 
-      // For any unexpected errors, return a generic message
       throw new HttpException('Password update failed', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+
+  async findAlluser() {
+    try {
+      const user =  await this.UserModel.find().exec()
+      return user
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      throw new HttpException('Could not retrieve users', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+  }
+
+  async resetPassword(email: string, otp: string, resetPasswordDto: ResetPasswordDto): Promise<string> {
+    // Xác thực OTP
+    const isOtpValid = await this.otpService.verifyOtp(email, otp);
+    if (!isOtpValid) {
+      throw new BadRequestException('Invalid or expired OTP');
+    }
+  
+    // Cập nhật mật khẩu (băm mật khẩu mới)
+    const user = await this.UserModel.findOne({ email });
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+  
+    const hashedPassword = await bcrypt.hash(resetPasswordDto.newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+  
+    return 'Password reset successfully';
+  }
+
+
 }
+
