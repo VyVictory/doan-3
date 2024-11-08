@@ -33,15 +33,15 @@ export default function SearchBar({ query }) {
                 type="text"
                 value={searchTerm}
                 onChange={handleInputChange}
-                className="rounded-xl pr-10 pl-10 py-2 text-white input input-bordered w-24 md:w-auto bg-[#4A4A4A]"
+                className="rounded-xl border border-gray-300 pr-10 pl-10 py-2 text-black input input-bordered w-24 md:w-auto bg-white focus:outline-none"
                 placeholder="Tìm kiếm..."
             />
             {searchTerm && (
                 <button onClick={handleClearSearch} className='absolute right-4 top-[40%] transform -translate-y-1/2 text-gray-400 h-4 w-4'>
-                    <XMarkIcon className="size-6 fill-white" />
+                    <XMarkIcon className="size-6 fill-black" />
                 </button>
             )}
-            <button className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" type="submit"><MagnifyingGlassIcon className='size-5 fill-white' /></button>
+            <button className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" type="submit"><MagnifyingGlassIcon className='size-5 fill-black' /></button>
             {/* onChange={(e) => debounceSearch(e.target.value)}
              defaultValue={searchParams.get("query")?.toString()} */}
         </form >
