@@ -1,33 +1,21 @@
-import UserNavbar from "./UserNavbar";
-import {React, useState, useEffect } from 'react';
-import SearchBar from './SearchBar'
-import DropdownProfile from './DropdownProfile'
-import { Link } from 'react-router-dom'
+import { React, useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { HomeIcon, UserGroupIcon, ChatBubbleLeftIcon, SpeakerWaveIcon } from '@heroicons/react/24/outline';
+import { Tabs, Tab } from '@mui/material';
+import SearchBar from './SearchBar';
+import DropdownProfile from './DropdownProfile';
 import authToken from "../../components/authToken";
+
 export default function Navbar() {
-
-    // const [transferUserNavbar, setTransferUserNavbar] = useState(true)
-    // const blocklist = ['login', 'admin', 'register'];
-    // const location = useLocation();
-
-    // Extracting the path name
-    // const path = location.pathname; // This will give you '/auth'
-
-    // // Getting the last part of the path
-    // const lastSegment = path.substring(path.lastIndexOf('/') + 1); // 'auth'
-    // useEffect(() => {
-    //     for (let i = 0; i < blocklist.length; i++) {
-    //         if (blocklist[i] == lastSegment) {
-    //             setTransferUserNavbar(false)
-    //         }
-    //     }
-    // }, [lastSegment, blocklist]); // Re-run when the URL changes
+    const location = useLocation();
+    const isActiveTab = (path) => location.pathname === path;
+    // nó là urrl là cái j thì == thì nó code css
     return (
         <>
-            <div className="navbar fixed bg-white border border-gray-500 text-black   z-10 ">
+            <div className="navbar fixed bg-white border border-b-gray-300 shadow-[0_1px_5px_rgba(0,0,0,0.2)] text-black p-0 z-10">
                 <div className="flex-1">
                     <div className="dropdown">
-                        <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
+                        <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden z-10">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 className="h-5 w-5"
@@ -45,25 +33,47 @@ export default function Navbar() {
                             tabIndex={0}
                             className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
                             <li><a>Bạn bè</a></li>
-                            <li>
-                                <a>Nhắn tin</a>
-                            </li>
+                            <li><a>Nhắn tin</a></li>
                             <li><a>dddd</a></li>
                         </ul>
                     </div>
-                    <Link to={"/"} className="btn btn-ghost ">
-                        <img src="https://i.pinimg.com/564x/e3/e5/dc/e3e5dc4143d77b3dcea61776d372928c.jpg"
-                            className='h-12 w-14 rounded-full' />
-                    </Link>
-                    <div className="hidden lg:flex">
-                        <ul className="menu menu-horizontal px-2 gap-4">
-                            <li><Link to={"/"}>Trang chủ</Link></li>
-                            <li><Link to={"friends/list"}>Bạn bè</Link></li>
-                            <li><Link to={"messenger"}>Nhắn tin</Link></li>
-                            <li><a>Đã lưu</a></li>
-                        </ul>
+                    <button className="pl-5 pr-2 z-10">
+                        <Link to={"/"}>
+                            <img src="https://i.pinimg.com/564x/e3/e5/dc/e3e5dc4143d77b3dcea61776d372928c.jpg"
+                                className="h-12 aspect-square rounded-full shadow-md flex items-center justify-center" />
+                        </Link>
+                    </button>
+
+                    <div className="w-full flex justify-center absolute h-full items-center">
+                        <Tabs value={false} aria-label="Navigation Tabs">
+                            <Tab
+                                component={Link}
+                                to="/"
+                                icon={<HomeIcon className={`h-6 w-6 ${isActiveTab('/') ? 'text-blue-500' : 'text-gray-500'}`} />}
+                                aria-label="Home"
+                            />
+                            <Tab
+                                component={Link}
+                                to="/friends/list"
+                                icon={<UserGroupIcon className={`h-6 w-6 ${isActiveTab('/friends/list') ? 'text-blue-500' : 'text-gray-500'}`} />}
+                                aria-label="Friends"
+                            />
+                            <Tab
+                                component={Link}
+                                to="/messenger"
+                                icon={<ChatBubbleLeftIcon className={`h-6 w-6 ${isActiveTab('/messenger') ? 'text-blue-500' : 'text-gray-500'}`} />}
+                                aria-label="Messenger"
+                            />
+                            <Tab
+                                component={Link}
+                                to="/save_cái_đầu_m_á_dũ_là_cái_j_-.-"
+                                icon={<SpeakerWaveIcon className={`h-6 w-6 ${isActiveTab('/save_cái_đầu_m_á_dũ_là_cái_j_-.-') ? 'text-blue-500' : 'text-gray-500'}`} />}
+                                aria-label="save"
+                            />
+                        </Tabs>
                     </div>
                 </div>
+
                 <div className="flex-none gap-2">
                     <div className="form-control">
                         <SearchBar />
@@ -86,30 +96,13 @@ export default function Navbar() {
                         </div>
                     </button>
 
-                    {/* <ul
-                            tabIndex={0}
-                            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 py-2 shadow">
-                            <li>
-                                <Link to={"user"} className=" py-3">
-                                    <UserCircleIcon className='size-5' />
-                                    Trang cá nhân
-                                </Link>
-                            </li>
-                            <li><a className="justify-between py-3">Settings</a></li>
-                            <li><Link to={'/logout'} className=" py-3">
-                                <ArrowRightStartOnRectangleIcon className='size-5' />
-                                Đăng xuất
-                            </Link></li>
-                        </ul> */}
-                    {
-                        authToken.getToken() !== null ? (
-                            <DropdownProfile />
-                        ) : (
-                            <div className="m-1">
-                                <Link to={"/login"} className='bg-[#007bff] px-3 py-3 rounded-lg'>Đăng nhập</Link>
-                            </div>
-                        )
-                    }
+                    {authToken.getToken() !== null ? (
+                        <DropdownProfile />
+                    ) : (
+                        <div className="m-1">
+                            <Link to={"/login"} className='bg-[#007bff] px-3 py-3 rounded-lg'>Đăng nhập</Link>
+                        </div>
+                    )}
                 </div>
             </div>
             <div className="h-[68px]"></div>
