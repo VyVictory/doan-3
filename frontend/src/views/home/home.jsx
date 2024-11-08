@@ -1,5 +1,5 @@
-import Post from "../components/post/Post";
-import PostStatus from "../components/Status/PostStatus";
+import Post from "../post/Post";
+import PostStatus from "../post/components/PostStatus";
 function Home() {
     return (
         <div className="grid gap-5 mt-3 rounded-md max-w-[900px] w-full pb-4">

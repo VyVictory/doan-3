@@ -1,6 +1,6 @@
 import React from 'react'
-import Post from '../post/Post'
-import PostStatus from '../Status/PostStatus'
+import Post from '../../post/Post'
+import PostStatus from '../../post/components/PostStatus'
 
 export default function MyPosts() {
     return (

@@ -1,4 +1,4 @@
-import authToken from "../../Module/authToken";
+import authToken from "../../components/authToken";
 const LogOut = ({ btnOffLogout }) => {
     function logout() {
         authToken.deleteToken(); 

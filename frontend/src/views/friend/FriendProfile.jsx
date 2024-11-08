@@ -1,5 +1,5 @@
 import React from "react"
-import DropdownFriendProfile from "./DropdownFriendProfile"
+import DropdownFriendProfile from "../profile/components/DropdownFriendProfile"
 
 export default function FriendProfile() {
   return (

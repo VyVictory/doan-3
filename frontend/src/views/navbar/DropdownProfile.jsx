@@ -2,7 +2,7 @@ import { React, useState } from 'react'
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Link } from 'react-router-dom'
 import { UserCircleIcon } from '@heroicons/react/24/outline'
-import authToken from '../../Module/authToken'
+import authToken from '../../components/authToken'
 import LogOut from '../Status/Logout'
 
 export default function DropdownProfile() {

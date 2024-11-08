@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Outlet } from 'react-router-dom'
-import MenuFriends from '../../components/friend/MenuFriends'
+import MenuFriends from './MenuFriends'
 
 export default function Myfriend() {
     return (

@@ -1,30 +1,13 @@
-import UserNavbar from "./UserNavbar";
-import {React, useState, useEffect } from 'react';
 import SearchBar from './SearchBar'
-import DropdownProfile from './DropdownProfile'
 import { Link } from 'react-router-dom'
-import authToken from "../../Module/authToken";
-export default function Navbar() {
 
-    // const [transferUserNavbar, setTransferUserNavbar] = useState(true)
-    // const blocklist = ['login', 'admin', 'register'];
-    // const location = useLocation();
+import DropdownProfile from './DropdownProfile'
+import authToken from '../../components/authToken'
 
-    // Extracting the path name
-    // const path = location.pathname; // This will give you '/auth'
-
-    // // Getting the last part of the path
-    // const lastSegment = path.substring(path.lastIndexOf('/') + 1); // 'auth'
-    // useEffect(() => {
-    //     for (let i = 0; i < blocklist.length; i++) {
-    //         if (blocklist[i] == lastSegment) {
-    //             setTransferUserNavbar(false)
-    //         }
-    //     }
-    // }, [lastSegment, blocklist]); // Re-run when the URL changes
+export default function UserNavbar() {
     return (
-        <>
-            <div className="navbar fixed bg-white border border-gray-500 text-black   z-10 ">
+        <div>
+            <div className="navbar bg-[#242526] fixed z-10 ">
                 <div className="flex-1">
                     <div className="dropdown">
                         <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -55,7 +38,7 @@ export default function Navbar() {
                         <img src="https://i.pinimg.com/564x/e3/e5/dc/e3e5dc4143d77b3dcea61776d372928c.jpg"
                             className='h-12 w-14 rounded-full' />
                     </Link>
-                    <div className="hidden lg:flex">
+                    <div className=" hidden lg:flex">
                         <ul className="menu menu-horizontal px-2 gap-4">
                             <li><Link to={"/"}>Trang chủ</Link></li>
                             <li><Link to={"friends/list"}>Bạn bè</Link></li>
@@ -112,7 +95,6 @@ export default function Navbar() {
                     }
                 </div>
             </div>
-            <div className="h-[68px]"></div>
-        </>
-    );
+        </div>
+    )
 }

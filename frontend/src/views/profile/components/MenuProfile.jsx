@@ -27,7 +27,7 @@ export default function MenuProfile() {
                         <Tab
                             key={name}
                         >
-                            <Link to={href} className={`rounded-full py-2 px-4 text-sm/6 font-semibold text-white focus:outline-none ${currentTab?.href === href ? 'bg-white/10' : ''}`}>{name}</Link>
+                            <Link to={href} className={`rounded-full py-2 px-4 text-sm/6 font-semibold focus:outline-none ${currentTab?.href === href ? 'bg-white/10' : ''}`}>{name}</Link>
                         </Tab>
                     ))}
                 </TabList>

@@ -4,7 +4,7 @@ import { PaperAirplaneIcon } from '@heroicons/react/16/solid';
 import { Textarea } from '@headlessui/react'
 import LeftMessenger from "./LeftMessenger";
 import clsx from 'clsx'
-import GetApiIcons from '../../components/icons/GetApiIcons';
+import GetApiIcons from '../../module/icons/GetApiIcons';
 const Messenger = () => {
     const [windowSize, setWindowSize] = useState({
         width: window.innerWidth,

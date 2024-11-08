@@ -3,10 +3,10 @@ import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react';
 import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon } from '@heroicons/react/24/outline'
-import authToken from '../../Module/authToken';
+import authToken from '../../components/authToken';
 export default function Login() {
     const [formData, setFormData] = useState({
-        numberPhone: '',
+        numberPhone: '01672258884',
         password: 'Adsadsads',
     });
     const [errors, setErrors] = useState({});
