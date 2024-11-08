@@ -9,7 +9,29 @@ import authToken from "../../components/authToken";
 export default function Navbar() {
     const location = useLocation();
     const isActiveTab = (path) => location.pathname === path;
-    // nó là urrl là cái j thì == thì nó code css
+
+    const [windowSize, setWindowSize] = useState({
+        width: window.innerWidth,
+        height: window.innerHeight,
+    });
+    const [chanecontainer, setChanecontainer] = useState(windowSize.width < 767)
+    useEffect(() => {
+        // Hàm cập nhật kích thước màn hình
+        const handleResize = () => {
+            setWindowSize({
+                width: window.innerWidth,
+                height: window.innerHeight,
+            });
+            setChanecontainer(window.innerWidth > 767);
+        };
+
+        // Thêm event listener khi cửa sổ thay đổi kích thước
+        window.addEventListener("resize", handleResize);
+        // Cleanup event listener khi component bị unmount
+        // return () => {
+        //     window.removeEventListener("resize", handleResize);
+        // };
+    }, []);
     return (
         <>
             <div className="navbar fixed bg-white border border-b-gray-300 shadow-[0_1px_5px_rgba(0,0,0,0.2)] text-black p-0 z-10">
@@ -31,21 +53,43 @@ export default function Navbar() {
                         </div>
                         <ul
                             tabIndex={0}
-                            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-                            <li><a>Bạn bè</a></li>
-                            <li><a>Nhắn tin</a></li>
-                            <li><a>dddd</a></li>
+                            className="menu menu-sm dropdown-content bg-gray-100 border-gray-300 border rounded-box z-10 mt-3 w-52 p-2 shadow"
+                        >
+                            <Tab
+                                component={Link}
+                                to="/"
+                                icon={<HomeIcon className={`h-6 w-full ${isActiveTab('/') ? 'text-blue-500' : 'text-gray-500'}`} />}
+                                aria-label="Home"
+                            />
+                            <Tab
+                                component={Link}
+                                to="/friends/list"
+                                icon={<UserGroupIcon className={`h-6 w-full ${(isActiveTab('/friends/list') || isActiveTab('/friends/requests')) ? 'text-blue-500' : 'text-gray-500'}`} />}
+                                aria-label="Friends"
+                            />
+                            <Tab
+                                component={Link}
+                                to="/messenger"
+                                icon={<ChatBubbleLeftIcon className={`h-6 w-full ${isActiveTab('/messenger') ? 'text-blue-500' : 'text-gray-500'}`} />}
+                                aria-label="Messenger"
+                            />
+                            <Tab
+                                component={Link}
+                                to="/save_cái_đầu_m_á_dũ_là_cái_j_-.-"
+                                icon={<SpeakerWaveIcon className={`h-6 w-full ${isActiveTab('/save_cái_đầu_m_á_dũ_là_cái_j_-.-') ? 'text-blue-500' : 'text-gray-500'}`} />}
+                                aria-label="save"
+                            />
                         </ul>
                     </div>
-                    <button className="pl-5 pr-2 z-10">
+                    <button className={`pl-5 pr-2 z-10 ${windowSize.width < 400 ? 'hidden' : ''}`}>
                         <Link to={"/"}>
                             <img src="https://i.pinimg.com/564x/e3/e5/dc/e3e5dc4143d77b3dcea61776d372928c.jpg"
                                 className="h-12 aspect-square rounded-full shadow-md flex items-center justify-center" />
                         </Link>
                     </button>
 
-                    <div className="w-full flex justify-center absolute h-full items-center">
-                        <Tabs value={false} aria-label="Navigation Tabs">
+                    <div className={`w-full flex justify-center absolute h-full items-center ${windowSize.width < 767 ? 'hidden' : ''}`}>
+                        <Tabs value={false} aria-label="Navigation Tabs" >
                             <Tab
                                 component={Link}
                                 to="/"
@@ -55,7 +99,7 @@ export default function Navbar() {
                             <Tab
                                 component={Link}
                                 to="/friends/list"
-                                icon={<UserGroupIcon className={`h-6 w-6 ${(isActiveTab('/friends/list')||isActiveTab('/friends/requests')) ? 'text-blue-500' : 'text-gray-500'}`} />}
+                                icon={<UserGroupIcon className={`h-6 w-6 ${(isActiveTab('/friends/list') || isActiveTab('/friends/requests')) ? 'text-blue-500' : 'text-gray-500'}`} />}
                                 aria-label="Friends"
                             />
                             <Tab

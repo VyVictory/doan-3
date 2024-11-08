@@ -7,14 +7,14 @@ import AVTUser from './AVTUser'
 
 export default function Post() {
     return (
-        <div className='flex items-start  p-6 border border-gray-300 rounded-lg shadow-sm shadow-zinc-300 gap-3 max-w-[1000px]'>
+        <div className='flex items-start  p-6 border border-gray-300 rounded-lg shadow-sm shadow-zinc-300 gap-3 max-w-[900px]'>
             <AVTUser />
             <div className='grid gap-2'>
                 <article className='text-wrap grid gap-1'>
                     <a className='font-bold text-lg hover:link' href="#">Tên người đăng</a>
                     <p> cách dùng  nên tôi tranh thủ làm tí highlight đỉnh cao cho anh em giải trí buổi chiều ạ 😇 cách dùng  nên tôi tranh thủ làm tí highlight đỉnh cao cho anh em giải trí buổi chiều ạ 😇 cách dùng  nên tôi tranh thủ làm tí highlight đỉnh cao cho anh em giải trí buổi chiều ạ 😇 cách dùng  nên tôi tranh thủ làm tí highlight đỉnh cao cho anh em giải trí buổi chiều ạ 😇 cách dùng  nên tôi tranh thủ làm tí highlight đỉnh cao cho anh em giải trí buổi chiều ạ 😇.</p>
                 </article>
-                <img className='rounded-xl w-full h-[400px]'
+                <img className='rounded-xl w-full max-h-[400px]'
                     src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnzOw4JGD9VHLQ46a6nQS4uhdw9QFlA7s0Mg&s" />
                 <div className='flex justify-around'>
                     <Button className={"flex items-end gap-1"}>
