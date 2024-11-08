@@ -55,7 +55,7 @@ export default function Navbar() {
                             <Tab
                                 component={Link}
                                 to="/friends/list"
-                                icon={<UserGroupIcon className={`h-6 w-6 ${isActiveTab('/friends/list') ? 'text-blue-500' : 'text-gray-500'}`} />}
+                                icon={<UserGroupIcon className={`h-6 w-6 ${(isActiveTab('/friends/list')||isActiveTab('/friends/requests')) ? 'text-blue-500' : 'text-gray-500'}`} />}
                                 aria-label="Friends"
                             />
                             <Tab
@@ -99,7 +99,7 @@ export default function Navbar() {
                     {authToken.getToken() !== null ? (
                         <DropdownProfile />
                     ) : (
-                        <div className="m-1">
+                        <div className="m-1 z-10">
                             <Link to={"/login"} className='bg-[#007bff] px-3 py-3 rounded-lg'>Đăng nhập</Link>
                         </div>
                     )}
