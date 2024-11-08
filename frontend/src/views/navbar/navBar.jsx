@@ -149,7 +149,7 @@ export default function Navbar() {
                     )}
                 </div>
             </div>
-            <div className="h-[68px]"></div>
+            <div className="h-[64px]"></div>
         </>
     );
 }
