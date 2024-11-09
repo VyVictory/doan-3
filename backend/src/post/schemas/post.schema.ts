@@ -13,10 +13,10 @@ export class Post extends Document {
   author: Types.ObjectId;
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] })
-  likes: Types.ObjectId[];
+  likes: string[];
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] }) 
-  dislikes: Types.ObjectId[];
+  dislikes: string[];
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Comment' }] }) 
   comments: Types.ObjectId[];

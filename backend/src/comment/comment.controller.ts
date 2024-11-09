@@ -68,6 +68,15 @@ export class CommentController {
 
     return await this.commentService.update(id, currentUser._id.toString(), updateCommentDto, files.files);
   }
+  @Put(':id/like')
+  @UseGuards(AuthGuardD)
+  async likeComment(@Param('id') id: string, @CurrentUser() currentUser: User) {
+    if (!currentUser) {
+      throw new HttpException('User not found or not authenticated', HttpStatus.UNAUTHORIZED);
+    }
+
+    return await this.commentService.likeComment(id, currentUser._id.toString());
+  }
 
   @Post(':id/reply')
   @UseGuards(AuthGuardD)

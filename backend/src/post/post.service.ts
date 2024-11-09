@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Post } from './schemas/post.schema';
@@ -80,6 +80,36 @@ export class PostService {
         await this.PostModel.findByIdAndDelete(postId);
 
         return { message: 'Post deleted successfully' };
+    }
+    async likePost(postId: string, userId: string): Promise<Post> {
+        const post = await this.PostModel.findById(postId);
+    
+        if (!post) {
+            throw new NotFoundException(`Bài viết có ID "${postId}" không tồn tại`);
+        }
+    
+        if (post.likes.includes(userId)) {
+            throw new HttpException('Bạn đã thích bài viết này', HttpStatus.BAD_REQUEST);
+        }
+    
+        post.likes.push(userId);
+
+        return await post.save();
+    }
+    async dislikePost(postId: string, userId: string): Promise<Post> {
+        const post = await this.PostModel.findById(postId);
+
+        if (!post) {
+            throw new NotFoundException(`Bài viết có ID "${postId}" không tồn tại`);
+        }
+
+        if (post.dislikes.includes(userId)) {
+            throw new HttpException('Bạn đã không thích bài viết này', HttpStatus.BAD_REQUEST);
+        }
+
+        post.dislikes.push(userId);
+
+        return await post.save();
     }
 
     async settingPrivacy(postId: string, settingPrivacyDto: settingPrivacyDto, userId: string): Promise<Post> {

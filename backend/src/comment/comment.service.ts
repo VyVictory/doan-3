@@ -132,5 +132,19 @@ export class CommentService {
 
     return await newReply.save();
   }
+  async likeComment(commentId: string, userId: string): Promise<Comment> {
+    const comment = await this.commentModel.findById(commentId);
+
+    if (!comment) {
+        throw new NotFoundException(`Bình luận có ID "${commentId}" không tồn tại`);
+    }
+
+    if (comment.likes.includes(userId)) {
+        throw new HttpException('Bạn đã thích bình luận này', HttpStatus.BAD_REQUEST);
+    }
+    comment.likes.push(userId);
+    return await comment.save();
+}
+
 }
 

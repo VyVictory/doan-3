@@ -7,24 +7,24 @@ import { validate } from 'class-validator';
 })
 export class Comment extends Document {
   @Prop({ required: true })
-  content: string; 
+  content: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true }) 
-  author: Types.ObjectId; 
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  author: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'Post', required: true }) 
-  post: Types.ObjectId; 
+  @Prop({ type: Types.ObjectId, ref: 'Post', required: true })
+  post: Types.ObjectId;
 
-  @Prop({ default: true }) 
+  @Prop({ default: true })
   isActive: boolean;
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'Comment' }] }) 
-  replyTo : Types.ObjectId; 
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Comment' }] })
+  replyTo: Types.ObjectId;
 
-  @Prop() 
+  @Prop({ type: [Types.ObjectId], ref: 'User', default: [] })
   likes: string[];
 
-  @Prop({ type: [String], default: [] }) 
+  @Prop({ type: [String], default: [] })
   img: string[];
 
 }
