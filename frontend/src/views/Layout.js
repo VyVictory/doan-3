@@ -5,6 +5,7 @@ export default function Layout() {
     return (
         <>
             <Navbar />
+            <div className="h-[64px]"></div>
             {/* <LeftListMenu /> */}
 
             <div className="grid justify-items-center text-black">

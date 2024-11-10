@@ -51,35 +51,41 @@ export default function Navbar() {
                                     d="M4 6h16M4 12h8m-8 6h16" />
                             </svg>
                         </div>
-                        <ul
-                            tabIndex={0}
-                            className="menu menu-sm dropdown-content bg-gray-100 border-gray-300 border rounded-box z-10 mt-3 w-52 p-2 shadow"
-                        >
-                            <Tab
-                                component={Link}
-                                to="/"
-                                icon={<HomeIcon className={`h-6 w-full ${isActiveTab('/') ? 'text-blue-500' : 'text-gray-500'}`} />}
-                                aria-label="Home"
-                            />
-                            <Tab
-                                component={Link}
-                                to="/friends/list"
-                                icon={<UserGroupIcon className={`h-6 w-full ${(isActiveTab('/friends/list') || isActiveTab('/friends/requests')) ? 'text-blue-500' : 'text-gray-500'}`} />}
-                                aria-label="Friends"
-                            />
-                            <Tab
-                                component={Link}
-                                to="/messenger"
-                                icon={<ChatBubbleLeftIcon className={`h-6 w-full ${isActiveTab('/messenger') ? 'text-blue-500' : 'text-gray-500'}`} />}
-                                aria-label="Messenger"
-                            />
-                            <Tab
-                                component={Link}
-                                to="/save_cái_đầu_m_á_dũ_là_cái_j_-.-"
-                                icon={<SpeakerWaveIcon className={`h-6 w-full ${isActiveTab('/save_cái_đầu_m_á_dũ_là_cái_j_-.-') ? 'text-blue-500' : 'text-gray-500'}`} />}
-                                aria-label="save"
-                            />
-                        </ul>
+                        {authToken.getToken() === null ? (
+                            <div></div>
+                        ) : (
+                            <ul
+                                tabIndex={0}
+                                className="menu menu-sm dropdown-content bg-gray-100 border-gray-300 border rounded-box z-10 mt-3 w-52 p-2 shadow"
+                            >
+
+                                <Tab
+                                    component={Link}
+                                    to="/"
+                                    icon={<HomeIcon className={`h-6 w-full ${isActiveTab('/') ? 'text-blue-500' : 'text-gray-500'}`} />}
+                                    aria-label="Home"
+                                />
+                                <Tab
+                                    component={Link}
+                                    to="/friends/list"
+                                    icon={<UserGroupIcon className={`h-6 w-full ${(isActiveTab('/friends/list') || isActiveTab('/friends/requests')) ? 'text-blue-500' : 'text-gray-500'}`} />}
+                                    aria-label="Friends"
+                                />
+                                <Tab
+                                    component={Link}
+                                    to="/messenger"
+                                    icon={<ChatBubbleLeftIcon className={`h-6 w-full ${isActiveTab('/messenger') ? 'text-blue-500' : 'text-gray-500'}`} />}
+                                    aria-label="Messenger"
+                                />
+                                <Tab
+                                    component={Link}
+                                    to="/save_cái_đầu_m_á_dũ_là_cái_j_-.-"
+                                    icon={<SpeakerWaveIcon className={`h-6 w-full ${isActiveTab('/save_cái_đầu_m_á_dũ_là_cái_j_-.-') ? 'text-blue-500' : 'text-gray-500'}`} />}
+                                    aria-label="save"
+                                />
+
+                            </ul>
+                        )}
                     </div>
                     <button className={`pl-5 pr-2 z-10 ${windowSize.width < 400 ? 'hidden' : ''}`}>
                         <Link to={"/"}>
@@ -87,35 +93,38 @@ export default function Navbar() {
                                 className="h-12 aspect-square rounded-full shadow-md flex items-center justify-center" />
                         </Link>
                     </button>
-
-                    <div className={`w-full flex justify-center absolute h-full items-center ${windowSize.width < 767 ? 'hidden' : ''}`}>
-                        <Tabs value={false} aria-label="Navigation Tabs" >
-                            <Tab
-                                component={Link}
-                                to="/"
-                                icon={<HomeIcon className={`h-6 w-6 ${isActiveTab('/') ? 'text-blue-500' : 'text-gray-500'}`} />}
-                                aria-label="Home"
-                            />
-                            <Tab
-                                component={Link}
-                                to="/friends/list"
-                                icon={<UserGroupIcon className={`h-6 w-6 ${(isActiveTab('/friends/list') || isActiveTab('/friends/requests')) ? 'text-blue-500' : 'text-gray-500'}`} />}
-                                aria-label="Friends"
-                            />
-                            <Tab
-                                component={Link}
-                                to="/messenger"
-                                icon={<ChatBubbleLeftIcon className={`h-6 w-6 ${isActiveTab('/messenger') ? 'text-blue-500' : 'text-gray-500'}`} />}
-                                aria-label="Messenger"
-                            />
-                            <Tab
-                                component={Link}
-                                to="/save_cái_đầu_m_á_dũ_là_cái_j_-.-"
-                                icon={<SpeakerWaveIcon className={`h-6 w-6 ${isActiveTab('/save_cái_đầu_m_á_dũ_là_cái_j_-.-') ? 'text-blue-500' : 'text-gray-500'}`} />}
-                                aria-label="save"
-                            />
-                        </Tabs>
-                    </div>
+                    {authToken.getToken() === null ? (
+                        <div></div>
+                    ) : (
+                        <div className={`w-full flex justify-center absolute h-full items-center ${windowSize.width < 767 ? 'hidden' : ''}`}>
+                            <Tabs value={false} aria-label="Navigation Tabs" >
+                                <Tab
+                                    component={Link}
+                                    to="/"
+                                    icon={<HomeIcon className={`h-6 w-6 ${isActiveTab('/') ? 'text-blue-500' : 'text-gray-500'}`} />}
+                                    aria-label="Home"
+                                />
+                                <Tab
+                                    component={Link}
+                                    to="/friends/list"
+                                    icon={<UserGroupIcon className={`h-6 w-6 ${(isActiveTab('/friends/list') || isActiveTab('/friends/requests')) ? 'text-blue-500' : 'text-gray-500'}`} />}
+                                    aria-label="Friends"
+                                />
+                                <Tab
+                                    component={Link}
+                                    to="/messenger"
+                                    icon={<ChatBubbleLeftIcon className={`h-6 w-6 ${isActiveTab('/messenger') ? 'text-blue-500' : 'text-gray-500'}`} />}
+                                    aria-label="Messenger"
+                                />
+                                <Tab
+                                    component={Link}
+                                    to="/save_cái_đầu_m_á_dũ_là_cái_j_-.-"
+                                    icon={<SpeakerWaveIcon className={`h-6 w-6 ${isActiveTab('/save_cái_đầu_m_á_dũ_là_cái_j_-.-') ? 'text-blue-500' : 'text-gray-500'}`} />}
+                                    aria-label="save"
+                                />
+                            </Tabs>
+                        </div>
+                    )}
                 </div>
 
                 <div className="flex-none gap-2">
@@ -148,8 +157,8 @@ export default function Navbar() {
                         </div>
                     )}
                 </div>
-            </div>
-            <div className="h-[64px]"></div>
+            </div >
+
         </>
     );
 }
