@@ -79,8 +79,8 @@ export default function Navbar() {
                                 />
                                 <Tab
                                     component={Link}
-                                    to="/save_cái_đầu_m_á_dũ_là_cái_j_-.-"
-                                    icon={<SpeakerWaveIcon className={`h-6 w-full ${isActiveTab('/save_cái_đầu_m_á_dũ_là_cái_j_-.-') ? 'text-blue-500' : 'text-gray-500'}`} />}
+                                    to="/nó_là_Bookmark_lưu_trữ_bài_viết_cần_Lưu"
+                                    icon={<SpeakerWaveIcon className={`h-6 w-full ${isActiveTab('/nó_là_Bookmark_lưu_trữ_bài_viết_cần_Lưu') ? 'text-blue-500' : 'text-gray-500'}`} />}
                                     aria-label="save"
                                 />
 
@@ -118,8 +118,8 @@ export default function Navbar() {
                                 />
                                 <Tab
                                     component={Link}
-                                    to="/save_cái_đầu_m_á_dũ_là_cái_j_-.-"
-                                    icon={<SpeakerWaveIcon className={`h-6 w-6 ${isActiveTab('/save_cái_đầu_m_á_dũ_là_cái_j_-.-') ? 'text-blue-500' : 'text-gray-500'}`} />}
+                                    to="/nó_là_Bookmark_lưu_trữ_bài_viết_cần_Lưu"
+                                    icon={<SpeakerWaveIcon className={`h-6 w-6 ${isActiveTab('/nó_là_Bookmark_lưu_trữ_bài_viết_cần_Lưu') ? 'text-blue-500' : 'text-gray-500'}`} />}
                                     aria-label="save"
                                 />
                             </Tabs>

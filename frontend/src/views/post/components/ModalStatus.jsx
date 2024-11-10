@@ -1,4 +1,6 @@
+import { redirect } from 'react-router-dom';
 import { useState } from 'react';
+import axios from 'axios';
 import { Dialog, DialogBackdrop } from '@headlessui/react';
 import PublicIcon from '@mui/icons-material/Public'; // MUI's "Public" icon
 import GroupIcon from '@mui/icons-material/Group'; // MUI's "Group" icon for Friends
@@ -6,6 +8,7 @@ import LockIcon from '@mui/icons-material/Lock'; // MUI's "Lock" icon for Only M
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'; // MUI's dropdown arrow icon
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import clsx from 'clsx';
+import authToken from '../../../components/authToken';
 
 export default function ModalStatus({ status }) {
     const [open, setOpen] = useState(true);
@@ -30,6 +33,11 @@ export default function ModalStatus({ status }) {
             event.target.rows = currentRows;
         }
         setRows(currentRows < maxRows ? currentRows : maxRows);
+        const { name, value } = event.target
+        setFormData({
+            ...formData,
+            [name]: value
+        })
     };
 
     const handleVisibilityChange = (newVisibility) => {
@@ -50,6 +58,44 @@ export default function ModalStatus({ status }) {
                 return <PublicIcon className="text-blue-500" />;
         }
     };
+    const [formData, setFormData] = useState({
+        content: '',
+        files: 'https://images.app.goo.gl/T3n7Z36ZdvumSjG69',
+        privacy: '',
+    });
+    const handlePrivacyChange = (privacy) => {
+        setFormData({
+            ...formData,
+            privacy
+        });
+    };
+    //Submit 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        console.log(formData)
+
+        try {
+            const response = await axios.post('http://localhost:3001/post/createPost', formData, { withCredentials: true },
+                {
+                    headers: {
+                        Authorization: `Bearer ${authToken.getToken()}`,
+                        'Content-Type': 'multipart/form-data',
+                    }
+                }
+            );
+
+            if (response.status === 201) {
+                alert('Đăng post thành công!');
+                redirect('/');
+            } else {
+                alert('Có lỗi xảy ra, vui lòng thử lại.');
+            }
+            // Xử lý thành công (ví dụ: chuyển hướng sang trang khác)
+        } catch (error) {
+            console.error('Lỗi:', error.response ? error.response.data : error.message);
+        }
+
+    }
 
     return (
         <Dialog open={open} onClose={setOpen} className="relative z-10">
@@ -68,7 +114,12 @@ export default function ModalStatus({ status }) {
 
                     {/* Header */}
                     <div className="border-b border-gray-300 py-3 px-4 flex justify-center">
-                        <strong className="text-black text-xl">Tạo bài đăng</strong>
+                        <strong className="text-black text-xl"
+                            style={{
+                                animation: 'colorWave 1s linear infinite',
+                                fontWeight: 'bold',
+                            }}
+                        >Tạo bài đăng</strong>
                     </div>
 
                     {/* Content */}
@@ -81,15 +132,7 @@ export default function ModalStatus({ status }) {
                             <div>
                                 <strong className="text-lg text-gray-600">
                                     Pro Code
-                                    <strong
-                                        className="text-lg"
-                                        style={{
-                                            animation: 'colorWave 3s linear infinite',
-                                            fontWeight: 'bold',
-                                        }}
-                                    >
-                                        {"<VIP>"}
-                                    </strong>
+
                                 </strong>
                                 <button
                                     className="flex items-center p-2 rounded-full border border-gray-200 text-gray-700 hover:bg-gray-200"
@@ -103,24 +146,24 @@ export default function ModalStatus({ status }) {
 
                                 {/* Dropdown for selecting visibility */}
                                 {showDropdown && (
-                                    <div className="absolute bg-white border border-gray-300 rounded-md shadow-md mt-2 p-2 w-40">
+                                    <div className="absolute bg-white border border-gray-300 rounded-md shadow-md mt-2 p-2 max-w-52 ">
                                         <button
                                             className="w-full text-left py-2 px-4 hover:bg-gray-100"
                                             onClick={() => handleVisibilityChange('Public')}
                                         >
-                                            <PublicIcon className="mr-2" /> Public
+                                            <PublicIcon className="mr-2 text-nowrap" /> Tất cả mọi người
                                         </button>
                                         <button
                                             className="w-full text-left py-2 px-4 hover:bg-gray-100"
                                             onClick={() => handleVisibilityChange('Friends')}
                                         >
-                                            <GroupIcon className="mr-2" /> Friends
+                                            <GroupIcon className="mr-2 text-nowrap" /> Chỉ bạn bè
                                         </button>
                                         <button
                                             className="w-full text-left py-2 px-4 hover:bg-gray-100"
                                             onClick={() => handleVisibilityChange('Only Me')}
                                         >
-                                            <LockIcon className="mr-2" /> Only Me
+                                            <LockIcon className="mr-2 text-nowrap" /> Riêng tư
                                         </button>
                                     </div>
                                 )}
@@ -135,6 +178,8 @@ export default function ModalStatus({ status }) {
                                     'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-200',
                                     'overflow-y-auto max-h-[60vh]' // Expands up to 60% of viewport height
                                 )}
+                                name="content"
+                                value={formData.content}
                                 rows={rows}
                                 placeholder="Nội dung bài đăng, tại đây:"
                                 onChange={handleInputChange}
@@ -142,18 +187,31 @@ export default function ModalStatus({ status }) {
                             />
                             <div className="flex justify-end w-full">
                                 <button>
-                                    <EmojiEmotionsIcon className="" fontSize="large" />
+                                    <EmojiEmotionsIcon className="" fontSize="large"
+                                        style={{
+                                            animation: 'colorWave 1s linear infinite',
+                                            fontWeight: 'bold',
+                                        }}
+                                    />
                                 </button>
                             </div>
                         </div>
                     </div>
 
                     {/* Post Button */}
-                    <div className="p-4 border-t border-gray-200 flex justify-end">
+                    <div className="p-4 border-t border-gray-200 flex justify-end gap-2">
+
                         <button
                             type="button"
                             onClick={status}
-                            className="bg-green-400 text-white px-4 py-2 rounded-md hover:bg-green-500 transition duration-150"
+                            className=" bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-150"
+                        >
+                            Hủy đăng
+                        </button>
+                        <button
+                            type="button"
+                            onClick={status}
+                            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-150"
                         >
                             Đăng bài
                         </button>

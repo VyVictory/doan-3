@@ -26,11 +26,11 @@ export default function Login() {
             try {
                 const response = await axios.post('http://localhost:3001/user/login', formData);
                 if (response.status === 201) {
-                    
+
                     // Store the authentication token
-                    // localStorage.setItem('token', response.data.accessToken);
+                    localStorage.setItem('token', response.data.accessToken);
                     authToken.setToken(response.data.accessToken);
-                    alert('Đăng nhập thành công! '+ authToken.getToken());
+                    alert('Đăng nhập thành công! ' + authToken.getToken());
                     navigate('/');
                 }
             } catch (error) {
