@@ -38,11 +38,16 @@ const privacy = [
     },
 ]
 
-export default function SelectPrivacy() {
+export default function SelectPrivacy({ onChange }) {
     const [selected, setSelected] = useState(privacy[0])
+    const handleChange = (value) => {
+        setSelected(value);
+        onChange(value.privacy);
+    };
+
 
     return (
-        <Listbox value={selected} onChange={setSelected}>
+        <Listbox value={selected} onChange={handleChange}>
             <div className="relative mt-2">
                 <ListboxButton className="relative w-full min-w-[200px] cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm/6">
                     <span className="flex items-center">
