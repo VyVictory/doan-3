@@ -7,7 +7,7 @@ module.exports = {
         "util": require.resolve("util/"),
         "zlib": require.resolve("browserify-zlib"),
         "url": require.resolve("url/")
-      }
+      },
     }
   };
   

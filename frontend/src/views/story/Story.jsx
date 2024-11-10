@@ -3,8 +3,6 @@ import Slider from 'react-slick';
 import postImg from '../../img/images.jpg';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-
-
 const Story = () => {
     const sliderRef = useRef(null); // Reference to the Slider component
     const totalPosters = 30; // Total number of posters
@@ -17,7 +15,7 @@ const Story = () => {
 
     const settings = {
         infinite: true, // Infinite scroll
-        slidesToShow: 8, // Number of items per row (change based on screen size)
+        slidesToShow: 6, // Number of items per row (change based on screen size)
         slidesToScroll: 3, // Number of items to move per click
         responsive: [
             {
@@ -30,7 +28,7 @@ const Story = () => {
             {
                 breakpoint: 768,
                 settings: {
-                    slidesToShow: 4,
+                    slidesToShow: 3,
                     slidesToScroll: 3,
                 },
             },
@@ -69,11 +67,9 @@ const Story = () => {
                 {posters.map((poster) => (
                     <div key={poster.id} className="flex-shrink-0 w-full">
                         <div className='px-1'>
-
-
-                            <div className="w-full max-h-48 overflow-hidden flex justify-center rounded-md">
+                            <div className="w-36 h-48  overflow-hidden flex justify-center rounded-md">
                                 <img
-                                    src={postImg}
+                                    src="https://media.giphy.com/media/3ohc1dwnvJ6RgUZeVy/giphy.gif?cid=ecf05e47tidd2g7npaexcmya338ngklgp35sq2gnfwc0iaqx&ep=v1_gifs_search&rid=giphy.gif&ct=g"
                                     alt={`Poster ${poster.id}`}
                                     className="rounded-md transform transition duration-300 ease-in-out hover:scale-105"
                                 />
