@@ -9,6 +9,7 @@ import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { settingPrivacyDto } from './dto/settingPrivacy.dto'; 
 import { UpdatePostDto } from './dto/updatePost.dto';
 
+
 @Injectable()
 export class PostService {
     constructor(
@@ -30,9 +31,10 @@ export class PostService {
             dislikes: [],
             isActive: true,
         });
+    
+        // Nếu có file, tải ảnh lên Cloudinary
         if (files && files.length > 0) {
             try {
-                
                 const uploadedImages = await Promise.all(files.map(file => this.cloudinaryService.uploadFile(file)));
                 newPost.img = uploadedImages; 
             } catch (error) {
@@ -41,8 +43,18 @@ export class PostService {
             }
         }
     
-        return await newPost.save(); 
+        // Lưu bài viết
+        const savedPost = await newPost.save(); 
+    
+        // Thiết lập quyền riêng tư
+        await this.settingPrivacy(savedPost._id.toString(), {
+            privacy: createPostDto.privacy,
+            allowedUsers: createPostDto.allowedUsers
+        }, userId);
+    
+        return savedPost; 
     }
+    
 
 
     async updatePost(postId: string, updatePostDto: UpdatePostDto, userId: string, files?: Express.Multer.File[]): Promise<Post> {
@@ -155,6 +167,99 @@ export class PostService {
             throw new HttpException('Could not retrieve posts', HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
+
+    async findPostPrivacy(postId: string, userId: string): Promise<Post> {
+        try {
+            const post = await this.PostModel.findById(postId);
+            
+            if (!post) {
+                throw new HttpException('The post does not exist', HttpStatus.NOT_FOUND);
+            }
+
+            if (post.privacy === 'public') {
+                return post;  
+            }
+
+            if (post.privacy === 'private') {
+                if (post.author.toString() === userId) {
+                    return post;  // Chỉ người tạo mới có thể xem
+                } else {
+                    throw new HttpException('You are not authorized to view this post', HttpStatus.UNAUTHORIZED);
+                }
+            }
+
+            if (post.privacy === 'friend') {
+                const user = await this.UserModel.findById(userId);
+                if (!user) {
+                    throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+                }
+
+                const isFriend = user.friends.some(friend => friend.toString() === post.author.toString());
+
+                if (isFriend) {
+                    return post;  
+                } else {
+                    throw new HttpException('You are not friends with the author', HttpStatus.UNAUTHORIZED);
+                }
+            }
+
+            if (post.privacy === 'specific') {
+                if (post.allowedUsers.some(user => user.toString() === userId)) {
+                    return post;  // Người dùng có trong danh sách allowedUsers, có thể xem
+                } else {
+                    throw new HttpException('You are not authorized to view this post', HttpStatus.UNAUTHORIZED);
+                }
+            }
+  
+            throw new HttpException('Invalid privacy setting', HttpStatus.BAD_REQUEST);
+        } catch (error) {
+            console.error('Error fetching post privacy:', error);
+            throw new HttpException(
+                error.message || 'An error occurred while checking post privacy',
+                error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+    
+
+    async getPostsByUser(userId: string, currentUserId: string): Promise<Post[]> {
+        try {
+            const posts = await this.PostModel.find({ author: userId });
+    
+            const filteredPosts = await Promise.all(
+                posts.map(async (post) => {
+
+                    switch (post.privacy) {
+                        case 'public':
+                            return post;
+                        case 'private':
+                            if (post.author.toString() === currentUserId) {
+                                return post;
+                            }
+                            return null; 
+                        case 'friend':
+                            const user = await this.UserModel.findById(currentUserId);
+                            if (user.friends.map(friend => friend.toString()).includes(post.author.toString())) {
+                                return post;
+                            }
+                            return null; 
+                        case 'specific':
+                            if (post.allowedUsers.map(id => id.toString()).includes(currentUserId)) {
+                                return post;
+                            }
+                            return null; 
+                        default:
+                            return null; 
+                    }
+                })
+            );
+            return filteredPosts.filter((post) => post !== null);
+        } catch (error) {
+            console.error('Error getting posts by user:', error);
+            throw new HttpException('An error occurred while fetching posts', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
     
     
 }

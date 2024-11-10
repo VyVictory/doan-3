@@ -13,6 +13,7 @@ import { MailModule } from './mail/mail.module';
 import { MailController } from './mail/mail.controller';
 import { MailService } from './mail/mail.service';
 import { OtpService } from './otp/otp.service';
+import { SmsModule } from './sms/sms.module';
 
 
 @Global()
@@ -29,6 +30,7 @@ import { OtpService } from './otp/otp.service';
     CloudinaryModule,
     OtpModule,
     MailModule,
+    SmsModule,
   ],
   controllers: [AppController, OtpController, MailController],
   providers: [AppService, MailService, OtpService],
