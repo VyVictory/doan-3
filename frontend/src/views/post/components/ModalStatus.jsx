@@ -9,11 +9,11 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'; // MUI's drop
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import clsx from 'clsx';
 import authToken from '../../../components/authToken';
-
+import { PhotoIcon } from '@heroicons/react/24/solid'
 export default function ModalStatus({ status }) {
     const [open, setOpen] = useState(true);
     const [rows, setRows] = useState(3);
-    const [visibility, setVisibility] = useState('Public'); // State for visibility option
+    const [visibility, setVisibility] = useState('Tất cả mọi người'); // State for visibility option
     const [showDropdown, setShowDropdown] = useState(false); // State to toggle dropdown visibility
 
     const maxRows = 12;
@@ -48,11 +48,11 @@ export default function ModalStatus({ status }) {
     // Determine the icon based on visibility selection
     const renderVisibilityIcon = (visibility) => {
         switch (visibility) {
-            case 'Public':
+            case 'Tất cả mọi người':
                 return <PublicIcon className="text-blue-500" />;
-            case 'Friends':
+            case 'Chỉ bạn bè':
                 return <GroupIcon className="text-green-500" />;
-            case 'Only Me':
+            case 'Riêng tư  ':
                 return <LockIcon className="text-gray-500" />;
             default:
                 return <PublicIcon className="text-blue-500" />;
@@ -146,22 +146,22 @@ export default function ModalStatus({ status }) {
 
                                 {/* Dropdown for selecting visibility */}
                                 {showDropdown && (
-                                    <div className="absolute bg-white border border-gray-300 rounded-md shadow-md mt-2 p-2 max-w-52 ">
+                                    <div className="absolute bg-white border border-gray-300 rounded-md shadow-md mt-2 p-2 max-w-56 ">
                                         <button
                                             className="w-full text-left py-2 px-4 hover:bg-gray-100"
-                                            onClick={() => handleVisibilityChange('Public')}
+                                            onClick={() => handleVisibilityChange('Tất cả mọi người')}
                                         >
                                             <PublicIcon className="mr-2 text-nowrap" /> Tất cả mọi người
                                         </button>
                                         <button
                                             className="w-full text-left py-2 px-4 hover:bg-gray-100"
-                                            onClick={() => handleVisibilityChange('Friends')}
+                                            onClick={() => handleVisibilityChange('Chỉ bạn bè')}
                                         >
                                             <GroupIcon className="mr-2 text-nowrap" /> Chỉ bạn bè
                                         </button>
                                         <button
                                             className="w-full text-left py-2 px-4 hover:bg-gray-100"
-                                            onClick={() => handleVisibilityChange('Only Me')}
+                                            onClick={() => handleVisibilityChange('Riêng tư')}
                                         >
                                             <LockIcon className="mr-2 text-nowrap" /> Riêng tư
                                         </button>
@@ -185,7 +185,21 @@ export default function ModalStatus({ status }) {
                                 onChange={handleInputChange}
                                 style={{ lineHeight: '1.5rem' }}
                             />
-                            <div className="flex justify-end w-full">
+                            <div className="flex justify-end w-full gap-2">
+                                <div className="file-input-wrapper ">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        className="hidden"
+                                        id="file-input"
+                                        name='files'
+                                        onChange={handleInputChange}
+                                    // value={formData.files}
+                                    />
+                                    <label htmlFor="file-input" className="file-input-button">
+                                        <PhotoIcon className='size-9 fill-sky-600 ' />
+                                    </label>
+                                </div>
                                 <button>
                                     <EmojiEmotionsIcon className="" fontSize="large"
                                         style={{
@@ -200,7 +214,6 @@ export default function ModalStatus({ status }) {
 
                     {/* Post Button */}
                     <div className="p-4 border-t border-gray-200 flex justify-end gap-2">
-
                         <button
                             type="button"
                             onClick={status}
