@@ -132,7 +132,6 @@ export default function ModalStatus({ status }) {
                             <div>
                                 <strong className="text-lg text-gray-600">
                                     Pro Code
-
                                 </strong>
                                 <button
                                     className="flex items-center p-2 rounded-full border border-gray-200 text-gray-700 hover:bg-gray-200"
@@ -196,8 +195,10 @@ export default function ModalStatus({ status }) {
                                         onChange={handleInputChange}
                                     // value={formData.files}
                                     />
-                                    <label htmlFor="file-input" className="file-input-button">
-                                        <PhotoIcon className='size-9 fill-sky-600 ' />
+                                    <label htmlFor="file-input" className="file-input-button cursor-pointer">
+                                        <div className=' p-1 rounded-xl hover:bg-slate-300'>
+                                            <PhotoIcon className='size-7 fill-sky-600 ' />
+                                        </div>
                                     </label>
                                 </div>
                                 <button>
