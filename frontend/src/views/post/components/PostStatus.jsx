@@ -20,8 +20,7 @@ export default function PostStatus() {
         <button className=" w-full h-12 flex items-center rounded-3xl px-4 border-2 border-gray-200 bg-gray-100">
           <span className="text-sm text-gray-600">Bạn muốn đăng gì?</span>
         </button>
-      </div>
-
+      </div>  
       {/* Conditionally render the ModalStatus component */}
       {open && <ModalStatus status={handleStatus} />}
     </div>

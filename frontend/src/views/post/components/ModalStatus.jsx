@@ -14,6 +14,7 @@ export default function ModalStatus({ status }) {
     const [open, setOpen] = useState(true);
     const [rows, setRows] = useState(3);
     const [visibility, setVisibility] = useState('Tất cả mọi người'); // State for visibility option
+    const [dataPrivacy, setDataPrivacy] = useState('Tất cả mọi người');
     const [showDropdown, setShowDropdown] = useState(false); // State to toggle dropdown visibility
 
     const maxRows = 12;
@@ -49,6 +50,7 @@ export default function ModalStatus({ status }) {
     const renderVisibilityIcon = (visibility) => {
         switch (visibility) {
             case 'Tất cả mọi người':
+                setDataPrivacy('pucli')
                 return <PublicIcon className="text-blue-500" />;
             case 'Chỉ bạn bè':
                 return <GroupIcon className="text-green-500" />;
