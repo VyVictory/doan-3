@@ -1,7 +1,5 @@
 import React from 'react'
 import CardUser from './CardUser'
-import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 
 export default function AVTUser() {
     return (
