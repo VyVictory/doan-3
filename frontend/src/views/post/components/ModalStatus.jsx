@@ -10,9 +10,9 @@ import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import clsx from 'clsx';
 import authToken from '../../../components/authToken';
 import { PhotoIcon } from '@heroicons/react/24/solid'
-
+import { Link, useNavigate } from 'react-router-dom'
 export default function ModalStatus({ status }) {
-
+    const navigate = useNavigate();
     const [open, setOpen] = useState(true);
     const [rows, setRows] = useState(3);
     const [visibility, setVisibility] = useState('Tất cả mọi người'); // State for visibility option
@@ -67,7 +67,7 @@ export default function ModalStatus({ status }) {
             case 'Chỉ bạn bè':
                 // setDataPrivacy('friends')
                 return <GroupIcon className="text-green-500" />;
-            case 'Riêng tư  ':
+            case 'Riêng tư':
                 // setDataPrivacy('private')
                 return <LockIcon className="text-gray-500" />;
             default:
@@ -99,7 +99,8 @@ export default function ModalStatus({ status }) {
 
             if (response.status === 201) {
                 alert('Đăng post thành công!');
-                redirect('/');
+                navigate('/');
+                setOpen(false)
             } else {
                 alert('Có lỗi xảy ra, vui lòng thử lại.');
             }
@@ -131,10 +132,10 @@ export default function ModalStatus({ status }) {
                     {/* Header */}
                     <div className="border-b border-gray-300 py-3 px-4 flex justify-center">
                         <strong className="text-black text-xl"
-                            style={{
-                                animation: 'colorWave 1s linear infinite',
-                                fontWeight: 'bold',
-                            }}
+                            // style={{
+                            //     animation: 'colorWave 1s linear infinite',
+                            //     fontWeight: 'bold',
+                            // }}
                         >Tạo bài đăng</strong>
                     </div>
 
@@ -226,10 +227,10 @@ export default function ModalStatus({ status }) {
                                 </div>
                                 <button>
                                     <EmojiEmotionsIcon className="" fontSize="large"
-                                        style={{
-                                            animation: 'colorWave 1s linear infinite',
-                                            fontWeight: 'bold',
-                                        }}
+                                        // style={{
+                                        //     animation: 'colorWave 1s linear infinite',
+                                        //     fontWeight: 'bold',
+                                        // }}
                                     />
                                 </button>
                             </div>

@@ -60,8 +60,6 @@ const Story = () => {
                     <path d="M14.791 5.207L8 12l6.793 6.793a1 1 0 1 1-1.415 1.414l-7.5-7.5a1 1 0 0 1 0-1.414l7.5-7.5a1 1 0 1 1 1.415 1.414z" />
                 </svg>
             </button>
-
-            {/* Slider component */}
             <Slider ref={sliderRef} {...settings} className="gap-4">  {/* Thêm gap giữa các phần tử */}
 
                 {posters.map((poster) => (
@@ -69,7 +67,7 @@ const Story = () => {
                         <div className='px-1'>
                             <div className="w-36 h-48  overflow-hidden flex justify-center rounded-md">
                                 <img
-                                    src="https://media.giphy.com/media/3ohc1dwnvJ6RgUZeVy/giphy.gif?cid=ecf05e47tidd2g7npaexcmya338ngklgp35sq2gnfwc0iaqx&ep=v1_gifs_search&rid=giphy.gif&ct=g"
+                                    src="https://media.giphy.com/media/dCdTUwSva7GOzPAcf3/giphy.gif"
                                     alt={`Poster ${poster.id}`}
                                     className="rounded-md transform transition duration-300 ease-in-out hover:scale-105"
                                 />

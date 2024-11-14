@@ -3,7 +3,7 @@ import Post from "../post/Post";
 import PostStatus from "../post/components/PostStatus.jsx";
 import ShortPost from "../shortpost/ShortPost.jsx";
 import Story from "../story/Story.jsx";
-
+import authToken from "../../components/authToken.jsx";
 function Home() {
     return (
         <div className="flex justify-center w-full">
@@ -11,7 +11,7 @@ function Home() {
                 <PostStatus />
                 <Story />
                 <Post />
-                <Post />
+                {/* {authToken.getToken()} */}
             </div>
         </div>
 
