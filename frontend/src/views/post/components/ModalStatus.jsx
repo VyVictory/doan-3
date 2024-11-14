@@ -1,5 +1,5 @@
 import { redirect } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Dialog, DialogBackdrop } from '@headlessui/react';
 import PublicIcon from '@mui/icons-material/Public'; // MUI's "Public" icon
@@ -10,13 +10,23 @@ import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import clsx from 'clsx';
 import authToken from '../../../components/authToken';
 import { PhotoIcon } from '@heroicons/react/24/solid'
+
 export default function ModalStatus({ status }) {
+
     const [open, setOpen] = useState(true);
     const [rows, setRows] = useState(3);
     const [visibility, setVisibility] = useState('Tất cả mọi người'); // State for visibility option
-    const [dataPrivacy, setDataPrivacy] = useState('Tất cả mọi người');
+    const [privacy, setPrivacy] = useState('public');
     const [showDropdown, setShowDropdown] = useState(false); // State to toggle dropdown visibility
 
+    const [formData, setFormData] = useState({
+        content: '',
+        img: '',
+        privacy: privacy,
+    });
+    useEffect(() => {
+        setFormData({ "privacy": privacy })
+    }, [privacy]); // Empty dependency array means it runs only once
     const maxRows = 12;
 
     const handleInputChange = (event) => {
@@ -34,6 +44,7 @@ export default function ModalStatus({ status }) {
             event.target.rows = currentRows;
         }
         setRows(currentRows < maxRows ? currentRows : maxRows);
+        //
         const { name, value } = event.target
         setFormData({
             ...formData,
@@ -41,43 +52,43 @@ export default function ModalStatus({ status }) {
         })
     };
 
-    const handleVisibilityChange = (newVisibility) => {
+    const handleVisibilityChange = (newVisibility, valuePrivacy) => {
         setVisibility(newVisibility); // Update the visibility state
         setShowDropdown(false); // Close dropdown after selection
+        setPrivacy(valuePrivacy);
     };
 
     // Determine the icon based on visibility selection
     const renderVisibilityIcon = (visibility) => {
         switch (visibility) {
             case 'Tất cả mọi người':
-                setDataPrivacy('pucli')
+                //setPrivacy('public')
                 return <PublicIcon className="text-blue-500" />;
             case 'Chỉ bạn bè':
+                // setDataPrivacy('friends')
                 return <GroupIcon className="text-green-500" />;
             case 'Riêng tư  ':
+                // setDataPrivacy('private')
                 return <LockIcon className="text-gray-500" />;
             default:
                 return <PublicIcon className="text-blue-500" />;
         }
     };
-    const [formData, setFormData] = useState({
-        content: '',
-        files: 'https://images.app.goo.gl/T3n7Z36ZdvumSjG69',
-        privacy: '',
-    });
-    const handlePrivacyChange = (privacy) => {
-        setFormData({
-            ...formData,
-            privacy
-        });
-    };
+
+
+    // const handlePrivacyChange = (value) => {
+    //     setPrivacy(value)
+    //     setFormData({
+    //         ...formData,
+    //         privacy: privacy
+    //     });
+    // };
     //Submit 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(formData)
-
+        console.log(formData);
         try {
-            const response = await axios.post('http://localhost:3001/post/createPost', formData, { withCredentials: true },
+            const response = await axios.post('http://localhost:3001/post/createPost', formData,
                 {
                     headers: {
                         Authorization: `Bearer ${authToken.getToken()}`,
@@ -103,7 +114,10 @@ export default function ModalStatus({ status }) {
         <Dialog open={open} onClose={setOpen} className="relative z-10">
             <DialogBackdrop className="fixed inset-0 bg-gray-900 opacity-75 transition-opacity" />
             <div className="fixed inset-0 z-10 overflow-y-auto flex items-center justify-center p-4">
-                <div className="relative w-full max-w-lg mx-auto rounded-lg bg-white overflow-hidden shadow-xl sm:w-4/5 lg:w-1/2">
+                <form
+                    method='POST'
+                    onSubmit={handleSubmit}
+                    className="relative w-full max-w-lg mx-auto rounded-lg bg-white overflow-hidden shadow-xl sm:w-4/5 lg:w-1/2">
                     {/* Close button */}
                     <button
                         className="absolute right-2 top-2 border bg-gray-200 border-gray-200 shadow-sm text-gray-700 h-10 w-10 rounded-full flex items-center justify-center"
@@ -136,10 +150,13 @@ export default function ModalStatus({ status }) {
                                     Pro Code
                                 </strong>
                                 <button
+                                    type='button'
                                     className="flex items-center p-2 rounded-full border border-gray-200 text-gray-700 hover:bg-gray-200"
                                     onClick={() => setShowDropdown(!showDropdown)} // Toggle dropdown on click
+
                                     aria-label="Edit privacy. Sharing with Public."
                                 >
+
                                     {renderVisibilityIcon(visibility)} {/* Dynamically render icon */}
                                     <span className="ml-1 text-sm">{visibility}</span>
                                     <ArrowDropDownIcon fontSize="small" />
@@ -149,20 +166,24 @@ export default function ModalStatus({ status }) {
                                 {showDropdown && (
                                     <div className="absolute bg-white border border-gray-300 rounded-md shadow-md mt-2 p-2 max-w-56 ">
                                         <button
+                                            type='button'
                                             className="w-full text-left py-2 px-4 hover:bg-gray-100"
-                                            onClick={() => handleVisibilityChange('Tất cả mọi người')}
+                                            onClick={() => handleVisibilityChange('Tất cả mọi người', "public")}
+
                                         >
                                             <PublicIcon className="mr-2 text-nowrap" /> Tất cả mọi người
                                         </button>
                                         <button
+                                            type='button'
                                             className="w-full text-left py-2 px-4 hover:bg-gray-100"
-                                            onClick={() => handleVisibilityChange('Chỉ bạn bè')}
+                                            onClick={() => handleVisibilityChange('Chỉ bạn bè', "friends")}
                                         >
                                             <GroupIcon className="mr-2 text-nowrap" /> Chỉ bạn bè
                                         </button>
                                         <button
+                                            type='button'
                                             className="w-full text-left py-2 px-4 hover:bg-gray-100"
-                                            onClick={() => handleVisibilityChange('Riêng tư')}
+                                            onClick={() => handleVisibilityChange('Riêng tư', "private")}
                                         >
                                             <LockIcon className="mr-2 text-nowrap" /> Riêng tư
                                         </button>
@@ -182,7 +203,7 @@ export default function ModalStatus({ status }) {
                                 name="content"
                                 value={formData.content}
                                 rows={rows}
-                                placeholder="Nội dung bài đăng, tại đây:"
+                                placeholder="Viết nội dung của bạn..."
                                 onChange={handleInputChange}
                                 style={{ lineHeight: '1.5rem' }}
                             />
@@ -195,7 +216,7 @@ export default function ModalStatus({ status }) {
                                         id="file-input"
                                         name='files'
                                         onChange={handleInputChange}
-                                    // value={formData.files}
+                                        value={formData.files}
                                     />
                                     <label htmlFor="file-input" className="file-input-button cursor-pointer">
                                         <div className=' p-1 rounded-xl hover:bg-slate-300'>
@@ -225,14 +246,14 @@ export default function ModalStatus({ status }) {
                             Hủy đăng
                         </button>
                         <button
-                            type="button"
-                            onClick={status}
+                            type="submit"
+
                             className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-150"
                         >
                             Đăng bài
                         </button>
                     </div>
-                </div>
+                </form>
             </div>
         </Dialog>
     );
