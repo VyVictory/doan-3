@@ -51,14 +51,15 @@ export default function Navbar() {
                                     d="M4 6h16M4 12h8m-8 6h16" />
                             </svg>
                         </div>
-                        {authToken.getToken() === null ? (
+                    
+                        {!authToken.getToken() ? (
                             <div></div>
                         ) : (
                             <ul
                                 tabIndex={0}
                                 className="menu menu-sm dropdown-content bg-gray-100 border-gray-300 border rounded-box z-10 mt-3 w-52 p-2 shadow"
                             >
-
+                                    
                                 <Tab
                                     component={Link}
                                     to="/"

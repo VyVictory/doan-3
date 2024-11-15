@@ -30,7 +30,7 @@ export default function Login() {
                     // Store the authentication token
                     localStorage.setItem('token', response.data.accessToken);
                     authToken.setToken(response.data.accessToken);
-                    alert('Đăng nhập thành công! ' + authToken.getToken());
+                    alert('Đăng nhập thành công! ');
                     navigate('/');
                 }
             } catch (error) {
