@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, Post, Put, UseGuards,HttpStatus, BadRequestException } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, Post, Put, UseGuards,HttpStatus, BadRequestException, Param } from '@nestjs/common';
 import { UserService } from './user.service';
 import { RegisterDto } from './dto/register.dto';
 import { User } from './schemas/user.schemas';
@@ -68,7 +68,7 @@ export class UserController {
         return this.userService.changePassword(currentUser._id.toString(), changePasswordDto);
     }
 
-    @UseGuards(AuthGuardD, new RolesGuard(true))
+
     @Get('getAllUser')
     async getAllUser(
       @CurrentUser() currentUser : User,
@@ -124,6 +124,13 @@ export class UserController {
         throw new BadRequestException(error.message);
       }
     }
-  
-    
+
+
+    @Get('getDetailUser/:userId')
+    async getDetailUser(
+      @Param('userId')
+      userId: string,
+    ){
+      return this.userService.findById(userId)
+}
 }

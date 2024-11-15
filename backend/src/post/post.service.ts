@@ -21,7 +21,7 @@ export class PostService {
 
 
 
-    async createPost(createPostDto: CreatePostDto, userId: string, files?: Express.Multer.File[]): Promise<Post> {
+    async createPost(createPostDto: CreatePostDto, userId: string, files?: Express.Multer.File[]): Promise<{ userPost: User, savedPost: Post }> {
         const newPost = new this.PostModel({
             content: createPostDto.content,
             author: userId,
@@ -32,7 +32,6 @@ export class PostService {
             isActive: true,
         });
     
-        // Nếu có file, tải ảnh lên Cloudinary
         if (files && files.length > 0) {
             try {
                 const uploadedImages = await Promise.all(files.map(file => this.cloudinaryService.uploadFile(file)));
@@ -43,18 +42,19 @@ export class PostService {
             }
         }
     
-        // Lưu bài viết
         const savedPost = await newPost.save(); 
+        const userPost = await this.UserModel.findById(userId);
     
-        // Thiết lập quyền riêng tư
         await this.settingPrivacy(savedPost._id.toString(), {
             privacy: createPostDto.privacy,
             allowedUsers: createPostDto.allowedUsers
         }, userId);
     
-        return savedPost; 
+        return {
+            userPost,
+            savedPost
+        };
     }
-    
 
 
     async updatePost(postId: string, updatePostDto: UpdatePostDto, userId: string, files?: Express.Multer.File[]): Promise<Post> {
