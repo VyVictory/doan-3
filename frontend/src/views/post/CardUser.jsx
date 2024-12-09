@@ -7,7 +7,7 @@ export default function CardUser() {
         <div className='grid gap-2 p-3'>
             <div className='flex gap-5 items-start'>
                 <div className="avatar">
-                    <div className="w-24 rounded-full">
+                    <div className="w-20 rounded-full">
                         <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
                     </div>
                 </div>

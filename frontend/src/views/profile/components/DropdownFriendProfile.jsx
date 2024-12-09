@@ -10,9 +10,9 @@ export default function DropdownFriendProfile() {
     return (
         <Menu>
             <MenuButton>
-                <EllipsisHorizontalCircleIcon className="size-7 fill-[#1E293B] border-none " />
+                <EllipsisHorizontalCircleIcon className="size-7 border-none " />
             </MenuButton>
-            <MenuItems anchor="bottom" className="w-52 bg-[#18181b] rounded-md p-1">
+            <MenuItems anchor="bottom" className="w-52 bg-gray-500 rounded-md p-1">
                 <MenuItem>
                     <a className="text-white block data-[focus]:bg-[#3f3f46] p-2 rounded-md flex items-center gap-2" href="#">
                         <HeartIcon className="size-5 fill-red-600" />

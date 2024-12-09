@@ -99,7 +99,7 @@ export default function ModalStatus({ status }) {
 
             if (response.status === 201) {
                 alert('Đăng post thành công!');
-                navigate('/');
+                redirect('/')
                 setOpen(false)
             } else {
                 alert('Có lỗi xảy ra, vui lòng thử lại.');
@@ -107,6 +107,8 @@ export default function ModalStatus({ status }) {
             // Xử lý thành công (ví dụ: chuyển hướng sang trang khác)
         } catch (error) {
             console.error('Lỗi:', error.response ? error.response.data : error.message);
+        } finally {
+            window.location.reload()
         }
 
     }
@@ -132,10 +134,10 @@ export default function ModalStatus({ status }) {
                     {/* Header */}
                     <div className="border-b border-gray-300 py-3 px-4 flex justify-center">
                         <strong className="text-black text-xl"
-                            // style={{
-                            //     animation: 'colorWave 1s linear infinite',
-                            //     fontWeight: 'bold',
-                            // }}
+                        // style={{
+                        //     animation: 'colorWave 1s linear infinite',
+                        //     fontWeight: 'bold',
+                        // }}
                         >Tạo bài đăng</strong>
                     </div>
 
@@ -227,10 +229,10 @@ export default function ModalStatus({ status }) {
                                 </div>
                                 <button>
                                     <EmojiEmotionsIcon className="" fontSize="large"
-                                        // style={{
-                                        //     animation: 'colorWave 1s linear infinite',
-                                        //     fontWeight: 'bold',
-                                        // }}
+                                    // style={{
+                                    //     animation: 'colorWave 1s linear infinite',
+                                    //     fontWeight: 'bold',
+                                    // }}
                                     />
                                 </button>
                             </div>

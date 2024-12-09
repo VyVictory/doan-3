@@ -9,14 +9,14 @@ export default function About() {
         setOpen(!open);
     }
     return (
-        <div className='w-full py-4 px-10 bg-gradient-to-r from-[#0e0725] from-10% to-[#5c03bc] rounded-lg border-[1px] border-[#f4e5f0]'>
+        <div className='w-full py-4 px-10 bg-gradient-to-r from-[#b2aebc] to-[#a891cc] rounded-lg border-[1px] shadow-lg border-[#000000]'>
             <div className="px-4 sm:px-0 text-white flex justify-between">
                 <h3 className="text-base font-semibold leading-7 ">Thông tin cá nhân</h3>
                 <Button onClick={handleUpdate}><PencilSquareIcon className='size-8' /></Button>
                 {open ? <ModalUpdateProfile update={handleUpdate} /> : ''}
             </div>
             <div className="mt-6 border-t-[1px] border-gray-100">
-                <dl className="divide-y divide-gray-100">
+                <dl className="divide-y divide-gray-500">
                     <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                         <dt className="text-sm font-medium leading-6 ">Email</dt>
                         <dd className="mt-1 text-sm leading-6  sm:col-span-2 sm:mt-0">ABC@gmail.com</dd>
