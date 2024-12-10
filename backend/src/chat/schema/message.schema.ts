@@ -7,19 +7,34 @@ import { Document, Types } from 'mongoose';
 })
 export class Message extends Document{
 
-  @Prop({ required: true })
-  senderId: string; // ID người gửi
+  @Prop({ type: [Types.ObjectId], ref: 'User' })
+  members: Types.ObjectId[];
 
-  @Prop({ required: true })
-  receiverId: string; // ID người nhận
-
-  @Prop({ required: true })
-  message: string; // Nội dung tin nhắn
-
-  @Prop({ default: false })
-  isRead: boolean; // Đã đọc hay chưa
-    
+  @Prop({
+    required: true,
+    type: [
+      {
+        author: { type: Types.ObjectId, ref: 'User' }, 
+        content: { type: String }, 
+        reading: { type: [Types.ObjectId], default: [] },
+        img: { type: String, required: false },
+        video: { type: String, required: false }, 
+        createdAt: { type: Date, default: Date.now },
+      },
+    ],
+    default: [],
+  })
+  messages: {
+    author: Types.ObjectId;
+    content: string;
+    reading: Types.ObjectId[];
+    img?: string;
+    video?: string;
+    createdAt: Date;
+  }[];
 
 }
+
+
 
 export const MessageSchema = SchemaFactory.createForClass(Message)

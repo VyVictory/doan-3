@@ -10,6 +10,9 @@ import {
 import { Socket, Server } from 'socket.io';
 import { AuththenticationSoket } from '../user/guard/authSocket.guard'; 
 import { User } from '../user/schemas/user.schemas';
+import { ChatService } from './chat.service';
+import { CurrentUser } from 'src/user/decorator/currentUser.decorator';
+import { Types } from 'mongoose';
 
 @WebSocketGateway(3002, { cors: true })
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -19,8 +22,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   constructor(
     private readonly authenticationSoket: AuththenticationSoket,
-    // private readonly u
-
+    private readonly chatService : ChatService,
   ) {}
 
   afterInit(server: Server) {
@@ -31,11 +33,16 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     console.log('New connection: ', client.id);
 
     try {
-
+      // Xác thực người dùng từ header hoặc token
       const user = await this.authenticationSoket.authenticate(client);
 
+      if (!user) {
+        throw new WsException('Unauthorized');
+      }
+
+      // Lưu thông tin người dùng vào Map activeUsers
       this.activeUsers.set(client.id, user._id.toString());
-      console.log(`User ${user.firstName,user.lastName} connected with client ID ${client.id}`);
+      console.log(`User ${user.firstName} ${user.lastName} connected with client ID ${client.id}`);
     } catch (error) {
       console.error('Error during connection:', error);
       client.disconnect();
@@ -44,7 +51,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   handleDisconnect(client: Socket) {
     console.log('Disconnected client:', client.id);
-    this.activeUsers.delete(client.id);
+    this.activeUsers.delete(client.id); // Xóa kết nối người dùng khi ngắt kết nối
   }
 
   @SubscribeMessage('joinGroup')
@@ -70,21 +77,72 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   @SubscribeMessage('sendMessage')
-  handleSendMessage(client: Socket, data: any) {
-    const { type, receiverId, groupId, message } = data;
-    const userId = this.activeUsers.get(client.id);
-
-    if (!userId) {
-      throw new WsException('Unauthorized');
-    }
-
-    if (type === 'personal') {
-      const receiverSocketId = [...this.activeUsers.entries()].find(([_, id]) => id === receiverId)?.[0];
-      if (receiverSocketId) {
-        this.server.to(receiverSocketId).emit('newMessage', { from: userId, message });
+  async handleSendMessage(
+    client: Socket,
+    data: { idGroup: string; content: string; img?: string; video?: string },
+    @CurrentUser() currentUser: User
+  ) {
+    let updatedGroup: any; 
+  
+    try {
+      if (!currentUser) {
+        throw new WsException('Unauthorized');
       }
-    } else if (type === 'group') {
-      this.server.to(groupId).emit('newMessage', { from: userId, groupId, message });
+  
+      const { idGroup, content, img, video } = data;
+  
+      const authorId = new Types.ObjectId(currentUser._id.toString());
+      console.log('currentUser._id type:', typeof currentUser._id);
+  
+      // Gọi service để lưu tin nhắn vào database
+      updatedGroup = await this.chatService.sendMessageToGroup(
+        idGroup,
+        authorId,
+        content,
+        img,
+        video
+      );
+  
+      client.emit('messageSent', {
+        success: true,
+        groupId: updatedGroup._id,
+        message: updatedGroup.messages[updatedGroup.messages.length - 1],
+      });
+  
+      // Phát tin nhắn đến các thành viên trong nhóm
+      updatedGroup.members.forEach((member) => {
+        const receiverSocketId = [...this.activeUsers.entries()].find(
+          ([_, userId]) => userId.toString() === member.toString()
+        )?.[0];
+  
+        if (receiverSocketId) {
+          this.server.to(receiverSocketId).emit('newMessage', {
+            groupId: updatedGroup._id,
+            message: updatedGroup.messages[updatedGroup.messages.length - 1],
+          });
+        }
+      });
+  
+      console.log('Data received:', data);
+      console.log('Current User:', currentUser);
+      console.log('Updated Group:', updatedGroup);
+      console.log('Active Users:', this.activeUsers);
+  
+    } catch (error) {
+      console.error('Error:', error);
+      if (updatedGroup) {
+        client.emit('messageSent', {
+          success: true,
+          groupId: updatedGroup._id,
+          message: updatedGroup.messages[updatedGroup.messages.length - 1],
+        });
+      } else {
+        client.emit('messageSent', {
+          success: false,
+          error: error.message,
+        });
+      }
     }
   }
+  
 }
