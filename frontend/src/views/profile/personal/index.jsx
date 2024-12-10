@@ -6,12 +6,19 @@ import MenuProfile from '../components/MenuProfile'
 
 
 export default function Personal() {
+
     return (
-        <div className='flex justify-center'>
-            <div className=''>
+        <div className='flex place-content-center '>
+            <div className='w-full  max-w-screen-xl'>
+
                 <HeadProfile />
+
                 <MenuProfile />
-                <Outlet />
+                <div className='flex place-content-center'>
+                    <div className='w-full  max-w-[800px]'>
+                        <Outlet />
+                    </div>
+                </div>
             </div>
         </div>
     )

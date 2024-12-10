@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Button } from '@headlessui/react';
+import { Link } from 'react-router-dom';
 import { HandThumbUpIcon, ChatBubbleLeftIcon, ShareIcon, HandThumbDownIcon } from '@heroicons/react/24/outline';
 import AVTUser from './AVTUser';
 import authToken from '../../components/authToken';
@@ -66,7 +66,7 @@ export default function Post() {
                         <AVTUser />
                         <div className='grid gap-2 w-full'>
                             <article className='text-wrap grid gap-1'>
-                                <a className='font-bold text-lg hover:link' href="#">{post.author}</a>
+                                <Link className='font-bold text-lg hover:link' to="#">{post.author}</Link>
                                 <p> {post.content}</p>
                             </article>
                             {post.img.length > 0 && (
@@ -76,28 +76,28 @@ export default function Post() {
                                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnzOw4JGD9VHLQ46a6nQS4uhdw9QFlA7s0Mg&s" /> */}
                             <div className='flex justify-between'>
                                 <div className='flex gap-2'>
-                                    <Button onClick={() => handleLikeClick(post._id)} className={"flex items-end gap-1"}>
+                                    <button onClick={() => handleLikeClick(post._id)} className={"flex items-end gap-1"}>
                                         {post.likes.includes(userLogin._id)
                                             ? <HandThumbUpIcon className="size-5 " color='blue' />
                                             : <HandThumbUpIcon className="size-5 hover:text-blue-900" />
                                         }
                                         <span>{post.likes.length}</span>
-                                    </Button>
-                                    <Button onClick={() => handleDislikeClick(post._id)} className={"flex items-end gap-1"}>
+                                    </button>
+                                    <button onClick={() => handleDislikeClick(post._id)} className={"flex items-end gap-1"}>
                                         {post.dislikes.includes(userLogin._id)
                                             ? <HandThumbDownIcon className="size-5" color='red' />
                                             : <HandThumbDownIcon className="size-5 hover:text-red-700" />
                                         }
                                         <span>{post.dislikes.length}</span>
-                                    </Button>
+                                    </button>
                                 </div>
-                                <Button className={"flex items-end gap-1"}>
+                                <button className={"flex items-end gap-1"}>
                                     <ChatBubbleLeftIcon className="size-5" />
                                     <span>{post.comments.length}</span>
-                                </Button>
-                                <Button className={"flex items-end gap-1"}>
+                                </button>
+                                <button className={"flex items-end gap-1"}>
                                     <ShareIcon className="size-5" />
-                                </Button>
+                                </button>
                             </div>
                         </div>
                     </div>

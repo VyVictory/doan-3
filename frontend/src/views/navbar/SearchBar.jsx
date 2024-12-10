@@ -1,9 +1,7 @@
 'use client';
 import React from 'react';
 import { useState } from 'react';
-import { Button } from '@headlessui/react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
-import { Input } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 export default function SearchBar({ query }) {
     const [searchTerm, setSearchTerm] = useState("");

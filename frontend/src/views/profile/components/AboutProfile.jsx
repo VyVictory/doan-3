@@ -1,6 +1,6 @@
 import { PaperClipIcon } from '@heroicons/react/20/solid'
 import { PencilSquareIcon } from '@heroicons/react/24/solid'
-import { Button } from '@headlessui/react'
+
 import ModalUpdateProfile from './ModalUpdateProfile'
 import { useEffect, useState } from 'react';
 import { profileUserCurrent } from '../../../service/ProfilePersonal';
@@ -35,8 +35,11 @@ export default function About() {
         <div className='w-full py-4 px-10 bg-gradient-to-r from-[#dbd3d3] to-[#b6a8a8] rounded-lg border-[1px] shadow-lg border-[#000000]'>
             <div className="px-4 sm:px-0 flex justify-between">
                 <h3 className="text-2xl font-semibold leading-7">Thông tin cá nhân</h3>
-                <Button onClick={handleUpdate}><PencilSquareIcon className='size-8' /></Button>
-                {open ? <ModalUpdateProfile update={handleUpdate} /> : ''}
+                <button
+                    onClick={() => document.getElementById('my_modal_1').showModal()}>
+                    <PencilSquareIcon className='size-8' />
+                </button>
+                <ModalUpdateProfile />
             </div>
             <div className="mt-6 border-t-[1px] border-gray-100">
                 <dl className="divide-y divide-gray-500">
