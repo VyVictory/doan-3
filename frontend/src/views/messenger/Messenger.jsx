@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { PaperAirplaneIcon } from '@heroicons/react/16/solid';
-import { Textarea } from '@headlessui/react'
+
 import LeftMessenger from "./components/LeftMessenger";
 import clsx from 'clsx'
 import GetApiIcons from '../../module/icons/GetApiIcons';
@@ -110,7 +110,7 @@ const Messenger = () => {
                                     </div>
 
                                     <div className='px-1 w-full flex justify-center'>
-                                        <Textarea
+                                        <textarea
                                             className={clsx(
                                                 'rounded-lg border border-gray-400 p-2 w-full resize-none pl-2 text-wrap bg-none text-sm text-black bg-white my-1',
                                                 'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'

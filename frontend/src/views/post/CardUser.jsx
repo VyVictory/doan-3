@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Button } from '@headlessui/react'
+
 import DropdownMyfriend from '../friend/DropdownMyfriend'
 export default function CardUser() {
     return (
@@ -18,16 +18,16 @@ export default function CardUser() {
                 </div>
             </div>
             <div className='grid gap-5 grid-cols-2'>
-                <Button
+                <button
                     className=" rounded bg-sky-600 p-3 text-sm text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700 data-[disabled]:bg-gray-500"
                 >
                     Bạn bè
-                </Button>
-                <Button
+                </button>
+                <button
                     className=" rounded bg-sky-600 p-3 text-sm text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700 data-[disabled]:bg-gray-500"
                 >
                     nhắn tin
-                </Button>
+                </button>
             </div>
         </div>
 
