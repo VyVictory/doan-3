@@ -44,6 +44,9 @@ export class User extends Document {
   avatar: string;
 
   @Prop()
+  coverImage: string;
+
+  @Prop()
   follows: string;
 
   @Prop()
@@ -67,3 +70,5 @@ export class User extends Document {
 
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+export type UserDocument = User & Document;
