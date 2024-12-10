@@ -101,33 +101,33 @@ const ModalUpdateProfile = ({ update }) => {
         //         <label className="block text-sm font-medium text-gray-700 mb-2">
         //             Profile Picture
         //         </label>
-                // <div className="relative h-48 bg-gray-100 rounded-lg overflow-hidden">
-                //     {formData.profilePicture ? (
-                //         <img
-                //             src={URL.createObjectURL(formData.profilePicture)}
-                //             alt="Profile"
-                //             className="w-full h-full object-cover"
-                //         />
-                //     ) : (
-                //         <div className="flex items-center justify-center h-full">
-                //             {/* <MdCloudUpload className="text-4xl text-gray-400" /> */}
-                //         </div>
-                //     )}
-                //     <input
-                //         type="file"
-                //         accept="image/*"
-                //         onChange={handleFileChange}
-                //         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                //         aria-label="Upload profile picture"
-                //     />
-                //     <button
-                //         type="button"
-                //         className="absolute bottom-2 right-2 bg-white p-2 rounded-full shadow-md"
-                //         aria-label="Take photo"
-                //     >
-                //         {/* <FaCamera className="text-gray-600" /> */}
-                //     </button>
-                // </div>
+        // <div className="relative h-48 bg-gray-100 rounded-lg overflow-hidden">
+        //     {formData.profilePicture ? (
+        //         <img
+        //             src={URL.createObjectURL(formData.profilePicture)}
+        //             alt="Profile"
+        //             className="w-full h-full object-cover"
+        //         />
+        //     ) : (
+        //         <div className="flex items-center justify-center h-full">
+        //             {/* <MdCloudUpload className="text-4xl text-gray-400" /> */}
+        //         </div>
+        //     )}
+        //     <input
+        //         type="file"
+        //         accept="image/*"
+        //         onChange={handleFileChange}
+        //         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+        //         aria-label="Upload profile picture"
+        //     />
+        //     <button
+        //         type="button"
+        //         className="absolute bottom-2 right-2 bg-white p-2 rounded-full shadow-md"
+        //         aria-label="Take photo"
+        //     >
+        //         {/* <FaCamera className="text-gray-600" /> */}
+        //     </button>
+        // </div>
         //     </div>
         //     <div className="w-full md:w-2/3 space-y-4">
         //         <div>
@@ -157,39 +157,39 @@ const ModalUpdateProfile = ({ update }) => {
         //                 </p>
         //             )}
         //         </div>
-                // <div>
-                    // <label
-                    //     htmlFor="email"
-                    //     className="block text-sm font-medium text-gray-700 mb-1"
-                    // >
-                    //     Email Address
-                    // </label>
-                    // <input
-                    //     type="email"
-                    //     id="email"
-                    //     name="email"
-                    //     value={formData.email}
-                    //     onChange={handleInputChange}
-                    //     className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.email ? "border-red-500" : "border-gray-300"}`}
-                    //     aria-invalid={errors.email ? "true" : "false"}
-                    //     aria-describedby={errors.email ? "email-error" : undefined}
-                    //     list="email-suggestions"
-                    // />
-                    // <datalist id="email-suggestions">
-                    //     <option value="@gmail.com" />
-                    //     <option value="@outlook.com" />
-                    //     <option value="@yahoo.com" />
-                    // </datalist>
-                    // {errors.email && (
-                    //     <p
-                    //         id="email-error"
-                    //         className="mt-1 text-sm text-red-600"
-                    //         role="alert"
-                    //     >
-                    //         {errors.email}
-                    //     </p>
-                    // )}
-                // </div>
+        // <div>
+        // <label
+        //     htmlFor="email"
+        //     className="block text-sm font-medium text-gray-700 mb-1"
+        // >
+        //     Email Address
+        // </label>
+        // <input
+        //     type="email"
+        //     id="email"
+        //     name="email"
+        //     value={formData.email}
+        //     onChange={handleInputChange}
+        //     className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.email ? "border-red-500" : "border-gray-300"}`}
+        //     aria-invalid={errors.email ? "true" : "false"}
+        //     aria-describedby={errors.email ? "email-error" : undefined}
+        //     list="email-suggestions"
+        // />
+        // <datalist id="email-suggestions">
+        //     <option value="@gmail.com" />
+        //     <option value="@outlook.com" />
+        //     <option value="@yahoo.com" />
+        // </datalist>
+        // {errors.email && (
+        //     <p
+        //         id="email-error"
+        //         className="mt-1 text-sm text-red-600"
+        //         role="alert"
+        //     >
+        //         {errors.email}
+        //     </p>
+        // )}
+        // </div>
         //     </div>
         // </div>
         // <div className="space-y-4">
@@ -327,7 +327,7 @@ const ModalUpdateProfile = ({ update }) => {
                 className="fixed inset-0 bg-gray-900 opacity-75 bg-opacity-75 transition-opacity data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in"
             />
 
-            <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+            <div className="fixed inset-0 z-10  overflow-y-auto">
                 <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
                     <DialogPanel
                         transition

@@ -18,33 +18,32 @@ import Register from "../auth/register/index.jsx";
 
 function routers() {
     return (
-        <div className="bg-white min-h-screen text-black">
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/" element={<Layout />}>
-                        <Route index element={<Home />} />
-                        <Route path="friends" element={<Myfriend />} >
-                            <Route path="list" element={<Allfriend />} />
-                            <Route path="requests" element={<Friendinvitation />} />
-                        </Route>
-                        <Route path="search" element={<Searchpage />} />
-                        <Route path="user" element={<Personal />}>
-                            <Route index element={<MyPosts />} />
-                            <Route path="about" element={<AboutProfile />} />
-                            <Route path="friends" element={<FriendProfile />} />
-                        </Route>
-                        {/* <Route path="*" element={<NoPage />} /> */}
-                        <Route path="messenger" element={<Messenger />} />
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Layout />}>
+                    <Route index element={<Home />} />
+                    <Route path="friends" element={<Myfriend />} >
+                        <Route path="list" element={<Allfriend />} />
+                        <Route path="requests" element={<Friendinvitation />} />
                     </Route>
-                    <Route path="login" element={<Login />}>
-                        {/* <Route path="*" element={<NoPage />} /> */}
+                    <Route path="search" element={<Searchpage />} />
+                    <Route path="user" element={<Personal />}>
+                        <Route index element={<MyPosts />} />
+                        <Route path="about" element={<AboutProfile />} />
+                        <Route path="friends" element={<FriendProfile />} />
                     </Route>
-                    <Route path="register" element={<Register />}>
-                        {/* <Route path="*" element={<NoPage />} /> */}
-                    </Route>
-                </Routes>
-            </BrowserRouter>
-        </div>
+                    {/* <Route path="*" element={<NoPage />} /> */}
+                    <Route path="messenger" element={<Messenger />} />
+                </Route>
+                <Route path="login" element={<Login />}>
+                    {/* <Route path="*" element={<NoPage />} /> */}
+                </Route>
+                <Route path="register" element={<Register />}>
+                    {/* <Route path="*" element={<NoPage />} /> */}
+                </Route>
+            </Routes>
+        </BrowserRouter>
+
     );
 }
 

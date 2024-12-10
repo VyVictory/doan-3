@@ -7,9 +7,8 @@ export default function MyPosts() {
         <div className="grid gap-5  mt-5 rounded-md">
             <PostStatus />
             <div>
-                <p className='text-xl w-full'>Bài viết của tôi</p>
+                <p className='text-xl '>Bài viết của tôi</p>
                 <div className='grid gap-3'>
-                    <Post />
                     <Post />
                 </div>
             </div>

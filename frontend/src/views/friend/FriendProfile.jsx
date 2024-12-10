@@ -3,7 +3,7 @@ import DropdownFriendProfile from "../profile/components/DropdownFriendProfile"
 
 export default function FriendProfile() {
   return (
-    <ul role="list" className="grid gap-3 sm:grid-cols-2 sm:gap-y-3 xl:col-span-2 p-3 ">
+    <ul className="grid gap-3 sm:grid-cols-2 sm:gap-y-3 xl:col-span-2 p-3 ">
       <li className='border-2 border-black rounded-md p-2'>
         <div className="flex justify-between">
           <div className="flex items-center gap-x-6">

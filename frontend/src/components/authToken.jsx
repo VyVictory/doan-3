@@ -4,7 +4,7 @@ function getToken() {
     return cookieModule().getCookie("Token")
 }
 function setToken(value) {
-    return cookieModule().setCookie("Token", value, 10)
+    return cookieModule().setCookie("Token", value, 100)
 }
 function deleteToken() {
     return cookieModule().deleteCookie("Token")

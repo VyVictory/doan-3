@@ -20,7 +20,7 @@ export default function MenuProfile() {
     const currentTab = categories.find((category) => location.pathname === category.href);
 
     return (
-        <div className="flex justify-center border-t-[1px]">
+        <div className="flex justify-center border-t-[1px] w-full">
             <TabGroup>
                 <TabList className="flex gap-4 p-5">
                     {categories.map(({ name, href }) => (
