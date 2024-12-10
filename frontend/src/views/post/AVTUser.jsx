@@ -10,7 +10,7 @@ export default function AVTUser() {
                     <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
                 </div>
             </div>
-            <ul tabIndex={0} className="dropdown-content menu bg-blue-700 rounded-box z-0 w-[350px] p-1 shadow">
+            <ul tabIndex={0} className="dropdown-content menu bg-white border-2 rounded-box z-10 w-[350px] p-1 shadow">
                 <CardUser />
             </ul>
         </div >
