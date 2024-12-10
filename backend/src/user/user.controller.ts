@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, Post, Put, UseGuards,HttpStatus, BadRequestException, Param } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, Post, Put, UseGuards,HttpStatus, BadRequestException, Param, UseInterceptors, UploadedFiles } from '@nestjs/common';
 import { UserService } from './user.service';
 import { RegisterDto } from './dto/register.dto';
 import { User } from './schemas/user.schemas';
@@ -9,7 +9,10 @@ import { UpdateUserDto } from './dto/updateUser.dto';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { RolesGuard } from './guard/role.guard';
 import { OtpService } from 'src/otp/otp.service';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { ResetPasswordDto } from './dto/resetPassword.dto';
+import { UploadAvatarDto } from './dto/uploadAvartar.dto';
+import { UploadCoverImgDto } from './dto/uploadCoverImg.dto';
 
 @Controller('user')
 export class UserController {
@@ -133,4 +136,30 @@ export class UserController {
     ){
       return this.userService.findById(userId)
 }
+
+
+  @Post('upload-avatar')
+  @UseGuards(AuthGuardD)
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'files', maxCount: 1 }]))
+  async uploadAvatar(
+  @CurrentUser() currentUser: User,
+  @Body() uploadAvatarDto : UploadAvatarDto,
+  @UploadedFiles() files: { files: Express.Multer.File[]}
+  ){
+    return this.userService.uploadAvatar(uploadAvatarDto, currentUser._id.toString(),  files.files);
+  }
+
+
+  @Post('uploadcoveravatar')
+  @UseGuards(AuthGuardD)
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'files', maxCount: 1 }]))
+  async uploadCoverAvatar(
+  @CurrentUser() currentUser: User,
+  @Body() uploadCoverImgDto : UploadCoverImgDto,
+  @UploadedFiles() files: { files: Express.Multer.File[]}
+  ){
+    return this.userService.uploadCoverImage(uploadCoverImgDto, currentUser._id.toString(),  files.files);
+  }
+
+
 }

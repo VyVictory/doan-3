@@ -9,6 +9,8 @@ import { UserSchema } from './schemas/user.schemas';
 import { FriendRequest, FriendRequestSchema } from './schemas/friend.schema';
 import { OtpModule } from '../otp/otp.module';
 import { OtpService } from 'src/otp/otp.service';
+import { CloudinaryModule } from '../cloudinary/cloudinary.module';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 
 @Global()
 @Module({
@@ -31,9 +33,10 @@ import { OtpService } from 'src/otp/otp.service';
     OtpModule,
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
     MongooseModule.forFeature([{ name: 'FriendRequest', schema:FriendRequestSchema}]),
+
   ],
   controllers: [UserController],
-  providers: [UserService, OtpService],
+  providers: [UserService, OtpService, CloudinaryService],
   exports:[UserService,JwtModule,UserModule, MongooseModule]
 })
 export class UserModule {}

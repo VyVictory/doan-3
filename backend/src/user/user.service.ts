@@ -18,6 +18,9 @@ import { FriendRequest } from './schemas/friend.schema';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { OtpService } from '../otp/otp.service';
 import { ResetPasswordDto } from './dto/resetPassword.dto';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { UploadAvatarDto } from './dto/uploadAvartar.dto';
+import { UploadCoverImgDto } from './dto/uploadCoverImg.dto';
 
 @Injectable()
 export class UserService {
@@ -26,6 +29,7 @@ export class UserService {
     @InjectModel(FriendRequest.name) private FriendRequestModel: Model<FriendRequest>,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private cloudinaryService: CloudinaryService,
     private otpService: OtpService,
   ) { }
 
@@ -133,15 +137,24 @@ export class UserService {
   }
 
 
-  async findById(userId: string): Promise<Omit<User, 'password' | 'isActive' | 'createdAt' | 'updatedAt'>> {
+  async findByIdForAdmin(userId: string): Promise<User> {
     const user = await this.UserModel.findById(userId)
-      .select('-password -isActive  -createdAt -updatedAt') // Không trả về các trường này
+      .select('-password -isActive  -createdAt -updatedAt')
       .exec();
-
     if (!user) {
       throw new NotFoundException('404: user not found');
     }
+    return user;
+  }
 
+
+  async findById(userId: string): Promise<User> {
+    const user = await this.UserModel.findById(userId)
+      .select('-password -isActive  -createdAt -updatedAt, -refreshToken') 
+      .exec();
+    if (!user) {
+      throw new NotFoundException('404: user not found');
+    }
     return user;
   }
 
@@ -285,6 +298,62 @@ export class UserService {
   
     return 'Password reset successfully';
   }
+
+  async uploadCoverImage(uploadCoverImageDto: UploadCoverImgDto, userId: string, files?: Express.Multer.File[]): Promise<User> {
+    // Tìm người dùng dựa trên ID
+    const user = await this.UserModel.findById(userId);
+  
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+  
+    // Kiểm tra số lượng file
+    if (!files || files.length === 0) {
+      throw new HttpException('No file uploaded', HttpStatus.BAD_REQUEST);
+    }
+    if (files.length > 1) {
+      throw new HttpException('Only one file is allowed', HttpStatus.BAD_REQUEST);
+    }
+  
+    try {
+      // Upload file duy nhất
+      const uploadedImage = await this.cloudinaryService.uploadFile(files[0]);
+      user.coverImage = uploadedImage; // Cập nhật avatar cho người dùng
+    } catch (error) {
+      console.error('Error uploading image to Cloudinary:', error);
+      throw new HttpException('Failed to upload image', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  
+    // Lưu người dùng sau khi cập nhật avatar
+    return await user.save();
+  }
+
+  async uploadAvatar(uploadAvatarDto: UploadAvatarDto, userId :string,  files?: Express.Multer.File[]): Promise<User> {
+    // Tìm người dùng dựa trên ID
+    const user = await this.UserModel.findById(userId);
+  
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    if (!files || files.length === 0) {
+      throw new HttpException('No file uploaded', HttpStatus.BAD_REQUEST);
+    }
+    if (files.length > 1) {
+      throw new HttpException('Only one file is allowed', HttpStatus.BAD_REQUEST);
+    }
+  
+    try {
+      // Upload file duy nhất
+      const uploadedImage = await this.cloudinaryService.uploadFile(files[0]);
+      user.avatar = uploadedImage; 
+    } catch (error) {
+      console.error('Error uploading image to Cloudinary:', error);
+      throw new HttpException('Failed to upload image', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    return await user.save();
+  }
+  
 
 
 }

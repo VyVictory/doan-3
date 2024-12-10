@@ -19,8 +19,6 @@ export class PostService {
         private jwtService: JwtService
     ){}
 
-
-
     async createPost(createPostDto: CreatePostDto, userId: string, files?: Express.Multer.File[]): Promise<{ userPost: User, savedPost: Post }> {
         const newPost = new this.PostModel({
             content: createPostDto.content,
@@ -160,7 +158,9 @@ export class PostService {
 
     async findPostCurrentUser(userId:string){
         try {
-            const userPosts  = await this.PostModel.find({author: userId}).exec();
+            const userPosts  = await this.PostModel.find({author: userId})
+            .populate('author', 'username firstName lastName avatar')
+            .exec();
             return userPosts
         } catch (error) {
             console.error('errol', error)

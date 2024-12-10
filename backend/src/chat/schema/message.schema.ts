@@ -7,14 +7,18 @@ import { Document, Types } from 'mongoose';
 })
 export class Message extends Document{
 
-    @Prop({ type: Types.ObjectId, ref: 'User'})
-    SenderId: Types.ObjectId;
+  @Prop({ required: true })
+  senderId: string; // ID người gửi
 
-    @Prop({type: Types.ObjectId, ref: 'User'})
-    receiverId: Types.ObjectId;
+  @Prop({ required: true })
+  receiverId: string; // ID người nhận
 
-    @Prop()
-    content: string;
+  @Prop({ required: true })
+  message: string; // Nội dung tin nhắn
+
+  @Prop({ default: false })
+  isRead: boolean; // Đã đọc hay chưa
+    
 
 }
 
