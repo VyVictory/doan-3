@@ -7,7 +7,7 @@ import authToken from '../../components/authToken';
 import { handleLike, handleDisLike, handleUnDisLike, handleUnLike } from '../../service/PostService';
 import 'animate.css';
 import DropdownPostPersonal from './components/DropdownPostPersonal';
-
+import { format, differenceInMinutes, differenceInHours, differenceInDays } from 'date-fns';
 
 
 export default function Post({ user }) {
@@ -35,7 +35,7 @@ export default function Post({ user }) {
     }, []);
 
     if (!posts.length) {
-        return <div>Loading...</div>;
+        return <span className="loading loading-spinner loading-lg"></span>;
     }
     //Like
     const handleLikeClick = async (postId) => {
@@ -81,6 +81,38 @@ export default function Post({ user }) {
             console.error("Error disliking the post:", error);
         }
     }
+    // Time CreateAt Post
+    const formatDate = (date) => {
+        const postDate = new Date(date);
+        const currentDate = new Date();
+        const minutesDifference = differenceInMinutes(currentDate, postDate);
+        const hoursDifference = differenceInHours(currentDate, postDate);
+        const daysDifference = differenceInDays(currentDate, postDate);
+
+        if (minutesDifference < 60) {
+            return `${minutesDifference} phút trước`;
+        } else if (hoursDifference < 24) {
+            return `${hoursDifference} giờ trước`;
+        } else if (daysDifference <= 30) {
+            return `${daysDifference} ngày trước`;
+        } else {
+            return format(postDate, 'dd/MM/yyyy HH:mm');
+        }
+    };
+    //
+    const formatPrivacy = (privacy) => {
+        switch (privacy) {
+            case 'public':
+                return <span className="text-blue-500">công khai</span>;
+            case 'friends':
+                return <span className="text-green-500">bạn bè</span>;
+            case 'private':
+                return <span className="text-black">chỉ mình tôi</span>;
+            default:
+                return <span>{privacy}</span>;
+        }
+    };
+
     return (
         <>
             {
@@ -89,10 +121,16 @@ export default function Post({ user }) {
                         className='flex items-start p-6 border border-gray-300 rounded-lg shadow-md shadow-zinc-300 gap-3'>
                         <AVTUser user={user} />
 
-                        <div className='grid gap-4 w-full'>
+                        <div className='grid gap-2 w-full'>
                             <div className='flex justify-between'>
-                                <article className='text-wrap grid gap-1'>
-                                    <Link className='font-bold text-lg hover:link ' to="#">{user.lastName} {user.firstName}</Link>
+                                <article className='text-wrap grid gap-5'>
+                                    <div className='grid'>
+                                        <Link className='font-bold text-lg hover:link ' to="#">{user.lastName} {user.firstName}</Link>
+                                        <div className='flex gap-2'>
+                                            <span className='text-xs'>{formatDate(post.createdAt)}</span>
+                                            <span className='text-xs'>{formatPrivacy(post.privacy)}</span>
+                                        </div>
+                                    </div>
                                     <p>{post.content}</p>
                                 </article>
                                 <DropdownPostPersonal />

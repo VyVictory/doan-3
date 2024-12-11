@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ModalStatus from './ModalStatus';
-import AVTUser from '../AVTUser';
+
 export default function PostStatus({ user }) {
 
   return (
