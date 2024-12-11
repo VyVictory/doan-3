@@ -136,7 +136,7 @@ export class PostService {
 
         return await post.save();
     }
-    async undislikePost(postId: string, userId: string): Promise<Post> {
+    async undislikeP st(postId: string, userId: string): Promise<Post> {
         const post = await this.PostModel.findById(postId);
         if (!post) {
             throw new NotFoundException(`Bài viết có ID "${postId}" không tồn tại`);

@@ -5,8 +5,21 @@ import { Tabs, Tab } from '@mui/material';
 import SearchBar from './SearchBar';
 import DropdownProfile from './DropdownProfile';
 import authToken from "../../components/authToken";
+import { profileUserCurrent } from '../../service/ProfilePersonal';
 
 export default function Navbar() {
+    //
+    const [user, setUser] = useState({})
+
+    //e
+    useEffect(() => {
+        const fetchdata = async () => {
+            const response = await profileUserCurrent();
+            setUser(response)
+        }
+        fetchdata()
+    }, [])
+    //
     const location = useLocation();
     const isActiveTab = (path) => location.pathname === path;
 
@@ -151,7 +164,7 @@ export default function Navbar() {
                     </button>
 
                     {authToken.getToken() !== null ? (
-                        <DropdownProfile />
+                        <DropdownProfile user={user}/>
                     ) : (
                         <div className="m-1 z-10">
                             <Link to={"/login"} className='bg-[#007bff] px-3 py-3 rounded-lg'>Đăng nhập</Link>
