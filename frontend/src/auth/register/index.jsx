@@ -29,7 +29,7 @@ export default function Register() {
         }
         return errors;
     };
-
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
         const validationErrors = validateForm();

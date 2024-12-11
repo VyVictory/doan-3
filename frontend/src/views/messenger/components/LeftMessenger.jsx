@@ -13,7 +13,7 @@ const LeftMessenger = ({ bt_chanetransfer }) => {
     ];
     return (<>
         <div className=" border-r-gray-300 border-r  h-full flex flex-col">
-            <h2 className="text-lg font-semibold flex justify-center py-1 border-b border-gray-300">List Friends</h2>
+            <h2 className="text-lg font-semibold flex justify-center py-1 border-b border-gray-300 pt-3">List Friends</h2>
             <ul
                 className='h-full flex flex-col px-2'
                 style={{

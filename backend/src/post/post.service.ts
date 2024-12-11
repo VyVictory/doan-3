@@ -193,7 +193,17 @@ export class PostService {
             throw new HttpException('Could not retrieve posts', HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
-
+    // async findPostsPublicFriend(userId:string){
+    //     try {
+    //         const allposts = await this.PostModel.find({author: userId})
+    //         .populate('author', 'username firstName lastName avatar')
+    //         .exec();
+    //         return allposts
+    //     } catch (error) {
+    //         console.error('errol', error)
+    //         throw new HttpException('Could not retrieve posts', HttpStatus.INTERNAL_SERVER_ERROR)
+    //     }
+    // }
     async findPostPrivacy(postId: string, userId: string): Promise<Post> {
         try {
             const post = await this.PostModel.findById(postId);
@@ -262,7 +272,7 @@ export class PostService {
                             if (post.author.toString() === currentUserId) {
                                 return post;
                             }
-                            return null; 
+                            return null;
                         case 'friend':
                             const user = await this.UserModel.findById(currentUserId);
                             if (user.friends.map(friend => friend.toString()).includes(post.author.toString())) {
@@ -285,7 +295,4 @@ export class PostService {
             throw new HttpException('An error occurred while fetching posts', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
-    
-    
 }

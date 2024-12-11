@@ -76,31 +76,38 @@ export class PostController {
     ) {
         return this.postService.findPostCurrentUser(currentUser._id.toString())
     }
+    @UseGuards(AuthGuardD)
 
-    
+    // @Get('PostList')
+    // async getPostList(
+    //     @CurrentUser() currentUser: User,
+    // ) {
+    //     return this.postService.findPostsPublicFriend(currentUser._id.toString())
+    // }
+
     @Get(':postId/privacy')
-  @UseGuards(AuthGuardD) 
-  async findPostPrivacy(
-    @CurrentUser() currentUser: User,
-    @Param('postId') postId: string, 
-  ) {
-    return this.postService.findPostPrivacy(postId,currentUser._id.toString() );
-  }
-
-
-  @Get(':userId')
-  @UseGuards(AuthGuardD) 
-  async getPostsByUser(
-    @Param('userId') userId: string, 
-    @CurrentUser() currentUser: User  
-  ) {
-    try {
-      const posts = await this.postService.getPostsByUser(userId, currentUser._id.toString());
-      return posts;
-    } catch (error) {
-      throw new HttpException('An error occurred while fetching posts', HttpStatus.INTERNAL_SERVER_ERROR);
+    @UseGuards(AuthGuardD)
+    async findPostPrivacy(
+        @CurrentUser() currentUser: User,
+        @Param('postId') postId: string,
+    ) {
+        return this.postService.findPostPrivacy(postId, currentUser._id.toString());
     }
-  }
+
+
+    @Get(':userId')
+    @UseGuards(AuthGuardD)
+    async getPostsByUser(
+        @Param('userId') userId: string,
+        @CurrentUser() currentUser: User
+    ) {
+        try {
+            const posts = await this.postService.getPostsByUser(userId, currentUser._id.toString());
+            return posts;
+        } catch (error) {
+            throw new HttpException('An error occurred while fetching posts', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 
 
