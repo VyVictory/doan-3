@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ModalStatus from './ModalStatus';
 import AVTUser from '../AVTUser';
-export default function PostStatus() {
+export default function PostStatus({ user }) {
 
   return (
     <div className='border border-gray-300 rounded-lg shadow-sm shadow-zinc-300 p-4'>
@@ -9,9 +9,7 @@ export default function PostStatus() {
         <div className='pr-3'>
           <img
             className='h-12 aspect-square rounded-full shadow-md flex items-center justify-center'
-            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-            alt=''
-          />
+            src={`${user.avatar ? user.avatar : "https://th.bing.com/th/id/OIP.PKlD9uuBX0m4S8cViqXZHAHaHa?rs=1&pid=ImgDetMain"}`} alt='' />
         </div>
         <button
           className=" w-full h-12 flex items-center rounded-3xl px-4 border-2 border-gray-200 bg-gray-100"

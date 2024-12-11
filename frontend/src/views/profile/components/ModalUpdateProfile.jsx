@@ -94,7 +94,7 @@ const ModalUpdateProfile = ({ update }) => {
     return (
         <dialog id="my_modal_1" className="modal">
             <div className="modal-box w-11/12 max-w-xl">
-                <FormUpdateProfile />
+                {/* <FormUpdateProfile /> */}
                 {/* <div className="modal-action">
                     <form method="dialog">
                         

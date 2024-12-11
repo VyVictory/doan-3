@@ -232,9 +232,9 @@ export default function ModalStatus() {
                         </div>
                     </div>
                 </div>
-                <div class="modal-action">
+                <div className="modal-action">
                     <form method="dialog">
-                        <button class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-150">Hủy đăng bài</button>
+                        <button className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-150">Hủy đăng bài</button>
                     </form>
                     <button
                         type="submit"

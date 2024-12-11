@@ -4,11 +4,12 @@ import { Link } from 'react-router-dom';
 import { HandThumbUpIcon, ChatBubbleLeftIcon, ShareIcon, HandThumbDownIcon } from '@heroicons/react/24/outline';
 import AVTUser from './AVTUser';
 import authToken from '../../components/authToken';
-import { handleLike, handleDisLike } from '../../service/PostService';
-import { profileUserCurrent } from '../../service/ProfilePersonal';
-export default function Post() {
+import { handleLike, handleDisLike, handleUnDisLike, handleUnLike } from '../../service/PostService';
+
+
+
+export default function Post({ user }) {
     const [posts, setPosts] = useState([]);
-    const [userLogin, setUserLogin] = useState({})
 
 
     useEffect(() => {
@@ -27,8 +28,6 @@ export default function Post() {
                 .catch(error => {
                     console.error("Error fetching post data:", error);
                 })
-            const responseUserPersonal = await profileUserCurrent()
-            setUserLogin(responseUserPersonal)
         }
         fetchdata()
     }, []);
@@ -40,8 +39,9 @@ export default function Post() {
     const handleLikeClick = async (postId) => {
         try {
             await handleLike(postId);
+            await handleUnDisLike(postId); // Undislike when liking
             setPosts(posts.map(post =>
-                post._id === postId ? { ...post, likes: [...post.likes, userLogin._id] } : post
+                post._id === postId ? { ...post, likes: [...post.likes, user._id], dislikes: post.dislikes.filter(id => id !== user._id) } : post
             ));
         } catch (error) {
             console.error("Error liking the post:", error);
@@ -51,8 +51,9 @@ export default function Post() {
     const handleDislikeClick = async (postId) => {
         try {
             await handleDisLike(postId);
+            await handleUnLike(postId); // Unlike when disliking
             setPosts(posts.map(post =>
-                post._id === postId ? { ...post, dislikes: [...post.dislikes, userLogin._id] } : post
+                post._id === postId ? { ...post, dislikes: [...post.dislikes, user._id], likes: post.likes.filter(id => id !== user._id) } : post
             ));
         } catch (error) {
             console.error("Error liking the post:", error);
@@ -61,30 +62,32 @@ export default function Post() {
     return (
         <>
             {
-                posts.map(post => (
-                    <div key={post._id} className='flex items-start p-6 border border-gray-300 rounded-lg shadow-md shadow-zinc-300 gap-3'>
-                        <AVTUser />
+                posts.map((post) => (
+                    <div key={post._id}
+                        className='flex items-start p-6 border border-gray-300 rounded-lg shadow-md shadow-zinc-300 gap-3'>
+                        <AVTUser user={user} />
+
                         <div className='grid gap-2 w-full'>
                             <article className='text-wrap grid gap-1'>
-                                <Link className='font-bold text-lg hover:link' to="#">{post.author}</Link>
-                                <p> {post.content}</p>
+                                <Link className='font-bold text-lg hover:link' to="#">{user.lastName} {user.firstName}</Link>
+                                <p>{post.content}</p>
                             </article>
                             {post.img.length > 0 && (
                                 <img className='rounded-xl max-h-[300px]' src={post.img[0]} alt="Post visual" />
                             )}
                             {/* <img className='rounded-xl w-full max-h-[400px]'
-                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnzOw4JGD9VHLQ46a6nQS4uhdw9QFlA7s0Mg&s" /> */}
+                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnzOw4JGD9VHLQ46a6nQS4uhdw9QFlA7s0Mg&s" alt='' /> */}
                             <div className='flex justify-between'>
                                 <div className='flex gap-2'>
                                     <button onClick={() => handleLikeClick(post._id)} className={"flex items-end gap-1"}>
-                                        {post.likes.includes(userLogin._id)
+                                        {post.likes.includes(user._id)
                                             ? <HandThumbUpIcon className="size-5 " color='blue' />
-                                            : <HandThumbUpIcon className="size-5 hover:text-blue-900" />
+                                            : <HandThumbUpIcon className="size-5 hover:text-blue-700" />
                                         }
                                         <span>{post.likes.length}</span>
                                     </button>
                                     <button onClick={() => handleDislikeClick(post._id)} className={"flex items-end gap-1"}>
-                                        {post.dislikes.includes(userLogin._id)
+                                        {post.dislikes.includes(user._id)
                                             ? <HandThumbDownIcon className="size-5" color='red' />
                                             : <HandThumbDownIcon className="size-5 hover:text-red-700" />
                                         }

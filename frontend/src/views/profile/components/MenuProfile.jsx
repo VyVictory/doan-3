@@ -21,17 +21,6 @@ export default function MenuProfile() {
 
     return (
         <div className=" flex justify-center border-t-[1px] w-full gap-4 p-5">
-            {/* <TabGroup>
-                <TabList className="flex gap-4 p-5">
-                    {categories.map(({ name, href }) => (
-                        <Tab
-                            key={name}
-                        >
-                            <Link to={href} className={`rounded-full py-2 px-4 text-sm/6 font-semibold focus:outline-none ${currentTab?.href === href ? 'bg-gray-600 text-white' : ''}`}>{name}</Link>
-                        </Tab>
-                    ))}
-                </TabList>
-            </TabGroup> */}
             {categories.map(({ name, href }) => (
                 <Link
                     key={name}

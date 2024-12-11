@@ -12,7 +12,7 @@ const LeftMessenger = ({ bt_chanetransfer }) => {
         { name: 'Charlie Davis', message: 'Long time no see!', img: 'https://placehold.co/40' },
     ];
     return (<>
-        <div class=" border-r-gray-300 border-r  h-full flex flex-col">
+        <div className=" border-r-gray-300 border-r  h-full flex flex-col">
             <h2 className="text-lg font-semibold flex justify-center py-1 border-b border-gray-300">List Friends</h2>
             <ul
                 className='h-full flex flex-col px-2'

@@ -12,7 +12,6 @@ export default function Personal() {
             <div className='w-full  max-w-screen-xl'>
 
                 <HeadProfile />
-
                 <MenuProfile />
                 <div className='flex place-content-center'>
                     <div className='w-full  max-w-[800px]'>

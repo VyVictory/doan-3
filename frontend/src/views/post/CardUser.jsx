@@ -1,14 +1,12 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-
-import DropdownMyfriend from '../friend/DropdownMyfriend'
 export default function CardUser() {
     return (
         <div className='grid gap-2 p-3'>
             <div className='flex gap-5 items-start'>
                 <div className="avatar">
                     <div className="w-20 rounded-full">
-                        <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+                        <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" alt='' />
                     </div>
                 </div>
                 <div className='grid gap-2'>
