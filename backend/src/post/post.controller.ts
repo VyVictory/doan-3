@@ -41,6 +41,15 @@ export class PostController {
 
         return await this.postService.likePost(id, currentUser._id.toString());
     }
+    @Put(':id/unlike')
+    @UseGuards(AuthGuardD)
+    async unlikePost(@Param('id') id: string, @CurrentUser() currentUser: User) {
+        if (!currentUser) {
+            throw new HttpException('User not found or not authenticated', HttpStatus.UNAUTHORIZED);
+        }
+
+        return await this.postService.unlikePost(id, currentUser._id.toString());
+    }
     @Put(':id/dislike')
     @UseGuards(AuthGuardD)
     async dislikePost(@Param('id') id: string, @CurrentUser() currentUser: User) {
@@ -49,6 +58,15 @@ export class PostController {
         }
 
         return await this.postService.dislikePost(id, currentUser._id.toString());
+    }
+    @Put(':id/undislike')
+    @UseGuards(AuthGuardD)
+    async undislikePost(@Param('id') id: string, @CurrentUser() currentUser: User) {
+        if (!currentUser) {
+            throw new HttpException('User not found or not authenticated', HttpStatus.UNAUTHORIZED);
+        }
+
+        return await this.postService.undislikePost(id, currentUser._id.toString());
     }
 
     @UseGuards(AuthGuardD)
