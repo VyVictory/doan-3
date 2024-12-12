@@ -9,7 +9,7 @@ import { Document, Types } from 'mongoose';
 export class GroupMessage extends Document {
 
   @Prop({ type: [Types.ObjectId], ref: 'User' })
-  members: Types.ObjectId[]; // Danh sách thành viên trong nhóm
+  members: Types.ObjectId[];
 
   @Prop({ required: true })
   groupName: string;
@@ -21,12 +21,12 @@ export class GroupMessage extends Document {
     required: true,
     type: [
       {
-        author: { type: Types.ObjectId, ref: 'User' }, // ID người gửi
-        content: { type: String }, // Nội dung tin nhắn
-        reading: { type: [Types.ObjectId], default: [] }, // Mảng các người dùng đã đọc tin nhắn
-        img: { type: String, required: false }, // Hình ảnh đính kèm
-        video: { type: String, required: false }, // Video đính kèm
-        createdAt: { type: Date, default: Date.now }, // Thời gian gửi tin nhắn
+        author: { type: Types.ObjectId, ref: 'User' },
+        content: { type: String }, 
+        reading: { type: [Types.ObjectId], default: [] }, 
+        img: { type: String, required: false }, 
+        video: { type: String, required: false }, 
+        createdAt: { type: Date, default: Date.now }, 
       },
     ],
     default: [],

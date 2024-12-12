@@ -15,6 +15,7 @@ import { MailService } from './mail/mail.service';
 import { OtpService } from './otp/otp.service';
 import { SmsModule } from './sms/sms.module';
 import { ChatModule } from './chat/chat.module';
+import { EventModule } from './event/event.module';
 
 
 @Global()
@@ -33,6 +34,7 @@ import { ChatModule } from './chat/chat.module';
     MailModule,
     SmsModule,
     ChatModule,
+    EventModule,
   ],
   controllers: [AppController, OtpController, MailController],
   providers: [AppService, MailService, OtpService],

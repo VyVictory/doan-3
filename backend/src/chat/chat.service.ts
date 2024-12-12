@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Message } from './schema/message.schema';
 import { GroupMessage } from './schema/groupMessage.schema';
 import { User } from '../user/schemas/user.schemas';
 import { CreateGroupDto } from './dto/createGroup.dto';
+import { SendMessageDto } from './dto/sendMessage.dto';
+import { content } from 'googleapis/build/src/apis/content';
 
 @Injectable()
 export class ChatService {
@@ -46,22 +48,25 @@ export class ChatService {
       async sendMessageToGroup(
         groupId: string,
         authorId: Types.ObjectId,
-        content: string,
-        img?: string,
-        video?: string
-      ) {
+        sendMessageDto : SendMessageDto,
+      ): Promise<GroupMessage> {
         const group = await this.GroupMessageModel.findById(groupId);
       
         if (!group) {
           throw new Error('Group not found');
         }
+
+        const author = await this.UserModel.findById(authorId);
+        if (!author) {
+          throw new Error('Author not found');
+        }
       
         const newMessage = {
           author: authorId,
-          content,
+          content: sendMessageDto.content,
+          img: sendMessageDto.img,
+          video: sendMessageDto.video,
           reading: [],
-          img,
-          video,
           createdAt: new Date(),
         };
       
@@ -69,6 +74,31 @@ export class ChatService {
         const updatedGroup = await group.save();
         return updatedGroup;
       }
+
+
+      async getGroupMessages(groupId: string): Promise<GroupMessage> {
+        return this.GroupMessageModel.findById(groupId)
+        .populate('members', 'firstName lastName avatar')
+        .populate('messages.author', 'firstName lastName avatar')
+        .sort({ createdAt: -1 }); 
+      }
+
+      async getMemberGroup(groupId: string){
+        const group = await this.GroupMessageModel
+          .findById(groupId)
+          .populate('members')
+          .exec();
+      
+        if (!group) {
+          throw new HttpException('Group not found', HttpStatus.NOT_FOUND);
+        }
+        return group.members; 
+      }
+      
+      
+      
+      
+
 }
 
 
