@@ -71,6 +71,19 @@ export class FriendService {
             throw new HttpException('Friend request not found', HttpStatus.NOT_FOUND);
         }
 
+        if (request.receiver.toString() === userId || request.sender.toString() === userId) {
+            request.status = 'declined';
+            return request.save();
+        }
+        throw new HttpException('You are not authorized to decline this friend request', HttpStatus.FORBIDDEN);
+    }
+    async cancelFriendRequest(requestId: string, userId: string): Promise<FriendRequest> {
+        const request = await this.friendRequestModel.findById(requestId);
+
+        if (!request) {
+            throw new HttpException('Friend request not found', HttpStatus.NOT_FOUND);
+        }
+
         if (request.receiver.toString() !== userId) {
             throw new HttpException('You are not authorized to decline this friend request', HttpStatus.FORBIDDEN);
         }
@@ -78,7 +91,6 @@ export class FriendService {
         request.status = 'declined';
         return request.save();
     }
-
     // Get friend requests for the current user
     async getFriendRequests(userId: string): Promise<FriendRequest[]> {
         return this.friendRequestModel.find({ receiver: userId, status: 'pending' }).exec();
