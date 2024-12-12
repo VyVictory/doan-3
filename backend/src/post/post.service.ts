@@ -106,6 +106,21 @@ export class PostService {
 
         return await post.save();
     }
+    async unlikePost(postId: string, userId: string): Promise<Post> {
+        const post = await this.PostModel.findById(postId);
+
+        if (!post) {
+            throw new NotFoundException(`Bài viết có ID "${postId}" không tồn tại`);
+        }
+    
+        if (!post.likes.includes(userId)) {
+            throw new HttpException('Bạn đã không thích bài viết này', HttpStatus.BAD_REQUEST);
+        }
+    
+        post.likes = post.likes.filter(like => like !== userId);
+
+        return await post.save();
+    }
     async dislikePost(postId: string, userId: string): Promise<Post> {
         const post = await this.PostModel.findById(postId);
 
@@ -119,6 +134,17 @@ export class PostService {
 
         post.dislikes.push(userId);
 
+        return await post.save();
+    }
+    async undislikePost(postId: string, userId: string): Promise<Post> {
+        const post = await this.PostModel.findById(postId);
+        if (!post) {
+            throw new NotFoundException(`Bài viết có ID "${postId}" không tồn tại`);
+        }
+        if (!post.dislikes.includes(userId)) {
+            throw new HttpException('Bạn đã không thích bài viết này', HttpStatus.BAD_REQUEST);
+        }
+        post.dislikes = post.dislikes.filter(dislike => dislike !== userId);
         return await post.save();
     }
 
@@ -167,7 +193,17 @@ export class PostService {
             throw new HttpException('Could not retrieve posts', HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
-
+    // async findPostsPublicFriend(userId:string){
+    //     try {
+    //         const allposts = await this.PostModel.find({author: userId})
+    //         .populate('author', 'username firstName lastName avatar')
+    //         .exec();
+    //         return allposts
+    //     } catch (error) {
+    //         console.error('errol', error)
+    //         throw new HttpException('Could not retrieve posts', HttpStatus.INTERNAL_SERVER_ERROR)
+    //     }
+    // }
     async findPostPrivacy(postId: string, userId: string): Promise<Post> {
         try {
             const post = await this.PostModel.findById(postId);
@@ -236,7 +272,7 @@ export class PostService {
                             if (post.author.toString() === currentUserId) {
                                 return post;
                             }
-                            return null; 
+                            return null;
                         case 'friend':
                             const user = await this.UserModel.findById(currentUserId);
                             if (user.friends.map(friend => friend.toString()).includes(post.author.toString())) {

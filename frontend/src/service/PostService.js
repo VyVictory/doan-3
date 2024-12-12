@@ -22,9 +22,28 @@ export async function handleLike(postId) {
     })
     return request
 }
+//unlike
+export async function handleUnLike(postId) {
+    const request = await axios.put(`http://localhost:3001/post/${postId}/unlike`, {}, {
+        headers: {
+            Authorization: `Bearer ${authToken.getToken()}`
+        }
+    })
+    return request
+}
+
 // Dislike
 export async function handleDisLike(postId) {
     const request = await axios.put(`http://localhost:3001/post/${postId}/dislike`, {}, {
+        headers: {
+            Authorization: `Bearer ${authToken.getToken()}`
+        }
+    })
+    return request
+}
+//undislike
+export async function handleUnDisLike(postId) {
+    const request = await axios.put(`http://localhost:3001/post/${postId}/undislike`, {}, {
         headers: {
             Authorization: `Bearer ${authToken.getToken()}`
         }

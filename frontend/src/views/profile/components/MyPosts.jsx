@@ -1,15 +1,29 @@
 import React from 'react'
-import Post from '../../post/Post'
+import Post from '../../post/PostPersonal.jsx'
 import PostStatus from '../../post/components/PostStatus.jsx'
+import { useState, useEffect } from 'react'
+import { profileUserCurrent } from '../../../service/ProfilePersonal.js'
+
+
+
 
 export default function MyPosts() {
+    const [userLogin, setUserLogin] = useState({})
+
+    useEffect(() => {
+        const fetchdata = async () => {
+            const responseUserPersonal = await profileUserCurrent()
+            setUserLogin(responseUserPersonal)
+        }
+        fetchdata()
+    }, []);
     return (
         <div className="grid gap-5  mt-5 rounded-md">
-            <PostStatus />
+            <PostStatus user={userLogin} />
             <div>
                 <p className='text-xl '>Bài viết của tôi</p>
                 <div className='grid gap-3'>
-                    <Post />
+                    <Post user={userLogin} />
                 </div>
             </div>
         </div>

@@ -41,6 +41,15 @@ export class PostController {
 
         return await this.postService.likePost(id, currentUser._id.toString());
     }
+    @Put(':id/unlike')
+    @UseGuards(AuthGuardD)
+    async unlikePost(@Param('id') id: string, @CurrentUser() currentUser: User) {
+        if (!currentUser) {
+            throw new HttpException('User not found or not authenticated', HttpStatus.UNAUTHORIZED);
+        }
+
+        return await this.postService.unlikePost(id, currentUser._id.toString());
+    }
     @Put(':id/dislike')
     @UseGuards(AuthGuardD)
     async dislikePost(@Param('id') id: string, @CurrentUser() currentUser: User) {
@@ -50,6 +59,15 @@ export class PostController {
 
         return await this.postService.dislikePost(id, currentUser._id.toString());
     }
+    @Put(':id/undislike')
+    @UseGuards(AuthGuardD)
+    async undislikePost(@Param('id') id: string, @CurrentUser() currentUser: User) {
+        if (!currentUser) {
+            throw new HttpException('User not found or not authenticated', HttpStatus.UNAUTHORIZED);
+        }
+
+        return await this.postService.undislikePost(id, currentUser._id.toString());
+    }
 
     @UseGuards(AuthGuardD)
     @Get('crpost')
@@ -58,31 +76,38 @@ export class PostController {
     ) {
         return this.postService.findPostCurrentUser(currentUser._id.toString())
     }
+    @UseGuards(AuthGuardD)
 
-    
+    // @Get('PostList')
+    // async getPostList(
+    //     @CurrentUser() currentUser: User,
+    // ) {
+    //     return this.postService.findPostsPublicFriend(currentUser._id.toString())
+    // }
+
     @Get(':postId/privacy')
-  @UseGuards(AuthGuardD) 
-  async findPostPrivacy(
-    @CurrentUser() currentUser: User,
-    @Param('postId') postId: string, 
-  ) {
-    return this.postService.findPostPrivacy(postId,currentUser._id.toString() );
-  }
-
-
-  @Get(':userId')
-  @UseGuards(AuthGuardD) 
-  async getPostsByUser(
-    @Param('userId') userId: string, 
-    @CurrentUser() currentUser: User  
-  ) {
-    try {
-      const posts = await this.postService.getPostsByUser(userId, currentUser._id.toString());
-      return posts;
-    } catch (error) {
-      throw new HttpException('An error occurred while fetching posts', HttpStatus.INTERNAL_SERVER_ERROR);
+    @UseGuards(AuthGuardD)
+    async findPostPrivacy(
+        @CurrentUser() currentUser: User,
+        @Param('postId') postId: string,
+    ) {
+        return this.postService.findPostPrivacy(postId, currentUser._id.toString());
     }
-  }
+
+
+    @Get(':userId')
+    @UseGuards(AuthGuardD)
+    async getPostsByUser(
+        @Param('userId') userId: string,
+        @CurrentUser() currentUser: User
+    ) {
+        try {
+            const posts = await this.postService.getPostsByUser(userId, currentUser._id.toString());
+            return posts;
+        } catch (error) {
+            throw new HttpException('An error occurred while fetching posts', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 
 

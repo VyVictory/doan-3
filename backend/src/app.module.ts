@@ -15,6 +15,7 @@ import { MailService } from './mail/mail.service';
 import { OtpService } from './otp/otp.service';
 import { SmsModule } from './sms/sms.module';
 import { ChatModule } from './chat/chat.module';
+import { FriendModule } from './friend/friend.module';
 import { EventModule } from './event/event.module';
 
 
@@ -34,6 +35,7 @@ import { EventModule } from './event/event.module';
     MailModule,
     SmsModule,
     ChatModule,
+    FriendModule
     EventModule,
   ],
   controllers: [AppController, OtpController, MailController],

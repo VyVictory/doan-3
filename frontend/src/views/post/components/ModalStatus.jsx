@@ -11,7 +11,7 @@ import clsx from 'clsx';
 import authToken from '../../../components/authToken';
 import { PhotoIcon } from '@heroicons/react/24/solid'
 import { Link, useNavigate } from 'react-router-dom'
-export default function ModalStatus() {
+export default function ModalStatus({ user }) {
     const navigate = useNavigate();
     const [open, setOpen] = useState(true);
     const [rows, setRows] = useState(3);
@@ -140,11 +140,13 @@ export default function ModalStatus() {
 
                     <div className="flex items-center space-x-3">
                         <div className="bg-gray-600 h-12 w-12 rounded-full flex items-center justify-center text-white">
-                            AVT
+                            <img
+                                className='h-12 aspect-square rounded-full shadow-md flex items-center justify-center'
+                                src={`${user.avatar ? user.avatar : "https://th.bing.com/th/id/OIP.PKlD9uuBX0m4S8cViqXZHAHaHa?rs=1&pid=ImgDetMain"}`} alt='' />
                         </div>
                         <div>
                             <strong className="text-lg text-gray-600">
-                                Pro Code
+                                {user.lastName} {user.firstName}
                             </strong>
                             <button
                                 type='button'
@@ -232,9 +234,9 @@ export default function ModalStatus() {
                         </div>
                     </div>
                 </div>
-                <div class="modal-action">
+                <div className="modal-action">
                     <form method="dialog">
-                        <button class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-150">Hủy đăng bài</button>
+                        <button className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-150">Hủy đăng bài</button>
                     </form>
                     <button
                         type="submit"
