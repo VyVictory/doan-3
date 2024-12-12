@@ -35,7 +35,7 @@ import { EventModule } from './event/event.module';
     MailModule,
     SmsModule,
     ChatModule,
-    FriendModule
+    FriendModule,
     EventModule,
   ],
   controllers: [AppController, OtpController, MailController],
