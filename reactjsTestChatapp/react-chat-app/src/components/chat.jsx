@@ -6,10 +6,42 @@ const GroupChat = ({ groupId, token }) => {
   const [message, setMessage] = useState(""); // Tin nhắn người dùng đang nhập
   const [messages, setMessages] = useState([]); // Tin nhắn trong group
   const [socket, setSocket] = useState(null); // Trạng thái kết nối socket
+  const userCache = {}; // Cache thông tin người dùng
+
+  // Hàm lấy thông tin người gửi (author)
+  const fetchAuthor = async (authorId) => {
+    // Nếu đã có trong cache, trả về ngay
+    if (userCache[authorId]) {
+      return userCache[authorId];
+    }
+
+    try {
+      // Gọi API để lấy thông tin người gửi
+      const response = await axios.get(
+        `http://localhost:3001/user/${authorId}`, // API để lấy thông tin user
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const user = response.data;
+      userCache[authorId] = user; // Lưu vào cache
+      return user;
+    } catch (error) {
+      console.error("Error fetching author:", error);
+      return { firstName: "Unknown", lastName: "" }; // Fallback nếu API lỗi
+    }
+  };
 
   // Callback để nhận tin nhắn mới
-  const onMessageReceived = (newMessage) => {
-    setMessages((prevMessages) => [ ...prevMessages, newMessage]);
+  const onMessageReceived = async (newMessage) => {
+    // Nếu thiếu `author`, lấy thông tin từ server
+    if (!newMessage.author && newMessage.authorId) {
+      newMessage.author = await fetchAuthor(newMessage.authorId);
+    }
+
+    // Cập nhật danh sách tin nhắn
+    setMessages((prevMessages) => [...prevMessages, newMessage]);
   };
 
   // Fetch tin nhắn khi component mount
@@ -66,11 +98,19 @@ const GroupChat = ({ groupId, token }) => {
     }
   }, [groupId, token]); // Kết nối lại nếu groupId hoặc token thay đổi
 
+  // Gửi tin nhắn
+  const handleSendMessage = () => {
+    if (socket && message.trim()) {
+      socket.emit("sendMessage", { groupId, content: message });
+      setMessage(""); // Reset input
+    }
+  };
+
   return (
     <div>
       <h2>Group Chat: {groupId}</h2>
 
-      {/* Message List */}
+      {/* Danh sách tin nhắn */}
       <div
         style={{
           maxHeight: "300px",
@@ -83,14 +123,14 @@ const GroupChat = ({ groupId, token }) => {
         {messages.map((msg, index) => (
           <div key={index} style={{ marginBottom: "8px" }}>
             <strong>
-              {msg.author?.firstName} {msg.author?.lastName}:
+              {msg.author?.firstName || "Unknown"} {msg.author?.lastName || ""}:
             </strong>{" "}
             {msg.content}
           </div>
         ))}
       </div>
 
-      {/* Send Message Form */}
+      {/* Form gửi tin nhắn */}
       <div>
         <input
           type="text"
@@ -100,6 +140,7 @@ const GroupChat = ({ groupId, token }) => {
           style={{ width: "80%", padding: "10px" }}
         />
         <button
+          onClick={handleSendMessage}
           style={{ padding: "10px 15px", marginLeft: "10px" }}
         >
           Send

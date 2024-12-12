@@ -40,24 +40,38 @@ export class ChatController {
         if (!currentUser) {
           throw new HttpException('User not found or not authenticated', HttpStatus.UNAUTHORIZED);
         }
-      
         const currentUserID = new Types.ObjectId(currentUser._id as string);
+
         const message = await this.chatService.sendMessageToGroup(groupId, currentUserID, sendMessageDto);
-        const messageSee = sendMessageDto;
-      
-        const groupParticipants = await this.chatService.getMemberGroup(groupId);
+
+        const currentAuthor = {
+          firstName: currentUser.firstName,
+          lastName: currentUser.lastName,
+          avatar: currentUser.avatar, 
+        };
+
+        const messageSee = {
+          ...sendMessageDto,
+          author: currentAuthor,
+        };
+
         
+        const groupParticipants = await this.chatService.getMemberGroup(groupId);
+
         if (!Array.isArray(groupParticipants)) {
           throw new HttpException('Invalid group participants data', HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        groupParticipants.forEach(participant => {
+
+       
+        groupParticipants.forEach((participant) => {
           if (participant._id.toString() !== currentUser._id.toString()) {
             this.eventService.notificationToUser(participant._id.toString(), 'newmessage', messageSee);
           }
         });
-      
+
         return message;
       }
+
       
     @Get('getmessagegroup/:groupId')
     async getMessageGroup(

@@ -20,7 +20,7 @@ import { EventGeteWay } from './event.geteway';
 
     notificationToUser(userId: string, event: string, data: any) {
         console.log(`Notifying user ${userId} with event ${event} and data:`, data);
-        this.socket.server.to(`user:${userId}`).emit(event, data);
+        this.socket.server.to(`user:${userId}`).emit(event, data,);
     }
 
 }
