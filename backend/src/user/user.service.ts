@@ -9,7 +9,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model,Types } from 'mongoose';
 import { User } from './schemas/user.schemas';
 import { RegisterDto } from './dto/register.dto';
 import * as bcrypt from 'bcryptjs';
@@ -353,8 +353,19 @@ export class UserService {
     }
     return await user.save();
   }
-  
-
-
+  async savePost(userId: string, postId: string): Promise<User> {
+    const bookmarks = await this.UserModel.findById(userId);
+    if (!bookmarks) {
+      throw new Error('User not found');
+    }
+    await bookmarks.save();
+    await this.UserModel.findByIdAndUpdate(userId, {
+      $push: { bookmarks: postId},
+    });
+    return bookmarks;
+  }
+  async getSavedPosts(userId: string): Promise<User> {
+    return this.UserModel.findById(userId).populate('bookmarks');
+  }
 }
 

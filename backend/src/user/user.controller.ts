@@ -164,5 +164,15 @@ export class UserController {
     return this.userService.uploadCoverImage(uploadCoverImgDto, currentUser._id.toString(),  files.files);
   }
 
+  @Post(':postId/bookmark')
+  @UseGuards(AuthGuardD)
+  async savePost(@CurrentUser() currentUser: User, @Param('postId') postId: string) {
+    return this.userService.savePost(currentUser._id.toString(), postId);
+  }
+  @Get(':userId/bookmark')
+  @UseGuards(AuthGuardD)
+  async getSavedPosts(@CurrentUser() currentUser: User) {
+    return this.userService.getSavedPosts(currentUser._id.toString());
+  }
 
 }

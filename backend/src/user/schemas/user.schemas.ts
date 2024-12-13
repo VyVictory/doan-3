@@ -34,6 +34,9 @@ export class User extends Document {
   @Prop()
   birthday: string;
 
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Post' }] })
+  bookmarks: Types.ObjectId[];
+
   @Prop({ type: Types.ObjectId, ref: 'User' })
   friends: Types.ObjectId[];
 
