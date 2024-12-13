@@ -2,18 +2,19 @@ import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 export default function MenuOtherProfiles() {
     const location = useLocation();
+    const basePath = location.pathname.split('/').slice(0, 3).join('/');
     const categories = [
         {
             name: 'Bài đăng',
-            href: ''
+            href: `${basePath}`
         },
         {
             name: 'Giới thiệu',
-            href: 'about'
+            href: `${basePath}/about`
         },
         {
             name: 'Bạn bè',
-            href: 'friends'
+            href: `${basePath}/friends`
         },
     ];
     const currentTab = categories.find((category) => location.pathname === category.href);

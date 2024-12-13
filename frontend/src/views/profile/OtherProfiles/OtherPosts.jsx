@@ -33,7 +33,7 @@ export default function OtherPosts() {
         <div>
             <p className='text-xl '>Bài viết của {dataProfile.lastName} {dataProfile.firstName}</p>
             <div className='grid gap-3'>
-                <AllPostOther user={id} />
+                <AllPostOther user={dataProfile} />
             </div>
         </div>
     )
