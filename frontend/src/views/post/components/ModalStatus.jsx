@@ -18,7 +18,7 @@ export default function ModalStatus({ user }) {
     const [visibility, setVisibility] = useState('Tất cả mọi người'); // State for visibility option
     const [privacy, setPrivacy] = useState('public');
     const [showDropdown, setShowDropdown] = useState(false); // State to toggle dropdown visibility
-
+    const [alertVisible, setAlertVisible] = useState(false);
     const [formData, setFormData] = useState({
         content: '',
         img: '',
@@ -98,29 +98,44 @@ export default function ModalStatus({ user }) {
             );
 
             if (response.status === 201) {
-                alert('Đăng post thành công!');
-                redirect('/')
-                setOpen(false)
+                setAlertVisible(true);
+                // setTimeout(() => {
+                //     setAlertVisible(false);
+                // }, 5000);
+
+                setTimeout(() => {
+                    setOpen(false);
+                    window.location.reload()
+                }, 1000);
+
             } else {
                 alert('Có lỗi xảy ra, vui lòng thử lại.');
             }
             // Xử lý thành công (ví dụ: chuyển hướng sang trang khác)
         } catch (error) {
             console.error('Lỗi:', error.response ? error.response.data : error.message);
-        } finally {
-            window.location.reload()
         }
 
     }
 
     return (
         <dialog id="my_modal_1" className="modal">
+
             <form className="modal-box"
                 method='POST'
                 onSubmit={handleSubmit}
             >
                 {/* Header */}
+                {alertVisible && (
+                    <div role="alert" className="alert alert-success">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>Đăng post thành công!</span>
+                    </div>
+                )}
                 <div className="border-b border-gray-300 py-3 px-4 flex justify-center">
+
                     <strong className="text-black text-xl"
                         style={{
                             animation: 'colorWave 1s linear infinite',
@@ -245,6 +260,7 @@ export default function ModalStatus({ user }) {
                     >
                         Đăng bài
                     </button>
+
                 </div>
             </form>
         </dialog>

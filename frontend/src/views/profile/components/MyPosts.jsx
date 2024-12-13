@@ -1,5 +1,5 @@
 import React from 'react'
-import Post from '../../post/PostPersonal.jsx'
+import PostPersonal from '../../post/PostPersonal.jsx'
 import PostStatus from '../../post/components/PostStatus.jsx'
 import { useState, useEffect } from 'react'
 import { profileUserCurrent } from '../../../service/ProfilePersonal.js'
@@ -9,11 +9,11 @@ import { profileUserCurrent } from '../../../service/ProfilePersonal.js'
 
 export default function MyPosts() {
     const [userLogin, setUserLogin] = useState({})
-
+    
     useEffect(() => {
         const fetchdata = async () => {
             const responseUserPersonal = await profileUserCurrent()
-            setUserLogin(responseUserPersonal)
+            setUserLogin(responseUserPersonal.data)
         }
         fetchdata()
     }, []);
@@ -23,7 +23,7 @@ export default function MyPosts() {
             <div>
                 <p className='text-xl '>Bài viết của tôi</p>
                 <div className='grid gap-3'>
-                    <Post user={userLogin} />
+                    <PostPersonal user={userLogin} />
                 </div>
             </div>
         </div>

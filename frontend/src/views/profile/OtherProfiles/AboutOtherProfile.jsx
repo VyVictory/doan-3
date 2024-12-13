@@ -1,21 +1,19 @@
-
-import { PencilSquareIcon } from '@heroicons/react/24/solid'
-
-import ModalUpdateProfile from './ModalUpdateProfile'
+import React from 'react'
 import { useEffect, useState } from 'react';
-import { profileUserCurrent } from '../../../service/ProfilePersonal';
-export default function About() {
-    const [open, setOpen] = useState(false);
+import { OtherProfile } from '../../../service/OtherProfile';
+import { useParams } from 'react-router-dom';
+
+export default function AboutOtherProfile() {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
     const [dataProfile, setDataProfile] = useState({})
-
+    const { id } = useParams();
     useEffect(() => {
 
         const fetchdata = async () => {
             try {
                 setLoading(true)
-                const response = await profileUserCurrent();
+                const response = await OtherProfile(id);
                 setDataProfile(response.data)
             }
             catch (error) {
@@ -26,16 +24,12 @@ export default function About() {
             }
         }
         fetchdata()
-    }, [])
+    }, [id])
+
     return (
         <div className='w-full py-4 px-10 bg-gradient-to-r from-[#dbd3d3] to-[#b6a8a8] rounded-lg border-[1px] shadow-lg border-[#000000]'>
             <div className="px-4 sm:px-0 flex justify-between">
                 <h3 className="text-2xl font-semibold leading-7">Thông tin cá nhân</h3>
-                <button
-                    onClick={() => document.getElementById('my_modal_1').showModal()}>
-                    <PencilSquareIcon className='size-8' />
-                </button>
-                <ModalUpdateProfile user={dataProfile} />
             </div>
             <div className="mt-6 border-t-[1px] border-gray-100">
                 <dl className="divide-y divide-gray-500">

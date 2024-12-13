@@ -1,38 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { HandThumbUpIcon, ChatBubbleLeftIcon, ShareIcon, HandThumbDownIcon } from '@heroicons/react/24/outline';
 import AVTUser from './AVTUser';
-import authToken from '../../components/authToken';
 import { handleLike, handleDisLike, handleUnDisLike, handleUnLike } from '../../service/PostService';
 import 'animate.css';
-import DropdownPostPersonal from './components/DropdownPostPersonal';
 import { format, differenceInMinutes, differenceInHours, differenceInDays } from 'date-fns';
-
-
-export default function PostPersonal({ user }) {
+import { getAllOtherPosts } from '../../service/OtherProfile';
+import { profileUserCurrent } from '../../service/ProfilePersonal';
+export default function AllPostOther({ user }) {
     const [posts, setPosts] = useState([]);
-
-
+    const [userLogin, setUserLogin] = useState({})
+    const { id } = useParams();
     useEffect(() => {
         const fetchdata = async () => {
-            axios.get('http://localhost:3001/post/crpost', {
-                headers: {
-                    Authorization: `Bearer ${authToken.getToken()}`, // Use your auth token provider
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(response => {
-                    //sort
-                    const sortedPosts = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-                    setPosts(sortedPosts);
-                })
-                .catch(error => {
-                    console.error("Error fetching post data:", error);
-                })
+            const response = await getAllOtherPosts(id)
+            const sortedPosts = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            setPosts(sortedPosts)
+            const responseUserPersonal = await profileUserCurrent()
+            setUserLogin(responseUserPersonal.data)
         }
         fetchdata()
-    }, []);
+    }, [id]);
 
     if (!posts.length) {
         return <span className="loading loading-spinner loading-lg"></span>;
@@ -41,16 +29,16 @@ export default function PostPersonal({ user }) {
     const handleLikeClick = async (postId) => {
         try {
             const post = posts.find(post => post._id === postId);
-            if (post.likes.includes(user._id)) {
+            if (post.likes.includes(userLogin._id)) {
                 // Optimistically update the UI
                 setPosts(posts.map(post =>
-                    post._id === postId ? { ...post, likes: post.likes.filter(id => id !== user._id) } : post
+                    post._id === postId ? { ...post, likes: post.likes.filter(id => id !== userLogin._id) } : post
                 ));
                 await handleUnLike(postId);
             } else {
                 // Optimistically update the UI
                 setPosts(posts.map(post =>
-                    post._id === postId ? { ...post, likes: [...post.likes, user._id], dislikes: post.dislikes.filter(id => id !== user._id) } : post
+                    post._id === postId ? { ...post, likes: [...post.likes, userLogin._id], dislikes: post.dislikes.filter(id => id !== userLogin._id) } : post
                 ));
                 await handleLike(postId);
                 await handleUnDisLike(postId); // Undislike when liking
@@ -63,16 +51,16 @@ export default function PostPersonal({ user }) {
     const handleDislikeClick = async (postId) => {
         try {
             const post = posts.find(post => post._id === postId);
-            if (post.dislikes.includes(user._id)) {
+            if (post.dislikes.includes(userLogin._id)) {
                 // Optimistically update the UI
                 setPosts(posts.map(post =>
-                    post._id === postId ? { ...post, dislikes: post.dislikes.filter(id => id !== user._id) } : post
+                    post._id === postId ? { ...post, dislikes: post.dislikes.filter(id => id !== userLogin._id) } : post
                 ));
                 await handleUnDisLike(postId);
             } else {
                 // Optimistically update the UI
                 setPosts(posts.map(post =>
-                    post._id === postId ? { ...post, dislikes: [...post.dislikes, user._id], likes: post.likes.filter(id => id !== user._id) } : post
+                    post._id === postId ? { ...post, dislikes: [...post.dislikes, userLogin._id], likes: post.likes.filter(id => id !== userLogin._id) } : post
                 ));
                 await handleDisLike(postId);
                 await handleUnLike(postId); // Unlike when disliking
@@ -107,12 +95,11 @@ export default function PostPersonal({ user }) {
             case 'friends':
                 return <span className="text-green-500">bạn bè</span>;
             case 'private':
-                return <span className="text-rose-700">chỉ mình tôi</span>;
+                return <span className="text-black">chỉ mình tôi</span>;
             default:
                 return <span>{privacy}</span>;
         }
     };
-
     return (
         <>
             {
@@ -133,25 +120,25 @@ export default function PostPersonal({ user }) {
                                     </div>
                                     <p>{post.content}</p>
                                 </article>
-                                <DropdownPostPersonal />
+                                {/* <DropdownPostPersonal /> */}
                             </div>
                             {post.img.length > 0 && (
                                 <img className='rounded-xl max-h-[300px]' src={post.img[0]} alt="Post visual" />
                             )}
 
                             {/* <img className='rounded-xl w-full max-h-[400px]'
-                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnzOw4JGD9VHLQ46a6nQS4uhdw9QFlA7s0Mg&s" alt='' /> */}
+                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnzOw4JGD9VHLQ46a6nQS4uhdw9QFlA7s0Mg&s" alt='' /> */}
                             <div className='flex justify-between'>
                                 <div className='flex gap-2'>
                                     <button onClick={() => handleLikeClick(post._id)} className={"flex items-end gap-1"}>
-                                        {post.likes.includes(user._id)
+                                        {post.likes.includes(userLogin._id)
                                             ? <HandThumbUpIcon className="size-5 animate__heartBeat" color='blue' />
                                             : <HandThumbUpIcon className="size-5 hover:text-blue-700 " />
                                         }
                                         <span>{post.likes.length}</span>
                                     </button>
                                     <button onClick={() => handleDislikeClick(post._id)} className={"flex items-end gap-1 "}>
-                                        {post.dislikes.includes(user._id)
+                                        {post.dislikes.includes(userLogin._id)
                                             ? <HandThumbDownIcon className="size-5 animate__heartBeat" color='red' />
                                             : <HandThumbDownIcon className="size-5 hover:text-red-700" />
                                         }
