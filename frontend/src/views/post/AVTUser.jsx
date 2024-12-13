@@ -11,9 +11,9 @@ export default function AVTUser({ user }) {
                         src={`${user.avatar ? user.avatar : "https://th.bing.com/th/id/OIP.PKlD9uuBX0m4S8cViqXZHAHaHa?rs=1&pid=ImgDetMain"}`} alt='' />
                 </div>
             </div>
-            <ul tabIndex={0} className="dropdown-content menu bg-white border-2 rounded-box z-10 w-[350px] p-1 shadow">
+            {/* <ul tabIndex={0} className="dropdown-content menu bg-white border-2 rounded-box z-10 w-[350px] p-1 shadow">
                 <CardUser />
-            </ul>
+            </ul> */}
         </div >
 
     )

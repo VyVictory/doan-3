@@ -1,16 +1,6 @@
 import React from 'react'
-import { useState, useEffect } from 'react'
-import { profileUserCurrent } from '../../../service/ProfilePersonal'
-export default function HeadProfile() {
-    const [dataProfile, setDataProfile] = useState({})
 
-    useEffect(() => {
-        const fetchdata = async () => {
-            const response = await profileUserCurrent();
-            setDataProfile(response.data)
-        }
-        fetchdata()
-    }, [])
+export default function HeadOtherProfiles({ dataProfile }) {
     return (
         <div className=''>
             <div className=" h-[300px] z-0 grid bg-cover bg-no-repeat bg-[url('https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/anh-thien-nhien-22.jpg')]" style={{ backgroundPosition: '10%' }}></div>
@@ -20,6 +10,5 @@ export default function HeadProfile() {
                 <h1 className='font-bold text-2xl text-center mt-5'>{dataProfile && dataProfile.lastName} {dataProfile && dataProfile.firstName}</h1>
             </div>
         </div>
-
     )
 }

@@ -2,7 +2,6 @@ import React from 'react'
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react';
-import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon } from '@heroicons/react/24/outline'
 import authToken from '../../components/authToken';
 export default function Login() {
     const [formData, setFormData] = useState({
@@ -30,7 +29,7 @@ export default function Login() {
                     // Store the authentication token
                     localStorage.setItem('token', response.data.accessToken);
                     authToken.setToken(response.data.accessToken);
-                    alert('Đăng nhập thành công! ');
+
                     navigate('/');
                 }
             } catch (error) {
@@ -87,9 +86,9 @@ export default function Login() {
                 </div>
                 <button type="submit" className="btn btn-primary w-full mb-8">Đăng nhập</button>
                 <div className='flex justify-center items-center mb-2'>
-                    <ChevronDoubleLeftIcon className='size-5' />
+
                     <div>hoặc đăng nhập bằng</div>
-                    <ChevronDoubleRightIcon className='size-5' />
+
                 </div>
                 <div className='grid justify-center mb-4'>
                     <div className='border-2 p-2 rounded-xl border-yellow-400 font-semibold flex items-center gap-2'>

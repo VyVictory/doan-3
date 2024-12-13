@@ -1,38 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { HandThumbUpIcon, ChatBubbleLeftIcon, ShareIcon, HandThumbDownIcon } from '@heroicons/react/24/outline';
 import AVTUser from './AVTUser';
-import authToken from '../../components/authToken';
 import { handleLike, handleDisLike, handleUnDisLike, handleUnLike } from '../../service/PostService';
 import 'animate.css';
-import DropdownPostPersonal from './components/DropdownPostPersonal';
 import { format, differenceInMinutes, differenceInHours, differenceInDays } from 'date-fns';
+import { getAllOtherPosts } from '../../service/OtherProfile';
 
-
-export default function PostPersonal({ user }) {
+export default function AllPostOther({ user }) {
     const [posts, setPosts] = useState([]);
 
-
+    const { id } = useParams();
     useEffect(() => {
         const fetchdata = async () => {
-            axios.get('http://localhost:3001/post/crpost', {
-                headers: {
-                    Authorization: `Bearer ${authToken.getToken()}`, // Use your auth token provider
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(response => {
-                    //sort
-                    const sortedPosts = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-                    setPosts(sortedPosts);
-                })
-                .catch(error => {
-                    console.error("Error fetching post data:", error);
-                })
+            const response = await getAllOtherPosts(id)
+            setPosts(response.data)
         }
         fetchdata()
-    }, []);
+    }, [id]);
 
     if (!posts.length) {
         return <span className="loading loading-spinner loading-lg"></span>;
@@ -112,7 +97,6 @@ export default function PostPersonal({ user }) {
                 return <span>{privacy}</span>;
         }
     };
-
     return (
         <>
             {
@@ -133,14 +117,14 @@ export default function PostPersonal({ user }) {
                                     </div>
                                     <p>{post.content}</p>
                                 </article>
-                                <DropdownPostPersonal />
+                                {/* <DropdownPostPersonal /> */}
                             </div>
                             {post.img.length > 0 && (
                                 <img className='rounded-xl max-h-[300px]' src={post.img[0]} alt="Post visual" />
                             )}
 
                             {/* <img className='rounded-xl w-full max-h-[400px]'
-                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnzOw4JGD9VHLQ46a6nQS4uhdw9QFlA7s0Mg&s" alt='' /> */}
+                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnzOw4JGD9VHLQ46a6nQS4uhdw9QFlA7s0Mg&s" alt='' /> */}
                             <div className='flex justify-between'>
                                 <div className='flex gap-2'>
                                     <button onClick={() => handleLikeClick(post._id)} className={"flex items-end gap-1"}>

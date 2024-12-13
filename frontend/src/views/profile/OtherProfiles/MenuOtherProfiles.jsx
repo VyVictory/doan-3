@@ -1,20 +1,19 @@
-
+import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
-
-export default function MenuProfile() {
+export default function MenuOtherProfiles() {
     const location = useLocation();
     const categories = [
         {
             name: 'Bài đăng',
-            href: '/myprofile'
+            href: ''
         },
         {
             name: 'Giới thiệu',
-            href: '/myprofile/about'
+            href: 'about'
         },
         {
             name: 'Bạn bè',
-            href: '/myprofile/friends'
+            href: 'friends'
         },
     ];
     const currentTab = categories.find((category) => location.pathname === category.href);
