@@ -63,23 +63,13 @@ export default function FormUpdateProfile() {
         validateField(name, value);
     };
 
-    const handleFileAvtChange = (e) => {
-        const file = e.target.files[0];
-        setFormData({ ...formData, profilePicture: file });
-    };
-
-    const handleFileCoverChange = (e) => {
-        const file = e.target.files[0];
-        setFormData({ ...formData, coverphoto: file });
-    };
-
 
 
     return (
         <form>
             <div className="space-y-12">
                 <h3 className="font-bold text-2xl  my-5 text-center">Cập nhật thông tin</h3>
-                <div className="col-span-full">
+                {/* <div className="col-span-full">
                     <label htmlFor="cover-photo" className="block text-sm font-medium leading-6 text-gray-900">
                         Ảnh bìa
                     </label>
@@ -92,7 +82,7 @@ export default function FormUpdateProfile() {
                             />
                         ) : (
                             <div className="flex items-center justify-center h-full">
-                                {/* <MdCloudUpload className="text-4xl text-gray-400" /> */}
+                                
                                 <PhotoIcon className="size-[80%] text-gray-400" />
                             </div>
                         )}
@@ -118,7 +108,7 @@ export default function FormUpdateProfile() {
                             />
                         ) : (
                             <div className="flex items-center justify-center h-full">
-                                {/* <MdCloudUpload className="text-4xl text-gray-400" /> */}
+                              
                                 <CloudArrowUpIcon className="size-[80%] text-gray-400" />
                             </div>
                         )}
@@ -134,7 +124,7 @@ export default function FormUpdateProfile() {
                             className="absolute bottom-2 right-2 bg-white p-2 rounded-full shadow-md"
                             aria-label="Take photo"
                         >
-                            {/* <FaCamera className="text-gray-600" /> */}
+                        
                             <CameraIcon className=" size-6 text-gray-600" />
                         </button>
                     </div>
@@ -157,7 +147,7 @@ export default function FormUpdateProfile() {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
                 <div className="border-b border-gray-900/10 pb-12">
 
@@ -269,7 +259,7 @@ export default function FormUpdateProfile() {
                                 </select>
                             </div>
                         </div>
-                        <div className="col-span-full">
+                        {/* <div className="col-span-full">
                             <label htmlFor="country" className="block text-sm font-medium leading-6 text-gray-900">
                                 Tình trạng
                             </label>
@@ -288,7 +278,7 @@ export default function FormUpdateProfile() {
                                     <option>Kết hôn</option>
                                 </select>
                             </div>
-                        </div>
+                        </div> */}
                         <div className="col-span-full">
                             <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900">
                                 Bạn đang ở
@@ -311,7 +301,7 @@ export default function FormUpdateProfile() {
 
             <div className="modal-action mt-6 flex items-center justify-end gap-x-6">
                 <form method="dialog">
-                    <button type="btn" className="text-sm font-semibold leading-6 text-gray-900">
+                    <button type="btn" className="text-sm font-semibold rounded-md bg-red-600 px-3 py-2 text-white hover:bg-red-500">
                         Hủy
                     </button>
                 </form>

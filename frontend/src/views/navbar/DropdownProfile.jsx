@@ -24,7 +24,7 @@ export default function DropdownProfile({ user }) {
             <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
 
                 <li>
-                    <Link to={"user"} className="group flex w-full items-center gap-2 rounded-lg p-3 data-[focus]:bg-white/10 text-border">
+                    <Link to={"myprofile"} className="group flex w-full items-center gap-2 rounded-lg p-3 data-[focus]:bg-white/10 text-border">
                         <UserCircleIcon className='size-5' />
                         Trang cá nhân
                     </Link>

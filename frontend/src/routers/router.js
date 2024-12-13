@@ -14,22 +14,34 @@ import Friendinvitation from "../views/friend/friendinvitation.jsx";
 import Login from "../auth/login/index.jsx";
 import Register from "../auth/register/index.jsx";
 import LayoutSearch from "../views/search/layout.js";
+import OtherProfiles from "../views/profile/OtherProfiles/index.jsx";
+import AboutOtherProfile from "../views/profile/OtherProfiles/AboutOtherProfile.jsx";
+import OtherPosts from "../views/profile/OtherProfiles/OtherPosts.jsx";
 
 function routers() {
     return (
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Layout />}>
+
                     <Route index element={<Home />} />
+
                     <Route path="friends" element={<Myfriend />} >
                         <Route path="list" element={<Allfriend />} />
                         <Route path="requests" element={<Friendinvitation />} />
                     </Route>
-                    {/* <Route path="search" element={<Searchpage />} /> */}
-                    <Route path="user" element={<Personal />}>
+                    <Route path="user" element={<Personal />} />
+                    <Route path="search" element={<Searchpage />} />
+                    <Route path="myprofile" element={<Personal />}>
                         <Route index element={<MyPosts />} />
                         <Route path="about" element={<AboutProfile />} />
                         <Route path="friends" element={<FriendProfile />} />
+                    </Route>
+
+                    <Route path="user/:id" element={<OtherProfiles />}>
+                        <Route index element={<OtherPosts />} />
+                        <Route path="about" element={<AboutOtherProfile />} />
+                        {/* <Route path="friends" element={<FriendProfile />} /> */}
                     </Route>
                     {/* <Route path="*" element={<NoPage />} /> */}
                     <Route path="messenger" element={<Messenger />} />

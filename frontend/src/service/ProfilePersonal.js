@@ -7,10 +7,9 @@ export async function profileUserCurrent() {
                 Authorization: `Bearer ${authToken.getToken()}`
             }
         })
-        return request.data
+        return request
     } catch (error) {
-        return
-            // console.log(error)
+
     }
 
 }
