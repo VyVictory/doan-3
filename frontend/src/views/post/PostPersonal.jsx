@@ -107,7 +107,7 @@ export default function PostPersonal({ user }) {
             case 'friends':
                 return <span className="text-green-500">bạn bè</span>;
             case 'private':
-                return <span className="text-black">chỉ mình tôi</span>;
+                return <span className="text-rose-700">chỉ mình tôi</span>;
             default:
                 return <span>{privacy}</span>;
         }
