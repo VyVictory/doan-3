@@ -9,7 +9,7 @@ import { profileUserCurrent } from '../../../service/ProfilePersonal.js'
 
 export default function MyPosts() {
     const [userLogin, setUserLogin] = useState({})
-
+    
     useEffect(() => {
         const fetchdata = async () => {
             const responseUserPersonal = await profileUserCurrent()

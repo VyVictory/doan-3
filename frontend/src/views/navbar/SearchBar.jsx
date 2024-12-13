@@ -23,7 +23,7 @@ export default function SearchBar({ query }) {
 
     // Xử lý sự kiện khi nhấn nút xóa
     const handleClearSearch = () => {
-        setSearchTerm("");
+        setSearchTerm("/search");
     };
     return (
         <form action="" className="relative w-full justify-center">
@@ -39,7 +39,8 @@ export default function SearchBar({ query }) {
                     <XMarkIcon className="size-6 fill-black" />
                 </button>
             )}
-            <button className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" type="submit"><MagnifyingGlassIcon className='size-5 fill-black' /></button>
+            <a href={`/search?search=${searchTerm}`} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" type="submit"><MagnifyingGlassIcon className='size-5 fill-black' />
+            </a>
             {/* onChange={(e) => debounceSearch(e.target.value)}
              defaultValue={searchParams.get("query")?.toString()} */}
         </form >

@@ -13,6 +13,7 @@ import Allfriend from "../views/friend/Allfriend.jsx";
 import Friendinvitation from "../views/friend/friendinvitation.jsx";
 import Login from "../auth/login/index.jsx";
 import Register from "../auth/register/index.jsx";
+import LayoutSearch from "../views/search/layout.js";
 import OtherProfiles from "../views/profile/OtherProfiles/index.jsx";
 import AboutOtherProfile from "../views/profile/OtherProfiles/AboutOtherProfile.jsx";
 import OtherPosts from "../views/profile/OtherProfiles/OtherPosts.jsx";
@@ -29,8 +30,8 @@ function routers() {
                         <Route path="list" element={<Allfriend />} />
                         <Route path="requests" element={<Friendinvitation />} />
                     </Route>
+                    <Route path="user" element={<Personal />} />
                     <Route path="search" element={<Searchpage />} />
-
                     <Route path="myprofile" element={<Personal />}>
                         <Route index element={<MyPosts />} />
                         <Route path="about" element={<AboutProfile />} />
@@ -44,6 +45,9 @@ function routers() {
                     </Route>
                     {/* <Route path="*" element={<NoPage />} /> */}
                     <Route path="messenger" element={<Messenger />} />
+                    <Route path="/search" element={<LayoutSearch />}>
+                        <Route path="all" element={<Searchpage />} />
+                    </Route>
                 </Route>
                 <Route path="login" element={<Login />}>
                     {/* <Route path="*" element={<NoPage />} /> */}
