@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -159,7 +160,7 @@ export class UserService {
   }
 
   async FriendsRequest(senderID: string, ReceiverId: string) {
-    const exitingRequest = await this.FriendRequestModel.findById({ sender: senderID, receiver: ReceiverId })
+    const exitingRequest = await this.FriendRequestModel.findOne({ sender: senderID, receiver: ReceiverId })
     if (exitingRequest) {
       throw new ConflictException('request has been sent');
     }
@@ -171,46 +172,89 @@ export class UserService {
     return newRequest.save()
   }
 
-  async acceptRequestFriends(FriendsRequestId: string) {
-    //dầu tiên tìm yêu cầu kết bạn dựa trên ID Request
-    const friendRequest = await this.FriendRequestModel.findById({ FriendsRequestId })
+
+
+  async acceptRequestFriends(
+    currentUserId: string,
+    friendRequestId: string,
+  ): Promise<{ message: string }> {
+
+    const friendRequest = await this.FriendRequestModel.findById(friendRequestId);
     if (!friendRequest) {
-      throw new NotFoundException('no has Friends Request')
+      throw new NotFoundException('No friend request found');
     }
+  
     const { sender, receiver } = friendRequest;
-    // thim bạng vào list friend của người rửi và người nhặn
-    //cái nầy là thim dô người nhận 
-    await this.UserModel.findByIdAndUpdate(
-      receiver, {
-      $addToSet: { friends: sender }
+  
+
+    if (currentUserId !== receiver.toString()) {
+      throw new ForbiddenException('You are not authorized to accept this friend request');
     }
+  
+
+    await this.UserModel.findByIdAndUpdate(
+      receiver,
+      { $addToSet: { friends: sender } },
     );
+  
+
     await this.UserModel.findByIdAndUpdate(
       sender,
-      {
-        $addToSet: { friends: receiver }
-      }
+      { $addToSet: { friends: receiver } },
     );
-    await this.FriendRequestModel.findByIdAndDelete(FriendsRequestId);
-    return { message: 'friend request accepted successfully' }
+  
+    await this.FriendRequestModel.findByIdAndDelete(friendRequestId);
+  
+    return { message: 'Friend request accepted successfully' };
   }
+  
 
-  async rejectFriendRequest(FriendsRequestId: string) {
-    // Bước 1: Tìm yêu cầu kết bạn dựa trên ID
-    const friendRequest = await this.FriendRequestModel.findById(FriendsRequestId);
+  async rejectFriendRequest(
+    currentUserId: string, 
+    friendRequestId: string,
+  ): Promise<{ message: string }> {
+   
+    const friendRequest = await this.FriendRequestModel.findById(friendRequestId);
 
-    // Bước 2: Kiểm tra xem yêu cầu kết bạn có tồn tại không
     if (!friendRequest) {
       throw new NotFoundException('No such friend request found');
     }
+    const { receiver } = friendRequest;
+  
+    if (currentUserId !== receiver.toString()) {
+      throw new ForbiddenException('You are not authorized to reject this friend request');
+    }
+    await this.FriendRequestModel.findByIdAndDelete(friendRequestId);
 
-    // Bước 3: Xóa yêu cầu kết bạn
-    await this.FriendRequestModel.findByIdAndDelete(FriendsRequestId);
-
-    // Bước 4: Trả về thông báo thành công
     return { message: 'Friend request rejected successfully' };
   }
 
+  async removeFriendRequest(currentUserId: string, friendRequestId: string,): Promise<{ message: string }> {
+    const friendRequest = await this.FriendRequestModel.findById(friendRequestId);
+    if (!friendRequest) {
+      throw new NotFoundException('No such friend request found');
+    }
+    const sender = friendRequest.sender;
+    if (currentUserId !== sender.toString()) {
+      throw new ForbiddenException('You are not authorized to delete this friend request');
+    }
+    await this.FriendRequestModel.findByIdAndDelete(friendRequestId);
+    return { message: 'Friend request deleted successfully' };
+  }
+  
+  async unFriend(currentUserId: string, friendId: string, ): Promise<{ message: string }> {
+    await this.UserModel.findByIdAndUpdate(
+      currentUserId,
+      { $pull: { friends: friendId } },
+    );
+    await this.UserModel.findByIdAndUpdate(
+      friendId,
+      { $pull: { friends: currentUserId } },
+    );
+    return { message: 'Unfriended successfully' };
+  }
+
+  
   async updateUser(userId: string, updateData: any): Promise<User> {
     // Tìm người dùng theo ID
     const user = await this.UserModel.findById(userId);

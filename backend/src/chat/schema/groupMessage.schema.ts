@@ -34,7 +34,7 @@ export class GroupMessage extends Document {
   messages: {
     author: Types.ObjectId;
     content: string;
-    reading: Types.ObjectId[];
+    reading: Types.ObjectId[]; 
     img?: string;
     video?: string;
     createdAt: Date;

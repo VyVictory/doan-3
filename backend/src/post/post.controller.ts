@@ -32,6 +32,17 @@ export class PostController {
 
         return this.postService.createPost(createPostDto, currentUser._id.toString(), files.files);
     }
+
+    @Get('testOptionalGuard')
+    @UseGuards(OptionalAuthGuard)
+    testOptionalGuard(@CurrentUser() currentUser: User) {
+        console.log('Current User:', currentUser);
+        return currentUser;
+    }
+
+
+
+
     @Put(':id/like')
     @UseGuards(AuthGuardD)
     async likePost(@Param('id') id: string, @CurrentUser() currentUser: User) {
@@ -97,14 +108,14 @@ export class PostController {
     }
 
 
-    @Get(':userId')
-    @UseGuards(OptionalAuthGuard)
+    @Get('friend/:userId')
+    @UseGuards(AuthGuardD)
     async getPostsByUser(
         @Param('userId') userId: string,
         @CurrentUser() currentUser: User
     ) {
         try {
-            const posts = await this.postService.getPostsByUser(userId, currentUser._id.toString());
+            const posts = await this.postService.getPostsByUser(userId, currentUser._id.toString() || null);
             return posts;
         }   catch (error) {
             throw new HttpException('An error occurred while fetching posts  ????', HttpStatus.INTERNAL_SERVER_ERROR);

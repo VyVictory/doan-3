@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, Post, Put, UseGuards,HttpStatus, BadRequestException, Param, UseInterceptors, UploadedFiles } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, Post, Put, UseGuards,HttpStatus, BadRequestException, Param, UseInterceptors, UploadedFiles, Delete } from '@nestjs/common';
 import { UserService } from './user.service';
 import { RegisterDto } from './dto/register.dto';
 import { User } from './schemas/user.schemas';
@@ -163,6 +163,44 @@ export class UserController {
   ){
     return this.userService.uploadCoverImage(uploadCoverImgDto, currentUser._id.toString(),  files.files);
   }
+
+
+  @Post('friendrequest/:userId')
+  @UseGuards(AuthGuardD)
+  async friendRequest(
+    @CurrentUser() currentUser: User,
+    @Param('userId') userId: string,
+  ){
+    return this.userService.FriendsRequest(currentUser._id.toString(), userId);
+  }
+
+  @Post('acceptfriend/:friendRequestId')
+  @UseGuards(AuthGuardD)
+  async acceptFriend(
+    @CurrentUser() currentUser: User,
+    @Param('friendRequestId') friendRequestId: string,
+  ){
+    return this.userService.acceptRequestFriends(currentUser._id.toString(), friendRequestId);
+  }
+
+  @Post('rejectFriendRequest/:friendRequestId')
+  @UseGuards(AuthGuardD)
+  async rejectFriendRequest(
+    @CurrentUser() currentUser: User,
+    @Param('friendRequestId') friendRequestId: string,
+  ){
+    return this.userService.rejectFriendRequest(currentUser._id.toString(), friendRequestId);
+  }
+
+    @Delete('unfriend/:friendId')
+    @UseGuards(AuthGuardD)
+    async unfriend(
+      @CurrentUser() currentUser: User,
+      @Param('friendId') friendId: string,
+    ){
+      return this.userService.unFriend(currentUser._id.toString(), friendId);
+    }
+
 
 
 }
