@@ -42,7 +42,10 @@ export class CommentService {
     const saveCMT = await newCmt.save();
     await this.postModel.findByIdAndUpdate(
       postId,
-      { $push: { comments: saveCMT._id } },
+      { $push: { comments: saveCMT._id }, 
+        $inc: { commentsCount: 1 }
+      },
+    
       { new: true }
     );
     return saveCMT;
@@ -76,6 +79,16 @@ export class CommentService {
     if (!deletedComment) {
       throw new NotFoundException(`Bình luận có ID "${id}" không tồn tại`);
     }
+
+    await this.postModel.findByIdAndUpdate(
+      deletedComment.post,
+      {
+        $pull: { comments: id }, 
+        $inc: { commentsCount: -1 }, 
+      },
+      { new: true },
+    );
+
     return deletedComment;
   }
 

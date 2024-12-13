@@ -2,7 +2,7 @@ import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Types, Document } from 'mongoose';
 
 @Schema({
-  timestamps: true, // Tự động thêm createdAt và updatedAt
+  timestamps: true, 
 })
 export class Post extends Document {
 
@@ -20,6 +20,12 @@ export class Post extends Document {
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Comment' }] }) 
   comments: Types.ObjectId[];
+
+  @Prop({ type: Number, default: 0 }) 
+  likesCount: number;
+
+  @Prop({ type: Number, default: 0 })
+  commentsCount: number;
 
   @Prop({ type: [String], default: [] }) 
   img: string[];

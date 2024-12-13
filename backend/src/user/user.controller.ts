@@ -13,6 +13,7 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { ResetPasswordDto } from './dto/resetPassword.dto';
 import { UploadAvatarDto } from './dto/uploadAvartar.dto';
 import { UploadCoverImgDto } from './dto/uploadCoverImg.dto';
+import { OptionalAuthGuard } from './guard/optional.guard';
 
 @Controller('user')
 export class UserController {
@@ -43,6 +44,8 @@ export class UserController {
     console.log(user);
     return user; 
   }
+
+
 
   @Put('update')
   @UseGuards(AuthGuardD)

@@ -5,7 +5,7 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CreatePostDto } from './dto/createpost.dto';
 import { CurrentUser } from '../user/decorator/currentUser.decorator';
 import { User } from '../user/schemas/user.schemas';
-import { get } from 'http';
+import { OptionalAuthGuard } from '../user/guard/optional.guard';
 
 @Controller('post')
 export class PostController {
@@ -69,21 +69,16 @@ export class PostController {
         return await this.postService.undislikePost(id, currentUser._id.toString());
     }
 
-    @UseGuards(AuthGuardD)
+   
     @Get('crpost')
+    @UseGuards(AuthGuardD)
     async getCurrentPost(
         @CurrentUser() currentUser: User,
     ) {
         return this.postService.findPostCurrentUser(currentUser._id.toString())
     }
-    @UseGuards(AuthGuardD)
+ 
 
-    // @Get('PostList')
-    // async getPostList(
-    //     @CurrentUser() currentUser: User,
-    // ) {
-    //     return this.postService.findPostsPublicFriend(currentUser._id.toString())
-    // }
 
     @Get(':postId/privacy')
     @UseGuards(AuthGuardD)
@@ -94,9 +89,16 @@ export class PostController {
         return this.postService.findPostPrivacy(postId, currentUser._id.toString());
     }
 
+    @Get('getHomeFeed')
+    @UseGuards(AuthGuardD)
+    async getHomeFeed(@CurrentUser() currentUser: User) {
+      const currentUserId = currentUser ? currentUser._id.toString() : undefined;
+      return this.postService.getHomeFeed(currentUserId);
+    }
+
 
     @Get(':userId')
-    @UseGuards(AuthGuardD)
+    @UseGuards(OptionalAuthGuard)
     async getPostsByUser(
         @Param('userId') userId: string,
         @CurrentUser() currentUser: User
@@ -104,12 +106,10 @@ export class PostController {
         try {
             const posts = await this.postService.getPostsByUser(userId, currentUser._id.toString());
             return posts;
-        } catch (error) {
-            throw new HttpException('An error occurred while fetching posts', HttpStatus.INTERNAL_SERVER_ERROR);
+        }   catch (error) {
+            throw new HttpException('An error occurred while fetching posts  ????', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
 
 
 }

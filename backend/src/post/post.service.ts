@@ -8,6 +8,7 @@ import { CreatePostDto } from './dto/createpost.dto';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { settingPrivacyDto } from './dto/settingPrivacy.dto'; 
 import { UpdatePostDto } from './dto/updatePost.dto';
+import { PostF } from './interface/PostHomeFeed.interface';
 
 
 @Injectable()
@@ -91,36 +92,41 @@ export class PostService {
 
         return { message: 'Post deleted successfully' };
     }
+
+
     async likePost(postId: string, userId: string): Promise<Post> {
-        const post = await this.PostModel.findById(postId);
-    
+        const post = await this.PostModel.findByIdAndUpdate(
+          postId,
+          {
+            $addToSet: { likes: userId },
+            $inc: { likesCount: 1 }, 
+          },
+          { new: true },
+        );
+      
         if (!post) {
-            throw new NotFoundException(`Bài viết có ID "${postId}" không tồn tại`);
+          throw new NotFoundException(`Bài viết có ID "${postId}" không tồn tại`);
         }
-    
-        if (post.likes.includes(userId)) {
-            throw new HttpException('Bạn đã thích bài viết này', HttpStatus.BAD_REQUEST);
-        }
-    
-        post.likes.push(userId);
+        return post;
+      }
 
-        return await post.save();
-    }
-    async unlikePost(postId: string, userId: string): Promise<Post> {
-        const post = await this.PostModel.findById(postId);
-
+      async unlikePost(postId: string, userId: string): Promise<Post> {
+        const post = await this.PostModel.findByIdAndUpdate(
+          postId,
+          {
+            $pull: { likes: userId },
+            $inc: { likesCount: -1 }, 
+          },
+          { new: true }, 
+        );
+      
         if (!post) {
-            throw new NotFoundException(`Bài viết có ID "${postId}" không tồn tại`);
+          throw new NotFoundException(`Bài viết có ID "${postId}" không tồn tại`);
         }
-    
-        if (!post.likes.includes(userId)) {
-            throw new HttpException('Bạn đã không thích bài viết này', HttpStatus.BAD_REQUEST);
-        }
-    
-        post.likes = post.likes.filter(like => like !== userId);
-
-        return await post.save();
-    }
+      
+        return post;
+      }
+      
     async dislikePost(postId: string, userId: string): Promise<Post> {
         const post = await this.PostModel.findById(postId);
 
@@ -258,7 +264,7 @@ export class PostService {
     }
     
 
-    async getPostsByUser(userId: string, currentUserId: string): Promise<Post[]> {
+    async getPostsByUser(userId: string, currentUserId?: string): Promise<Post[]> {
         try {
             const posts = await this.PostModel.find({ author: userId });
     
@@ -292,11 +298,55 @@ export class PostService {
             return filteredPosts.filter((post) => post !== null);
         } catch (error) {
             console.error('Error getting posts by user:', error);
-            throw new HttpException('An error occurred while fetching posts', HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new HttpException('An error occurred while fetching posts async getpostbyuser', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
-    //save delete edit post
-    //like dislike post
+
+    async getHomeFeed(userId: string): Promise<PostF[]> {
+        try {
+          const user = await this.UserModel.findById(userId).populate('friends').exec();
+          if (!user) {
+            throw new NotFoundException('User not found');
+          }
+          
+          const friends = Array.isArray(user.friends) ? user.friends.map(friend => friend._id) : [];
+          const conditions: Array<any> = [
+            { privacy: 'public' },
+            { privacy: 'specific', allowedUsers: userId },
+            { $or: [
+                { privacy: 'public' },
+                { privacy: 'specific', allowedUsers: userId },
+                { author: { $in: friends } }
+            ]}
+        ];
+      
+          const posts = await this.PostModel.find({ $or: conditions })
+            .populate('author', 'firstName lastName')
+            .populate('likes', '_id')
+            .populate('comments', '_id')
+            .lean()
+            .exec();
+      
+            const scoredPosts = posts.map((post) => {
+                const postObj = typeof post.toObject === 'function' ? post.toObject() : post; 
+                const timeSincePosted = (Date.now() - new Date(postObj.createdAt).getTime()) / (1000 * 60 * 60);
+                const userInterest = friends.some((friend) => friend.toString() === postObj.author.toString()) ? 1.5 : 1;
+                const engagement = postObj.likes.length * 3 + postObj.comments.length * 5;
+                const timeDecay = 1 / (1 + timeSincePosted);
+                const contentQuality = postObj.privacy === 'public' ? 1 : 0.8;
+              
+                const rankingScore = userInterest * (engagement + contentQuality) * timeDecay;
+                return { ...postObj, rankingScore };
+              });
+      
+          scoredPosts.sort((a, b) => b.rankingScore - a.rankingScore);
+      
+          return scoredPosts
+        } catch (error) {
+          console.error('Error in getHomeFeed:', error);
+          throw new HttpException('An error occurred while fetching posts', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+      }
+      
     
 }
