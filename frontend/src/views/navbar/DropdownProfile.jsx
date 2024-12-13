@@ -19,7 +19,7 @@ export default function DropdownProfile({ user }) {
                 <img
                     className='rounded-full aspect-square w-12'
                     alt="Profile"
-                    src={`${user.avatar ? user.avatar : "https://th.bing.com/th/id/OIP.PKlD9uuBX0m4S8cViqXZHAHaHa?rs=1&pid=ImgDetMain"}`} />
+                    src={`${user && user.avatar ? user.avatar:  "https://th.bing.com/th/id/OIP.PKlD9uuBX0m4S8cViqXZHAHaHa?rs=1&pid=ImgDetMain"}`} />
             </div>
             <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
 
