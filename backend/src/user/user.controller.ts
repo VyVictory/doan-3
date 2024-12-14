@@ -201,6 +201,14 @@ export class UserController {
   ){
     return this.userService.rejectFriendRequest(currentUser._id.toString(), friendRequestId);
   }
+  
+  @Get('getMyFriendRequest')
+  @UseGuards(AuthGuardD)
+  async getMyFriendRequest(
+    @CurrentUser() currentUser: User,
+  ){
+    return this.userService.getMyFriendRequest(currentUser._id.toString());
+  }
 
     @Delete('unfriend/:friendId')
     @UseGuards(AuthGuardD)
@@ -210,6 +218,14 @@ export class UserController {
     ){
       return this.userService.unFriend(currentUser._id.toString(), friendId);
     }
+
+    // @Get('getMyFriend')
+    // @UseGuards(AuthGuardD)
+    // async getMyFriend(
+    //   @CurrentUser() currentUser: User,
+    // ){
+    //   return this.userService.getMyFriends(currentUser._id.toString());
+    // }
 
 
 

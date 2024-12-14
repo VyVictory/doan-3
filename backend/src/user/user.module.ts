@@ -6,11 +6,12 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserSchema } from './schemas/user.schemas';
-import { FriendRequest, FriendRequestSchema } from './schemas/friend.schema';
+import { FriendRequest, FriendRequestSchema } from './schemas/friendRequest.schema';
 import { OtpModule } from '../otp/otp.module';
 import { OtpService } from 'src/otp/otp.service';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { FriendSchema } from './schemas/friend.schema';
 
 @Global()
 @Module({
@@ -33,6 +34,7 @@ import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
     OtpModule,
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
     MongooseModule.forFeature([{ name: 'FriendRequest', schema:FriendRequestSchema}]),
+    MongooseModule.forFeature([{ name: 'Friend', schema:FriendSchema}]),
 
   ],
   controllers: [UserController],

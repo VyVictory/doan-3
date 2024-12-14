@@ -1,11 +1,10 @@
-
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Types, Document } from 'mongoose';
 
 @Schema({
   timestamps: true,
 })
-export class Friend extends Document {
+export class FriendRequest extends Document {
     @Prop({ type: String, ref: 'User', required: true })
     sender: string;
   
@@ -16,4 +15,4 @@ export class Friend extends Document {
     status: string ;
 }
 
-export const FriendSchema = SchemaFactory.createForClass(Friend)
+export const FriendRequestSchema = SchemaFactory.createForClass(FriendRequest);
