@@ -400,10 +400,10 @@ export class UserService {
   async savePost(userId: string, postId: string): Promise<User> {
     const bookmarks = await this.UserModel.findById(userId);
     if (!bookmarks) {
-      throw new Error('User not found');
+      throw new HttpException('User not found',HttpStatus.NOT_FOUND);
     }
     if (bookmarks.bookmarks.includes(new Types.ObjectId(postId))) {
-      throw new Error('Post already saved');
+      throw new HttpException('Post already saved',HttpStatus.BAD_REQUEST);
     }
     await bookmarks.save();
     await this.UserModel.findByIdAndUpdate(userId, {
@@ -414,7 +414,7 @@ export class UserService {
   async removeSavedPost(userId: string, postId: string): Promise<User> {
     const user = await this.UserModel.findById(userId);
     if (!user) {
-      throw new Error('User not found');
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
     user.bookmarks = user.bookmarks.filter(bookmark => bookmark.toString() !== postId);
     await user.save();
