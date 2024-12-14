@@ -13,7 +13,8 @@ import { UserModule } from '../user/user.module';
   imports:[
     MongooseModule.forFeature([{name: 'Post' , schema: PostSchema }, {name: 'User', schema: UserSchema}]),
     CloudinaryModule,
-    UserModule
+    UserModule,
+    
   ],
   controllers: [PostController],
   providers: [PostService],

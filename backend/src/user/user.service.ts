@@ -263,23 +263,61 @@ export class UserService {
     return this.FriendRequestModel.find({ receiver: userId });
   }
 
-
-  async getMyFriend(userId : string): Promise<Friend[]> {
-    
+  async getMyFriend(userId: string): Promise<Friend[]> {
     const UserOBJ = new Types.ObjectId(userId);
-    const friendList = await this.FriendModel.find({ 
-      $or: 
-      [
-      { sender: UserOBJ },
-      { receiver: UserOBJ }
-    ]
-     })
-     .populate('sender', 'firstName lastName avatar')
-     .populate('receiver', 'firstName lastName avatar')
-     .exec();
-    console.log('friend: ',friendList);
-    return friendList;
+  
+    // Tìm các bạn bè mà sender hoặc receiver là userId
+    const friendList = await this.FriendModel.find({
+      $or: [
+        { sender: UserOBJ },
+        { receiver: UserOBJ }
+      ]
+    })
+    .populate({
+      path: 'sender',
+      select: 'firstName lastName avatar',
+      match: { _id: { $ne: UserOBJ } }
+    })
+    .populate({
+      path: 'receiver',
+      select: 'firstName lastName avatar',
+      match: { _id: { $ne: UserOBJ } }
+    })
+    .exec();
+  
+    return friendList.filter(friend => {
+      return (friend.sender && friend.sender._id !== userId) || (friend.receiver && friend.receiver._id !== userId);
+    });
   }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  // async getMyFriend(userId: string): Promise<Friend[]> {
+  //   const UserOBJ = new Types.ObjectId(userId);
+  
+  //   const friendList = await this.FriendModel.find({
+  //     $and: [
+  //       { $or: [ { sender: UserOBJ }, { receiver: UserOBJ } ] },
+  //       { $nor: [ { sender: { $in: [UserOBJ] } }, { receiver: { $in: [UserOBJ] } } ] }
+  //     ]
+  //   })
+  //   .populate('sender', 'firstName lastName avatar')
+  //   .populate('receiver', 'firstName lastName avatar')
+  //   .exec();
+  //   console.log('my friend listt',friendList);
+  //   return friendList;
+  // }
 
   
   async updateUser(userId: string, updateData: any): Promise<User> {

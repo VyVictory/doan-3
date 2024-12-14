@@ -1,16 +1,17 @@
 
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Types, Document } from 'mongoose';
+import { User } from './user.schemas';
 
 @Schema({
   timestamps: true,
 })
 export class Friend extends Document {
     @Prop({ type: String, ref: 'User', required: true })
-    sender: string;
+    sender: User;
   
     @Prop({ type: String, ref: 'User', required: true })
-    receiver: string;
+    receiver: User;
   
     @Prop({ required: true })
     status: string ;
