@@ -7,6 +7,7 @@ import 'animate.css';
 import { format, differenceInMinutes, differenceInHours, differenceInDays } from 'date-fns';
 import { getAllOtherPosts } from '../../service/OtherProfile';
 import { profileUserCurrent } from '../../service/ProfilePersonal';
+import DropdownOtherPost from './components/DropdownOtherPost';
 export default function AllPostOther({ user }) {
     const [posts, setPosts] = useState([]);
     const [userLogin, setUserLogin] = useState({})
@@ -14,13 +15,16 @@ export default function AllPostOther({ user }) {
     useEffect(() => {
         const fetchdata = async () => {
             const response = await getAllOtherPosts(id)
-            const sortedPosts = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-            setPosts(sortedPosts)
-            const responseUserPersonal = await profileUserCurrent()
-            setUserLogin(responseUserPersonal.data)
+            if (response) {
+                const sortedPosts = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                setPosts(sortedPosts)
+                const responseUserPersonal = await profileUserCurrent()
+                setUserLogin(responseUserPersonal.data)
+            }
         }
         fetchdata()
     }, [id]);
+    console.log(posts)
 
     if (!posts.length) {
         return <span className="loading loading-spinner loading-lg"></span>;
@@ -100,6 +104,7 @@ export default function AllPostOther({ user }) {
                 return <span>{privacy}</span>;
         }
     };
+
     return (
         <>
             {
@@ -120,7 +125,7 @@ export default function AllPostOther({ user }) {
                                     </div>
                                     <p>{post.content}</p>
                                 </article>
-                                {/* <DropdownPostPersonal /> */}
+                                <DropdownOtherPost postId={post._id} />
                             </div>
                             {post.img.length > 0 && (
                                 <img className='rounded-xl max-h-[300px]' src={post.img[0]} alt="Post visual" />
