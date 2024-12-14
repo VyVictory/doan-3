@@ -168,6 +168,11 @@ export class UserController {
   async savePost(@CurrentUser() currentUser: User, @Param('postId') postId: string) {
     return this.userService.savePost(currentUser._id.toString(), postId);
   }
+  @Delete(':postId/bookmark')
+  @UseGuards(AuthGuardD)
+  async removeSavedPost(@CurrentUser() currentUser: User, @Param('postId') postId: string) {
+    return this.userService.removeSavedPost(currentUser._id.toString(), postId);
+  }
   @Get(':userId/bookmark')
   @UseGuards(AuthGuardD)
   async getSavedPosts(@CurrentUser() currentUser: User) {

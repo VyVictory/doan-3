@@ -402,11 +402,23 @@ export class UserService {
     if (!bookmarks) {
       throw new Error('User not found');
     }
+    if (bookmarks.bookmarks.includes(new Types.ObjectId(postId))) {
+      throw new Error('Post already saved');
+    }
     await bookmarks.save();
     await this.UserModel.findByIdAndUpdate(userId, {
-      $push: { bookmarks: postId},
+      $push: { bookmarks: postId },
     });
     return bookmarks;
+  }
+  async removeSavedPost(userId: string, postId: string): Promise<User> {
+    const user = await this.UserModel.findById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    user.bookmarks = user.bookmarks.filter(bookmark => bookmark.toString() !== postId);
+    await user.save();
+    return user;
   }
   async getSavedPosts(userId: string): Promise<User> {
     return this.UserModel.findById(userId).populate('bookmarks');
