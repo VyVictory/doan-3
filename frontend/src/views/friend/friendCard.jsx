@@ -63,8 +63,12 @@ export default function FriendCard({ iduser, idrequest }) {
             console.error(error);
         }
     };
+    const handDetailUser = async (id) => {
+        window.location.href = `/user/${id}`;
+    };
+    
     return (
-        <div className=''>
+        <div onClick={()=>handDetailUser(userdata._id)}>
             <div className=' border border-gray-300 shadow-lg max-w-56 max-h-80 h-80 rounded-lg'>
                 <Link>
                     <img className='h-52 w-full p-2'
