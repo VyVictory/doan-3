@@ -48,8 +48,8 @@ export default function MyAllFriend() {
                 <div className="w-full flex flex-col gap-4">
                     {friends.map((friend, index) => (
                         <MyFriendCard
-                        userdata={friend}
-                        // idfriend={friends._id}
+                            userdata={friend}
+                            // idfriend={friends._id}
                             key={index}
                         />
                     ))}
