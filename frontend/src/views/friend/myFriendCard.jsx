@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import user from '../../service/user';
 import { useEffect, useState } from 'react';
 import friend from '../../service/friend';
+import DropdownMyfriend from './DropdownMyfriend'
+import { ChevronDownIcon } from '@heroicons/react/24/outline'
 export default function MyFriendCard({ userdata }) {
     // const [userdata, setUserdata] = useState({});
     // const [loading, setLoading] = useState(true); // Loading state
@@ -49,7 +51,7 @@ export default function MyFriendCard({ userdata }) {
             console.error(error);
         }
     };
-    const handCancel= async (id) => {
+    const handCancel = async (id) => {
         try {
             const rs = await friend.cancelFriend(id)
             if (rs.success) {
@@ -65,21 +67,22 @@ export default function MyFriendCard({ userdata }) {
     };
     return (
         <div className=''>
-            <div className=' border border-gray-300 shadow-lg max-w-56 max-h-80 h-80 rounded-lg'>
+            <div className='border border-gray-300 shadow-lg max-w-56 max-h-96 h-80 rounded-lg '>
                 <Link>
-                    <img className='h-52 w-full p-2'
+                    <img className='h-52 w-full p-2' alt=''
                         src="https://www.didongmy.com/vnt_upload/news/05_2024/anh-27-meme-dang-yeu-didongmy.jpg" />
                 </Link>
-                <Link className='text-black  px-3 font-bold flex justify-center'>
+                <Link className='text-black px-3 font-bold flex justify-center'>
                     {userdata ? (userdata.firstName ? userdata.firstName : '', userdata.lastName ? userdata.lastName : '') : 'No Name'}
                 </Link>
-                <div className=' flex justify-around mt-5 gap-2 h-10'>
+                <div className='flex justify-around mt-5 items-center'>
                     <button
-                        onClick={userdata && userdata._id ? () => handCancel(userdata._id) : undefined}
-                        className=" rounded bg-red-600 py-2 px-4 text-sm text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700 data-[disabled]:bg-gray-500"
+                        className=" rounded bg-sky-600 p-3 text-sm text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700 data-[disabled]:bg-gray-500"
                     >
-                        Hủy kết bạn
+                        Xem trang cá nhân
                     </button>
+
+                    <DropdownMyfriend nameBTN={<ChevronDownIcon className="size-7 fill-white/60" />} />
                 </div>
             </div>
         </div>

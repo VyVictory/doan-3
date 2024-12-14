@@ -9,7 +9,6 @@ import MyPosts from "../views/profile/components/MyPosts.jsx";
 import FriendProfile from "../views/friend/FriendProfile.jsx";
 import Messenger from "../views/messenger/Messenger.jsx";
 import Searchpage from "../views/search/index.jsx";
-import Allfriend from "../views/friend/Allfriend.jsx";
 import Friendinvitation from "../views/friend/friendinvitation.jsx";
 import Login from "../auth/login/index.jsx";
 import Register from "../auth/register/index.jsx";
