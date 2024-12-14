@@ -1,26 +1,35 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-
+import { useState, useEffect } from 'react';
+import friend from '../../service/friend';
 export default function Friendinvitation() {
+    const [users, setUsers] = useState([]);
+    useEffect(() => {
+        const fetchdata = async () => {
+            const res = await friend.getListFriendRequest()
+            if (res.success == true) {
+                setUsers(res.data)
+                console.log(res)
+            } else {
+
+            }
+        }
+        fetchdata()
+    }, []);
+    console.log(users)
     return (
-        <div className=' border border-gray-300 shadow-lg max-w-56 max-h-80 h-80 rounded-lg'>
-            <Link>
-                <img className='h-52 w-full p-2'
-                    src="https://www.didongmy.com/vnt_upload/news/05_2024/anh-27-meme-dang-yeu-didongmy.jpg" />
-            </Link>
-            <Link className='text-white px-3 font-bold flex justify-center'>Tên Người dùng</Link>
-            <div className=' flex justify-around mt-5 gap-2 h-10'>
-                <button
-                    className=" rounded bg-sky-600 py-2 px-4 text-sm text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700 data-[disabled]:bg-gray-500"
-                >
-                    Xác nhận
-                </button>
-                <button
-                    className=" rounded bg-red-600 py-2 px-4 text-sm text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700 data-[disabled]:bg-gray-500"
-                >
-                    Từ chối
-                </button>
-            </div>
+        <div className='w-full p-5 flex flex-col'>
+            <strong className='text-xl'>Lời mời kết bạn </strong>
+            {
+                users ?
+                    <div className='w-full h-full justify-center items-center text-center'>
+                        Not Request Add Friend
+                    </div>
+                    :
+                    users.map((_, index) => (
+                        <fri userdata={_} key={index} />
+                    ))
+            }
         </div>
     )
 }

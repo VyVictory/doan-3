@@ -1,8 +1,8 @@
 import { Outlet } from "react-router-dom";
 
 export default function LayoutSearch() {
-    const handChaneSearch= ()=>{
-        
+    const handChaneSearch = () => {
+
     }
     return (
         <div className="flex row">
@@ -12,7 +12,7 @@ export default function LayoutSearch() {
                 </div>
                 <div className="flex flex-col w-full pt-3">
                     <strong className="pb-2">Bộc lọc</strong>
-                    <button  className="w-full p-3 pl-5 rounded-2xl text-start hover:bg-blue-100 ">
+                    <button className="w-full p-3 pl-5 rounded-2xl text-start hover:bg-blue-100 ">
                         <strong>Tất cả</strong>
                     </button>
                     <button className="w-full p-3 pl-5 rounded-2xl text-start hover:bg-blue-100">
@@ -23,10 +23,9 @@ export default function LayoutSearch() {
                     </button>
                 </div>
             </div>
-            <div className="w-1/5">
-
+            <div className="ml-[20%] w-[80%] sm:px-20 md:px-40 lg:px-60">
+                <Outlet />
             </div>
-            <Outlet />
         </div>
     )
 };
