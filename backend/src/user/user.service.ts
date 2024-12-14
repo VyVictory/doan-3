@@ -10,7 +10,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model,ObjectId,ObjectIdToString,Types } from 'mongoose';
+import { Model, ObjectId, ObjectIdToString, Types } from 'mongoose';
 import { User } from './schemas/user.schemas';
 import { RegisterDto } from './dto/register.dto';
 import * as bcrypt from 'bcryptjs';
@@ -120,11 +120,11 @@ export class UserService {
     }
 
     let user;
-  if (numberPhone) {
-    user = await this.UserModel.findOne({ numberPhone }).exec();
-  } else if (email) {
-    user = await this.UserModel.findOne({ email }).exec();
-  }
+    if (numberPhone) {
+      user = await this.UserModel.findOne({ numberPhone }).exec();
+    } else if (email) {
+      user = await this.UserModel.findOne({ email }).exec();
+    }
 
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
@@ -135,7 +135,7 @@ export class UserService {
     if (!isPasswordValid) {
       throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
     }
-    
+
     return this.generateToken(user._id);
   }
 
@@ -153,7 +153,7 @@ export class UserService {
 
   async findById(userId: string): Promise<User> {
     const user = await this.UserModel.findById(userId)
-      .select('-password -isActive  -createdAt -updatedAt, -refreshToken') 
+      .select('-password -isActive  -createdAt -updatedAt, -refreshToken')
       .exec();
     if (!user) {
       throw new NotFoundException('404: user not found');
@@ -186,7 +186,7 @@ export class UserService {
       throw new NotFoundException('No friend request found');
     }
     const { sender, receiver } = friendRequest;
-  
+
     if (currentUserId !== receiver.toString()) {
       throw new ForbiddenException('You are not authorized to accept this friend request');
     }
@@ -201,31 +201,31 @@ export class UserService {
     //   receiver,
     //   { $addToSet: { friends: sender } },
     // );
-  
+
 
     // await this.UserModel.findByIdAndUpdate(
     //   sender,
     //   { $addToSet: { friends: receiver } },
     // );
-  
+
     await this.FriendRequestModel.findByIdAndDelete(friendRequestId);
-  
-    return friend ;
+
+    return friend;
   }
-  
+
 
   async rejectFriendRequest(
-    currentUserId: string, 
+    currentUserId: string,
     friendRequestId: string,
   ): Promise<{ message: string }> {
-   
+
     const friendRequest = await this.FriendRequestModel.findById(friendRequestId);
 
     if (!friendRequest) {
       throw new NotFoundException('No such friend request found');
     }
     const { receiver } = friendRequest;
-  
+
     if (currentUserId !== receiver.toString()) {
       throw new ForbiddenException('You are not authorized to reject this friend request');
     }
@@ -246,8 +246,8 @@ export class UserService {
     await this.FriendRequestModel.findByIdAndDelete(friendRequestId);
     return { message: 'Friend request deleted successfully' };
   }
-  
-  async unFriend(currentUserId: string, friendId: string, ): Promise<{ message: string }> {
+
+  async unFriend(currentUserId: string, friendId: string,): Promise<{ message: string }> {
     await this.UserModel.findByIdAndUpdate(
       currentUserId,
       { $pull: { friends: friendId } },
@@ -259,7 +259,7 @@ export class UserService {
     return { message: 'Unfriended successfully' };
   }
 
-  async getMyFriendRequest(userId : string): Promise<FriendRequest[]> {
+  async getMyFriendRequest(userId: string): Promise<FriendRequest[]> {
     return this.FriendRequestModel.find({ receiver: userId });
   }
 
@@ -319,7 +319,7 @@ export class UserService {
   //   return friendList;
   // }
 
-  
+
   async updateUser(userId: string, updateData: any): Promise<User> {
     // Tìm người dùng theo ID
     const user = await this.UserModel.findById(userId);
@@ -379,7 +379,7 @@ export class UserService {
 
   async findAlluser() {
     try {
-      const user =  await this.UserModel.find().exec()
+      const user = await this.UserModel.find().exec()
       return user
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -394,28 +394,28 @@ export class UserService {
     if (!isOtpValid) {
       throw new BadRequestException('Invalid or expired OTP');
     }
-  
+
     // Cập nhật mật khẩu (băm mật khẩu mới)
     const user = await this.UserModel.findOne({ email });
     if (!user) {
       throw new BadRequestException('User not found');
     }
-  
+
     const hashedPassword = await bcrypt.hash(resetPasswordDto.newPassword, 10);
     user.password = hashedPassword;
     await user.save();
-  
+
     return 'Password reset successfully';
   }
 
   async uploadCoverImage(uploadCoverImageDto: UploadCoverImgDto, userId: string, files?: Express.Multer.File[]): Promise<User> {
     // Tìm người dùng dựa trên ID
     const user = await this.UserModel.findById(userId);
-  
+
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
-  
+
     // Kiểm tra số lượng file
     if (!files || files.length === 0) {
       throw new HttpException('No file uploaded', HttpStatus.BAD_REQUEST);
@@ -423,7 +423,7 @@ export class UserService {
     if (files.length > 1) {
       throw new HttpException('Only one file is allowed', HttpStatus.BAD_REQUEST);
     }
-  
+
     try {
       // Upload file duy nhất
       const uploadedImage = await this.cloudinaryService.uploadFile(files[0]);
@@ -432,15 +432,15 @@ export class UserService {
       console.error('Error uploading image to Cloudinary:', error);
       throw new HttpException('Failed to upload image', HttpStatus.INTERNAL_SERVER_ERROR);
     }
-  
+
     // Lưu người dùng sau khi cập nhật avatar
     return await user.save();
   }
 
-  async uploadAvatar(uploadAvatarDto: UploadAvatarDto, userId :string,  files?: Express.Multer.File[]): Promise<User> {
+  async uploadAvatar(uploadAvatarDto: UploadAvatarDto, userId: string, files?: Express.Multer.File[]): Promise<User> {
     // Tìm người dùng dựa trên ID
     const user = await this.UserModel.findById(userId);
-  
+
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
@@ -451,11 +451,11 @@ export class UserService {
     if (files.length > 1) {
       throw new HttpException('Only one file is allowed', HttpStatus.BAD_REQUEST);
     }
-  
+
     try {
       // Upload file duy nhất
       const uploadedImage = await this.cloudinaryService.uploadFile(files[0]);
-      user.avatar = uploadedImage; 
+      user.avatar = uploadedImage;
     } catch (error) {
       console.error('Error uploading image to Cloudinary:', error);
       throw new HttpException('Failed to upload image', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -465,10 +465,10 @@ export class UserService {
   async savePost(userId: string, postId: string): Promise<User> {
     const bookmarks = await this.UserModel.findById(userId);
     if (!bookmarks) {
-      throw new HttpException('User not found',HttpStatus.NOT_FOUND);
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
     if (bookmarks.bookmarks.includes(new Types.ObjectId(postId))) {
-      throw new HttpException('Post already saved',HttpStatus.BAD_REQUEST);
+      throw new HttpException('Post already saved', HttpStatus.BAD_REQUEST);
     }
     await bookmarks.save();
     await this.UserModel.findByIdAndUpdate(userId, {

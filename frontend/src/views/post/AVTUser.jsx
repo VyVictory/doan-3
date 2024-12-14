@@ -1,10 +1,16 @@
 import React from 'react'
 import CardUser from './CardUser'
-
+import usersrv from '../../service/user';
 export default function AVTUser({ user }) {
-
+    const handDetailUser = async (id) => {
+        window.location.href = `/user/${id}`;
+    };
     return (
-        <div div className="dropdown dropdown-hover" >
+        <div div className="dropdown dropdown-hover"
+// lý do ấn nút bạn bè , nhắn tin khi dropdow bị đẩy sang detail user 
+            onClick={() => handDetailUser(user._id)}
+//this, reper handDetailUser Lozz Vu
+        >
             <div tabIndex={0} >
                 <img
                     className='aspect-square w-12 rounded-full border-[1px] '

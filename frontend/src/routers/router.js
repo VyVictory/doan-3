@@ -9,7 +9,6 @@ import MyPosts from "../views/profile/components/MyPosts.jsx";
 import FriendProfile from "../views/friend/FriendProfile.jsx";
 import Messenger from "../views/messenger/Messenger.jsx";
 import Searchpage from "../views/search/index.jsx";
-import Allfriend from "../views/friend/Allfriend.jsx";
 import Friendinvitation from "../views/friend/friendinvitation.jsx";
 import Login from "../auth/login/index.jsx";
 import Register from "../auth/register/index.jsx";
@@ -18,6 +17,7 @@ import OtherProfiles from "../views/profile/OtherProfiles/index.jsx";
 import AboutOtherProfile from "../views/profile/OtherProfiles/AboutOtherProfile.jsx";
 import OtherPosts from "../views/profile/OtherProfiles/OtherPosts.jsx";
 import Bookmark from "../views/bookmark/page.jsx";
+import MyFriendCard from "../views/friend/myFriendCard.jsx";
 
 function routers() {
     return (
@@ -29,7 +29,7 @@ function routers() {
 
                     <Route path="friends" element={<Myfriend />} >
                         <Route path="" element={<Friendinvitation />} />
-                        <Route path="list" element={<Allfriend />} />
+                        <Route path="list" element={<MyFriendCard />} />
                         <Route path="requests" element={<Friendinvitation />} />
                     </Route>
                     <Route path="user" element={<Personal />} />

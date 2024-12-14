@@ -2,24 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import friend from '../../service/friend';
 import FriendCard from './friendCard';
+import MyFriendCard from './myFriendCard';
 
 
-export default function FriendInvitation() {
-    const [requests, setRequests] = useState([]);
+export default function MyAllFriend() {
+    const [friends, setFriends] = useState([]);
     const [loading, setLoading] = useState(true); // Loading state
 
     useEffect(() => {
         const fetchdata = async () => {
             try {
-                const res = await friend.getListFriendRequest();
+                const res = await friend.getListMyFriend();
                 if (res.success) {
-                    setRequests(res.data);
+                    setFriends(res.data);
                 } else {
-                    setRequests([]);
+                    setFriends([]);
                 }
             } catch (error) {
                 console.error('Error fetching friend requests:', error);
-                setRequests([]);
+                setFriends([]);
             } finally {
                 setLoading(false); // Stop loading
             }
@@ -37,18 +38,18 @@ export default function FriendInvitation() {
                 <div className="w-full h-full flex justify-center items-center">
                     Loading...
                 </div>
-            ) : requests.length === 0 ? (
+            ) : friends.length === 0 ? (
                 // Show "No Requests" message
                 <div className="w-full h-full flex justify-center items-center text-center">
-                    No Friend Requests
+                    No Friend
                 </div>
             ) : (
                 // Render Friend Cards
                 <div className="w-full flex flex-col gap-4">
-                    {requests.map((request, index) => (
-                        <FriendCard
-                        iduser={request.sender}
-                        idrequest={request._id}
+                    {friends.map((friend, index) => (
+                        <MyFriendCard
+                            userdata={friend}
+                            // idfriend={friends._id}
                             key={index}
                         />
                     ))}
