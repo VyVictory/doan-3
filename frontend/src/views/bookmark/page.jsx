@@ -1,11 +1,10 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
-import { getAllBookmark, getHomeFeed } from '../../service/PostService'
+import { getAllBookmark, getHomeFeed, handleRemoveBookmark } from '../../service/PostService'
 import { profileUserCurrent } from '../../service/ProfilePersonal'
 
 export default function Bookmark() {
     const [data, setData] = useState([])
-
 
     const fetchUserId = async () => {
         const response = await profileUserCurrent();
@@ -13,6 +12,7 @@ export default function Bookmark() {
             return response.data._id
         }
     };
+
     useEffect(() => {
         const fetchData = async () => {
             const id = await fetchUserId();
@@ -26,6 +26,16 @@ export default function Bookmark() {
         };
         fetchData()
     }, [])
+
+    const handleBookmarkClick = async (postId) => {
+        try {
+            await handleRemoveBookmark(postId);
+            setData(prevData => prevData.filter(post => post._id !== postId));
+            alert('Đã bỏ lưu');
+        } catch (error) {
+            console.error('Error bookmarking post:', error);
+        }
+    };
     return (
         <div className='grid place-items-center mt-5 gap-4'>
             <h1 className='text-2xl font-semibold '>Tất cả bài viết đã lưu</h1>
@@ -42,13 +52,13 @@ export default function Bookmark() {
                                 <a>bài viết đã lưu của: {post.author.firstName} {post.author.lastName}</a>
 
                                 <div className="card-actions justify-end mt-3">
-                                    <button className="btn btn-error text-white">Bỏ lưu</button>
+                                    <button onClick={() => handleBookmarkClick(post._id)} className="btn btn-error text-white">Bỏ lưu</button>
                                     <button className="btn btn-primary">Xem bài viết</button>
                                 </div>
                             </div>
                         </div>
                     ))
-                ) : (<div>Chưa lưu bài viết nào</div>)}
+                ) : (<span>Chưa lưu bài viết nào!</span>)}
             </div>
         </div>
     )

@@ -8,11 +8,9 @@ export default function OtherPosts() {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
     const [dataProfile, setDataProfile] = useState({})
-
-
     const { id } = useParams();
+    
     useEffect(() => {
-
         const fetchdata = async () => {
             try {
                 setLoading(true)

@@ -4,6 +4,7 @@ import PostStatus from "../post/components/PostStatus.jsx";
 import { useState, useEffect } from "react";
 import { profileUserCurrent } from "../../service/ProfilePersonal.js";
 import Story from "../story/Story.jsx";
+import HomePost from "../post/HomePost.jsx";
 
 function Home() {
     const [user, setUser] = useState({})
@@ -12,7 +13,9 @@ function Home() {
     useEffect(() => {
         const fetchdata = async () => {
             const response = await profileUserCurrent();
-            setUser(response)
+            if (response && response.data) {
+                setUser(response.data)
+            }
         }
         fetchdata()
     }, [])
@@ -21,8 +24,7 @@ function Home() {
             <div className="grid gap-5 mt-3 rounded-md pb-4 max-w-[800px]">
                 <Story />
                 <PostStatus user={user} />
-
-
+                <HomePost />
             </div>
         </div>
 
