@@ -115,6 +115,7 @@ export default function HomePost() {
                             <div className='flex justify-between'>
                                 <article className='text-wrap grid gap-5'>
                                     <div className='grid'>
+                                        {post._id}
                                         <Link className='font-bold text-lg hover:link ' to="#">{post.author.lastName} {post.author.firstName}</Link>
                                         <div className='flex gap-2'>
                                             <span className='text-xs'>{formatDate(post.createdAt)}</span>

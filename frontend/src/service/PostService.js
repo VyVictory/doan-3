@@ -90,7 +90,7 @@ export async function handleUnDisLike(postId) {
 //add
 export async function handleAddBookmark(postId) {
     try {
-        const request = await axios.post(`http://localhost:3001/user/${postId}/bookmark`, {
+        const request = await axios.post(`http://localhost:3001/user/${postId}/bookmark`, {}, {
             headers: {
                 Authorization: `Bearer ${authToken.getToken()}`
             }

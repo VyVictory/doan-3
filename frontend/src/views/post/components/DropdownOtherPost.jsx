@@ -5,7 +5,7 @@ import { handleAddBookmark } from '../../../service/PostService';
 
 
 export default function DropdownOtherPost({ postId }) {
-    const handleBookmarkClick = async () => {
+    const handleBookmarkAdd = async () => {
         try {
             await handleAddBookmark(postId);
             alert('Đã lưu');
@@ -20,8 +20,9 @@ export default function DropdownOtherPost({ postId }) {
             </div>
             <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
                 <li>
+                    {postId}
                     <button
-                        onClick={handleBookmarkClick}
+                        onClick={handleBookmarkAdd}
                         className=" data-[focus]:bg-[#3f3f46] p-2 rounded-md flex items-center gap-2" to="#">
                         <BookmarkIcon className="size-5 text-amber-600" />
                         Lưu bài viết
