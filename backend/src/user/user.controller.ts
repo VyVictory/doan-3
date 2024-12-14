@@ -91,7 +91,6 @@ export class UserController {
         if (!email) {
           throw new Error("Email is required");
         }
-        
         await this.otpService.sendOtp(currentUser.email, 'Reset password');
         return { message: 'OTP sent to your email.' };
       } catch (error) {

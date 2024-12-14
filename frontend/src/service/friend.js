@@ -1,6 +1,18 @@
 import axios from 'axios';
 import authToken from '../components/authToken';
 const AddFriend = async (id) => {
+    try {
+        const response = await axios.post(`http://localhost:3001/friend/request/${id}`, {},
+            {
+                headers: { Authorization: `Bearer ${authToken.getToken()}` },
+            }
+        );
+        return { success: true, message: response.data.message };
+    } catch (response) {
+        return { success: false, message: response.response.data.message };
+    }
+};
+const chaneRequest = async (id,chane) => {
     if (!authToken.getToken()) {
         return { success: false, message: 'ko có token má' }
     }
@@ -16,18 +28,19 @@ const AddFriend = async (id) => {
     }
 };
 const CheckFriend = async (id) => {
+
     if (!authToken.getToken()) {
-        return { success: false, message: 'ko có token má' }
+        return { success: false,status:'', message: 'ko có token má' }
     }
     try {
-        const response = await axios.post(`http://localhost:3001/friend/status/${id}`, {},
+        const response = await axios.get(`http://localhost:3001/friend/status/${id}`,
             {
                 headers: { Authorization: `Bearer ${authToken.getToken()}` },
             }
         );
-        return { success: true};
+        return  { success: true, status:response.data.status }
     } catch (response) {
-        return { success: false };
+        return { success: false, status:''};
     }
 };
 // const login = async (form) => {
@@ -69,6 +82,7 @@ const CheckFriend = async (id) => {
 export default {
     AddFriend,
     CheckFriend,
+    chaneRequest,
     // login,
     // current,
 }

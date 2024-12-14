@@ -25,11 +25,7 @@ export default function Login() {
             try {
                 const response = await axios.post('http://localhost:3001/user/login', formData);
                 if (response.status === 201) {
-
-                    // Store the authentication token
-                    localStorage.setItem('token', response.data.accessToken);
                     authToken.setToken(response.data.accessToken);
-
                     navigate('/');
                 }
             } catch (error) {
