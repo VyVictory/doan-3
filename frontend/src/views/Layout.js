@@ -13,7 +13,7 @@ export default function Layout() {
         }
     }, [navigate]);
     return (
-        <div className="grid gap-[64px]">
+        <div className="grid gap-[64px] ">
             <div>
                 <Navbar />
             </div>

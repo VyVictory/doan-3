@@ -105,7 +105,13 @@ export default function HeadOtherProfiles({ dataProfile }) {
                     {dataProfile?.lastName} {dataProfile?.firstName}
                 </h1>
                 <div className="flex gap-2">
-                    {buttonAddFriend()}
+                    <button
+                        onClick={() => dataProfile ? handAddFriend(dataProfile._id) : ''}
+                        className="bg-sky-600 text-white p-2 rounded-full flex items-center gap-1"
+                    >
+                        <UserPlusIcon className="size-5 fill-white" />
+                        Kết bạn
+                    </button>
                     <button className="bg-green-600 text-white p-2 rounded-full flex items-center gap-1">
                         <ChatBubbleLeftRightIcon className="size-5" />
                         Nhắn tin
