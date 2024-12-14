@@ -87,7 +87,7 @@ export async function handleUnDisLike(postId) {
     }
 }
 // bookmark
-
+//add
 export async function handleAddBookmark(postId) {
     try {
         const request = await axios.post(`http://localhost:3001/user/${postId}/bookmark`, {
@@ -100,7 +100,20 @@ export async function handleAddBookmark(postId) {
 
     }
 }
+//remove
+export async function handleRemoveBookmark(postId) {
+    try {
+        const request = await axios.delete(`http://localhost:3001/user/${postId}/bookmark`, {
+            headers: {
+                Authorization: `Bearer ${authToken.getToken()}`
+            }
+        })
+        return request
+    } catch (error) {
 
+    }
+}
+//getallBookmark from myself
 export async function getAllBookmark(userId) {
     try {
         const request = await axios.get(`http://localhost:3001/user/${userId}/bookmark`, {

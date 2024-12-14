@@ -8,7 +8,7 @@ export default function DropdownOtherPost({ postId }) {
     const handleBookmarkClick = async () => {
         try {
             await handleAddBookmark(postId);
-            alert('Post bookmarked successfully!');
+            alert('Đã lưu');
         } catch (error) {
             console.error('Error bookmarking post:', error);
         }

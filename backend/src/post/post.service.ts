@@ -6,7 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/user/schemas/user.schemas';
 import { CreatePostDto } from './dto/createpost.dto';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
-import { settingPrivacyDto } from './dto/settingPrivacy.dto'; 
+import { settingPrivacyDto } from './dto/settingPrivacy.dto';
 import { UpdatePostDto } from './dto/updatePost.dto';
 import { PostF } from './interface/PostHomeFeed.interface';
 
@@ -18,7 +18,7 @@ export class PostService {
         @InjectModel(User.name) private UserModel: Model<User>,
         private cloudinaryService: CloudinaryService,
         private jwtService: JwtService
-    ){}
+    ) { }
 
     async createPost(createPostDto: CreatePostDto, userId: string, files?: Express.Multer.File[]): Promise<{ userPost: User, savedPost: Post }> {
         const newPost = new this.PostModel({
@@ -30,25 +30,25 @@ export class PostService {
             dislikes: [],
             isActive: true,
         });
-    
+
         if (files && files.length > 0) {
             try {
                 const uploadedImages = await Promise.all(files.map(file => this.cloudinaryService.uploadFile(file)));
-                newPost.img = uploadedImages; 
+                newPost.img = uploadedImages;
             } catch (error) {
                 console.error('Error uploading images to Cloudinary:', error);
                 throw new HttpException('Failed to upload images', HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
-    
-        const savedPost = await newPost.save(); 
+
+        const savedPost = await newPost.save();
         const userPost = await this.UserModel.findById(userId);
-    
+
         await this.settingPrivacy(savedPost._id.toString(), {
             privacy: createPostDto.privacy,
             allowedUsers: createPostDto.allowedUsers
         }, userId);
-    
+
         return {
             userPost,
             savedPost
@@ -64,19 +64,19 @@ export class PostService {
         }
         if (post.author.toString() !== userId) {
             throw new HttpException('You are not authorized to update this post', HttpStatus.UNAUTHORIZED);
-        }            
-            post.content = updatePostDto.content || post.content;
-            if (files && files.length > 0) {
-                try {
-                    const uploadedImages = await Promise.all(files.map(file => this.cloudinaryService.uploadFile(file)));
-                    post.img = uploadedImages; // Thay thế hình ảnh cũ
-                } catch (error) {
-                    console.error('Error uploading images to Cloudinary:', error);
-                    throw new HttpException('Failed to upload images', HttpStatus.INTERNAL_SERVER_ERROR);
-                }
+        }
+        post.content = updatePostDto.content || post.content;
+        if (files && files.length > 0) {
+            try {
+                const uploadedImages = await Promise.all(files.map(file => this.cloudinaryService.uploadFile(file)));
+                post.img = uploadedImages; // Thay thế hình ảnh cũ
+            } catch (error) {
+                console.error('Error uploading images to Cloudinary:', error);
+                throw new HttpException('Failed to upload images', HttpStatus.INTERNAL_SERVER_ERROR);
             }
+        }
         return await post.save();
-}
+    }
 
     async deletePost(postId: string, userId: string): Promise<{ message: string }> {
         const post = await this.PostModel.findById(postId);
@@ -96,37 +96,37 @@ export class PostService {
 
     async likePost(postId: string, userId: string): Promise<Post> {
         const post = await this.PostModel.findByIdAndUpdate(
-          postId,
-          {
-            $addToSet: { likes: userId },
-            $inc: { likesCount: 1 }, 
-          },
-          { new: true },
+            postId,
+            {
+                $addToSet: { likes: userId },
+                $inc: { likesCount: 1 },
+            },
+            { new: true },
         );
-      
-        if (!post) {
-          throw new NotFoundException(`Bài viết có ID "${postId}" không tồn tại`);
-        }
-        return post;
-      }
 
-      async unlikePost(postId: string, userId: string): Promise<Post> {
-        const post = await this.PostModel.findByIdAndUpdate(
-          postId,
-          {
-            $pull: { likes: userId },
-            $inc: { likesCount: -1 }, 
-          },
-          { new: true }, 
-        );
-      
         if (!post) {
-          throw new NotFoundException(`Bài viết có ID "${postId}" không tồn tại`);
+            throw new NotFoundException(`Bài viết có ID "${postId}" không tồn tại`);
         }
-      
         return post;
-      }
-      
+    }
+
+    async unlikePost(postId: string, userId: string): Promise<Post> {
+        const post = await this.PostModel.findByIdAndUpdate(
+            postId,
+            {
+                $pull: { likes: userId },
+                $inc: { likesCount: -1 },
+            },
+            { new: true },
+        );
+
+        if (!post) {
+            throw new NotFoundException(`Bài viết có ID "${postId}" không tồn tại`);
+        }
+
+        return post;
+    }
+
     async dislikePost(postId: string, userId: string): Promise<Post> {
         const post = await this.PostModel.findById(postId);
 
@@ -166,7 +166,7 @@ export class PostService {
             if (post.author.toString() !== userId) {
                 throw new HttpException('You are not authorized to update this post', HttpStatus.UNAUTHORIZED);
             }
-    
+
             // nếu cập nhật prvacy là specific nhưng 0 nhập list user thì trả về lỗi
             if (settingPrivacyDto.privacy === 'specific' && (!settingPrivacyDto.allowedUsers || settingPrivacyDto.allowedUsers.length === 0)) {
                 throw new HttpException('Allowed users must be provided for specific privacy', HttpStatus.BAD_REQUEST);
@@ -188,11 +188,11 @@ export class PostService {
         }
     }
 
-    async findPostCurrentUser(userId:string){
+    async findPostCurrentUser(userId: string) {
         try {
-            const userPosts  = await this.PostModel.find({author: userId})
-            .populate('author', 'username firstName lastName avatar')
-            .exec();
+            const userPosts = await this.PostModel.find({ author: userId })
+                .populate('author', 'username firstName lastName avatar')
+                .exec();
             return userPosts
         } catch (error) {
             console.error('errol', error)
@@ -213,13 +213,13 @@ export class PostService {
     async findPostPrivacy(postId: string, userId: string): Promise<Post> {
         try {
             const post = await this.PostModel.findById(postId);
-            
+
             if (!post) {
                 throw new HttpException('The post does not exist', HttpStatus.NOT_FOUND);
             }
 
             if (post.privacy === 'public') {
-                return post;  
+                return post;
             }
 
             if (post.privacy === 'private') {
@@ -239,7 +239,7 @@ export class PostService {
                 const isFriend = user.friends.some(friend => friend.toString() === post.author.toString());
 
                 if (isFriend) {
-                    return post;  
+                    return post;
                 } else {
                     throw new HttpException('You are not friends with the author', HttpStatus.UNAUTHORIZED);
                 }
@@ -252,7 +252,7 @@ export class PostService {
                     throw new HttpException('You are not authorized to view this post', HttpStatus.UNAUTHORIZED);
                 }
             }
-  
+
             throw new HttpException('Invalid privacy setting', HttpStatus.BAD_REQUEST);
         } catch (error) {
             console.error('Error fetching post privacy:', error);
@@ -262,12 +262,12 @@ export class PostService {
             );
         }
     }
-    
+
 
     async getPostsByUser(userId: string, currentUserId?: string): Promise<Post[]> {
         try {
             const posts = await this.PostModel.find({ author: userId });
-    
+
             const filteredPosts = await Promise.all(
                 posts.map(async (post) => {
 
@@ -284,14 +284,14 @@ export class PostService {
                             if (user.friends.map(friend => friend.toString()).includes(post.author.toString())) {
                                 return post;
                             }
-                            return null; 
+                            return null;
                         case 'specific':
                             if (post.allowedUsers.map(id => id.toString()).includes(currentUserId)) {
                                 return post;
                             }
-                            return null; 
+                            return null;
                         default:
-                            return null; 
+                            return null;
                     }
                 })
             );
@@ -304,49 +304,51 @@ export class PostService {
 
     async getHomeFeed(userId: string): Promise<PostF[]> {
         try {
-          const user = await this.UserModel.findById(userId).populate('friends').exec();
-          if (!user) {
-            throw new NotFoundException('User not found');
-          }
-          
-          const friends = Array.isArray(user.friends) ? user.friends.map(friend => friend._id) : [];
-          const conditions: Array<any> = [
-            { privacy: 'public' },
-            { privacy: 'specific', allowedUsers: userId },
-            { $or: [
+            const user = await this.UserModel.findById(userId).populate('friends').exec();
+            if (!user) {
+                throw new NotFoundException('User not found');
+            }
+
+            const friends = Array.isArray(user.friends) ? user.friends.map(friend => friend._id) : [];
+            const conditions: Array<any> = [
                 { privacy: 'public' },
                 { privacy: 'specific', allowedUsers: userId },
-                { author: { $in: friends } }
-            ]}
-        ];
-      
-          const posts = await this.PostModel.find({ $or: conditions })
-            .populate('author', 'firstName lastName')
-            .populate('likes', '_id')
-            .populate('comments', '_id')
-            .lean()
-            .exec();
-      
+                {
+                    $or: [
+                        { privacy: 'public' },
+                        { privacy: 'specific', allowedUsers: userId },
+                        { author: { $in: friends } }
+                    ]
+                }
+            ];
+
+            const posts = await this.PostModel.find({ $or: conditions })
+                .populate('author', 'firstName lastName avatar birthday')
+                .populate('likes', '_id')
+                .populate('comments', '_id')
+                .lean()
+                .exec();
+
             const scoredPosts = posts.map((post) => {
-                const postObj = typeof post.toObject === 'function' ? post.toObject() : post; 
+                const postObj = typeof post.toObject === 'function' ? post.toObject() : post;
                 const timeSincePosted = (Date.now() - new Date(postObj.createdAt).getTime()) / (1000 * 60 * 60);
                 const userInterest = friends.some((friend) => friend.toString() === postObj.author.toString()) ? 1.5 : 1;
                 const engagement = postObj.likes.length * 3 + postObj.comments.length * 5;
                 const timeDecay = 1 / (1 + timeSincePosted);
                 const contentQuality = postObj.privacy === 'public' ? 1 : 0.8;
-              
+
                 const rankingScore = userInterest * (engagement + contentQuality) * timeDecay;
                 return { ...postObj, rankingScore };
-              });
-      
-          scoredPosts.sort((a, b) => b.rankingScore - a.rankingScore);
-      
-          return scoredPosts
+            });
+
+            scoredPosts.sort((a, b) => b.rankingScore - a.rankingScore);
+
+            return scoredPosts
         } catch (error) {
-          console.error('Error in getHomeFeed:', error);
-          throw new HttpException('An error occurred while fetching posts', HttpStatus.INTERNAL_SERVER_ERROR);
+            console.error('Error in getHomeFeed:', error);
+            throw new HttpException('An error occurred while fetching posts', HttpStatus.INTERNAL_SERVER_ERROR);
         }
-      }
-      
-    
+    }
+
+
 }
