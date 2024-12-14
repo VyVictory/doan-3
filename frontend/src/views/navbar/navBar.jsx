@@ -52,7 +52,7 @@ export default function Navbar() {
     }, []);
     return (
         <>
-            <div className="navbar fixed bg-white border border-b-gray-300 shadow-[0_1px_5px_rgba(0,0,0,0.2)] text-black p-0 z-10">
+            <div className="navbar fixed bg-white w-full border border-b-gray-300 shadow-[0_1px_5px_rgba(0,0,0,0.2)] text-black p-0 z-10">
                 <div className="flex-1">
                     <div className="dropdown">
                         <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden z-10">
@@ -86,7 +86,7 @@ export default function Navbar() {
                                 />
                                 <Tab
                                     component={Link}
-                                    to="/friends/list"
+                                    to="/friends"
                                     icon={<UserGroupIcon className={`h-6 w-full ${(isActiveTab('/friends/list') || isActiveTab('/friends/requests')) ? 'text-blue-500' : 'text-gray-500'}`} />}
                                     aria-label="Friends"
                                 />
@@ -125,7 +125,7 @@ export default function Navbar() {
                                 />
                                 <Tab
                                     component={Link}
-                                    to="/friends/list"
+                                    to="/friends"
                                     icon={<UserGroupIcon className={`h-6 w-6 ${(isActiveTab('/friends/list') || isActiveTab('/friends/requests')) ? 'text-blue-500' : 'text-gray-500'}`} />}
                                     aria-label="Friends"
                                 />

@@ -28,6 +28,7 @@ function routers() {
                     <Route index element={<Home />} />
 
                     <Route path="friends" element={<Myfriend />} >
+                        <Route path="" element={<Friendinvitation />} />
                         <Route path="list" element={<Allfriend />} />
                         <Route path="requests" element={<Friendinvitation />} />
                     </Route>

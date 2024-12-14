@@ -2,19 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { HandThumbUpIcon, ChatBubbleLeftIcon, ShareIcon, HandThumbDownIcon } from '@heroicons/react/24/outline';
 import AVTUser from './AVTUser';
-import { handleLike, handleDisLike, handleUnDisLike, handleUnLike } from '../../service/PostService';
+import { handleLike, handleDisLike, handleUnDisLike, handleUnLike, getHomeFeed } from '../../service/PostService';
 import 'animate.css';
 import { format, differenceInMinutes, differenceInHours, differenceInDays } from 'date-fns';
 import { getAllOtherPosts } from '../../service/OtherProfile';
 import { profileUserCurrent } from '../../service/ProfilePersonal';
 import DropdownOtherPost from './components/DropdownOtherPost';
-export default function AllPostOther({ user }) {
+export default function HomePost() {
+
     const [posts, setPosts] = useState([]);
     const [userLogin, setUserLogin] = useState({})
-    const { id } = useParams();
     useEffect(() => {
         const fetchdata = async () => {
-            const response = await getAllOtherPosts(id)
+            const response = await getHomeFeed()
             if (response) {
                 const sortedPosts = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                 setPosts(sortedPosts)
@@ -23,12 +23,10 @@ export default function AllPostOther({ user }) {
             }
         }
         fetchdata()
-    }, [id]);
+    }, []);
     console.log(posts)
 
-    if (!posts.length) {
-        return <span className='text-xl mt-3 text-gray-500'>Chưa đăng bài viết nào!</span>;
-    }
+
     //Like
     const handleLikeClick = async (postId) => {
         try {
@@ -111,13 +109,14 @@ export default function AllPostOther({ user }) {
                 posts.map((post) => (
                     <div key={post._id}
                         className='flex items-start p-6 border border-gray-300 rounded-lg shadow-md shadow-zinc-300 gap-3'>
-                        <AVTUser user={user} />
+                        <AVTUser user={post.author} />
 
                         <div className='grid gap-2 w-full'>
                             <div className='flex justify-between'>
                                 <article className='text-wrap grid gap-5'>
                                     <div className='grid'>
-                                        <Link className='font-bold text-lg hover:link ' to="#">{user.lastName} {user.firstName}</Link>
+                                        {post._id}
+                                        <Link className='font-bold text-lg hover:link ' to="#">{post.author.lastName} {post.author.firstName}</Link>
                                         <div className='flex gap-2'>
                                             <span className='text-xs'>{formatDate(post.createdAt)}</span>
                                             <span className='text-xs'>{formatPrivacy(post.privacy)}</span>
@@ -132,7 +131,7 @@ export default function AllPostOther({ user }) {
                             )}
 
                             {/* <img className='rounded-xl w-full max-h-[400px]'
-                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnzOw4JGD9VHLQ46a6nQS4uhdw9QFlA7s0Mg&s" alt='' /> */}
+                                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnzOw4JGD9VHLQ46a6nQS4uhdw9QFlA7s0Mg&s" alt='' /> */}
                             <div className='flex justify-between'>
                                 <div className='flex gap-2'>
                                     <button onClick={() => handleLikeClick(post._id)} className={"flex items-end gap-1"}>

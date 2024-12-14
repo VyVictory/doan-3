@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import ModalStatus from './ModalStatus';
 
 export default function PostStatus({ user }) {
-  if(!user) return
+  if (!user) return
   return (
     <div className='border border-gray-300 rounded-lg shadow-sm shadow-zinc-300 p-4'>
       <div className="flex column items-center" >
         <div className='pr-3'>
           <img
-            className='h-12 aspect-square rounded-full shadow-md flex items-center justify-center'
+            className='w-12 aspect-square rounded-full shadow-md flex items-center justify-center'
             src={`${user && user.avatar ? user.avatar : "https://th.bing.com/th/id/OIP.PKlD9uuBX0m4S8cViqXZHAHaHa?rs=1&pid=ImgDetMain"}`} alt='' />
         </div>
         <button
