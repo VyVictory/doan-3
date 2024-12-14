@@ -10,7 +10,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model,Types } from 'mongoose';
+import { Model,ObjectId,ObjectIdToString,Types } from 'mongoose';
 import { User } from './schemas/user.schemas';
 import { RegisterDto } from './dto/register.dto';
 import * as bcrypt from 'bcryptjs';
@@ -264,6 +264,22 @@ export class UserService {
   }
 
 
+  async getMyFriend(userId : string): Promise<Friend[]> {
+    
+    const UserOBJ = new Types.ObjectId(userId);
+    const friendList = await this.FriendModel.find({ 
+      $or: 
+      [
+      { sender: UserOBJ },
+      { receiver: UserOBJ }
+    ]
+     })
+     .populate('sender', 'firstName lastName avatar')
+     .populate('receiver', 'firstName lastName avatar')
+     .exec();
+    console.log('friend: ',friendList);
+    return friendList;
+  }
 
   
   async updateUser(userId: string, updateData: any): Promise<User> {

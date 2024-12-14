@@ -14,6 +14,7 @@ import { ResetPasswordDto } from './dto/resetPassword.dto';
 import { UploadAvatarDto } from './dto/uploadAvartar.dto';
 import { UploadCoverImgDto } from './dto/uploadCoverImg.dto';
 import { OptionalAuthGuard } from './guard/optional.guard';
+import { Types } from 'twilio/lib/rest/content/v1/content';
 
 @Controller('user')
 export class UserController {
@@ -223,13 +224,14 @@ export class UserController {
       return this.userService.unFriend(currentUser._id.toString(), friendId);
     }
 
-    // @Get('getMyFriend')
-    // @UseGuards(AuthGuardD)
-    // async getMyFriend(
-    //   @CurrentUser() currentUser: User,
-    // ){
-    //   return this.userService.getMyFriends(currentUser._id.toString());
-    // }
+    @Get('getMyFriend')
+    @UseGuards(AuthGuardD)
+    async getMyFriend(
+      @CurrentUser() currentUser: User,
+    ){
+      
+      return this.userService.getMyFriend(currentUser._id.toString());
+    }
 
 
 
