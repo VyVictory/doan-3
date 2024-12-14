@@ -18,7 +18,8 @@ export default function OtherProfiles() {
         const fetchdata = async () => {
             setLoading(true)
             const response = await OtherProfile(id);
-            setDataProfile(response.data)
+            if (response)
+                setDataProfile(response.data)
         }
         fetchdata()
     }, [id])

@@ -17,7 +17,7 @@ export async function OtherProfile(id) {
 }
 export async function getAllOtherPosts(id) {
     try {
-        const request = axios.get(`http://localhost:3001/post/${id}`,
+        const request = axios.get(`http://localhost:3001/post/friend/${id}`,
             {
                 headers: {
                     Authorization: `Bearer ${authToken.getToken()}`
