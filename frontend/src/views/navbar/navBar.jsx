@@ -11,13 +11,14 @@ import { profileUserCurrent } from '../../service/ProfilePersonal';
 export default function Navbar() {
     //
     const [user, setUser] = useState({})
-
     //e
     useEffect(() => {
         const fetchdata = async () => {
             const response = await profileUserCurrent();
-            if (response) {
-                setUser(response.data)
+            if (response && response.data) {
+                setUser(response.data);
+            } else {
+                console.warn("No data found in response.");
             }
         }
         fetchdata()

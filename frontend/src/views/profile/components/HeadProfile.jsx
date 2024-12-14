@@ -9,7 +9,9 @@ export default function HeadProfile() {
     useEffect(() => {
         const fetchdata = async () => {
             const response = await profileUserCurrent();
-            setDataProfile(response.data)
+            if(response && response.data){
+                setDataProfile(response.data)
+            }
         }
         fetchdata()
     }, [])
