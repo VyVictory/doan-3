@@ -68,7 +68,8 @@ export default function FriendCard({ iduser, idrequest }) {
             <div className=' border border-gray-300 shadow-lg max-w-56 max-h-80 h-80 rounded-lg'>
                 <Link>
                     <img className='h-52 w-full p-2'
-                        src="https://www.didongmy.com/vnt_upload/news/05_2024/anh-27-meme-dang-yeu-didongmy.jpg" />
+
+                        src={userdata?.avatar? userdata.avatar:'https://www.didongmy.com/vnt_upload/news/05_2024/anh-27-meme-dang-yeu-didongmy.jpg'} />
                 </Link>
                 <Link className='text-black  px-3 font-bold flex justify-center'>
                     {userdata ? (userdata.firstName ? userdata.firstName : '', userdata.lastName ? userdata.lastName : '') : 'No Name'}
