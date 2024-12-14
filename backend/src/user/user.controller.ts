@@ -168,6 +168,11 @@ export class UserController {
   async savePost(@CurrentUser() currentUser: User, @Param('postId') postId: string) {
     return this.userService.savePost(currentUser._id.toString(), postId);
   }
+  @Delete(':postId/bookmark')
+  @UseGuards(AuthGuardD)
+  async removeSavedPost(@CurrentUser() currentUser: User, @Param('postId') postId: string) {
+    return this.userService.removeSavedPost(currentUser._id.toString(), postId);
+  }
   @Get(':userId/bookmark')
   @UseGuards(AuthGuardD)
   async getSavedPosts(@CurrentUser() currentUser: User) {
@@ -200,6 +205,14 @@ export class UserController {
   ){
     return this.userService.rejectFriendRequest(currentUser._id.toString(), friendRequestId);
   }
+  
+  @Get('getMyFriendRequest')
+  @UseGuards(AuthGuardD)
+  async getMyFriendRequest(
+    @CurrentUser() currentUser: User,
+  ){
+    return this.userService.getMyFriendRequest(currentUser._id.toString());
+  }
 
     @Delete('unfriend/:friendId')
     @UseGuards(AuthGuardD)
@@ -209,6 +222,14 @@ export class UserController {
     ){
       return this.userService.unFriend(currentUser._id.toString(), friendId);
     }
+
+    // @Get('getMyFriend')
+    // @UseGuards(AuthGuardD)
+    // async getMyFriend(
+    //   @CurrentUser() currentUser: User,
+    // ){
+    //   return this.userService.getMyFriends(currentUser._id.toString());
+    // }
 
 
 

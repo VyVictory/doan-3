@@ -17,6 +17,7 @@ import LayoutSearch from "../views/search/layout.js";
 import OtherProfiles from "../views/profile/OtherProfiles/index.jsx";
 import AboutOtherProfile from "../views/profile/OtherProfiles/AboutOtherProfile.jsx";
 import OtherPosts from "../views/profile/OtherProfiles/OtherPosts.jsx";
+import Bookmark from "../views/bookmark/page.jsx";
 
 function routers() {
     return (
@@ -44,6 +45,7 @@ function routers() {
                         <Route path="about" element={<AboutOtherProfile />} />
                         {/* <Route path="friends" element={<FriendProfile />} /> */}
                     </Route>
+                    <Route path="bookmark" element={<Bookmark />} />
                     {/* <Route path="*" element={<NoPage />} /> */}
                     <Route path="messenger" element={<Messenger />} />
                     <Route path="/search" element={<LayoutSearch />}>

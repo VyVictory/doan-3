@@ -15,19 +15,21 @@ import { User } from './schemas/user.schemas';
 import { RegisterDto } from './dto/register.dto';
 import * as bcrypt from 'bcryptjs';
 import { LoginDto } from './dto/login.dto';
-import { FriendRequest } from './schemas/friend.schema';
+import { FriendRequest } from './schemas/friendRequest.schema';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { OtpService } from '../otp/otp.service';
 import { ResetPasswordDto } from './dto/resetPassword.dto';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { UploadAvatarDto } from './dto/uploadAvartar.dto';
 import { UploadCoverImgDto } from './dto/uploadCoverImg.dto';
+import { Friend } from './schemas/friend.schema';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name) private UserModel: Model<User>,
     @InjectModel(FriendRequest.name) private FriendRequestModel: Model<FriendRequest>,
+    @InjectModel(Friend.name) private FriendModel: Model<Friend>,
     private jwtService: JwtService,
     private configService: ConfigService,
     private cloudinaryService: CloudinaryService,
@@ -177,35 +179,38 @@ export class UserService {
   async acceptRequestFriends(
     currentUserId: string,
     friendRequestId: string,
-  ): Promise<{ message: string }> {
+  ): Promise<Friend> {
 
     const friendRequest = await this.FriendRequestModel.findById(friendRequestId);
     if (!friendRequest) {
       throw new NotFoundException('No friend request found');
     }
-  
     const { sender, receiver } = friendRequest;
   
-
     if (currentUserId !== receiver.toString()) {
       throw new ForbiddenException('You are not authorized to accept this friend request');
     }
-  
 
-    await this.UserModel.findByIdAndUpdate(
-      receiver,
-      { $addToSet: { friends: sender } },
-    );
-  
-
-    await this.UserModel.findByIdAndUpdate(
+    const friend = await this.FriendModel.create({
       sender,
-      { $addToSet: { friends: receiver } },
-    );
+      receiver,
+      status: 'friend',
+    })
+
+    // await this.UserModel.findByIdAndUpdate(
+    //   receiver,
+    //   { $addToSet: { friends: sender } },
+    // );
+  
+
+    // await this.UserModel.findByIdAndUpdate(
+    //   sender,
+    //   { $addToSet: { friends: receiver } },
+    // );
   
     await this.FriendRequestModel.findByIdAndDelete(friendRequestId);
   
-    return { message: 'Friend request accepted successfully' };
+    return friend ;
   }
   
 
@@ -253,6 +258,12 @@ export class UserService {
     );
     return { message: 'Unfriended successfully' };
   }
+
+  async getMyFriendRequest(userId : string): Promise<FriendRequest[]> {
+    return this.FriendRequestModel.find({ receiver: userId });
+  }
+
+
 
   
   async updateUser(userId: string, updateData: any): Promise<User> {
@@ -400,13 +411,25 @@ export class UserService {
   async savePost(userId: string, postId: string): Promise<User> {
     const bookmarks = await this.UserModel.findById(userId);
     if (!bookmarks) {
-      throw new Error('User not found');
+      throw new HttpException('User not found',HttpStatus.NOT_FOUND);
+    }
+    if (bookmarks.bookmarks.includes(new Types.ObjectId(postId))) {
+      throw new HttpException('Post already saved',HttpStatus.BAD_REQUEST);
     }
     await bookmarks.save();
     await this.UserModel.findByIdAndUpdate(userId, {
-      $push: { bookmarks: postId},
+      $push: { bookmarks: postId },
     });
     return bookmarks;
+  }
+  async removeSavedPost(userId: string, postId: string): Promise<User> {
+    const user = await this.UserModel.findById(userId);
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    user.bookmarks = user.bookmarks.filter(bookmark => bookmark.toString() !== postId);
+    await user.save();
+    return user;
   }
   async getSavedPosts(userId: string): Promise<User> {
     return this.UserModel.findById(userId).populate('bookmarks');

@@ -17,6 +17,22 @@ export async function getPostPersonal() {
 
     }
 }
+//getHomeFeed
+export async function getHomeFeed() {
+    try {
+        const request = await axios.get(`http://localhost:3001/post/getHomeFeed`,
+            {
+                headers: {
+                    Authorization: `Bearer ${authToken.getToken()}`, // Use your auth token provider
+                    'Content-Type': 'application/json'
+                }
+            }
+        )
+        return request
+    } catch (error) {
+
+    }
+}
 //Like
 export async function handleLike(postId) {
     try {
@@ -61,6 +77,33 @@ export async function handleDisLike(postId) {
 export async function handleUnDisLike(postId) {
     try {
         const request = await axios.put(`http://localhost:3001/post/${postId}/undislike`, {}, {
+            headers: {
+                Authorization: `Bearer ${authToken.getToken()}`
+            }
+        })
+        return request
+    } catch (error) {
+
+    }
+}
+// bookmark
+
+export async function handleAddBookmark(postId) {
+    try {
+        const request = await axios.post(`http://localhost:3001/user/${postId}/bookmark`, {
+            headers: {
+                Authorization: `Bearer ${authToken.getToken()}`
+            }
+        })
+        return request
+    } catch (error) {
+
+    }
+}
+
+export async function getAllBookmark(userId) {
+    try {
+        const request = await axios.get(`http://localhost:3001/user/${userId}/bookmark`, {
             headers: {
                 Authorization: `Bearer ${authToken.getToken()}`
             }

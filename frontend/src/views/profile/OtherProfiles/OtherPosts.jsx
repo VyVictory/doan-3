@@ -17,7 +17,9 @@ export default function OtherPosts() {
             try {
                 setLoading(true)
                 const response = await OtherProfile(id);
-                setDataProfile(response.data)
+                if (response) {
+                    setDataProfile(response.data)
+                }
             }
             catch (error) {
                 setError(error)
