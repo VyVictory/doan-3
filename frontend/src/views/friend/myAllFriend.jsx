@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import friend from '../../service/friend';
-import FriendCard from './friendCard';
-import MyFriendCard from './myFriendCard';
+import FriendCard from './card/friendCard';
+import MyFriendCard from './card/myFriendCard';
 
 
 export default function MyAllFriend() {

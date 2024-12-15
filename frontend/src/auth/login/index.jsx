@@ -5,8 +5,8 @@ import { useState } from 'react';
 import authToken from '../../components/authToken';
 export default function Login() {
     const [formData, setFormData] = useState({
-        numberPhone: '01672258884',
-        password: 'Adsadsads',
+        numberPhone: '0372830048',
+        password: 'Adsads1234@#',
     });
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();

@@ -1,8 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import user from '../../service/user';
+import user from '../../../service/user';
 import { useEffect, useState } from 'react';
-import friend from '../../service/friend';
+import friend from '../../../service/friend';
 export default function FriendCard({ iduser, idrequest }) {
     const [userdata, setUserdata] = useState({});
     const [loading, setLoading] = useState(true); // Loading state
