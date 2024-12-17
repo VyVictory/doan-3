@@ -7,98 +7,99 @@ import { User } from '../user/schemas/user.schemas';
 import { CreateGroupDto } from './dto/createGroup.dto';
 import { SendMessageDto } from './dto/sendMessage.dto';
 import { content } from 'googleapis/build/src/apis/content';
+import { Group } from './schema/group.schema';
 
 @Injectable()
 export class ChatService {
     constructor(
         @InjectModel(Message.name) private readonly MessageModel: Model<Message>,
         @InjectModel(GroupMessage.name) private readonly GroupMessageModel: Model<GroupMessage>,
+        @InjectModel(Group.name) private readonly GroupModel: Model<Group>,
         @InjectModel(User.name) private readonly UserModel: Model<User>,
     ){}
 
-    async createGroup(createGroupDto: CreateGroupDto, owner: string): Promise<GroupMessage> {
-        const { groupName, members } = createGroupDto;
-    
-        // Lấy thông tin chủ sở hữu nhóm từ bảng User
-        const ownerUser = await this.UserModel.findById(owner).select('firstName lastName').exec();
-        if (!ownerUser) {
-          throw new Error('Owner not found');
-        }
-    
-        // Tạo tên nhóm
-        const settingGroupName = `Nhóm được tạo bởi ${ownerUser.firstName} ${ownerUser.lastName}`;
-    
-        // Thêm chủ sở hữu vào danh sách thành viên nhóm
-        const allMembers = [owner, ...members];
-    
-        // Tạo nhóm mới
-        const group = new this.GroupMessageModel({
-          owner,
-          groupName: settingGroupName,
-          members: allMembers,
-          messages: [], // Mảng tin nhắn ban đầu rỗng
+
+    async createGroup(createGroupDto: CreateGroupDto, userId: Types.ObjectId){
+        const { name, avatarGroup, participants } = createGroupDto;
+
+        const group = new this.GroupModel({
+          name,
+          avatarGroup,
+          owner: userId,
+          participants: [...participants, userId],
         });
     
-        // Lưu nhóm vào cơ sở dữ liệu
-        return group.save();
-      }
+        return await group.save();
+    }
 
 
+    async sendMessageToGroup(sendMessageDto: SendMessageDto, userId: Types.ObjectId, groupId : Types.ObjectId) : Promise<GroupMessage>{
+        const { content, mediaURL,  } = sendMessageDto;
 
-      async sendMessageToGroup(
-        groupId: string,
-        authorId: Types.ObjectId,
-        sendMessageDto : SendMessageDto,
-      ): Promise<GroupMessage> {
-        const group = await this.GroupMessageModel.findById(groupId);
-      
-        if (!group) {
-          throw new Error('Group not found');
-        }
-
-        const author = await this.UserModel.findById(authorId);
-        if (!author) {
-          throw new Error('Author not found');
-        }
-      
-        const newMessage = {
-          author: authorId,
-          content: sendMessageDto.content,
-          img: sendMessageDto.img,
-          video: sendMessageDto.video,
+        const groupMessage = new this.GroupMessageModel({
+          group: groupId,
+          sender: userId,
+          content,
+          mediaURL,
           reading: [],
-          createdAt: new Date(),
-        };
-      
-        group.messages.push(newMessage);
-        const updatedGroup = await group.save();
-        return updatedGroup;
+
+        });
+        return await groupMessage.save();
+    }
+
+    async getGroupMessages(groupId: Types.ObjectId): Promise<{ group: any; messages: GroupMessage[] }> {
+     
+      const group = await this.GroupModel.findById(groupId)
+        .populate({ 
+          path: 'owner', 
+          select: 'firstName lastName avatar' 
+        })
+        .populate({ 
+          path: 'participants', 
+          select: 'firstName lastName avatar'
+        })
+        .exec();
+    
+      if (!group) {
+        throw new HttpException('Group not found', HttpStatus.NOT_FOUND);
       }
 
-
-      async getGroupMessages(groupId: string): Promise<GroupMessage> {
-        return this.GroupMessageModel.findById(groupId)
-        .populate('members', 'firstName lastName avatar')
-        .populate('messages.author', 'firstName lastName avatar')
-        .sort({ createdAt: -1 }); 
+      const messages = await this.GroupMessageModel.find({ group: groupId })
+        .populate({ 
+          path: 'sender', 
+          select: 'firstName lastName avatar' 
+        })
+        .exec();
+    
+      if (!messages.length) { 
+        throw new HttpException('Group has no messages', HttpStatus.NOT_FOUND);
       }
 
-      async getMemberGroup(groupId: string){
-        const group = await this.GroupMessageModel
-          .findById(groupId)
-          .populate('members')
+      return { group, messages };
+    }
+
+    async getMemberGroup(groupId: Types.ObjectId): Promise<User[]> {
+      try {
+        const swagerGroupId = new Types.ObjectId(groupId);
+        const group = await this.GroupModel.findById(swagerGroupId)
+          .populate({
+            path: 'participants',
+             model: 'User',
+            select: '_id firstName lastName avatar', // chọn các trường muốn hiển thị
+          })
           .exec();
-      
+    
         if (!group) {
           throw new HttpException('Group not found', HttpStatus.NOT_FOUND);
         }
-        return group.members; 
+    
+        // Trả về danh sách các thành viên trong group với thông tin chi tiết
+        return group.participants;
+      } catch (error) {
+        console.error('Error fetching group members:', error);
+        throw new HttpException('Failed to fetch group members', HttpStatus.INTERNAL_SERVER_ERROR);
       }
-      
-      
-      
-      
-
+    }
+    
 }
-
 

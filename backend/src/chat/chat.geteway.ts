@@ -77,32 +77,32 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     console.log(`User ${userId} left group ${groupId}`);
   }
 
-  @SubscribeMessage('sendMessage')
-  async handleSendMessage(client: Socket, { groupId, content, img, video }: { groupId: string, content: string, img: string, video: string }) {
-    const userId = this.activeUsers.get(client.id);
-    if (!userId) {
-      throw new WsException('Unauthorized');
-    }
+  // @SubscribeMessage('sendMessage')
+  // async handleSendMessage(client: Socket, { groupId, content, img, video }: { groupId: string, content: string, img: string, video: string }) {
+  //   const userId = this.activeUsers.get(client.id);
+  //   if (!userId) {
+  //     throw new WsException('Unauthorized');
+  //   }
 
-    const sendMessageDto: SendMessageDto = {
-      content,
-      img,
-      video
-    };
-    const exTypeGroup = new Types.ObjectId(groupId as string);
+  //   const sendMessageDto: SendMessageDto = {
+  //     content,
+  //     img,
+  //     video
+  //   };
+  //   const exTypeGroup = new Types.ObjectId(groupId as string);
 
-    // Lưu tin nhắn vào cơ sở dữ liệu thông qua ChatService
-    const message = await this.chatService.sendMessageToGroup(userId, exTypeGroup,sendMessageDto);
+  //   // Lưu tin nhắn vào cơ sở dữ liệu thông qua ChatService
+  //   const message = await this.chatService.sendMessageToGroup(userId, exTypeGroup,sendMessageDto);
 
-    // Phát lại tin nhắn đến tất cả những người tham gia nhóm
-    this.server.to(groupId).emit('receiveMessage', message);
-    console.log(`User ${userId} sent message to group ${groupId}`);
-  }
+  //   // Phát lại tin nhắn đến tất cả những người tham gia nhóm
+  //   this.server.to(groupId).emit('receiveMessage', message);
+  //   console.log(`User ${userId} sent message to group ${groupId}`);
+  // }
 
-  async notifyNewMessage(groupId: string, message: any) {
-    this.server.to(groupId).emit('newMessage', message); // Phát thông báo tin nhắn mới
-    console.log(`New message notification sent to group ${groupId}`);
-  }
+  // async notifyNewMessage(groupId: string, message: any) {
+  //   this.server.to(groupId).emit('newMessage', message); // Phát thông báo tin nhắn mới
+  //   console.log(`New message notification sent to group ${groupId}`);
+  // }
 
 
 }

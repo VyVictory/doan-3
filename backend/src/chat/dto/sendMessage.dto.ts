@@ -5,16 +5,14 @@ import { Types } from "mongoose";
 
 export class SendMessageDto{
 
+    // @IsNotEmpty()
+    // readonly group: Types.ObjectId;
+
     @ValidateIf((o) => !o.content) 
-    @IsArray()
     readonly content?: string
 
-    @ValidateIf((o) => !o.img) 
+    @ValidateIf((o) => !o.mediaURL) 
     @IsString()
-    readonly img?: string;
-
-    @ValidateIf((o) => !o.video)
-    @IsString()
-    readonly video?: string;
+    readonly mediaURL?: string;
     
 }

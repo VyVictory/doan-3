@@ -1,40 +1,33 @@
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { User } from 'src/user/schemas/user.schemas';
 
 @Schema({
     timestamps: true,
 })
 export class Message extends Document{
 
-  @Prop({ type: [Types.ObjectId], ref: 'User' })
-  members: Types.ObjectId[];
+  //1 tin nhắn có thể gửi từ người này đến người kia
+  //tin nhắn chia ra sender và receiver 
+  // hơi khó để hiểu nhưng cứ hiểu là 1 tin nhắn có thể gửi từ người này đến người kia
+  // sau này sẽ rất khó để có thể lấy được đâu là tin nhắn mà bản thân đã gửi 
+  // và tin nhắn mà bản thân đã nhận
+  // tuy phức tạp nhưng tạm thời chưa có giải pháp 
+  // content là nội dung tin nhắn đây chỉ có text 
+  // mediaURL là link ảnh hoặc video 
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  sender: User
 
-  @Prop({
-    required: true,
-    type: [
-      {
-        author: { type: Types.ObjectId, ref: 'User' }, 
-        content: { type: String }, 
-        reading: { type: [Types.ObjectId], default: [] },
-        img: { type: String, required: false },
-        video: { type: String, required: false }, 
-        createdAt: { type: Date, default: Date.now },
-      },
-    ],
-    default: [],
-  })
-  messages: {
-    author: Types.ObjectId;
-    content: string;
-    reading: Types.ObjectId[];
-    img?: string;
-    video?: string;
-    createdAt: Date;
-  }[];
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  receiver: User;
+
+  @Prop()
+  content: string;
+
+  @Prop()
+  mediaURL: string;
 
 }
-
-
 
 export const MessageSchema = SchemaFactory.createForClass(Message)

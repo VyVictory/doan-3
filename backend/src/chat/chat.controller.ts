@@ -1,6 +1,6 @@
-import { Controller, Post, Body, UseGuards, HttpException, HttpStatus, Param, Get } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, HttpException, HttpStatus, Param, Get, Type } from '@nestjs/common';
 import { ChatService } from './chat.service';
-import { Types } from 'mongoose';
+import { ObjectId, Types } from 'mongoose';
 import { AuthGuardD } from 'src/user/guard/auth.guard';
 import { CurrentUser } from 'src/user/decorator/currentUser.decorator';
 import { User } from 'src/user/schemas/user.schemas';
@@ -21,20 +21,21 @@ export class ChatController {
     @Post('creategroup')
     @UseGuards(AuthGuardD)
     async createGroupChat(
-        @CurrentUser() currentUser: User, // Lấy user hiện tại từ JWT
-        @Body() createGroupDto: CreateGroupDto, // DTO tạo nhóm
+        @CurrentUser() currentUser: User,
+        @Body() createGroupDto: CreateGroupDto, 
       ) {
         if (!currentUser) {
           throw new HttpException('User not found or not authenticated', HttpStatus.UNAUTHORIZED);
         }
-        return this.chatService.createGroup(createGroupDto, currentUser._id.toString());
+        const owner = new Types.ObjectId(currentUser._id.toString());
+        return this.chatService.createGroup(createGroupDto,owner);
       }
 
       @Post('sendmessage/:groupId')
       @UseGuards(AuthGuardD)
       async sendMessageToGroup(
         @CurrentUser() currentUser: User,
-        @Param('groupId') groupId: string,
+        @Param('groupId') groupId: Types.ObjectId, 
         @Body() sendMessageDto: SendMessageDto,
       ) {
         if (!currentUser) {
@@ -42,7 +43,7 @@ export class ChatController {
         }
         const currentUserID = new Types.ObjectId(currentUser._id as string);
 
-        const message = await this.chatService.sendMessageToGroup(groupId, currentUserID, sendMessageDto);
+        const message = await this.chatService.sendMessageToGroup(sendMessageDto, currentUserID, groupId );
 
         const currentAuthor = {
           firstName: currentUser.firstName,
@@ -75,7 +76,8 @@ export class ChatController {
       
     @Get('getmessagegroup/:groupId')
     async getMessageGroup(
-      @Param('groupId') groupId: string,
+      @Param('groupId') groupId: Types.ObjectId,
+
     ){
 
       const messages = await this.chatService.getGroupMessages(groupId);
@@ -86,10 +88,10 @@ export class ChatController {
     @UseGuards(AuthGuardD)
     async getMembersGroup(
       @CurrentUser() currentUser: User,
-      @Param('idgr') idgr: string,
+      @Param('idgr') idgr: Types.ObjectId,
     ){
-      const members = await this.chatService.getMemberGroup(idgr);
-      return members;
+      return await this.chatService.getMemberGroup(idgr);
+      
     }
 
     
