@@ -20,7 +20,7 @@ export default function DropdownOtherPost({ postId }) {
             </div>
             <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
                 <li>
-                    {postId}
+
                     <button
                         onClick={handleBookmarkAdd}
                         className=" data-[focus]:bg-[#3f3f46] p-2 rounded-md flex items-center gap-2" to="#">
