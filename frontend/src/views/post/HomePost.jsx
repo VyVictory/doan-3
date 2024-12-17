@@ -9,12 +9,15 @@ import { getAllOtherPosts } from '../../service/OtherProfile';
 import { profileUserCurrent } from '../../service/ProfilePersonal';
 import DropdownOtherPost from './components/DropdownOtherPost';
 import DropdownPostPersonal from './components/DropdownPostPersonal';
+import Loading from '../../components/Loading';
 export default function HomePost() {
 
     const [posts, setPosts] = useState([]);
     const [userLogin, setUserLogin] = useState({})
+    const [loading, setLoading] = useState(true)
     useEffect(() => {
         const fetchdata = async () => {
+            setLoading(true)
             const response = await getHomeFeed()
             if (response) {
                 const sortedPosts = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -22,8 +25,9 @@ export default function HomePost() {
                 const responseUserPersonal = await profileUserCurrent()
                 setUserLogin(responseUserPersonal.data)
             }
+            setLoading(false)
         }
-        fetchdata()
+        setTimeout(fetchdata, 1000);
     }, []);
     console.log(posts)
 
@@ -108,7 +112,9 @@ export default function HomePost() {
 
     return (
         <>
-            {
+            {loading ? (
+                <Loading />
+            ) : (
                 posts.map((post) => (
                     <div key={post._id}
                         className='flex items-start p-6 border border-gray-300 rounded-lg shadow-md shadow-zinc-300 gap-3'>
@@ -166,7 +172,7 @@ export default function HomePost() {
                             </div>
                         </div>
                     </div>
-                ))
+                )))
             }
 
         </>
