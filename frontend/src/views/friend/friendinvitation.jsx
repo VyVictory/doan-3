@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import friend from '../../service/friend';
-import FriendCard from './friendCard';
+import FriendCard from './card/friendCard';
 
 
 export default function FriendInvitation() {
@@ -47,8 +47,8 @@ export default function FriendInvitation() {
                 <div className="w-full flex flex-col gap-4">
                     {requests.map((request, index) => (
                         <FriendCard
-                        iduser={request.sender}
-                        idrequest={request._id}
+                            iduser={request.sender}
+                            idrequest={request._id}
                             key={index}
                         />
                     ))}

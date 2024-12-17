@@ -8,12 +8,16 @@ import { format, differenceInMinutes, differenceInHours, differenceInDays } from
 import { getAllOtherPosts } from '../../service/OtherProfile';
 import { profileUserCurrent } from '../../service/ProfilePersonal';
 import DropdownOtherPost from './components/DropdownOtherPost';
+import DropdownPostPersonal from './components/DropdownPostPersonal';
+import Loading from '../../components/Loading';
 export default function HomePost() {
 
     const [posts, setPosts] = useState([]);
     const [userLogin, setUserLogin] = useState({})
+    const [loading, setLoading] = useState(true)
     useEffect(() => {
         const fetchdata = async () => {
+            setLoading(true)
             const response = await getHomeFeed()
             if (response) {
                 const sortedPosts = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -21,8 +25,9 @@ export default function HomePost() {
                 const responseUserPersonal = await profileUserCurrent()
                 setUserLogin(responseUserPersonal.data)
             }
+            setLoading(false)
         }
-        fetchdata()
+        setTimeout(fetchdata, 1000);
     }, []);
     console.log(posts)
 
@@ -102,10 +107,14 @@ export default function HomePost() {
                 return <span>{privacy}</span>;
         }
     };
+    //post của bản thân thì hiển thị dropdown PostPersonal
+
 
     return (
         <>
-            {
+            {loading ? (
+                <Loading />
+            ) : (
                 posts.map((post) => (
                     <div key={post._id}
                         className='flex items-start p-6 border border-gray-300 rounded-lg shadow-md shadow-zinc-300 gap-3'>
@@ -115,8 +124,8 @@ export default function HomePost() {
                             <div className='flex justify-between'>
                                 <article className='text-wrap grid gap-5'>
                                     <div className='grid'>
-                                        {post._id}
-                                        <Link className='font-bold text-lg hover:link ' to="#">{post.author.lastName} {post.author.firstName}</Link>
+
+                                        <Link className='font-bold text-lg hover:link ' to={`/user/${post.author._id}`}>{post.author.lastName} {post.author.firstName}</Link>
                                         <div className='flex gap-2'>
                                             <span className='text-xs'>{formatDate(post.createdAt)}</span>
                                             <span className='text-xs'>{formatPrivacy(post.privacy)}</span>
@@ -124,7 +133,11 @@ export default function HomePost() {
                                     </div>
                                     <p>{post.content}</p>
                                 </article>
-                                <DropdownOtherPost postId={post._id} />
+                                {userLogin._id === post.author._id ? (
+                                    <DropdownPostPersonal postId={post._id} />
+                                ) : (
+                                    <DropdownOtherPost postId={post._id} />
+                                )}
                             </div>
                             {post.img.length > 0 && (
                                 <img className='rounded-xl max-h-[300px]' src={post.img[0]} alt="Post visual" />
@@ -159,7 +172,7 @@ export default function HomePost() {
                             </div>
                         </div>
                     </div>
-                ))
+                )))
             }
 
         </>

@@ -17,7 +17,7 @@ import OtherProfiles from "../views/profile/OtherProfiles/index.jsx";
 import AboutOtherProfile from "../views/profile/OtherProfiles/AboutOtherProfile.jsx";
 import OtherPosts from "../views/profile/OtherProfiles/OtherPosts.jsx";
 import Bookmark from "../views/bookmark/page.jsx";
-import MyFriendCard from "../views/friend/myFriendCard.jsx";
+import MyFriendCard from "../views/friend/card/myFriendCard.jsx";
 
 function routers() {
     return (

@@ -1,9 +1,9 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import user from '../../service/user';
+import user from '../../../service/user';
 import { useEffect, useState } from 'react';
-import friend from '../../service/friend';
-import DropdownMyfriend from './DropdownMyfriend'
+import friend from '../../../service/friend';
+import DropdownMyfriend from '../DropdownMyfriend'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 export default function MyFriendCard({ userdata }) {
     // const [userdata, setUserdata] = useState({});

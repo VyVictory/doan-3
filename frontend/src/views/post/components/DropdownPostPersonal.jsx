@@ -8,12 +8,7 @@ export default function DropdownPostPersonal() {
         <EllipsisHorizontalIcon className="size-5" />
       </div>
       <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-        <li>
-          <Link className=" data-[focus]:bg-[#3f3f46] p-2 rounded-md flex items-center gap-2" to="#">
-            <BookmarkIcon className="size-5 text-amber-600" />
-            Lưu bài viết
-          </Link>
-        </li>
+
         <li>
           <Link className=" data-[focus]:bg-[#3f3f46] p-2 rounded-md flex items-center gap-2" to="#">
             <PencilSquareIcon className="size-5 text-sky-600" />

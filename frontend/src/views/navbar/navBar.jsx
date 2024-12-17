@@ -26,7 +26,8 @@ export default function Navbar() {
     //
     const location = useLocation();
     const isActiveTab = (path) => location.pathname === path;
-
+    const isActiveString = (path) => window.location.pathname.startsWith(path);
+    const active = isActiveString('/friends');
     const [windowSize, setWindowSize] = useState({
         width: window.innerWidth,
         height: window.innerHeight,
@@ -87,7 +88,7 @@ export default function Navbar() {
                                 <Tab
                                     component={Link}
                                     to="/friends"
-                                    icon={<UserGroupIcon className={`h-6 w-full ${(isActiveTab('/friends/list') || isActiveTab('/friends/requests')) ? 'text-blue-500' : 'text-gray-500'}`} />}
+                                    icon={<UserGroupIcon className={`h-6 w-full ${(active) ? 'text-blue-500' : 'text-gray-500'}`} />}
                                     aria-label="Friends"
                                 />
                                 <Tab
@@ -126,7 +127,7 @@ export default function Navbar() {
                                 <Tab
                                     component={Link}
                                     to="/friends"
-                                    icon={<UserGroupIcon className={`h-6 w-6 ${(isActiveTab('/friends/list') || isActiveTab('/friends/requests')) ? 'text-blue-500' : 'text-gray-500'}`} />}
+                                    icon={<UserGroupIcon className={`h-6 w-6 ${(active) ? 'text-blue-500' : 'text-gray-500'}`} />}
                                     aria-label="Friends"
                                 />
                                 <Tab
