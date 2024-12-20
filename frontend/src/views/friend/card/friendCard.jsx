@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import user from '../../../service/user';
 import { useEffect, useState } from 'react';
+import imgUser from '../../../img/user.png'
 import friend from '../../../service/friend';
 export default function FriendCard({ iduser, idrequest }) {
     const [userdata, setUserdata] = useState({});
@@ -66,33 +67,46 @@ export default function FriendCard({ iduser, idrequest }) {
     const handDetailUser = async (id) => {
         window.location.href = `/user/${id}`;
     };
-    
-    return (
-        <div onClick={()=>handDetailUser(userdata._id)}>
-            <div className=' border border-gray-300 shadow-lg max-w-56 max-h-80 h-80 rounded-lg'>
-                <Link>
-                    <img className='h-52 w-full p-2'
 
-                        src={userdata?.avatar? userdata.avatar:'https://www.didongmy.com/vnt_upload/news/05_2024/anh-27-meme-dang-yeu-didongmy.jpg'} />
-                </Link>
-                <Link className='text-black  px-3 font-bold flex justify-center'>
-                    {userdata ? (userdata.firstName ? userdata.firstName : '', userdata.lastName ? userdata.lastName : '') : 'No Name'}
-                </Link>
-                <div className=' flex justify-around mt-5 gap-2 h-10'>
-                    <button
-                        onClick={userdata && userdata._id ? () => handAddFriend(idrequest) : undefined}
-                        className=" rounded bg-sky-600 py-2 px-4 text-sm text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700 data-[disabled]:bg-gray-500"
-                    >
-                        Xác nhận
-                    </button>
-                    <button
-                        onClick={userdata && userdata._id ? () => handDeclineFriend(idrequest) : undefined}
-                        className=" rounded bg-red-600 py-2 px-4 text-sm text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700 data-[disabled]:bg-gray-500"
-                    >
-                        Từ chối
-                    </button>
-                </div>
+    return (
+        <div className="border border-gray-300 shadow-2xl max-w-52 rounded-lg m-2">
+
+            <Link onClick={() => handDetailUser(userdata?._id)}>
+                <img
+                    className="w-full aspect-square rounded-t-lg bg-gray-400"
+                    src={
+                        userdata?.avatar
+                            ? userdata.avatar
+                            : imgUser
+                    }
+                    alt="User Avatar"
+                />
+            </Link>
+
+            <div className="p-2 text-center">
+                <strong>
+                    {userdata
+                        ? `${userdata.firstName || ''} ${userdata.lastName || ''}`.trim()
+                        : "No Name"}
+                </strong>
+            </div>
+
+            <div className="flex flex-col gap-2 px-2 mb-2">
+                <button
+                    onClick={userdata?._id ? () => handAddFriend(idrequest) : undefined}
+                    className="w-full bg-blue-600 py-2 text-white rounded-lg transition-transform transform hover:scale-105"
+                >
+                    Xác nhận
+                </button>
+
+                <button
+                    onClick={userdata?._id ? () => handDeclineFriend(idrequest) : undefined}
+                    className="w-full bg-gray-300 py-2 text-black rounded-lg transition-transform transform hover:scale-105"
+                >
+                    Từ chối
+                </button>
             </div>
         </div>
+
     )
 }

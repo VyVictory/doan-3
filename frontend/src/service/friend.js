@@ -30,7 +30,7 @@ const getListFriendRequest = async () => {
 };
 const getListMyFriend = async () => {
     try {
-        const response = await axios.get(`http://localhost:3001`,
+        const response = await axios.get(`http://localhost:3001/user/getMyFriend`,
             {
                 headers: { Authorization: `Bearer ${authToken.getToken()}` },
             }

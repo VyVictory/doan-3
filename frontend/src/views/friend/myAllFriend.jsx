@@ -6,7 +6,7 @@ import MyFriendCard from './card/myFriendCard';
 
 
 export default function MyAllFriend() {
-    const [friends, setFriends] = useState([]);
+    const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true); // Loading state
 
     useEffect(() => {
@@ -14,42 +14,42 @@ export default function MyAllFriend() {
             try {
                 const res = await friend.getListMyFriend();
                 if (res.success) {
-                    setFriends(res.data);
+                    setRequests(res.data);
                 } else {
-                    setFriends([]);
+                    setRequests([]);
                 }
             } catch (error) {
                 console.error('Error fetching friend requests:', error);
-                setFriends([]);
+                setRequests([]);
             } finally {
                 setLoading(false); // Stop loading
             }
         };
         fetchdata();
     }, []);
-
+    console.log(requests)
 
 
     return (
         <div className="w-full p-5 flex flex-col">
-            <strong className="text-xl">Lời mời kết bạn</strong>
+            <strong className="text-xl ml-2 mb-2">Danh sách bạn bè</strong>
             {loading ? (
                 // Show loading spinner or text
                 <div className="w-full h-full flex justify-center items-center">
                     Loading...
                 </div>
-            ) : friends.length === 0 ? (
+            ) : requests.length === 0 ? (
                 // Show "No Requests" message
                 <div className="w-full h-full flex justify-center items-center text-center">
-                    No Friend
+                    No Friend Requests
                 </div>
             ) : (
                 // Render Friend Cards
-                <div className="w-full flex flex-col gap-4">
-                    {friends.map((friend, index) => (
+                <div className="w-full grid  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                    {requests.map((request, index) => (
                         <MyFriendCard
-                            userdata={friend}
-                            // idfriend={friends._id}
+                            iduser={request.receiver._id}
+                            idrequest={request._id}
                             key={index}
                         />
                     ))}
