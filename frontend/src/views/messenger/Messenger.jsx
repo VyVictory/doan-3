@@ -190,7 +190,8 @@ const Messenger = () => {
                                                     </p>
                                                 </div>
                                             )) : ''
-                                    }bg-white my-2
+                                    }
+                                    bg-white my-2
                                     bg-blue-100
                                     <div className=' rounded-lg shadow-sm p-2 mr-24 border border-blue-500 '>
                                         <p className="text-secondary">Hi there!</p>
