@@ -18,5 +18,18 @@ export class CloudinaryService {
       streamifier.createReadStream(file.buffer).pipe(uploadStream);
     });
   }
+
+  async deleteFile(publicId: string): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      cloudinary.uploader.destroy(publicId, (error, result) => {
+        if (error) return reject(error);
+        if (result.result !== 'ok') {
+          return reject(new Error('Failed to delete file on Cloudinary'));
+        }
+        resolve();
+      });
+    });
+  }
 }
+
 

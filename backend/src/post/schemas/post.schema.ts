@@ -6,7 +6,7 @@ import { Types, Document } from 'mongoose';
 })
 export class Post extends Document {
 
-  @Prop({ required: true })
+  @Prop()
   content: string;
 
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })

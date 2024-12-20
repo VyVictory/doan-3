@@ -11,10 +11,11 @@ import DropdownOtherPost from './components/DropdownOtherPost';
 import DropdownPostPersonal from './components/DropdownPostPersonal';
 import Loading from '../../components/Loading';
 export default function HomePost() {
-
+    const [currentIndex, setCurrentIndex] = useState(0);
     const [posts, setPosts] = useState([]);
     const [userLogin, setUserLogin] = useState({})
     const [loading, setLoading] = useState(true)
+
     useEffect(() => {
         const fetchdata = async () => {
             setLoading(true)
@@ -29,7 +30,19 @@ export default function HomePost() {
         }
         setTimeout(fetchdata, 1000);
     }, []);
-    console.log(posts)
+
+
+
+    //carousel
+    const handlePrev = (post) => {
+        setCurrentIndex((prevIndex) => (prevIndex === 0 ? post.img.length - 1 : prevIndex - 1));
+    };
+
+    const handleNext = (post) => {
+        setCurrentIndex((prevIndex) => (prevIndex === post.img.length - 1 ? 0 : prevIndex + 1));
+    };
+
+
 
 
     //Like
@@ -139,12 +152,28 @@ export default function HomePost() {
                                     <DropdownOtherPost postId={post._id} />
                                 )}
                             </div>
-                            {post.img.length > 0 && (
+                            {/* {post.img.length > 0 && (
                                 <img className='rounded-xl max-h-[300px]' src={post.img[0]} alt="Post visual" />
+                            )} */}
+
+                            {post.img.length > 0 && (
+                                <div className="carousel rounded-box w-96 h-64 relative">
+                                    {post.img.length > 1 && (
+                                        <button onClick={() => handlePrev(post)} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">‹</button>
+                                    )}
+                                    <div className="carousel-item w-full">
+                                        <img
+                                            src={post.img[currentIndex]}
+                                            className="w-full"
+                                            alt="Post visual"
+                                        />
+                                    </div>
+                                    {post.img.length > 1 && (
+                                        <button onClick={() => handleNext(post)} className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">›</button>
+                                    )}
+                                </div>
                             )}
 
-                            {/* <img className='rounded-xl w-full max-h-[400px]'
-                                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnzOw4JGD9VHLQ46a6nQS4uhdw9QFlA7s0Mg&s" alt='' /> */}
                             <div className='flex justify-between'>
                                 <div className='flex gap-2'>
                                     <button onClick={() => handleLikeClick(post._id)} className={"flex items-end gap-1"}>

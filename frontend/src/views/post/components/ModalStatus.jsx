@@ -21,7 +21,7 @@ export default function ModalStatus({ user }) {
     const [alertVisible, setAlertVisible] = useState(false);
     const [formData, setFormData] = useState({
         content: '',
-        img: '',
+        files: '',
         privacy: privacy,
     });
     useEffect(() => {
@@ -51,7 +51,10 @@ export default function ModalStatus({ user }) {
             [name]: value
         })
     };
-
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        setFormData({ ...formData, img: file });
+    };
     const handleVisibilityChange = (newVisibility, valuePrivacy) => {
         setVisibility(newVisibility); // Update the visibility state
         setShowDropdown(false); // Close dropdown after selection
@@ -76,19 +79,16 @@ export default function ModalStatus({ user }) {
     };
 
 
-    const handlePrivacyChange = (value) => {
-        setPrivacy(value)
-        setFormData({
-            ...formData,
-            privacy: privacy
-        });
-    };
+
     //Submit 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(formData);
+        const data = new FormData();
+        data.append('content', formData.content || '');
+        data.append('files', formData.img || '');
+        data.append('privacy', formData.privacy);
         try {
-            const response = await axios.post('http://localhost:3001/post/createPost', formData,
+            const response = await axios.post('http://localhost:3001/post/createPost', data,
                 {
                     headers: {
                         Authorization: `Bearer ${authToken.getToken()}`,
@@ -123,6 +123,7 @@ export default function ModalStatus({ user }) {
 
             <form className="modal-box"
                 method='POST'
+                enctype="multipart/form-data"
                 onSubmit={handleSubmit}
             >
                 {/* Header */}
@@ -227,12 +228,12 @@ export default function ModalStatus({ user }) {
                                     type="file"
                                     accept="image/*"
                                     className="hidden"
-                                    id="file-input"
+                                    id="files"
                                     name='files'
-                                    onChange={handleInputChange}
-                                    value={formData.files}
+                                    onChange={handleFileChange}
+
                                 />
-                                <label htmlFor="file-input" className="file-input-button cursor-pointer">
+                                <label htmlFor="files" className="file-input-button cursor-pointer">
                                     <div className=' p-1 rounded-xl hover:bg-slate-300'>
                                         <PhotoIcon className='size-7 fill-sky-600 ' />
                                     </div>

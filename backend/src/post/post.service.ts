@@ -265,7 +265,7 @@ export class PostService {
                                 return post;  // Chỉ người tạo bài viết mới có thể xem bài viết riêng tư
                             }
                             return null;
-                        case 'friend':
+                        case 'friends':
                             // Kiểm tra nếu người dùng hiện tại là bạn của tác giả bài viết
                             const isFriend = await this.FriendModel.exists({
                                 $or: [
@@ -312,7 +312,7 @@ export class PostService {
                     { sender: userId },  // Bạn bè gửi kết bạn
                     { receiver: userId }, // Bạn bè nhận kết bạn
                 ],
-                status: 'accepted', // Chỉ những bạn bè đã chấp nhận kết bạn
+                status: 'friend', // Chỉ những bạn bè đã chấp nhận kết bạn
             }).exec();
     
             const friendIds = friends.map(friend => {

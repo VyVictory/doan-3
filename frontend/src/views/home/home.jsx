@@ -19,7 +19,7 @@ function Home() {
     }, [])
     return (
         <div className="flex justify-center">
-            <div className="grid gap-5 mt-3 rounded-md pb-4 max-w-[800px]">
+            <div className="grid gap-5 mt-3 rounded-md pb-4 max-w-[750px]">
                 <Story />
                 <PostStatus user={user} />
                 <HomePost />

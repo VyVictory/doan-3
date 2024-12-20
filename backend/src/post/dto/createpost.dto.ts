@@ -1,14 +1,16 @@
-import { IsEnum, IsOptional, IsString, IsArray } from "class-validator"
+import { IsEnum, IsOptional, IsString, IsArray, ValidateIf } from "class-validator"
 import { Types } from "mongoose";
 
 
 
 export class CreatePostDto{
 
+    @ValidateIf((o) => !o.content) 
     @IsOptional()
     @IsString()
     readonly content: string
 
+     @ValidateIf((o) => !o.img) 
     @IsOptional()
     @IsString()
     readonly img?:string[]
