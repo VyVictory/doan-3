@@ -209,32 +209,52 @@ export class ChatService {
       receiverId: Types.ObjectId, 
       sendMessageDto: SendMessageDto,
       files?: Express.Multer.File[]
-      ): Promise<Message> {
-      const { content, mediaURL } = sendMessageDto;
+    ): Promise<Message> {
+      const { content } = sendMessageDto;
       const user = await this.UserModel.findById(receiverId);
+      
+      // Ensure the receiver exists
       if (!user) {
         throw new HttpException('Receiver not found', HttpStatus.NOT_FOUND);
       }
+    
+      // Prepare the message object
       const Message = new this.MessageModel({
         sender: senderId,
         receiver: receiverId,
         content,
-        mediaURL,
-      })
-
+      });
+    
+      // Upload files if provided
       if (files && files.length > 0) {
         try {
-          
           const uploadedMedia = await Promise.all(files.map(file => this.cloudinaryService.uploadFile(file)));
-          
-          Message.mediaURL = uploadedMedia;
+          Message.mediaURL = uploadedMedia;  
         } catch (error) {
           console.error('Error uploading images to Cloudinary:', error);
           throw new HttpException('Failed to upload images', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
       }
-  }
+    
+      // Save and return the message
+      return await Message.save();
+    }
 
-        return await Message.save();
+    async getMessagesToUser(userId: Types.ObjectId, receiverId: Types.ObjectId): Promise<Message[]> {
+      const messages = await this.MessageModel.find({
+        $or: [
+          { sender: userId, receiver: receiverId },
+          { sender: receiverId, receiver: userId },
+        ],
+      })
+        .sort({ createdAt: 1 }) 
+        .exec();
+    
+      if (!messages.length) {
+        throw new HttpException('No messages found', HttpStatus.NOT_FOUND);
+      }
+    
+      return messages;
     }
     
 }
