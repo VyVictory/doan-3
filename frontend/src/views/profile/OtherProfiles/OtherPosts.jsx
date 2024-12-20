@@ -9,7 +9,6 @@ export default function OtherPosts() {
     const [error, setError] = useState(null)
     const [dataProfile, setDataProfile] = useState({})
     const { id } = useParams();
-    
     useEffect(() => {
         const fetchdata = async () => {
             try {
@@ -28,6 +27,8 @@ export default function OtherPosts() {
         }
         fetchdata()
     }, [id])
+
+
 
     return (
         <div>
