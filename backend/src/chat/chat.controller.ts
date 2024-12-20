@@ -11,6 +11,7 @@ import { User } from 'src/user/schemas/user.schemas';
 import { CreateGroupDto } from './dto/createGroup.dto';
 import { SendMessageDto } from './dto/sendMessage.dto';
 import { EventService } from '../event/event.service';
+import { authorize } from 'passport';
 
 
 
@@ -132,22 +133,37 @@ export class ChatController {
     ){
 
       try {
+        const checkTypeReceiver = userId;
+        if (Types.ObjectId.isValid(userId)) {
+          console.log('receiverId is a valid ObjectId');
+        } else {
+          console.log('receiverId is not a valid ObjectId');
+        }
+
         const currentUserOBJ = new Types.ObjectId(currentUser._id.toString());
-        const message = await this.chatService.sendMesageToUser(userId,currentUserOBJ ,sendMessageDto,  files?.files );
+        const UserOBJ = new Types.ObjectId(userId.toString());
+        const message = await this.chatService.sendMesageToUser(currentUserOBJ, UserOBJ ,sendMessageDto,  files?.files );
   
         const currentAuthor = {
           firstName: currentUser.firstName,
           lastName: currentUser.lastName,
           avatar: currentUser.avatar, 
         };
+        
+        const notificationUsers = [
+          { user: userId.toString(), author: currentUser._id.toString() }, // Người nhận
+          { user: currentUser._id.toString(), author: currentUser._id.toString() }, // Người gửi cũng nhận thông báo
+        ];
   
         const messageSee = {
           ...sendMessageDto,
           author: currentAuthor,
         };
   
-        const notification = await this.eventService.notificationToUser(userId.toString(), 'newmessage', messageSee);
-        console.log('notification:', notification); 
+        notificationUsers.map(async (notif) => {
+          this.eventService.notificationToUser(notif.user, 'newmessage', messageSee);
+        });
+        
         return message;
       }
        catch (error) {
@@ -165,7 +181,8 @@ export class ChatController {
       @Param('userId') userId: Types.ObjectId,
     ){
       const currentUserOBJ = new Types.ObjectId(currentUser._id.toString());
-      return await this.chatService.getMessagesToUser(currentUserOBJ, userId);
+      const userIdOBJ = new Types.ObjectId(userId.toString());
+      return await this.chatService.getMessagesToUser(currentUserOBJ, userIdOBJ);
     }
 
 
