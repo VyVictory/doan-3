@@ -34,13 +34,6 @@ const LeftMessenger = () => {
         fetchdata();
     }, []);
     console.log(friends)
-    if (loading) {
-        return (
-            <div className="w-full h-full flex justify-center items-center">
-                <div>Loading...</div> {/* Or use a spinner */}
-            </div>
-        );
-    }
 
     return (
         <div className="border-r-gray-300 border-r h-full flex flex-col">
@@ -64,34 +57,43 @@ const LeftMessenger = () => {
                     </ToggleButton>
                 </ToggleButtonGroup>
             </div>
+            {
+                loading ?
+                    <div className="border-r-gray-300 border-r h-full flex flex-col">
+                        <div className="w-full flex justify-center">
+                            <div>Loading...</div> {/* Or use a spinner */}
+                        </div>
+                    </div> :
+                    <ul
+                        className="h-full flex flex-col px-2"
+                        style={{
+                            overflowY: "scroll",
+                            scrollbarWidth: "none", // Firefox
+                            msOverflowStyle: "none", // Internet Explorer and Edge
+                        }}
+                    >
+                        {friends.map((friend, index) => (
+                            <li key={index}>
+                                <button
+                                    onClick={() =>
+                                        navigate(`inbox/?iduser=${friend?.receiver?._id || friend?.sender?._id}`)
+                                    }
+                                    className="flex items-center py-2 w-full"
+                                >
+                                    {friend.receiver && friend.receiver._id && (
+                                        <UserFriendCard iduser={friend.receiver._id} />
+                                    )}
+                                    {friend.sender && friend.sender._id && (
+                                        <UserFriendCard iduser={friend.sender._id} />
+                                    )}
+                                </button>
+                            </li>
+                        ))}
 
-            <ul
-                className="h-full flex flex-col px-2"
-                style={{
-                    overflowY: "scroll",
-                    scrollbarWidth: "none", // Firefox
-                    msOverflowStyle: "none", // Internet Explorer and Edge
-                }}
-            >
-                {friends.map((friend, index) => (
-                    <li key={index}>
-                        <button
-                            onClick={() =>
-                                navigate(`inbox/?iduser=${friend?.receiver?._id || friend?.sender?._id}`)
-                            }
-                            className="flex items-center py-2 w-full"
-                        >
-                            {friend.receiver && friend.receiver._id && (
-                                <UserFriendCard iduser={friend.receiver._id} />
-                            )}
-                            {friend.sender && friend.sender._id && (
-                                <UserFriendCard iduser={friend.sender._id} />
-                            )}
-                        </button>
-                    </li>
-                ))}
+                    </ul>
+            }
 
-            </ul>
+
         </div>
     );
 };
