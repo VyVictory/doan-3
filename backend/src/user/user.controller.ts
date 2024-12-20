@@ -80,7 +80,9 @@ export class UserController {
     async getAllUser(
       @CurrentUser() currentUser : User,
     ){
-      return this.userService.findAlluser()
+
+      const currentUserID = new Types.ObjectId(currentUser._id.toString());
+      return this.userService.findAllUsers(currentUserID)
     }
 
     @Post('send-otp-resetpassword')

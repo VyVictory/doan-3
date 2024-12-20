@@ -208,27 +208,6 @@ export class UserService {
     return newRequest.save();
   }
 
-  // async FriendsRequest(senderID: string, ReceiverId: string) {
-  //   const exitingRequest = await this.FriendRequestModel.findOne({ sender: senderID, receiver: ReceiverId })
-  //   if (exitingRequest) {
-  //     throw new ConflictException('request has been sent');
-  //   }
-    
-  //   const frinedExist = await this.FriendModel.findOne({ sender: senderID, receiver: ReceiverId })
-  //   if (frinedExist) {
-  //     throw new ConflictException('you are already friend');
-  //   }
-
-  //   const newRequest = new this.FriendRequestModel({
-  //     sender: senderID,
-  //     receiver: ReceiverId,
-  //     status: 'waitinng'
-  //   })
-  //   return newRequest.save()
-  // }
-
-
-
   async acceptRequestFriends(
     currentUserId: string,
     friendRequestId: string,
@@ -375,28 +354,7 @@ export class UserService {
   }
   
   
-  
-  
-  
-  
-  
-  
-  
-  // async getMyFriend(userId: string): Promise<Friend[]> {
-  //   const UserOBJ = new Types.ObjectId(userId);
-  
-  //   const friendList = await this.FriendModel.find({
-  //     $and: [
-  //       { $or: [ { sender: UserOBJ }, { receiver: UserOBJ } ] },
-  //       { $nor: [ { sender: { $in: [UserOBJ] } }, { receiver: { $in: [UserOBJ] } } ] }
-  //     ]
-  //   })
-  //   .populate('sender', 'firstName lastName avatar')
-  //   .populate('receiver', 'firstName lastName avatar')
-  //   .exec();
-  //   console.log('my friend listt',friendList);
-  //   return friendList;
-  // }
+
 
 
   async updateUser(userId: string, updateData: any): Promise<User> {
@@ -456,18 +414,46 @@ export class UserService {
   }
 
 
-  async findAlluser() {
+  async findAllUsers(userId: Types.ObjectId): Promise<any[]> {
     try {
-      const user = await this.UserModel.find()
-        .select('-password -isActive -refreshToken -createdAt -updatedAt -role -otp -otpExpirationTime -bookmarks -friends -coverImage') 
+      // Lấy danh sách tất cả người dùng và chuyển chúng thành Plain Object (sử dụng lean)
+      const users = await this.UserModel.find()
+        .select(
+          '-password -isActive -refreshToken -createdAt -updatedAt -role -otp -otpExpirationTime -bookmarks -friends -coverImage',
+        )
+        .lean()  // Sử dụng lean để trả về plain object
         .exec();
   
-      return user;
+      // Lấy danh sách bạn bè của người dùng hiện tại
+      const friends = await this.FriendModel.find({
+        $or: [{ sender: userId }, { receiver: userId }],
+      }).exec();
+  
+      // Tạo danh sách ID của bạn bè
+      const friendIds = new Set(
+        friends.map((friend) => {
+          // So sánh các ObjectId đúng cách bằng phương thức `equals`
+          return friend.sender.toString() === userId.toString() ? friend.receiver.toString() : friend.sender.toString();
+        }),
+      );
+  
+      // Gắn trạng thái "friend" hoặc "no friend" vào từng người dùng
+      const updatedUsers = users.map((user) => {
+        const status = friendIds.has(user._id.toString()) ? 'friend' : 'no friend';
+        return { ...user, status }; // Không cần phải dùng toObject() nếu sử dụng lean()
+      });
+  
+      return updatedUsers;
     } catch (error) {
       console.error('Error fetching users:', error);
       throw new HttpException('Could not retrieve users', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+  
+  
+  
+
+  
   
 
   async resetPassword(email: string, otp: string, resetPasswordDto: ResetPasswordDto): Promise<string> {
@@ -498,6 +484,10 @@ export class UserService {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
 
+    if (user.coverimgaePublicId) {
+      await this.cloudinaryService.deleteFile(user.avatarPublicId);
+    }
+
     // Kiểm tra số lượng file
     if (!files || files.length === 0) {
       throw new HttpException('No file uploaded', HttpStatus.BAD_REQUEST);
@@ -510,6 +500,7 @@ export class UserService {
       // Upload file duy nhất
       const uploadedImage = await this.cloudinaryService.uploadFile(files[0]);
       user.coverImage = uploadedImage; // Cập nhật avatar cho người dùng
+       // Cập nhật public ID của ảnh
     } catch (error) {
       console.error('Error uploading image to Cloudinary:', error);
       throw new HttpException('Failed to upload image', HttpStatus.INTERNAL_SERVER_ERROR);
