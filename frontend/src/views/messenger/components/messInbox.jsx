@@ -7,7 +7,7 @@ import imgUser from '../../../img/user.png';
 import user from '../../../service/user';
 import messenger from '../../../service/messenger';
 import { useUser } from '../../../service/UserContext';
-
+import { format } from 'date-fns';
 const MessengerInbox = () => {
     const { userContext } = useUser();
     const location = useLocation();
@@ -111,6 +111,12 @@ const MessengerInbox = () => {
     if (!iduser) {
         return <div className="text-red-500 text-center mt-4">{error}</div>;
     }
+    const groupedMessages = messengerdata.reduce((acc, message) => {
+        const date = format(new Date(message.createdAt), 'yyyy-MM-dd');
+        if (!acc[date]) acc[date] = [];
+        acc[date].push(message);
+        return acc;
+    }, {});
     return (
         <div className="flex flex-col h-full w-full">
             <div className="p-2 flex items-center border-b h-14 bg-white shadow-sm">
@@ -135,24 +141,37 @@ const MessengerInbox = () => {
                 <h3 className="font-semibold">{`${userdata?.firstName || ''} ${userdata?.lastName || ''}`.trim()}</h3>
             </div>
             <div className="overflow-y-scroll h-full p-4 pt-2 flex flex-col">
-                {messengerdata.map((mess, index) => (
-                    <div
-                        key={`${mess._id}-${index}`} // Use a combination of unique id and index for key
-                        className={clsx(
-                            'rounded-lg shadow-sm p-2 border min-h-11',
-                            mess.receiver === userContext._id
-                                ? 'bg-white my-1 mr-24 border-gray-300'
-                                : 'bg-blue-100 my-1 ml-24 border-blue-500'
-                        )}
-                    >
-                        <p className="text-black">{mess.content}</p>
+            {Object.keys(groupedMessages).map((date) => (
+                <div key={date} className="mb-4">
+                    {/* Display the date as a header */}
+                    <div className="text-center text-gray-500 text-sm my-2">
+                        {format(new Date(date), 'MMMM dd, yyyy')}
                     </div>
-                ))}
+                    {groupedMessages[date].map((mess, index) => (
+                        <div
+                            key={`${mess._id}-${index}`} // Unique key for each message
+                            className={clsx(
+                                'rounded-lg shadow-sm p-2 border min-h-11 my-4',
+                                mess.receiver === userContext._id
+                                    ? 'bg-white mr-24 border-gray-300'
+                                    : 'bg-blue-100 ml-24 border-blue-500'
+                            )}
+                        >
+                            {/* Message content */}
+                            <p className="text-black">{mess.content}</p>
+                            {/* Message timestamp */}
+                            <p className="text-xs text-gray-400 text-left mt-2">
+                                {format(new Date(mess.createdAt), 'hh:mm a')}
+                            </p>
+                        </div>
+                    ))}
+                </div>
+            ))}
             </div>
-            <div className="w-full flex mb-1 pt-1 px-1 border-t border-gray-200">
+            <div className="w-full flex p-2 border-t border-gray-200">
                 <textarea
                     className={clsx(
-                        'rounded-lg border p-2 w-full resize-none text-sm',
+                        'rounded-lg border p-2 w-full resize-none text-sm bg-gray-300 shadow-inner shadow-gray-500' ,
                         'focus:outline-none'
                     )}
                     rows={1}
