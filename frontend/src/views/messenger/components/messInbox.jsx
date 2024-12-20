@@ -24,6 +24,7 @@ const MessengerInbox = () => {
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState('');
     const [messengerdata, setMessengerdata] = useState([]);
+    const [error, setError] = useState(null);
 
     // Get iduser from query parameters
     useEffect(() => {
@@ -34,16 +35,23 @@ const MessengerInbox = () => {
 
     // Fetch user data
     useEffect(() => {
-        if (!iduser) return;
+        if (!iduser) {
+            setError('User ID is missing or invalid.');
+            setLoading(false);
+            return;
+        }
 
         const fetchUserData = async () => {
             try {
                 const res = await user.getProfileUser(iduser);
                 if (res.success) {
                     setUserdata(res.data);
+                } else {
+                    setError('User does not exist.');
                 }
             } catch (error) {
                 console.error('Error fetching user data:', error);
+                setError('An error occurred while fetching user data.');
             } finally {
                 setLoading(false);
             }
@@ -54,8 +62,6 @@ const MessengerInbox = () => {
 
     // Fetch messenger data
     useEffect(() => {
-        if (!iduser) return;
-
         const fetchMessengerData = async () => {
             try {
                 const res = await messenger.getListMessengerByUser(iduser);
@@ -66,43 +72,32 @@ const MessengerInbox = () => {
                 console.error('Error fetching messenger data:', error);
             }
         };
-
         fetchMessengerData();
+        console.log(messengerdata)
     }, [iduser]);
 
-    // Handle window resize
-    useEffect(() => {
-        const handleResize = () => {
-            setWindowSize({
-                width: window.innerWidth,
-                height: window.innerHeight,
-            });
-            setChanecontainer(window.innerWidth > 767);
-        };
-
-        window.addEventListener('resize', handleResize);
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
-
+    // Handle input change with auto-resize
     const handleInputChange = useCallback((e) => {
         const textarea = e.target;
         const currentValue = textarea.value;
 
         setMessage(currentValue);
-        textarea.style.height = 'auto';
-        textarea.style.height = `${textarea.scrollHeight}px`;
-        setTextareaHeight(textarea.scrollHeight);
+
+        textarea.style.height = 'auto'; // Reset height
+        textarea.style.height = `${textarea.scrollHeight}px`; // Set to scrollHeight
+        setTextareaHeight(textarea.scrollHeight); // Update height state
     }, []);
 
+    // Handle sending messages
     const handleSendMessenger = useCallback(async () => {
+        if (!message.trim()) return;
+
         try {
-            const res = await messenger.sendMess(iduser, message);
+            const res = await messenger.sendMess(iduser, message.trim());
             if (res.success) {
-                setMessengerdata((prev) => [...prev, res.data]); // Update messages list
+                setMessengerdata((prev) => [...prev, res.data]);
                 setMessage('');
-                setTextareaHeight(40);
+                setTextareaHeight(40); // Reset textarea height
             } else {
                 alert(res.data.message);
             }
@@ -110,23 +105,12 @@ const MessengerInbox = () => {
             console.error('Error sending message:', error);
         }
     }, [iduser, message]);
-
-    const renderMessages = useMemo(() => {
-        return messengerdata.map((mess, index) => (
-            <div
-                key={index}
-                className={clsx(
-                    'rounded-lg shadow-sm p-2 border',
-                    mess.receiver === userContext._id
-                        ? 'bg-blue-100 my-1 ml-24 border-blue-500'
-                        : 'bg-white mr-24 border-gray-300'
-                )}
-            >
-                <p className="text-black">{mess.content}</p>
-            </div>
-        ));
-    }, [messengerdata, userContext]);
-
+    if (loading) {
+        return <strong>Loading...</strong>;
+    }
+    if (!iduser) {
+        return <div className="text-red-500 text-center mt-4">{error}</div>;
+    }
     return (
         <div className="flex flex-col h-full w-full">
             <div className="p-2 flex items-center border-b h-14 bg-white shadow-sm">
@@ -151,7 +135,19 @@ const MessengerInbox = () => {
                 <h3 className="font-semibold">{`${userdata?.firstName || ''} ${userdata?.lastName || ''}`.trim()}</h3>
             </div>
             <div className="overflow-y-scroll h-full p-4 pt-2 flex flex-col">
-                {renderMessages}
+                {messengerdata.map((mess, index) => (
+                    <div
+                        key={`${mess._id}-${index}`} // Use a combination of unique id and index for key
+                        className={clsx(
+                            'rounded-lg shadow-sm p-2 border min-h-11',
+                            mess.receiver === userContext._id
+                                ? 'bg-white my-1 mr-24 border-gray-300'
+                                : 'bg-blue-100 my-1 ml-24 border-blue-500'
+                        )}
+                    >
+                        <p className="text-black">{mess.content}</p>
+                    </div>
+                ))}
             </div>
             <div className="w-full flex mb-1 pt-1 px-1 border-t border-gray-200">
                 <textarea
@@ -163,7 +159,7 @@ const MessengerInbox = () => {
                     style={{ height: `${textareaHeight}px`, maxHeight: '4rem', minHeight: '40px' }}
                     placeholder="Nhập @, tin nhắn"
                     value={message}
-                    onInput={handleInputChange}
+                    onChange={handleInputChange} // Use onChange instead of onInput
                 />
                 <button onClick={handleSendMessenger} className="ml-2">
                     <PaperAirplaneIcon className="h-8 w-8 fill-sky-500" />

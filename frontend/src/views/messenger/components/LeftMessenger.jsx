@@ -3,15 +3,18 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import friend from "../../../service/friend";
 import UserFriendCard from "./userFriendCard";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 
 const LeftMessenger = () => {
     const [alignment, setAlignment] = useState("web");
     const [friends, setFriends] = useState([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate(); // React Router navigation function
 
     const handleChange = (event, newAlignment) => {
         setAlignment(newAlignment);
     };
+
     useEffect(() => {
         const fetchdata = async () => {
             try {
@@ -30,7 +33,7 @@ const LeftMessenger = () => {
         };
         fetchdata();
     }, []);
-
+    console.log(friends)
     if (loading) {
         return (
             <div className="w-full h-full flex justify-center items-center">
@@ -38,9 +41,9 @@ const LeftMessenger = () => {
             </div>
         );
     }
-    console.log(friends)
+
     return (
-        <div className="border-r-gray-300 border-r h-full flex flex-col ">
+        <div className="border-r-gray-300 border-r h-full flex flex-col">
             <div className="w-full flex justify-center">
                 <ToggleButtonGroup
                     className="flex justify-center bg-white w-full max-w-lg h-14 rounded-none"
@@ -63,7 +66,7 @@ const LeftMessenger = () => {
             </div>
 
             <ul
-                className="h-full flex flex-col px-2 "
+                className="h-full flex flex-col px-2"
                 style={{
                     overflowY: "scroll",
                     scrollbarWidth: "none", // Firefox
@@ -72,14 +75,18 @@ const LeftMessenger = () => {
             >
                 {friends.map((friend, index) => (
                     <li key={index}>
-                        <button 
-                            className="flex items-center py-2 w-full">
-                            {
-                                friend.receiver && friend.receiver._id ? <UserFriendCard iduser={friend.receiver._id} /> : ''
+                        <button
+                            onClick={() =>
+                                navigate(`?iduser=${friend?.receiver?._id || friend?.sender?._id}`)
                             }
-                            {
-                                friend.sender && friend.sender._id ? <UserFriendCard iduser={friend.sender._id} /> : ''
-                            }
+                            className="flex items-center py-2 w-full"
+                        >
+                            {friend.receiver && friend.receiver._id && (
+                                <UserFriendCard iduser={friend.receiver._id} />
+                            )}
+                            {friend.sender && friend.sender._id && (
+                                <UserFriendCard iduser={friend.sender._id} />
+                            )}
                         </button>
                     </li>
                 ))}

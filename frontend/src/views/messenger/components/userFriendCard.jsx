@@ -24,7 +24,7 @@ const UserFriendCard = ({ iduser }) => {
 
         fetchdata();
     }, [iduser]); // Run effect when iduser changes
-    console.log(userdata)
+    // console.log(userdata)
     if (loading) {
         return (
             <div className="w-full h-full flex justify-center items-center">
