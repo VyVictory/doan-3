@@ -37,17 +37,19 @@ export class User extends Document {
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Post' }] })
   bookmarks: Types.ObjectId[];
 
-  // @Prop({ type: Types.ObjectId, ref: 'User' })
-  // friends: Types.ObjectId[];
 
-  // @Prop({type: Types.ObjectId, ref:'FriendRequest'})
-  // friendsRequest: Types.ObjectId[]
 
   @Prop()
   avatar: string;
 
   @Prop()
+  avatarPublicId : string
+
+  @Prop()
   coverImage: string;
+
+  @Prop()
+  coverimgaePublicId : string
 
   @Prop()
   follows: string;
