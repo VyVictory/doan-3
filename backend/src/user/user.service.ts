@@ -292,8 +292,29 @@ export class UserService {
   
   
   
+  async getListFriendAnother(userId: Types.ObjectId): Promise<Friend[]> {
+    const friendList = await this.FriendModel.find({
+      $or: [
+        { sender: userId },
+        { receiver: userId }
+      ]
+    })
+    .populate({
+      path: 'sender',
+      select: 'firstName lastName avatar',
+      match: { _id: { $ne: userId } }
+    })
+    .populate({
+      path: 'receiver',
+      select: 'firstName lastName avatar',
+      match: { _id: { $ne: userId } }
+    })
+    .exec();
   
-  
+    return friendList.filter(friend => {
+      return (friend.sender && friend.sender._id !== userId) || (friend.receiver && friend.receiver._id !== userId);
+    });
+  }
   
   
   

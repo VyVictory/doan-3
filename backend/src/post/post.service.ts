@@ -201,17 +201,7 @@ export class PostService {
             throw new HttpException('Could not retrieve posts', HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
-    // async findPostsPublicFriend(userId:string){
-    //     try {
-    //         const allposts = await this.PostModel.find({author: userId})
-    //         .populate('author', 'username firstName lastName avatar')
-    //         .exec();
-    //         return allposts
-    //     } catch (error) {
-    //         console.error('errol', error)
-    //         throw new HttpException('Could not retrieve posts', HttpStatus.INTERNAL_SERVER_ERROR)
-    //     }
-    // }
+
     async findPostPrivacy(postId: string, userId: string): Promise<Post> {
         try {
             // Truy vấn bài đăng

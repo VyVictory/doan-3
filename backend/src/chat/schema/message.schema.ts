@@ -26,7 +26,7 @@ export class Message extends Document{
   content: string;
 
   @Prop()
-  mediaURL: string;
+  mediaURL: string[];
 
 }
 

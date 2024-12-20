@@ -1,4 +1,8 @@
-import { Controller, Post, Body, UseGuards, HttpException, HttpStatus, Param, Get, Type } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards,
+   HttpException, HttpStatus, Param, Get, Type, Delete,
+    UseInterceptors, UploadedFiles,
+   } from '@nestjs/common';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { ChatService } from './chat.service';
 import { ObjectId, Types } from 'mongoose';
 import { AuthGuardD } from 'src/user/guard/auth.guard';
@@ -31,19 +35,21 @@ export class ChatController {
         return this.chatService.createGroup(createGroupDto,owner);
       }
 
-      @Post('sendmessage/:groupId')
+      @Post('sendmessagetoGroup/:groupId')
       @UseGuards(AuthGuardD)
+      @UseInterceptors(FileFieldsInterceptor([{ name: 'files', maxCount: 10 }]))
       async sendMessageToGroup(
         @CurrentUser() currentUser: User,
         @Param('groupId') groupId: Types.ObjectId, 
         @Body() sendMessageDto: SendMessageDto,
+        @UploadedFiles() files: { files: Express.Multer.File[] },
       ) {
         if (!currentUser) {
           throw new HttpException('User not found or not authenticated', HttpStatus.UNAUTHORIZED);
         }
         const currentUserID = new Types.ObjectId(currentUser._id as string);
 
-        const message = await this.chatService.sendMessageToGroup(sendMessageDto, currentUserID, groupId );
+        const message = await this.chatService.sendMessageToGroup(sendMessageDto, currentUserID, groupId, files?.files);
 
         const currentAuthor = {
           firstName: currentUser.firstName,
@@ -54,6 +60,7 @@ export class ChatController {
         const messageSee = {
           ...sendMessageDto,
           author: currentAuthor,
+          
         };
 
         
@@ -69,7 +76,7 @@ export class ChatController {
             this.eventService.notificationToUser(participant._id.toString(), 'newmessage', messageSee);
           }
         });
-
+        console.log('Saved message:', message); // Log dữ liệu tin nhắn đã lưu
         return message;
       }
 
@@ -94,6 +101,64 @@ export class ChatController {
       
     }
 
+    @Get('getMylistChat')
+    @UseGuards(AuthGuardD)
+    async getListMessage(
+      @CurrentUser() currentUser: User,
+    ){
+      const currentUserOBJ = new Types.ObjectId(currentUser._id.toString());
+      return await this.chatService.getMylishChat(currentUserOBJ);
+    }
+
+    @Delete('removeMemBerInGroup/:groupId')
+    @UseGuards(AuthGuardD)
+    async removeMemberInGroup(
+      @CurrentUser() currentUser: User,
+      @Param('groupId') groupId: Types.ObjectId,
+      @Body('userId') userId: Types.ObjectId,
+    ){
+      return await this.chatService.removeMemberInGroup(groupId, userId);
+    }
+
+    @Post('sendmessageToUser/:userId')
+    @UseInterceptors(FileFieldsInterceptor([{ name: 'files', maxCount: 10 }]))
+    @UseGuards(AuthGuardD)
+    
+    async sendMessageToUser(
+      @CurrentUser() currentUser: User,
+      @Param('userId') userId: Types.ObjectId,
+      @Body() sendMessageDto: SendMessageDto,
+      @UploadedFiles() files: { files: Express.Multer.File[] },
+    ){
+
+      try {
+        const currentUserOBJ = new Types.ObjectId(currentUser._id.toString());
+        const message = await this.chatService.sendMesageToUser(userId,currentUserOBJ ,sendMessageDto,  files?.files );
+  
+        const currentAuthor = {
+          firstName: currentUser.firstName,
+          lastName: currentUser.lastName,
+          avatar: currentUser.avatar, 
+        };
+  
+        const messageSee = {
+          ...sendMessageDto,
+          author: currentAuthor,
+        };
+  
+        const notification = await this.eventService.notificationToUser(userId.toString(), 'newmessage', messageSee);
+        console.log('notification:', notification); 
+        return message;
+      }
+       catch (error) {
+        console.error('Error uploading images to Cloudinary:', error);
+        throw new HttpException('Failed to upload images', HttpStatus.INTERNAL_SERVER_ERROR);
+        
+      }
+
+
+
+    }
     
     
 }

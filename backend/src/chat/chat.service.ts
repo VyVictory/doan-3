@@ -8,6 +8,7 @@ import { CreateGroupDto } from './dto/createGroup.dto';
 import { SendMessageDto } from './dto/sendMessage.dto';
 import { content } from 'googleapis/build/src/apis/content';
 import { Group } from './schema/group.schema';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 
 @Injectable()
 export class ChatService {
@@ -16,6 +17,7 @@ export class ChatService {
         @InjectModel(GroupMessage.name) private readonly GroupMessageModel: Model<GroupMessage>,
         @InjectModel(Group.name) private readonly GroupModel: Model<Group>,
         @InjectModel(User.name) private readonly UserModel: Model<User>,
+        private readonly cloudinaryService : CloudinaryService,
     ){}
 
 
@@ -33,19 +35,40 @@ export class ChatService {
     }
 
 
-    async sendMessageToGroup(sendMessageDto: SendMessageDto, userId: Types.ObjectId, groupId : Types.ObjectId) : Promise<GroupMessage>{
-        const { content, mediaURL,  } = sendMessageDto;
+    async sendMessageToGroup(
+      sendMessageDto: SendMessageDto, 
+      userId: Types.ObjectId, 
+      groupId: Types.ObjectId, 
+      files?: Express.Multer.File[]
+    ): Promise<GroupMessage> {
+      const { content, mediaURL } = sendMessageDto;
+    
+      // Khởi tạo tin nhắn
+      const groupMessage = new this.GroupMessageModel({
+        group: groupId,
+        sender: userId,
 
-        const groupMessage = new this.GroupMessageModel({
-          group: groupId,
-          sender: userId,
-          content,
-          mediaURL,
-          reading: [],
+        content,
+        reading: [],
+      });
+    
 
-        });
-        return await groupMessage.save();
+      if (files && files.length > 0) {
+        try {
+          
+          const uploadedMedia = await Promise.all(files.map(file => this.cloudinaryService.uploadFile(file)));
+          
+          groupMessage.mediaURL = uploadedMedia;
+          
+         
+        } catch (error) {
+          console.error('Error uploading images to Cloudinary:', error);
+          throw new HttpException('Failed to upload images', HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+  }
+      return await groupMessage.save();
     }
+    
 
     async getGroupMessages(groupId: Types.ObjectId): Promise<{ group: any; messages: GroupMessage[] }> {
      
@@ -92,13 +115,101 @@ export class ChatService {
         if (!group) {
           throw new HttpException('Group not found', HttpStatus.NOT_FOUND);
         }
-    
-        // Trả về danh sách các thành viên trong group với thông tin chi tiết
+  
         return group.participants;
       } catch (error) {
         console.error('Error fetching group members:', error);
         throw new HttpException('Failed to fetch group members', HttpStatus.INTERNAL_SERVER_ERROR);
       }
+    }
+
+    async getMylishChat(userId: Types.ObjectId): Promise<{ Group: Group[], Message: Message[] }> {
+      // Lấy danh sách các nhóm mà người dùng tham gia
+      const groups = await this.GroupModel.find({ participants: userId })
+        .populate({
+          path: 'participants', 
+          select: 'firstName lastName avatar',
+        })
+        .populate({
+          path: 'lastMessage',
+          select: 'content sender createdAt', 
+          populate: {
+            path: 'sender', 
+            select: 'firstName lastName avatar',
+          },
+        })
+        .exec();
+    
+    
+      const messages = await this.MessageModel.find({
+        $or: [
+          { sender: userId },
+          { receiver: userId },
+        ],
+      })
+        .populate({
+          path: 'sender',
+          select: 'firstName lastName avatar',
+        })
+        .populate({
+          path: 'receiver',
+          select: 'firstName lastName avatar',
+        })
+        .sort({ createdAt: -1 }) 
+        .exec();
+    
+      return {
+        Group: groups,
+        Message: messages,
+      };
+    }
+
+    async removeMemberInGroup(groupId: Types.ObjectId, userId: Types.ObjectId): Promise<Group> {
+      const group = await this.GroupModel.findById(groupId);
+      if (!group) {
+        throw new HttpException('Group not found', HttpStatus.NOT_FOUND);
+      }
+    
+      if (group.owner.toString() !== userId.toString()) {
+        throw new HttpException('You are not the owner of this group', HttpStatus.UNAUTHORIZED);
+      }
+    
+      group.participants = group.participants.filter((id) => id.toString() !== userId.toString());
+      return await group.save();
+    }
+    
+
+    async sendMesageToUser(
+      senderId: Types.ObjectId,
+      receiverId: Types.ObjectId, 
+      sendMessageDto: SendMessageDto,
+      files?: Express.Multer.File[]
+      ): Promise<Message> {
+      const { content, mediaURL } = sendMessageDto;
+      const user = await this.UserModel.findById(receiverId);
+      if (!user) {
+        throw new HttpException('Receiver not found', HttpStatus.NOT_FOUND);
+      }
+      const Message = new this.MessageModel({
+        sender: senderId,
+        receiver: receiverId,
+        content,
+        mediaURL,
+      })
+
+      if (files && files.length > 0) {
+        try {
+          
+          const uploadedMedia = await Promise.all(files.map(file => this.cloudinaryService.uploadFile(file)));
+          
+          Message.mediaURL = uploadedMedia;
+        } catch (error) {
+          console.error('Error uploading images to Cloudinary:', error);
+          throw new HttpException('Failed to upload images', HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+  }
+
+        return await Message.save();
     }
     
 }

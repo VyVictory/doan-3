@@ -14,7 +14,9 @@ import { ResetPasswordDto } from './dto/resetPassword.dto';
 import { UploadAvatarDto } from './dto/uploadAvartar.dto';
 import { UploadCoverImgDto } from './dto/uploadCoverImg.dto';
 import { OptionalAuthGuard } from './guard/optional.guard';
-import { Types } from 'twilio/lib/rest/content/v1/content';
+import { Types } from 'mongoose';
+
+
 
 @Controller('user')
 export class UserController {
@@ -58,9 +60,6 @@ export class UserController {
       if (!currentUser) {
           throw new HttpException('User not found or not authenticated', HttpStatus.UNAUTHORIZED);
       }
-      
-      //Log _id của currentUser
-      //console.log('Current User ID:', currentUser._id ? currentUser._id.toString() : 'ID is undefined');
   
       return this.userService.updateUser(currentUser._id.toString(), updateData);
   }
@@ -77,6 +76,8 @@ export class UserController {
 
 
     @Get('getAllUser')
+    @UseGuards(AuthGuardD)
+
     async getAllUser(
       @CurrentUser() currentUser : User,
     ){
@@ -233,6 +234,22 @@ export class UserController {
       return this.userService.getMyFriend(currentUser._id.toString());
     }
 
+    @Get('getlistfriendanother/:userId')
+    @UseGuards(AuthGuardD)
+    async getListFriendAnother(
+      @CurrentUser() currentUser: User,
+      @Param('userId') userId: string,
+    ){
+      if(!currentUser){
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+      
+      if (!userId) {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+      const userIdOBJ = new Types.ObjectId(userId);
+      return this.userService.getListFriendAnother(userIdOBJ);
+    } 
 
 
 }

@@ -5,8 +5,7 @@ import { Types } from "mongoose";
 
 export class SendMessageDto{
 
-    // @IsNotEmpty()
-    // readonly group: Types.ObjectId;
+
 
     @ValidateIf((o) => !o.content) 
     readonly content?: string
