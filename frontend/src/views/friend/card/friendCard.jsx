@@ -9,7 +9,6 @@ export default function FriendCard({ iduser, idrequest }) {
     const [loading, setLoading] = useState(true); // Loading state
     useEffect(() => {
         const fetchdata = async () => {
-
             try {
                 const res = await user.getProfileUser(iduser);
                 if (res.success) {

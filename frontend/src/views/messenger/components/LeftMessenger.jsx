@@ -1,81 +1,91 @@
-import * as React from 'react';
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import { useState, useEffect } from "react";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import friend from "../../../service/friend";
+import UserFriendCard from "./userFriendCard";
 
-const LeftMessenger = ({ bt_chanetransfer }) => {
-    const [alignment, setAlignment] = React.useState('web');
+const LeftMessenger = () => {
+    const [alignment, setAlignment] = useState("web");
+    const [friends, setFriends] = useState([]);
+    const [loading, setLoading] = useState(true);
+
     const handleChange = (event, newAlignment) => {
         setAlignment(newAlignment);
     };
+    useEffect(() => {
+        const fetchdata = async () => {
+            try {
+                const res = await friend.getListMyFriend();
+                if (res.success) {
+                    setFriends(res.data);
+                } else {
+                    setFriends([]);
+                }
+            } catch (error) {
+                console.error("Error fetching friend list:", error);
+                setFriends([]);
+            } finally {
+                setLoading(false); // Stop loading
+            }
+        };
+        fetchdata();
+    }, []);
 
-    const messages = [
-        { name: 'John Doe', message: 'Hey! How are yHeyyHey! How are you?Hey! How ayHey! How are you?Hey! How ayHey! How are you?Hey! How ayHey! How are you?Hey! How a! How are you?Hey! How are you?Hey! How are you?ou?', img: 'https://placehold.co/40' },
-        { name: 'Jane Smith', message: 'Hi there!', img: 'https://placehold.co/40' },
-        { name: 'Alice Johnson', message: 'Good morning!', img: 'https://placehold.co/40' },
-        { name: 'Bob Brown', message: 'What’s up?', img: 'https://placehold.co/40' },
-        { name: 'Charlie Davis', message: 'Long time no see!', img: 'https://placehold.co/40' },
-        { name: 'Charlie Davis', message: 'Long time no see!', img: 'https://placehold.co/40' },
-        { name: 'Charlie Davis', message: 'Long time no see!', img: 'https://placehold.co/40' },
-        { name: 'Charlie Davis', message: 'Long time no see!', img: 'https://placehold.co/40' },
-        { name: 'Charlie Davis', message: 'Long time no see!', img: 'https://placehold.co/40' },
-        { name: 'Charlie Davis', message: 'Long time no see!', img: 'https://placehold.co/40' },
-    ];
+    if (loading) {
+        return (
+            <div className="w-full h-full flex justify-center items-center">
+                <div>Loading...</div> {/* Or use a spinner */}
+            </div>
+        );
+    }
+    console.log(friends)
     return (
-        <>
-            <div className=" border-r-gray-300 border-r  h-full flex flex-col">
-                <div className="w-full flex justify-center ">
-                    <ToggleButtonGroup
-                        className="flex justify-center bg-white  w-full max-w-lg h-14 rounded-none"
-                        color="primary"
-                        value={alignment}
-                        exclusive
-                        onChange={handleChange}
-                        aria-label="Platform"
-                    >
-                        <ToggleButton
-                            value="web"
-                            className="flex-1  font-medium transition-all hover:bg-blue-50"
-                        >
-                            InBox
-                        </ToggleButton>
-                        <ToggleButton
-                            value="android"
-                            className="flex-1  font-medium transition-all hover:bg-blue-50"
-                        >
-                            Nhóm
-                        </ToggleButton>
-                        <ToggleButton
-                            value="ios"
-                            className="flex-1 font-medium transition-all hover:bg-blue-50"
-                        >
-                            New
-                        </ToggleButton>
-                    </ToggleButtonGroup>
-                </div>
-
-                <ul
-                    className='h-full flex flex-col px-2'
-                    style={{
-                        overflowY: 'scroll',
-                        scrollbarWidth: 'none', // Firefox
-                        msOverflowStyle: 'none' // Internet Explorer and Edge
-                    }}>
-                    {messages.map((msg, index) => (
-                        <li key={index}>
-                            <button onClick={bt_chanetransfer} className="flex items-center py-2">
-                                <img src={msg.img} alt="user" className="w-10 h-10 rounded-full mr-2" />
-                                <div className='text-start line-clamp-3'>
-                                    <h3 className=" font-semibold">{msg.name}</h3>
-                                    <p className="text-gray-400">{msg.message}</p>
-                                </div>
-                            </button>
-                        </li>
-                    ))}
-                </ul>
+        <div className="border-r-gray-300 border-r h-full flex flex-col ">
+            <div className="w-full flex justify-center">
+                <ToggleButtonGroup
+                    className="flex justify-center bg-white w-full max-w-lg h-14 rounded-none"
+                    color="primary"
+                    value={alignment}
+                    exclusive
+                    onChange={handleChange}
+                    aria-label="Platform"
+                >
+                    <ToggleButton value="web" className="flex-1 font-medium transition-all hover:bg-blue-50">
+                        InBox
+                    </ToggleButton>
+                    <ToggleButton value="android" className="flex-1 font-medium transition-all hover:bg-blue-50">
+                        Nhóm
+                    </ToggleButton>
+                    <ToggleButton value="ios" className="flex-1 font-medium transition-all hover:bg-blue-50">
+                        New
+                    </ToggleButton>
+                </ToggleButtonGroup>
             </div>
 
-
-        </>);
-}
+            <ul
+                className="h-full flex flex-col px-2 "
+                style={{
+                    overflowY: "scroll",
+                    scrollbarWidth: "none", // Firefox
+                    msOverflowStyle: "none", // Internet Explorer and Edge
+                }}
+            >
+                {friends.map((friend, index) => (
+                    <li key={index}>
+                        <button 
+                            className="flex items-center py-2 w-full">
+                            {
+                                friend.receiver && friend.receiver._id ? <UserFriendCard iduser={friend.receiver._id} /> : ''
+                            }
+                            {
+                                friend.sender && friend.sender._id ? <UserFriendCard iduser={friend.sender._id} /> : ''
+                            }
+                        </button>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+};
 
 export default LeftMessenger;
