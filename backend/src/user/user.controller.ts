@@ -76,7 +76,7 @@ export class UserController {
 
 
     @Get('getAllUser')
-
+    @UseGuards(AuthGuardD) 
     async getAllUser(
       @CurrentUser() currentUser : User,
     ){
