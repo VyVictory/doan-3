@@ -123,48 +123,7 @@ export class ChatService {
       }
     }
 
-    // async getMylishChat(userId: Types.ObjectId): Promise<{ Group: Group[], Message: Message[] }> {
-    //   const distinctUserIds = await this.MessageModel.distinct('sender', {
-    //     $or: [{ sender: userId }, { receiver: userId }]
-    //   });
-    
-    //   const messages = await this.MessageModel.find({
-    //     $or: [
-    //       { sender: { $in: distinctUserIds } },
-    //       { receiver: { $in: distinctUserIds } }
-    //     ],
-    //   })
-    //     .populate({
-    //       path: 'sender',
-    //       select: 'firstName lastName avatar',
-    //     })
-    //     .populate({
-    //       path: 'receiver',
-    //       select: 'firstName lastName avatar',
-    //     })
-    //     .sort({ createdAt: -1 }) 
-    //     .exec();
-    
-    //   const uniqueMessages = messages.reduce((acc, message) => {
-    //     const key = message.sender?.toString() || message.receiver?.toString(); 
-    //     if (!acc.some(m => (m.sender?.toString() === key || m.receiver?.toString() === key))) {
-    //       acc.push(message);
-    //     }
-    //     return acc;
-    //   }, []);
-    
-    //   const groups = await this.GroupModel.find({ participants: userId })
-    //     .populate({
-    //       path: 'participants',
-    //       select: 'name',
-    //     })
-    //     .exec();
-    
-    //   return {
-    //     Group: groups,
-    //     Message: uniqueMessages,
-    //   };
-    // }
+
 
     async getMylishChat(userId: Types.ObjectId): Promise<{ Group: Group[], Participants: any[] }> {
       // Lấy danh sách sender và receiver liên quan đến userId
@@ -209,32 +168,52 @@ export class ChatService {
       receiverId: Types.ObjectId, 
       sendMessageDto: SendMessageDto,
       files?: Express.Multer.File[]
-      ): Promise<Message> {
-      const { content, mediaURL } = sendMessageDto;
+    ): Promise<Message> {
+      const { content } = sendMessageDto;
       const user = await this.UserModel.findById(receiverId);
+      
+      // Ensure the receiver exists
       if (!user) {
         throw new HttpException('Receiver not found', HttpStatus.NOT_FOUND);
       }
+    
+      // Prepare the message object
       const Message = new this.MessageModel({
         sender: senderId,
         receiver: receiverId,
         content,
-        mediaURL,
-      })
-
+      });
+    
+      // Upload files if provided
       if (files && files.length > 0) {
         try {
-          
           const uploadedMedia = await Promise.all(files.map(file => this.cloudinaryService.uploadFile(file)));
-          
-          Message.mediaURL = uploadedMedia;
+          Message.mediaURL = uploadedMedia;  
         } catch (error) {
           console.error('Error uploading images to Cloudinary:', error);
           throw new HttpException('Failed to upload images', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
       }
-  }
+    
+      // Save and return the message
+      return await Message.save();
+    }
 
-        return await Message.save();
+    async getMessagesToUser(userId: Types.ObjectId, receiverId: Types.ObjectId): Promise<Message[]> {
+      const messages = await this.MessageModel.find({
+        $or: [
+          { sender: userId, receiver: receiverId },
+          { sender: receiverId, receiver: userId },
+        ],
+      })
+        .sort({ createdAt: 1 }) 
+        .exec();
+    
+      if (!messages.length) {
+        throw new HttpException('No messages found', HttpStatus.NOT_FOUND);
+      }
+    
+      return messages;
     }
     
 }
