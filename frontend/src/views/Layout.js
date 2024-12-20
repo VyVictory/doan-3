@@ -9,7 +9,7 @@ export default function Layout() {
 
     const navigate = useNavigate();
     useEffect(() => {
-        if (!authToken.getToken() || profileUserCurrent() == '') {
+        if (!authToken.getToken()) {
             navigate("/login");
             return;
         }

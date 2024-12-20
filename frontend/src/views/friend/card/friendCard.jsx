@@ -4,6 +4,10 @@ import user from '../../../service/user';
 import { useEffect, useState } from 'react';
 import imgUser from '../../../img/user.png'
 import friend from '../../../service/friend';
+import Loading from '../../../components/Loading';
+import { ToastContainer, toast } from 'react-toastify';
+import NotificationCss from '../../../module/cssNotification/NotificationCss';
+
 export default function FriendCard({ iduser, idrequest }) {
     const [userdata, setUserdata] = useState({});
     const [loading, setLoading] = useState(true); // Loading state
@@ -25,9 +29,7 @@ export default function FriendCard({ iduser, idrequest }) {
     }, [iduser]);
     if (loading) {
         return (
-            <div className="w-full h-full flex justify-center items-center">
-                Loading...
-            </div>
+            <Loading />
         )
     }
     const handAddFriend = async (id) => {
@@ -35,15 +37,10 @@ export default function FriendCard({ iduser, idrequest }) {
 
             const rs = await friend.accectRequestAddFriend(id)
             if (rs.success) {
-                console.log(rs)
-                if (rs.data.message && rs.data) {
-                    alert(rs.data.message);
-                } else {
-                    alert('thêm bạn bè thành công');
-                }
+                toast.success(rs?.data?.message ? rs.data.message : 'thêm bạn bè thành công', NotificationCss.Success);
                 window.location.reload();
             } else {
-                alert(rs.data.message);
+                toast.error(rs?.data?.message ? rs.data.message : 'lỗi khi đồng ý kết bạn', NotificationCss.Fail);
             }
         } catch (error) {
             console.error(error);
@@ -53,10 +50,10 @@ export default function FriendCard({ iduser, idrequest }) {
         try {
             const rs = await friend.declineRequestAddFriend(id)
             if (rs.success) {
-                alert(rs.data.message);
+                toast.success(rs?.message ? rs.message : 'Đã từ chối kết bạn', NotificationCss.Fail);
                 window.location.reload();
             } else {
-                alert(rs.data.message);
+                toast.error(rs?.message ? rs.message : 'hủy thất bại do lỗi', NotificationCss.Fail);
             }
             // console.log(rs);
         } catch (error) {
@@ -68,44 +65,46 @@ export default function FriendCard({ iduser, idrequest }) {
     };
 
     return (
-        <div className="border border-gray-300 shadow-2xl max-w-52 rounded-lg m-2">
+        <>
+            <div className="border border-gray-300 shadow-2xl max-w-52 rounded-lg m-2">
 
-            <Link onClick={() => handDetailUser(userdata?._id)}>
-                <img
-                    className="w-full aspect-square rounded-t-lg bg-gray-400"
-                    src={
-                        userdata?.avatar
-                            ? userdata.avatar
-                            : imgUser
-                    }
-                    alt="User Avatar"
-                />
-            </Link>
+                <Link onClick={() => handDetailUser(userdata?._id)}>
+                    <img
+                        className="w-full aspect-square rounded-t-lg bg-gray-400"
+                        src={
+                            userdata?.avatar
+                                ? userdata.avatar
+                                : imgUser
+                        }
+                        alt="User Avatar"
+                    />
+                </Link>
 
-            <div className="p-2 text-center">
-                <strong>
-                    {userdata
-                        ? `${userdata.firstName || ''} ${userdata.lastName || ''}`.trim()
-                        : "No Name"}
-                </strong>
+                <div className="p-2 text-center">
+                    <strong>
+                        {userdata
+                            ? `${userdata.firstName || ''} ${userdata.lastName || ''}`.trim()
+                            : "No Name"}
+                    </strong>
+                </div>
+
+                <div className="flex flex-col gap-2 px-2 mb-2">
+                    <button
+                        onClick={userdata?._id ? () => handAddFriend(idrequest) : undefined}
+                        className="w-full bg-blue-600 py-2 text-white rounded-lg transition-transform transform hover:scale-105"
+                    >
+                        Xác nhận
+                    </button>
+
+                    <button
+                        onClick={userdata?._id ? () => handDeclineFriend(idrequest) : undefined}
+                        className="w-full bg-gray-300 py-2 text-black rounded-lg transition-transform transform hover:scale-105"
+                    >
+                        Từ chối
+                    </button>
+                </div>
             </div>
-
-            <div className="flex flex-col gap-2 px-2 mb-2">
-                <button
-                    onClick={userdata?._id ? () => handAddFriend(idrequest) : undefined}
-                    className="w-full bg-blue-600 py-2 text-white rounded-lg transition-transform transform hover:scale-105"
-                >
-                    Xác nhận
-                </button>
-
-                <button
-                    onClick={userdata?._id ? () => handDeclineFriend(idrequest) : undefined}
-                    className="w-full bg-gray-300 py-2 text-black rounded-lg transition-transform transform hover:scale-105"
-                >
-                    Từ chối
-                </button>
-            </div>
-        </div>
-
+            <ToastContainer style={{ marginTop: '55px' }} />
+        </>
     )
 }

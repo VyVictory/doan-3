@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import friend from '../../service/friend';
 import FriendCard from './card/friendCard';
 import MyFriendCard from './card/myFriendCard';
+import Loading from '../../components/Loading';
 
 
 export default function MyAllFriend() {
@@ -34,10 +35,7 @@ export default function MyAllFriend() {
         <div className="w-full p-5 flex flex-col">
             <strong className="text-xl ml-2 mb-2">Danh sách bạn bè</strong>
             {loading ? (
-                // Show loading spinner or text
-                <div className="w-full h-full flex justify-center items-center">
-                    Loading...
-                </div>
+                 <Loading/>
             ) : requests.length === 0 ? (
                 // Show "No Requests" message
                 <div className="w-full h-full flex justify-center items-center text-center">

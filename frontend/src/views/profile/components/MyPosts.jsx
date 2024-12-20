@@ -13,7 +13,7 @@ export default function MyPosts() {
     useEffect(() => {
         const fetchdata = async () => {
             const responseUserPersonal = await profileUserCurrent()
-            setUserLogin(responseUserPersonal.data)
+            setUserLogin(responseUserPersonal?.data)
         }
         fetchdata()
     }, []);

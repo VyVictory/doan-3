@@ -28,7 +28,7 @@ export default function PostPersonal({ user }) {
                     setPosts(sortedPosts);
                 })
                 .catch(error => {
-                    console.error("Error fetching post data:", error);
+                    // console.error("Error fetching post data:", error);
                 })
         }
         fetchdata()

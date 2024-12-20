@@ -1,14 +1,13 @@
-const setCookie = (name, value, days) => {
+const setCookie = (name, value, hours) => {
     let expires = "";
-    if (days) {
+    if (hours) {
         const date = new Date();
-        date.setTime(date.getTime() + (days * 60 * 60 * 1000));
+        date.setTime(date.getTime() + (hours * 60 * 60 * 1000)); // Calculate expiration in hours
         expires = "; expires=" + date.toUTCString();
     }
-    document.cookie = name + "=" + (value || "") + expires + "; path=/";
-    return(console.log('Cookie: '+ name + ': value'))
+    document.cookie = name + "=" + encodeURIComponent(value || "") + expires + "; path=/";
+    console.log(`Cookie Set: ${name} = ${value}; Expires: ${expires}`);
 };
-
 const deleteCookie = (name) => {
     document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
 };

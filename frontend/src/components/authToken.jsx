@@ -1,10 +1,15 @@
 import cookieModule from "./cookie.module";
 
 function getToken() {
-    return cookieModule().getCookie("Token")
+    return cookieModule().getCookie("Token");
 }
 function setToken(value) {
-    return cookieModule().setCookie("Token", value, 100)
+    if (getToken()) {
+        deleteToken();
+        return cookieModule().setCookie("Token", value, 24)
+    } else {
+        return cookieModule().setCookie("Token", value, 24)
+    }
 }
 function deleteToken() {
     return cookieModule().deleteCookie("Token")

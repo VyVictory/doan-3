@@ -4,6 +4,7 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import friend from "../../../service/friend";
 import UserFriendCard from "./userFriendCard";
 import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
+import Loading from "../../../components/Loading";
 
 const LeftMessenger = () => {
     const [alignment, setAlignment] = useState("web");
@@ -60,11 +61,8 @@ const LeftMessenger = () => {
             </div>
             {
                 loading ?
-                    <div className="border-r-gray-300 border-r h-full flex flex-col">
-                        <div className="w-full flex justify-center">
-                            <div>Loading...</div> {/* Or use a spinner */}
-                        </div>
-                    </div> :
+                    <Loading/> 
+                    :
                     <ul
                         className="h-full flex flex-col px-2"
                         style={{

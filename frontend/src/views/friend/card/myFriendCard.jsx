@@ -13,6 +13,7 @@ import {
     NoSymbolIcon,
     UserMinusIcon
 } from '@heroicons/react/16/solid'
+import Loading from '../../../components/Loading';
 export default function FriendCard({ iduser, idrequest }) {
     const [userdata, setUserdata] = useState({});
     const [loading, setLoading] = useState(true); // Loading state
@@ -35,9 +36,7 @@ export default function FriendCard({ iduser, idrequest }) {
     }, [iduser]);
     if (loading) {
         return (
-            <div className="w-full h-full flex justify-center items-center">
-                Loading...
-            </div>
+           <Loading/>
         )
     }
     const handDetailUser = async (id) => {
@@ -65,7 +64,7 @@ export default function FriendCard({ iduser, idrequest }) {
             <div className="p-2 text-center">
                 <strong>
                     {userdata
-                        ? `${userdata.firstName || ''} ${userdata.lastName || ''}`.trim()
+                        ? `${userdata.lastName || ''} ${userdata.firstName || ''}`.trim()
                         : "No Name"}
                 </strong>
             </div>

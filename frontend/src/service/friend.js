@@ -67,14 +67,34 @@ const declineRequestAddFriend = async (id) => {
         return { success: false, data: response.response.data.message };
     }
 };
+const checkFriend = async (id) => {
+    try {
+        const response = await axios.get(`http://localhost:3001/user/getAllUser`, {
+            headers: { Authorization: `Bearer ${authToken.getToken()}` },
+        });
+
+        // Find the user with the matching id
+        const user = response.data.find((user) => user._id === id);
+
+        if (user) {
+            return { success: true, status: user.status }; // Return the status if the user is found
+        } else {
+            return { success: false, message: "User not found" }; // Handle case where user is not found
+        }
+    } catch (error) {
+        console.error("Error checking friend status:", error.message);
+        return { success: false, message: error?.response?.data?.message || "An error occurred" };
+    }
+};
+
 const cancelFriend = async (id) => {
     try {
-        const response = await axios.post(`http://localhost:3001${id}`, {},
+        const response = await axios.delete(`http://localhost:3001/user/unfriend/${id}`,
             {
                 headers: { Authorization: `Bearer ${authToken.getToken()}` },
             }
         );
-
+        
         return { success: true, data: response.data };
     } catch (response) {
         return { success: false, data: response.response.data.message };
@@ -100,5 +120,6 @@ export default {
     declineRequestAddFriend,
     cancelFriend,
     getListMyFriend,
-    getListFriendAnother
+    getListFriendAnother,
+    checkFriend,
 }

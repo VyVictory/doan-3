@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import user from "../../../service/user"; // Ensure you import the correct service or API client
 import imgUser from '../../../img/user.png'
+import Loading from "../../../components/Loading";
 const UserFriendCard = ({ iduser }) => {
     const [userdata, setUserdata] = useState({});
     const [loading, setLoading] = useState(true);
@@ -27,9 +28,7 @@ const UserFriendCard = ({ iduser }) => {
     // console.log(userdata)
     if (loading) {
         return (
-            <div className="w-full h-full flex justify-center items-center">
-                Loading...
-            </div>
+            <Loading/>
         );
     }
 
@@ -45,7 +44,7 @@ const UserFriendCard = ({ iduser }) => {
             <div className="text-start line-clamp-3">
                 <h3 className="font-semibold">
                     {userdata
-                        ? `${userdata.firstName || ''} ${userdata.lastName || ''}`.trim()
+                        ? `${userdata.lastName || ''} ${userdata.firstName || ''}`.trim()
                         : "No Name"}
                 </h3>
                 <p className="text-gray-400 line-clamp-1">ô no không có tin xem trướcccccccccccccc</p>
