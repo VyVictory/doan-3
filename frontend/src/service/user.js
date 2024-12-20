@@ -16,6 +16,9 @@ const getAllUser = async (id) => {
 
 //http://localhost:3001/user/getDetailUser/${id}
 const getProfileUser = async (id) => {
+    if(id==''){
+        return { success: false };
+    }
     try {
         const response = await axios.get(`http://localhost:3001/user/getDetailUser/${id}`,
             {

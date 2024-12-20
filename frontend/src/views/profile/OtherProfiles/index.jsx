@@ -31,7 +31,7 @@ export default function OtherProfiles() {
                 <HeadOtherProfiles dataProfile={dataProfile} />
                 <MenuOtherProfiles />
                 <div className='flex place-content-center'>
-                    <div className='w-full  max-w-[800px]'>
+                    <div className='w-full  max-w-[750px]'>
                         <Outlet />
                     </div>
                 </div>

@@ -11,6 +11,7 @@ export default function Layout() {
     useEffect(() => {
         if (!authToken.getToken() || profileUserCurrent() == '') {
             navigate("/login");
+            return;
         }
     }, [navigate]);
     return (
