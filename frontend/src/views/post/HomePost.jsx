@@ -1,39 +1,47 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { HandThumbUpIcon, ChatBubbleLeftIcon, ShareIcon, HandThumbDownIcon } from '@heroicons/react/24/outline';
 import AVTUser from './AVTUser';
 import { handleLike, handleDisLike, handleUnDisLike, handleUnLike, getHomeFeed } from '../../service/PostService';
 import 'animate.css';
 import { format, differenceInMinutes, differenceInHours, differenceInDays } from 'date-fns';
-import { getAllOtherPosts } from '../../service/OtherProfile';
-import { profileUserCurrent } from '../../service/ProfilePersonal';
 import DropdownOtherPost from './components/DropdownOtherPost';
 import DropdownPostPersonal from './components/DropdownPostPersonal';
 import Loading from '../../components/Loading';
+import { profileUserCurrent } from '../../service/ProfilePersonal';
 export default function HomePost() {
-    const [currentIndex, setCurrentIndex] = useState(0);
     const [posts, setPosts] = useState([]);
-    const [userLogin, setUserLogin] = useState({})
-    const [loading, setLoading] = useState(true)
-
+    const [displayedPosts, setDisplayedPosts] = useState([]); // Tracks the posts currently displayed
+    const [userLogin, setUserLogin] = useState({});
+    const [loading, setLoading] = useState(true);
+    const [postsToShow, setPostsToShow] = useState(10); // Controls the number of posts to display
+    const [currentIndex, setCurrentIndex] = useState(0);
+    
     useEffect(() => {
         const fetchdata = async () => {
-            setLoading(true)
-            const response = await getHomeFeed()
+            setLoading(true);
+            const response = await getHomeFeed();
             if (response) {
                 const sortedPosts = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-                setPosts(sortedPosts)
-                const responseUserPersonal = await profileUserCurrent()
-                setUserLogin(responseUserPersonal.data)
+                setPosts(sortedPosts);
+                setDisplayedPosts(sortedPosts.slice(0, postsToShow)); // Display initial posts
+                const responseUserPersonal = await profileUserCurrent();
+                setUserLogin(responseUserPersonal.data);
             }
-            setLoading(false)
-        }
+            setLoading(false);
+        };
         setTimeout(fetchdata, 1000);
     }, []);
 
+    useEffect(() => {
+        setDisplayedPosts(posts.slice(0, postsToShow));
+    }, [posts, postsToShow]);
 
+    const loadMorePosts = () => {
+        setPostsToShow((prev) => prev + 10); // Increment by 5
+    };
 
-    //carousel
+    // Carousel Handlers
     const handlePrev = (post) => {
         setCurrentIndex((prevIndex) => (prevIndex === 0 ? post.img.length - 1 : prevIndex - 1));
     };
@@ -41,9 +49,6 @@ export default function HomePost() {
     const handleNext = (post) => {
         setCurrentIndex((prevIndex) => (prevIndex === post.img.length - 1 ? 0 : prevIndex + 1));
     };
-
-
-
 
     //Like
     const handleLikeClick = async (postId) => {
@@ -89,7 +94,7 @@ export default function HomePost() {
             console.error("Error disliking the post:", error);
         }
     }
-    // Time CreateAt Post
+    // Time Format Function
     const formatDate = (date) => {
         const postDate = new Date(date);
         const currentDate = new Date();
@@ -107,7 +112,7 @@ export default function HomePost() {
             return format(postDate, 'dd/MM/yyyy HH:mm');
         }
     };
-    //
+
     const formatPrivacy = (privacy) => {
         switch (privacy) {
             case 'public':
@@ -120,90 +125,112 @@ export default function HomePost() {
                 return <span>{privacy}</span>;
         }
     };
-    //post của bản thân thì hiển thị dropdown PostPersonal
-
 
     return (
         <>
             {loading ? (
                 <Loading />
             ) : (
-                posts.map((post) => (
-                    <div key={post._id}
-                        className='flex items-start p-6 border border-gray-300 rounded-lg shadow-md shadow-zinc-300 gap-3'>
-                        <AVTUser user={post.author} />
-
-                        <div className='grid gap-2 w-full'>
-                            <div className='flex justify-between'>
-                                <article className='text-wrap grid gap-5'>
-                                    <div className='grid'>
-
-                                        <Link className='font-bold text-lg hover:link ' to={`/user/${post.author._id}`}>{post.author.lastName} {post.author.firstName}</Link>
-                                        <div className='flex gap-2'>
-                                            <span className='text-xs'>{formatDate(post.createdAt)}</span>
-                                            <span className='text-xs'>{formatPrivacy(post.privacy)}</span>
+                <>
+                    {displayedPosts.map((post) => (
+                        <div
+                            key={post._id}
+                            className="flex items-start p-6 border border-gray-300 rounded-lg shadow-md shadow-zinc-300 gap-3"
+                        >
+                            <AVTUser user={post.author} />
+                            <div className="grid gap-2 w-full">
+                                <div className="flex justify-between">
+                                    <article className="text-wrap grid gap-5">
+                                        <div className="grid">
+                                            <Link className="font-bold text-lg hover:link" to={`/user/${post.author._id}`}>
+                                                {post.author.lastName} {post.author.firstName}
+                                            </Link>
+                                            <div className="flex gap-2">
+                                                <span className="text-xs">{formatDate(post.createdAt)}</span>
+                                                <span className="text-xs">{formatPrivacy(post.privacy)}</span>
+                                            </div>
                                         </div>
+                                        <p>{post.content}</p>
+                                    </article>
+                                    {userLogin._id === post.author._id ? (
+                                        <DropdownPostPersonal postId={post._id} />
+                                    ) : (
+                                        <DropdownOtherPost postId={post._id} />
+                                    )}
+                                </div>
+                                {post.img.length > 0 && (
+                                    <div className="carousel rounded-box w-96 h-64 relative">
+                                        {post.img.length > 1 && (
+                                            <button
+                                                onClick={() => handlePrev(post)}
+                                                className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full"
+                                            >
+                                                ‹
+                                            </button>
+                                        )}
+                                        <div className="carousel-item w-full">
+                                            <img
+                                                src={post.img[currentIndex]}
+                                                className="w-full"
+                                                alt="Post visual"
+                                            />
+                                        </div>
+                                        {post.img.length > 1 && (
+                                            <button
+                                                onClick={() => handleNext(post)}
+                                                className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full"
+                                            >
+                                                ›
+                                            </button>
+                                        )}
                                     </div>
-                                    <p>{post.content}</p>
-                                </article>
-                                {userLogin._id === post.author._id ? (
-                                    <DropdownPostPersonal postId={post._id} />
-                                ) : (
-                                    <DropdownOtherPost postId={post._id} />
                                 )}
-                            </div>
-                            {/* {post.img.length > 0 && (
-                                <img className='rounded-xl max-h-[300px]' src={post.img[0]} alt="Post visual" />
-                            )} */}
-
-                            {post.img.length > 0 && (
-                                <div className="carousel rounded-box w-96 h-64 relative">
-                                    {post.img.length > 1 && (
-                                        <button onClick={() => handlePrev(post)} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">‹</button>
-                                    )}
-                                    <div className="carousel-item w-full">
-                                        <img
-                                            src={post.img[currentIndex]}
-                                            className="w-full"
-                                            alt="Post visual"
-                                        />
+                                <div className="flex justify-between">
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => handleLikeClick(post._id)}
+                                            className={"flex items-end gap-1"}
+                                        >
+                                            {post.likes.includes(userLogin._id) ? (
+                                                <HandThumbUpIcon className="size-5 animate__heartBeat" color="blue" />
+                                            ) : (
+                                                <HandThumbUpIcon className="size-5 hover:text-blue-700" />
+                                            )}
+                                            <span>{post.likes.length}</span>
+                                        </button>
+                                        <button
+                                            onClick={() => handleDislikeClick(post._id)}
+                                            className={"flex items-end gap-1 "}
+                                        >
+                                            {post.dislikes.includes(userLogin._id) ? (
+                                                <HandThumbDownIcon className="size-5 animate__heartBeat" color="red" />
+                                            ) : (
+                                                <HandThumbDownIcon className="size-5 hover:text-red-700" />
+                                            )}
+                                            <span>{post.dislikes.length}</span>
+                                        </button>
                                     </div>
-                                    {post.img.length > 1 && (
-                                        <button onClick={() => handleNext(post)} className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">›</button>
-                                    )}
-                                </div>
-                            )}
-
-                            <div className='flex justify-between'>
-                                <div className='flex gap-2'>
-                                    <button onClick={() => handleLikeClick(post._id)} className={"flex items-end gap-1"}>
-                                        {post.likes.includes(userLogin._id)
-                                            ? <HandThumbUpIcon className="size-5 animate__heartBeat" color='blue' />
-                                            : <HandThumbUpIcon className="size-5 hover:text-blue-700 " />
-                                        }
-                                        <span>{post.likes.length}</span>
+                                    <button className={"flex items-end gap-1"}>
+                                        <ChatBubbleLeftIcon className="size-5" />
+                                        <span>{post.comments.length}</span>
                                     </button>
-                                    <button onClick={() => handleDislikeClick(post._id)} className={"flex items-end gap-1 "}>
-                                        {post.dislikes.includes(userLogin._id)
-                                            ? <HandThumbDownIcon className="size-5 animate__heartBeat" color='red' />
-                                            : <HandThumbDownIcon className="size-5 hover:text-red-700" />
-                                        }
-                                        <span>{post.dislikes.length}</span>
+                                    <button className={"flex items-end gap-1"}>
+                                        <ShareIcon className="size-5" />
                                     </button>
                                 </div>
-                                <button className={"flex items-end gap-1"}>
-                                    <ChatBubbleLeftIcon className="size-5" />
-                                    <span>{post.comments.length}</span>
-                                </button>
-                                <button className={"flex items-end gap-1"}>
-                                    <ShareIcon className="size-5" />
-                                </button>
                             </div>
                         </div>
-                    </div>
-                )))
-            }
-
+                    ))}
+                    {postsToShow < posts.length && (
+                        <button
+                            onClick={loadMorePosts}
+                            className="mt-5 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+                        >
+                            Load More
+                        </button>
+                    )}
+                </>
+            )}
         </>
-    )
+    );
 }
