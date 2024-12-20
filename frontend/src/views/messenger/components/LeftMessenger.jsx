@@ -32,8 +32,9 @@ const LeftMessenger = () => {
             }
         };
         fetchdata();
+        console.log(friends)
     }, []);
-    console.log(friends)
+    
 
     return (
         <div className="border-r-gray-300 border-r h-full flex flex-col">

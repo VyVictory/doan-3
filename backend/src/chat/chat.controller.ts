@@ -145,6 +145,7 @@ export class ChatController {
         const message = await this.chatService.sendMesageToUser(currentUserOBJ, UserOBJ ,sendMessageDto,  files?.files );
   
         const currentAuthor = {
+          _id: currentUser._id,
           firstName: currentUser.firstName,
           lastName: currentUser.lastName,
           avatar: currentUser.avatar, 

@@ -1,30 +1,27 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { PaperAirplaneIcon } from '@heroicons/react/16/solid';
 import { useLocation } from 'react-router-dom';
-import LeftMessenger from '../components/LeftMessenger';
 import clsx from 'clsx';
 import imgUser from '../../../img/user.png';
 import user from '../../../service/user';
 import messenger from '../../../service/messenger';
 import { useUser } from '../../../service/UserContext';
 import { format } from 'date-fns';
+import useWebSocket from './usewebsocket';
+
 const MessengerInbox = () => {
     const { userContext } = useUser();
     const location = useLocation();
 
-    const [windowSize, setWindowSize] = useState({
-        width: window.innerWidth,
-        height: window.innerHeight,
-    });
     const [textareaHeight, setTextareaHeight] = useState(40);
-    const [transfer, setTransfer] = useState(true);
-    const [chanecontainer, setChanecontainer] = useState(windowSize.width > 767);
     const [iduser, setIdUser] = useState(null);
     const [userdata, setUserdata] = useState({});
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState('');
     const [messengerdata, setMessengerdata] = useState([]);
     const [error, setError] = useState(null);
+
+    const messagesEndRef = useRef(null); // Reference to scroll to the bottom
 
     // Get iduser from query parameters
     useEffect(() => {
@@ -35,35 +32,32 @@ const MessengerInbox = () => {
 
     // Fetch user data
     useEffect(() => {
-        if (!iduser|| iduser=='') {
+        if (!iduser || iduser === '') {
             setError('User ID is missing or invalid.');
             setLoading(false);
             return;
-        } else {
-            const fetchUserData = async () => {
-                try {
-                    const res = await user.getProfileUser(iduser);
-                    if (res.success) {
-                        setUserdata(res.data);
-                    } else {
-                        setError('User does not exist.');
-                    }
-                } catch (error) {
-                    console.error('Error fetching user data:', error);
-                    setError('An error occurred while fetching user data.');
-                } finally {
-                    setLoading(false);
-                }
-            };
-
-            fetchUserData();
         }
-
+        const fetchUserData = async () => {
+            try {
+                const res = await user.getProfileUser(iduser);
+                if (res.success) {
+                    setUserdata(res.data);
+                } else {
+                    setError('User does not exist.');
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                setError('An error occurred while fetching user data.');
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchUserData();
     }, [iduser]);
 
     // Fetch messenger data
     useEffect(() => {
-        if(iduser==''||!iduser){return;}
+        if (iduser === '' || !iduser) return;
         const fetchMessengerData = async () => {
             try {
                 const res = await messenger.getListMessengerByUser(iduser);
@@ -75,8 +69,30 @@ const MessengerInbox = () => {
             }
         };
         fetchMessengerData();
-        console.log(messengerdata)
     }, [iduser]);
+
+    const onMessageReceived = useCallback((newMessage) => {
+        if (!newMessage.receiver) {
+            newMessage.receiver = userContext._id; // Set receiver to the logged-in user if missing
+        }
+        if (!newMessage.createdAt) {
+            newMessage.createdAt = new Date().toISOString(); // Set the current timestamp if missing
+        }
+
+        if (newMessage.receiver === userContext._id && newMessage.sender !== userContext._id) {
+            setMessengerdata((prevMessages) => [...prevMessages, newMessage]);
+        }
+    }, [userContext._id]);
+
+    // Use the WebSocket hook to listen for new messages
+    useWebSocket(onMessageReceived);
+
+    // Scroll to the bottom of the messages
+    useEffect(() => {
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [messengerdata]); // Trigger scroll whenever messengerdata updates
 
     // Handle input change with auto-resize
     const handleInputChange = useCallback((e) => {
@@ -97,7 +113,6 @@ const MessengerInbox = () => {
         try {
             const res = await messenger.sendMess(iduser, message.trim());
             if (res.success) {
-                setMessengerdata((prev) => [...prev, res.data]);
                 setMessage('');
                 setTextareaHeight(40); // Reset textarea height
             } else {
@@ -107,32 +122,31 @@ const MessengerInbox = () => {
             console.error('Error sending message:', error);
         }
     }, [iduser, message]);
+
     if (loading) {
         return <strong>Loading...</strong>;
     }
     if (!iduser) {
         return <div className="text-red-500 text-center mt-4">{error}</div>;
     }
+
     const groupedMessages = messengerdata.reduce((acc, message) => {
-        const date = format(new Date(message.createdAt), 'yyyy-MM-dd');
+        const createdAtDate = new Date(message.createdAt);
+        if (isNaN(createdAtDate)) {
+            console.error('Invalid date value:', message.createdAt);
+            return acc;
+        }
+
+        const date = format(createdAtDate, 'yyyy-MM-dd');
         if (!acc[date]) acc[date] = [];
         acc[date].push(message);
         return acc;
     }, {});
+
     return (
         <div className="flex flex-col h-full w-full">
+            {/* Header and User Info */}
             <div className="p-2 flex items-center border-b h-14 bg-white shadow-sm">
-                {!transfer && (
-                    <button onClick={() => setTransfer(true)} className="pt-2 px-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
-                            <path
-                                fillRule="evenodd"
-                                d="M16.5 3.75a1.5 1.5 0 0 1 1.5 1.5v13.5a1.5 1.5 0 0 1-1.5 1.5h-6a1.5 1.5 0 0 1-1.5-1.5V15a.75.75 0 0 0-1.5 0v3.75a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V5.25a3 3 0 0 0-3-3h-6a3 3 0 0 0-3 3V9A.75.75 0 1 0 9 9V5.25a1.5 1.5 0 0 1 1.5-1.5h6ZM5.78 8.47a.75.75 0 0 0-1.06 0l-3 3a.75.75 0 0 0 0 1.06l3 3a.75.75 0 0 0 1.06-1.06l-1.72-1.72H15a.75.75 0 0 0 0-1.5H4.06l1.72-1.72a.75.75 0 0 0 0-1.06Z"
-                                clipRule="evenodd"
-                            />
-                        </svg>
-                    </button>
-                )}
                 <button onClick={() => window.location.href = `/user/${userdata?._id}`}>
                     <img
                         className="w-10 h-10 rounded-full mr-2"
@@ -142,45 +156,47 @@ const MessengerInbox = () => {
                 </button>
                 <h3 className="font-semibold">{`${userdata?.firstName || ''} ${userdata?.lastName || ''}`.trim()}</h3>
             </div>
+
+            {/* Messages */}
             <div className="overflow-y-scroll h-full p-4 pt-2 flex flex-col">
-                {Object.keys(groupedMessages).map((date) => (
-                    <div key={date} className="mb-4">
-                        {/* Display the date as a header */}
-                        <div className="text-center text-gray-500 text-sm my-2">
-                            {format(new Date(date), 'MMMM dd, yyyy')}
-                        </div>
-                        {groupedMessages[date].map((mess, index) => (
-                            <div
-                                key={`${mess._id}-${index}`} // Unique key for each message
-                                className={clsx(
-                                    'rounded-lg shadow-sm p-2 border min-h-11 my-4',
-                                    mess.receiver === userContext._id
-                                        ? 'bg-white mr-24 border-gray-300'
-                                        : 'bg-blue-100 ml-24 border-blue-500'
-                                )}
-                            >
-                                {/* Message content */}
-                                <p className="text-black">{mess.content}</p>
-                                {/* Message timestamp */}
-                                <p className="text-xs text-gray-400 text-left mt-2">
-                                    {format(new Date(mess.createdAt), 'hh:mm a')}
-                                </p>
+                {Object.keys(groupedMessages)
+                    .map((date) => (
+                        <div key={date} className="mb-4">
+                            <div className="text-center text-gray-500 text-sm my-2">
+                                {format(new Date(date), 'MMMM dd, yyyy')}
                             </div>
-                        ))}
-                    </div>
-                ))}
+                            {groupedMessages[date]
+                                .map((mess, index) => (
+                                    <div
+                                        key={`${mess._id}-${index}`}
+                                        className={clsx(
+                                            'rounded-lg shadow-sm p-2 border min-h-11 my-4',
+                                            mess?.author?._id == mess?.receiver ? 'bg-blue-100 ml-24 border-blue-500' :
+                                                mess.receiver === userContext._id
+                                                    ? 'bg-white mr-24 border-gray-300'
+                                                    : 'bg-blue-100 ml-24 border-blue-500'
+                                        )}
+                                    >
+                                        <p className="text-black">{mess.content}</p>
+                                        <p className="text-xs text-gray-400 text-left mt-2">
+                                            {format(new Date(mess.createdAt), 'hh:mm a')}
+                                        </p>
+                                    </div>
+                                ))}
+                        </div>
+                    ))}
+                <div ref={messagesEndRef} /> {/* This is where we want to scroll to */}
             </div>
+
+            {/* Input for sending messages */}
             <div className="w-full flex p-2 border-gray-200 border-t-2">
                 <textarea
-                    className={clsx(
-                        'rounded-lg border p-2 w-full resize-none text-sm bg-gray-200 shadow-inner shadow-gray-500 ',
-                        'focus:outline-none'
-                    )}
+                    className="rounded-lg border p-2 w-full resize-none text-sm bg-gray-200 shadow-inner shadow-gray-500 focus:outline-none"
                     rows={1}
                     style={{ height: `${textareaHeight}px`, maxHeight: '4rem', minHeight: '40px' }}
                     placeholder="Nhập @, tin nhắn"
                     value={message}
-                    onChange={handleInputChange} // Use onChange instead of onInput
+                    onChange={handleInputChange}
                 />
                 <button onClick={handleSendMessenger} className="ml-2">
                     <PaperAirplaneIcon className="h-8 w-8 fill-sky-500" />
