@@ -8,8 +8,6 @@ import HomePost from "../post/HomePost.jsx";
 
 function Home() {
     const [user, setUser] = useState({})
-
-    //e
     useEffect(() => {
         const fetchdata = async () => {
             const response = await profileUserCurrent();

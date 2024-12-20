@@ -9,13 +9,13 @@ import imgUser from '../../img/user.png'
 import user from '../../service/user';
 import { useLocation } from 'react-router-dom';
 import messenger from '../../service/messenger';
+import { useUser } from '../../service/UserContext';
 const Messenger = () => {
+    const { userContext, setUserContext } = useUser();
     const [windowSize, setWindowSize] = useState({
         width: window.innerWidth,
         height: window.innerHeight,
     });
-
-
     const location = useLocation();
     const [textareaHeight, setTextareaHeight] = useState(0);
     const [transfer, setTransfer] = useState(true)
@@ -26,26 +26,17 @@ const Messenger = () => {
     const [userdata, setUserdata] = useState({});
     const [loading, setLoading] = useState(true); // Loading state
     const [message, setMessage] = useState('');
-
+    const [messengerdata, setMessengerdata] = useState([]);
 
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
         const userId = queryParams.get('iduser');
-
         if (userId) {
             setIdUser(userId);
         }
     }, [location.search]);
 
-    const handleInputChange = (e) => {
-        const textarea = e.target;
-        const currentValue = textarea.value;
 
-        setMessage(currentValue);
-        textarea.style.height = 'auto'; // Reset height to auto
-        textarea.style.height = `${textarea.scrollHeight}px`; // Set height to scrollHeight for auto-expanding
-        setTextareaHeight(textarea.scrollHeight);
-    };
     useEffect(() => {
         const fetchdata = async () => {
 
@@ -58,11 +49,28 @@ const Messenger = () => {
             } catch (error) {
                 console.error('Error fetching user data:', error);
             } finally {
-                setLoading(false); // Stop loading
+                setLoading(true); // Stop loading
             }
         };
         fetchdata();
     }, [iduser]);
+    useEffect(() => {
+        const fetchdata = async () => {
+
+            try {
+                const res = await messenger.getListMessenger();
+                if (res.success) {
+                    setMessengerdata(res.data)
+                    console.log(res.data)
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            } finally {
+                // setLoading(false); // Stop loading
+            }
+        };
+        fetchdata();
+    }, []);
     useEffect(() => {
         // Hàm để gọi API và cập nhật dữ liệu
         const fetchEmojis = async () => {
@@ -101,18 +109,12 @@ const Messenger = () => {
         window.location.href = `/user/${id}`;
     };
     const handSendMessenger = async (iduser, mess) => {
-        console.log(mess)
+        // console.log(mess)
         try {
 
             const rs = await messenger.sendMess(iduser, mess)
             if (rs.success) {
                 console.log(rs)
-                if (rs.data.message && rs.data) {
-                    alert(rs.data.message);
-                } else {
-                    alert('thêm bạn bè thành công');
-                }
-                window.location.reload();
             } else {
                 alert(rs.data.message);
             }
@@ -120,6 +122,16 @@ const Messenger = () => {
             console.error(error);
         }
     };
+    const handleInputChange = (e) => {
+        const textarea = e.target;
+        const currentValue = textarea.value;
+
+        setMessage(currentValue);
+        textarea.style.height = 'auto'; // Reset height to auto
+        textarea.style.height = `${textarea.scrollHeight}px`; // Set height to scrollHeight for auto-expanding
+        setTextareaHeight(textarea.scrollHeight);
+    };
+    // console.log(messengerdata.Message)
     return (
         <div className=''>
             {
@@ -167,10 +179,23 @@ const Messenger = () => {
                                         // msOverflowStyle: 'none' // Internet Explorer and Edge
                                     }}
                                 >
-                                    <div className='bg-white rounded-lg shadow-sm p-2 mr-24 border border-blue-500 my-2'>
+                                    {
+                                        messengerdata?.Message ?
+                                            messengerdata.Message.map((mess, index) => (
+                                                <div className={`
+                                                ${mess.receiver._id== ''}
+                                                bg-white rounded-lg shadow-sm p-2 mr-24 border border-blue-500`}>
+                                                    <p className="text-secondary">
+                                                        {mess.content}
+                                                    </p>
+                                                </div>
+                                            )) : ''
+                                    }bg-white my-2
+                                    bg-blue-100
+                                    <div className=' rounded-lg shadow-sm p-2 mr-24 border border-blue-500 '>
                                         <p className="text-secondary">Hi there!</p>
                                     </div>
-                                    <div className='bg-blue-100 rounded-lg shadow-sm p-2 ml-24 border border-blue-500'>
+                                    <div className=' rounded-lg shadow-sm p-2 ml-24 border border-blue-500'>
                                         <p className="text-secondary">Hi there!</p>
                                     </div>
                                     {/* <div className='bg-white rounded-lg shadow-sm p-2 border border-blue-500 my-2' >
