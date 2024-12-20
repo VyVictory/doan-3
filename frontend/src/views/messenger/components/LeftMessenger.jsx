@@ -77,7 +77,7 @@ const LeftMessenger = () => {
                     <li key={index}>
                         <button
                             onClick={() =>
-                                navigate(`?iduser=${friend?.receiver?._id || friend?.sender?._id}`)
+                                navigate(`inbox/?iduser=${friend?.receiver?._id || friend?.sender?._id}`)
                             }
                             className="flex items-center py-2 w-full"
                         >
@@ -90,6 +90,7 @@ const LeftMessenger = () => {
                         </button>
                     </li>
                 ))}
+
             </ul>
         </div>
     );

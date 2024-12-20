@@ -35,33 +35,35 @@ const MessengerInbox = () => {
 
     // Fetch user data
     useEffect(() => {
-        if (!iduser) {
+        if (!iduser|| iduser=='') {
             setError('User ID is missing or invalid.');
             setLoading(false);
             return;
+        } else {
+            const fetchUserData = async () => {
+                try {
+                    const res = await user.getProfileUser(iduser);
+                    if (res.success) {
+                        setUserdata(res.data);
+                    } else {
+                        setError('User does not exist.');
+                    }
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                    setError('An error occurred while fetching user data.');
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            fetchUserData();
         }
 
-        const fetchUserData = async () => {
-            try {
-                const res = await user.getProfileUser(iduser);
-                if (res.success) {
-                    setUserdata(res.data);
-                } else {
-                    setError('User does not exist.');
-                }
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-                setError('An error occurred while fetching user data.');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchUserData();
     }, [iduser]);
 
     // Fetch messenger data
     useEffect(() => {
+        if(iduser==''||!iduser){return;}
         const fetchMessengerData = async () => {
             try {
                 const res = await messenger.getListMessengerByUser(iduser);
@@ -141,37 +143,37 @@ const MessengerInbox = () => {
                 <h3 className="font-semibold">{`${userdata?.firstName || ''} ${userdata?.lastName || ''}`.trim()}</h3>
             </div>
             <div className="overflow-y-scroll h-full p-4 pt-2 flex flex-col">
-            {Object.keys(groupedMessages).map((date) => (
-                <div key={date} className="mb-4">
-                    {/* Display the date as a header */}
-                    <div className="text-center text-gray-500 text-sm my-2">
-                        {format(new Date(date), 'MMMM dd, yyyy')}
-                    </div>
-                    {groupedMessages[date].map((mess, index) => (
-                        <div
-                            key={`${mess._id}-${index}`} // Unique key for each message
-                            className={clsx(
-                                'rounded-lg shadow-sm p-2 border min-h-11 my-4',
-                                mess.receiver === userContext._id
-                                    ? 'bg-white mr-24 border-gray-300'
-                                    : 'bg-blue-100 ml-24 border-blue-500'
-                            )}
-                        >
-                            {/* Message content */}
-                            <p className="text-black">{mess.content}</p>
-                            {/* Message timestamp */}
-                            <p className="text-xs text-gray-400 text-left mt-2">
-                                {format(new Date(mess.createdAt), 'hh:mm a')}
-                            </p>
+                {Object.keys(groupedMessages).map((date) => (
+                    <div key={date} className="mb-4">
+                        {/* Display the date as a header */}
+                        <div className="text-center text-gray-500 text-sm my-2">
+                            {format(new Date(date), 'MMMM dd, yyyy')}
                         </div>
-                    ))}
-                </div>
-            ))}
+                        {groupedMessages[date].map((mess, index) => (
+                            <div
+                                key={`${mess._id}-${index}`} // Unique key for each message
+                                className={clsx(
+                                    'rounded-lg shadow-sm p-2 border min-h-11 my-4',
+                                    mess.receiver === userContext._id
+                                        ? 'bg-white mr-24 border-gray-300'
+                                        : 'bg-blue-100 ml-24 border-blue-500'
+                                )}
+                            >
+                                {/* Message content */}
+                                <p className="text-black">{mess.content}</p>
+                                {/* Message timestamp */}
+                                <p className="text-xs text-gray-400 text-left mt-2">
+                                    {format(new Date(mess.createdAt), 'hh:mm a')}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                ))}
             </div>
-            <div className="w-full flex p-2 border-t border-gray-200">
+            <div className="w-full flex p-2 border-gray-200 border-t-2">
                 <textarea
                     className={clsx(
-                        'rounded-lg border p-2 w-full resize-none text-sm bg-gray-300 shadow-inner shadow-gray-500' ,
+                        'rounded-lg border p-2 w-full resize-none text-sm bg-gray-200 shadow-inner shadow-gray-500 ',
                         'focus:outline-none'
                     )}
                     rows={1}
