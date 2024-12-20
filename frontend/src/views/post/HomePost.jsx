@@ -157,8 +157,10 @@ export default function HomePost() {
                             )} */}
 
                             {post.img.length > 0 && (
-                                <div className="carousel rounded-box w-[600px] h-64 relative">
-                                    <button onClick={() => handlePrev(post)} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">‹</button>
+                                <div className="carousel rounded-box w-96 h-64 relative">
+                                    {post.img.length > 1 && (
+                                        <button onClick={() => handlePrev(post)} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">‹</button>
+                                    )}
                                     <div className="carousel-item w-full">
                                         <img
                                             src={post.img[currentIndex]}
@@ -166,7 +168,9 @@ export default function HomePost() {
                                             alt="Post visual"
                                         />
                                     </div>
-                                    <button onClick={() => handleNext(post)} className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">›</button>
+                                    {post.img.length > 1 && (
+                                        <button onClick={() => handleNext(post)} className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">›</button>
+                                    )}
                                 </div>
                             )}
 
