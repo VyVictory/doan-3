@@ -123,46 +123,71 @@ export class ChatService {
       }
     }
 
-    async getMylishChat(userId: Types.ObjectId): Promise<{ Group: Group[], Message: Message[] }> {
-      // Lấy danh sách các nhóm mà người dùng tham gia
+    // async getMylishChat(userId: Types.ObjectId): Promise<{ Group: Group[], Message: Message[] }> {
+    //   const distinctUserIds = await this.MessageModel.distinct('sender', {
+    //     $or: [{ sender: userId }, { receiver: userId }]
+    //   });
+    
+    //   const messages = await this.MessageModel.find({
+    //     $or: [
+    //       { sender: { $in: distinctUserIds } },
+    //       { receiver: { $in: distinctUserIds } }
+    //     ],
+    //   })
+    //     .populate({
+    //       path: 'sender',
+    //       select: 'firstName lastName avatar',
+    //     })
+    //     .populate({
+    //       path: 'receiver',
+    //       select: 'firstName lastName avatar',
+    //     })
+    //     .sort({ createdAt: -1 }) 
+    //     .exec();
+    
+    //   const uniqueMessages = messages.reduce((acc, message) => {
+    //     const key = message.sender?.toString() || message.receiver?.toString(); 
+    //     if (!acc.some(m => (m.sender?.toString() === key || m.receiver?.toString() === key))) {
+    //       acc.push(message);
+    //     }
+    //     return acc;
+    //   }, []);
+    
+    //   const groups = await this.GroupModel.find({ participants: userId })
+    //     .populate({
+    //       path: 'participants',
+    //       select: 'name',
+    //     })
+    //     .exec();
+    
+    //   return {
+    //     Group: groups,
+    //     Message: uniqueMessages,
+    //   };
+    // }
+
+    async getMylishChat(userId: Types.ObjectId): Promise<{ Group: Group[], Participants: any[] }> {
+      // Lấy danh sách sender và receiver liên quan đến userId
+      const distinctUserIds = await this.MessageModel.distinct('sender', {
+        $or: [{ sender: userId }, { receiver: userId }]
+      });
+    
+      // Lọc ra những người đã nhắn tin với userId và loại trừ bản thân
+      const participants = await this.UserModel.find({
+        _id: { $in: distinctUserIds, $ne: userId },
+      }).select('firstName lastName avatar'); 
+    
+      // Lấy danh sách nhóm mà userId tham gia
       const groups = await this.GroupModel.find({ participants: userId })
-        .populate({
-          path: 'participants', 
-          select: 'firstName lastName avatar',
-        })
-        .populate({
-          path: 'lastMessage',
-          select: 'content sender createdAt', 
-          populate: {
-            path: 'sender', 
-            select: 'firstName lastName avatar',
-          },
-        })
-        .exec();
-    
-    
-      const messages = await this.MessageModel.find({
-        $or: [
-          { sender: userId },
-          { receiver: userId },
-        ],
-      })
-        .populate({
-          path: 'sender',
-          select: 'firstName lastName avatar',
-        })
-        .populate({
-          path: 'receiver',
-          select: 'firstName lastName avatar',
-        })
-        .sort({ createdAt: -1 }) 
-        .exec();
+      .select('name avatarGroup') 
+      .exec();
     
       return {
         Group: groups,
-        Message: messages,
+        Participants: participants, // Trả về danh sách người tham gia mà không có thông tin tin nhắn
       };
     }
+    
 
     async removeMemberInGroup(groupId: Types.ObjectId, userId: Types.ObjectId): Promise<Group> {
       const group = await this.GroupModel.findById(groupId);
