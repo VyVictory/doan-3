@@ -32,7 +32,7 @@ export default function HeadProfile() {
                     <h1 className='font-bold text-2xl mt-3'>{dataProfile && dataProfile.lastName} {dataProfile && dataProfile.firstName}</h1>
                 </div>
                 <button className="" onClick={() => document.getElementById('my_modal_2').showModal()}><PencilIcon className='size-4 fill-sky-800' /></button>
-                <ModalUpdateAVT />
+                <ModalUpdateAVT user={dataProfile} />
             </div>
         </div >
 
