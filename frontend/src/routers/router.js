@@ -7,7 +7,8 @@ import Personal from "../views/profile/personal/index.jsx";
 import AboutProfile from "../views/profile/components/AboutProfile.jsx";
 import MyPosts from "../views/profile/components/MyPosts.jsx";
 import FriendProfile from "../views/friend/FriendProfile.jsx";
-import Messenger from "../views/messenger/Messenger.jsx";
+// import Messenger from "../views/messenger/Messenger.jsx";
+import LayoutMessenger from "../views/messenger/layoutMessenger.js";
 import Searchpage from "../views/search/index.jsx";
 import Friendinvitation from "../views/friend/friendinvitation.jsx";
 import Login from "../auth/login/index.jsx";
@@ -19,6 +20,7 @@ import OtherPosts from "../views/profile/OtherProfiles/OtherPosts.jsx";
 import Bookmark from "../views/bookmark/page.jsx";
 import MyFriendCard from "../views/friend/card/myFriendCard.jsx";
 import MyAllFriend from "../views/friend/myAllFriend.jsx";
+import MessengerInbox from "../views/messenger/components/messInbox.jsx";
 import FriendOtherProfile from "../views/profile/OtherProfiles/FriendOtherProfile.jsx";
 
 function routers() {
@@ -41,7 +43,10 @@ function routers() {
                         <Route path="about" element={<AboutProfile />} />
                         <Route path="friends" element={<FriendProfile />} />
                     </Route>
-
+                    <Route path="messenger" element={<LayoutMessenger />}>
+                        <Route index element={<MessengerInbox />} />
+                        <Route path="inbox" element={<MessengerInbox />} />
+                    </Route>
                     <Route path="user/:id" element={<OtherProfiles />}>
                         <Route index element={<OtherPosts />} />
                         <Route path="about" element={<AboutOtherProfile />} />
@@ -49,7 +54,7 @@ function routers() {
                     </Route>
                     <Route path="bookmark" element={<Bookmark />} />
                     {/* <Route path="*" element={<NoPage />} /> */}
-                    <Route path="messenger" element={<Messenger />} />
+                    {/* <Route path="messenger" element={<Messenger />} /> */}
                     <Route path="/search" element={<LayoutSearch />}>
                         <Route path="all" element={<Searchpage />} />
                     </Route>
