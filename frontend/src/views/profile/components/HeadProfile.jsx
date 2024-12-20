@@ -9,7 +9,7 @@ export default function HeadProfile() {
     useEffect(() => {
         const fetchdata = async () => {
             const response = await profileUserCurrent();
-            if(response && response.data){
+            if (response && response.data) {
                 setDataProfile(response.data)
             }
         }
@@ -17,7 +17,14 @@ export default function HeadProfile() {
     }, [])
     return (
         <div className=''>
-            <div className=" h-[300px] z-0 grid bg-cover bg-no-repeat bg-[url('https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/anh-thien-nhien-22.jpg')]" style={{ backgroundPosition: '10%' }}></div>
+            <div
+                className=" h-[300px] rounded-2xl z-0 grid bg-cover bg-no-repeat"
+                style={{
+                    backgroundImage: `url(${dataProfile && dataProfile.coverImage ? dataProfile.coverImage : 'https://mcdn.wallpapersafari.com/medium/91/45/MehDBZ.jpg'})`,
+                    backgroundPosition: '10%',
+                }}>
+
+            </div>
             <div className='flex justify-center relative z-0 bottom-20 overflow-hidden items-baseline gap-1'>
                 <div>
                     <img className='rounded-full h-40 w-40 ' alt=''
@@ -27,7 +34,7 @@ export default function HeadProfile() {
                 <button className="" onClick={() => document.getElementById('my_modal_2').showModal()}><PencilIcon className='size-4 fill-sky-800' /></button>
                 <ModalUpdateAVT />
             </div>
-        </div>
+        </div >
 
     )
 }

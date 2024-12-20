@@ -9,6 +9,7 @@ import { SendMessageDto } from './dto/sendMessage.dto';
 import { content } from 'googleapis/build/src/apis/content';
 import { Group } from './schema/group.schema';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { RoomChat } from './schema/roomChat.schema';
 
 @Injectable()
 export class ChatService {
@@ -17,6 +18,7 @@ export class ChatService {
         @InjectModel(GroupMessage.name) private readonly GroupMessageModel: Model<GroupMessage>,
         @InjectModel(Group.name) private readonly GroupModel: Model<Group>,
         @InjectModel(User.name) private readonly UserModel: Model<User>,
+        @InjectModel(RoomChat.name) private readonly RoomChatModel: Model<RoomChat>,
         private readonly cloudinaryService : CloudinaryService,
     ){}
 
@@ -177,7 +179,9 @@ export class ChatService {
         throw new HttpException('Receiver not found', HttpStatus.NOT_FOUND);
       }
     
-      // Prepare the message object
+
+      
+
       const Message = new this.MessageModel({
         sender: senderId,
         receiver: receiverId,
@@ -193,6 +197,12 @@ export class ChatService {
           console.error('Error uploading images to Cloudinary:', error);
           throw new HttpException('Failed to upload images', HttpStatus.INTERNAL_SERVER_ERROR);
         }
+      }
+      if (Types.ObjectId.isValid(receiverId)) {
+        const receiverObjectId = new Types.ObjectId(receiverId); 
+        console.log('Converted receiverId to ObjectId:', receiverObjectId);
+      } else {
+        console.log('receiverId is not a valid ObjectId string');
       }
     
       // Save and return the message
