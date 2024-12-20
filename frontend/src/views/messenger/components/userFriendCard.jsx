@@ -48,7 +48,7 @@ const UserFriendCard = ({ iduser }) => {
                         ? `${userdata.firstName || ''} ${userdata.lastName || ''}`.trim()
                         : "No Name"}
                 </h3>
-                <p className="text-gray-400">messss</p>
+                <p className="text-gray-400 line-clamp-1">ô no không có tin xem trướcccccccccccccc</p>
             </div>
         </>
     );

@@ -2,14 +2,14 @@
 import React, { useState, useEffect } from 'react'
 import { PaperAirplaneIcon } from '@heroicons/react/16/solid';
 import { useParams } from 'react-router-dom';
-import LeftMessenger from "./components/LeftMessenger";
+import LeftMessenger from "../components/LeftMessenger";
 import clsx from 'clsx'
-import GetApiIcons from '../../module/icons/GetApiIcons';
+import GetApiIcons from '../../../module/icons/GetApiIcons';
 import imgUser from '../../img/user.png'
-import user from '../../service/user';
+import user from '../../../service/user';
 import { useLocation } from 'react-router-dom';
-import messenger from '../../service/messenger';
-import { useUser } from '../../service/UserContext';
+import messenger from '../../../service/messenger';
+import { useUser } from '../../../service/UserContext';
 const Messenger = () => {
     const { userContext, setUserContext } = useUser();
     const [windowSize, setWindowSize] = useState({
