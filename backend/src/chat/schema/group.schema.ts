@@ -14,7 +14,7 @@ export class Group extends Document {
     name: string;
 
     @Prop()
-    avatarGroup : string;
+    avatarGroup : string[];
 
     @Prop({ type: Types.ObjectId, ref: 'User', required: true })
     owner : User;
