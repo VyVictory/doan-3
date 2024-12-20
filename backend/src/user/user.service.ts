@@ -161,18 +161,71 @@ export class UserService {
     return user;
   }
 
-  async FriendsRequest(senderID: string, ReceiverId: string) {
-    const exitingRequest = await this.FriendRequestModel.findOne({ sender: senderID, receiver: ReceiverId })
-    if (exitingRequest) {
-      throw new ConflictException('request has been sent');
+  async FriendsRequest(senderID: string, receiverId: string): Promise<any> {
+    // Kiểm tra xem hai người đã là bạn bè hay chưa
+    const areAlreadyFriends = await this.FriendModel.findOne({
+      $or: [
+        { sender: senderID, receiver: receiverId },
+        { sender: receiverId, receiver: senderID } 
+      ]
+    });
+  
+    if (areAlreadyFriends) {
+      throw new ConflictException('you has friend with user.');
     }
+  
+    // Kiểm tra xem đã có yêu cầu kết bạn nào được gửi đi chưa (trong cả hai chiều)
+    const [existingSentRequest, existingReceivedRequest] = await Promise.all([
+      this.FriendRequestModel.findOne({ sender: senderID, receiver: receiverId }),
+      this.FriendRequestModel.findOne({ sender: receiverId, receiver: senderID }),
+    ]);
+  
+    if (existingSentRequest) {
+      throw new ConflictException('You has sent request with user.');
+    }
+  
+    if (existingReceivedRequest) {
+      // Handle scenario where receiver has already sent a request to sender
+      if (existingReceivedRequest.status === 'waiting') {
+      
+        await Promise.all([
+          this.FriendRequestModel.findOneAndUpdate({ _id: existingReceivedRequest._id }, { status: 'accepted' }),
+          this.FriendRequestModel.create({ sender: senderID, receiver: receiverId, status: 'accepted' }),
+        ]);
+        return { message: 'Your request has been accepted' };
+      } else {
+        throw new ConflictException('This person has sent you a friend request. Please accept or decline their request first');
+      }
+    }
+  
+
     const newRequest = new this.FriendRequestModel({
       sender: senderID,
-      receiver: ReceiverId,
-      status: 'waitinng'
-    })
-    return newRequest.save()
+      receiver: receiverId,
+      status: 'waiting'
+    });
+  
+    return newRequest.save();
   }
+
+  // async FriendsRequest(senderID: string, ReceiverId: string) {
+  //   const exitingRequest = await this.FriendRequestModel.findOne({ sender: senderID, receiver: ReceiverId })
+  //   if (exitingRequest) {
+  //     throw new ConflictException('request has been sent');
+  //   }
+    
+  //   const frinedExist = await this.FriendModel.findOne({ sender: senderID, receiver: ReceiverId })
+  //   if (frinedExist) {
+  //     throw new ConflictException('you are already friend');
+  //   }
+
+  //   const newRequest = new this.FriendRequestModel({
+  //     sender: senderID,
+  //     receiver: ReceiverId,
+  //     status: 'waitinng'
+  //   })
+  //   return newRequest.save()
+  // }
 
 
 
@@ -180,38 +233,43 @@ export class UserService {
     currentUserId: string,
     friendRequestId: string,
   ): Promise<Friend> {
-
     const friendRequest = await this.FriendRequestModel.findById(friendRequestId);
+
     if (!friendRequest) {
       throw new NotFoundException('No friend request found');
     }
+
     const { sender, receiver } = friendRequest;
 
     if (currentUserId !== receiver.toString()) {
       throw new ForbiddenException('You are not authorized to accept this friend request');
     }
 
+    // Kiểm tra xem hai người đã là bạn bè hay chưa
+    const existingFriendship = await this.FriendModel.findOne({
+      $or: [
+        { sender: sender, receiver: receiver },
+        { sender: receiver, receiver: sender },
+      ],
+    });
+
+    if (existingFriendship) {
+      throw new ConflictException('You are already friends with this user.');
+    }
+
+    // Xóa yêu cầu kết bạn
+    await friendRequest.deleteOne();
+
+    // Tạo mối quan hệ bạn bè
     const friend = await this.FriendModel.create({
       sender,
       receiver,
       status: 'friend',
-    })
-
-    // await this.UserModel.findByIdAndUpdate(
-    //   receiver,
-    //   { $addToSet: { friends: sender } },
-    // );
-
-
-    // await this.UserModel.findByIdAndUpdate(
-    //   sender,
-    //   { $addToSet: { friends: receiver } },
-    // );
-
-    await this.FriendRequestModel.findByIdAndDelete(friendRequestId);
+    });
 
     return friend;
   }
+
 
 
   async rejectFriendRequest(
@@ -512,5 +570,7 @@ export class UserService {
   async getSavedPosts(userId: string): Promise<User> {
     return this.UserModel.findById(userId).populate('bookmarks');
   }
-}
 
+
+
+}
