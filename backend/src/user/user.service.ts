@@ -400,14 +400,17 @@ export class UserService {
 
   async findAlluser() {
     try {
-      const user = await this.UserModel.find().exec()
-      return user
+      const user = await this.UserModel.find()
+        .select('-password -isActive -refreshToken -createdAt -updatedAt -role -otp -otpExpirationTime -bookmarks -friends -coverImage') 
+        .exec();
+  
+      return user;
     } catch (error) {
       console.error('Error fetching users:', error);
       throw new HttpException('Could not retrieve users', HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
   }
+  
 
   async resetPassword(email: string, otp: string, resetPasswordDto: ResetPasswordDto): Promise<string> {
     // Xác thực OTP
