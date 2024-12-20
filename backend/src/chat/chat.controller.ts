@@ -60,7 +60,7 @@ export class ChatController {
         const messageSee = {
           ...sendMessageDto,
           author: currentAuthor,
-          
+
         };
 
         
@@ -156,9 +156,22 @@ export class ChatController {
         
       }
 
-
-
     }
+
+    @Get('getmessagestouser/:userId')
+    @UseGuards(AuthGuardD)
+    async getMessageUser(
+      @CurrentUser() currentUser: User,
+      @Param('userId') userId: Types.ObjectId,
+    ){
+      const currentUserOBJ = new Types.ObjectId(currentUser._id.toString());
+      return await this.chatService.getMessagesToUser(currentUserOBJ, userId);
+    }
+
+
+
+
+    
     
     
 }

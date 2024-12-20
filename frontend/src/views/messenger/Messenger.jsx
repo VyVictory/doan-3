@@ -38,13 +38,13 @@ const Messenger = () => {
 
 
     useEffect(() => {
+        if (!iduser) return;
         const fetchdata = async () => {
-
             try {
                 const res = await user.getProfileUser(iduser);
                 if (res.success) {
                     setUserdata(res.data)
-                    console.log(res.data)
+                    // console.log(res.data)
                 }
             } catch (error) {
                 console.error('Error fetching user data:', error);
@@ -55,10 +55,10 @@ const Messenger = () => {
         fetchdata();
     }, [iduser]);
     useEffect(() => {
+        if (!iduser) return;
         const fetchdata = async () => {
-
             try {
-                const res = await messenger.getListMessenger();
+                const res = await messenger.getListMessengerByUser(iduser);
                 if (res.success) {
                     setMessengerdata(res.data)
                     console.log(res.data)
@@ -70,7 +70,7 @@ const Messenger = () => {
             }
         };
         fetchdata();
-    }, []);
+    }, [iduser]);
     useEffect(() => {
         // Hàm để gọi API và cập nhật dữ liệu
         const fetchEmojis = async () => {
@@ -144,8 +144,10 @@ const Messenger = () => {
                     {(chanecontainer || transfer == false) && (
                         <div className={`${transfer ? 'w-3/4' : 'w-full'}  h-full `} >
                             <div className='flex flex-col h-full' >
+                                <div className=' p-2 flex flex-row items-center h-14'>
 
-                                <div className=" p-2 shadow-sm flex flex-row items-center border-b border-gray-200">
+                                </div>
+                                <div className=" p-2 flex flex-row items-center border-b border-gray-200 h-14 fixed w-full  bg-white shadow-sm">
                                     {(transfer == false) &&
                                         <div className='pt-2 px-2'>
                                             <button onClick={backtransfer}>
@@ -180,25 +182,27 @@ const Messenger = () => {
                                     }}
                                 >
                                     {
-                                        messengerdata?.Message ?
-                                            messengerdata.Message.map((mess, index) => (
-                                                <div className={`
-                                                ${mess.receiver._id== ''}
-                                                bg-white rounded-lg shadow-sm p-2 mr-24 border border-blue-500`}>
+                                        messengerdata ?
+                                            messengerdata.map((mess, index) => (
+                                                <div key={index} className={`
+                                                ${mess.receiver == userContext._id ? ' bg-white my-1 ml-24' : ' bg-blue-100 mr-24'}
+                                                bg-white rounded-lg shadow-sm p-2  border border-blue-500`}>
                                                     <p className="text-secondary">
                                                         {mess.content}
                                                     </p>
                                                 </div>
                                             )) : ''
-                                    }bg-white my-2
-                                    bg-blue-100
-                                    <div className=' rounded-lg shadow-sm p-2 mr-24 border border-blue-500 '>
+                                    }
+                                    {/* \userContext
+                                    bg-white my-2
+                                    bg-blue-100 */}
+                                    {/* <div className=' rounded-lg shadow-sm p-2 mr-24 border border-blue-500 '>
                                         <p className="text-secondary">Hi there!</p>
                                     </div>
                                     <div className=' rounded-lg shadow-sm p-2 ml-24 border border-blue-500'>
                                         <p className="text-secondary">Hi there!</p>
-                                    </div>
-                                    {/* <div className='bg-white rounded-lg shadow-sm p-2 border border-blue-500 my-2' >
+                                    </div> */}
+                                    <div className='bg-white rounded-lg shadow-sm p-2 border border-blue-500 my-2' >
                                         <h1>Danh sách Emoji</h1>
                                         <ul>
                                             {icons.map((icon) => (
@@ -207,7 +211,7 @@ const Messenger = () => {
                                                 </li>
                                             ))}
                                         </ul>
-                                    </div> */}
+                                    </div>
                                 </div>
                                 <div className={`w-full flex mb-1 pt-1 px-1 border-t border-gray-200`}> {/* ${textareaHeight > 56 ? 'flex-col' : 'flex-row'} */}
                                     <div className={` flex items-center justify-center`}>

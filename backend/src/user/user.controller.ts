@@ -76,8 +76,7 @@ export class UserController {
 
 
     @Get('getAllUser')
-    @UseGuards(AuthGuardD)
-
+    @UseGuards(AuthGuardD) 
     async getAllUser(
       @CurrentUser() currentUser : User,
     ){
@@ -243,7 +242,7 @@ export class UserController {
       if(!currentUser){
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
-      
+
       if (!userId) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
