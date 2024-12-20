@@ -18,6 +18,7 @@ import AboutOtherProfile from "../views/profile/OtherProfiles/AboutOtherProfile.
 import OtherPosts from "../views/profile/OtherProfiles/OtherPosts.jsx";
 import Bookmark from "../views/bookmark/page.jsx";
 import MyFriendCard from "../views/friend/card/myFriendCard.jsx";
+import MyAllFriend from "../views/friend/myAllFriend.jsx";
 
 function routers() {
     return (
@@ -29,7 +30,7 @@ function routers() {
 
                     <Route path="friends" element={<Myfriend />} >
                         <Route path="" element={<Friendinvitation />} />
-                        <Route path="list" element={<MyFriendCard />} />
+                        <Route path="list" element={< MyAllFriend />} />
                         <Route path="requests" element={<Friendinvitation />} />
                     </Route>
                     <Route path="user" element={<Personal />} />

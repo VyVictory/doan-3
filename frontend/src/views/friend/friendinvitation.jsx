@@ -31,7 +31,7 @@ export default function FriendInvitation() {
 
     return (
         <div className="w-full p-5 flex flex-col">
-            <strong className="text-xl">Lời mời kết bạn</strong>
+            <strong className="text-xl ml-2 mb-2">Lời mời kết bạn</strong>
             {loading ? (
                 // Show loading spinner or text
                 <div className="w-full h-full flex justify-center items-center">
@@ -44,7 +44,7 @@ export default function FriendInvitation() {
                 </div>
             ) : (
                 // Render Friend Cards
-                <div className="w-full flex flex-col gap-4">
+                <div className="w-full grid  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                     {requests.map((request, index) => (
                         <FriendCard
                             iduser={request.sender}

@@ -6,24 +6,23 @@ import SearchBar from './SearchBar';
 import DropdownProfile from './DropdownProfile';
 import authToken from "../../components/authToken";
 import { profileUserCurrent } from '../../service/ProfilePersonal';
-
+import { useUser } from '../../service/UserContext';
 
 export default function Navbar() {
-    //
-    const [user, setUser] = useState({})
-    //e
+    const { userContext, setUserContext } = useUser(); // Access user data from context
+    const [user, setUser] = useState({});
     useEffect(() => {
-        const fetchdata = async () => {
-            const response = await profileUserCurrent();
+        const fetchData = async () => {
+            const response = await profileUserCurrent(); // Assume profileUserCurrent fetches user data
             if (response && response.data) {
-                setUser(response.data);
+                setUser(response.data)
+                setUserContext(response.data); // Update the user state in context
             } else {
                 console.warn("No data found in response.");
             }
-        }
-        fetchdata()
-    }, [])
-    //
+        };
+        fetchData();
+    }, [setUser]);
     const location = useLocation();
     const isActiveTab = (path) => location.pathname === path;
     const isActiveString = (path) => window.location.pathname.startsWith(path);

@@ -20,8 +20,7 @@ const LeftMessenger = ({ bt_chanetransfer }) => {
                     overflowY: 'scroll',
                     scrollbarWidth: 'none', // Firefox
                     msOverflowStyle: 'none' // Internet Explorer and Edge
-                }}
-            >
+                }}>
                 {messages.map((msg, index) => (
                     <li key={index}>
                         <button onClick={bt_chanetransfer} className="flex items-center py-2">

@@ -2,7 +2,6 @@ import { Outlet } from "react-router-dom";
 
 export default function LayoutSearch() {
     const handChaneSearch = () => {
-
     }
     return (
         <div className="flex row">
