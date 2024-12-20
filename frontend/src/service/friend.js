@@ -42,13 +42,13 @@ const getListMyFriend = async () => {
 };
 const accectRequestAddFriend = async (id) => {
     try {
-        
-        const response = await axios.post(`http://localhost:3001/user/acceptfriend/${id}`,{},
+
+        const response = await axios.post(`http://localhost:3001/user/acceptfriend/${id}`, {},
             {
                 headers: { Authorization: `Bearer ${authToken.getToken()}` },
             }
         );
-        
+
         return { success: true, data: response };
     } catch (response) {
         return { success: false, data: response.response.data.message };
@@ -56,12 +56,12 @@ const accectRequestAddFriend = async (id) => {
 };
 const declineRequestAddFriend = async (id) => {
     try {
-        const response = await axios.post(`http://localhost:3001/user/rejectFriendRequest/${id}`,{},
+        const response = await axios.post(`http://localhost:3001/user/rejectFriendRequest/${id}`, {},
             {
                 headers: { Authorization: `Bearer ${authToken.getToken()}` },
             }
         );
-        
+
         return { success: true, data: response.data };
     } catch (response) {
         return { success: false, data: response.response.data.message };
@@ -69,17 +69,30 @@ const declineRequestAddFriend = async (id) => {
 };
 const cancelFriend = async (id) => {
     try {
-        const response = await axios.post(`http://localhost:3001${id}`,{},
+        const response = await axios.post(`http://localhost:3001${id}`, {},
             {
                 headers: { Authorization: `Bearer ${authToken.getToken()}` },
             }
         );
-        
+
         return { success: true, data: response.data };
     } catch (response) {
         return { success: false, data: response.response.data.message };
     }
 };
+
+async function getListFriendAnother(userId) {
+    try {
+        const request = await axios.get(`http://localhost:3001/user/getlistfriendanother/${userId}`,
+            {
+                headers: { Authorization: `Bearer ${authToken.getToken()}` },
+            }
+        )
+        return request
+    } catch (error) {
+
+    }
+}
 export default {
     AddFriend,
     getListFriendRequest,
@@ -87,4 +100,5 @@ export default {
     declineRequestAddFriend,
     cancelFriend,
     getListMyFriend,
+    getListFriendAnother
 }

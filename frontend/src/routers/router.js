@@ -19,6 +19,7 @@ import OtherPosts from "../views/profile/OtherProfiles/OtherPosts.jsx";
 import Bookmark from "../views/bookmark/page.jsx";
 import MyFriendCard from "../views/friend/card/myFriendCard.jsx";
 import MyAllFriend from "../views/friend/myAllFriend.jsx";
+import FriendOtherProfile from "../views/profile/OtherProfiles/FriendOtherProfile.jsx";
 
 function routers() {
     return (
@@ -44,7 +45,7 @@ function routers() {
                     <Route path="user/:id" element={<OtherProfiles />}>
                         <Route index element={<OtherPosts />} />
                         <Route path="about" element={<AboutOtherProfile />} />
-                        {/* <Route path="friends" element={<FriendProfile />} /> */}
+                        <Route path="friends" element={<FriendOtherProfile />} />
                     </Route>
                     <Route path="bookmark" element={<Bookmark />} />
                     {/* <Route path="*" element={<NoPage />} /> */}
