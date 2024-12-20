@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards,
+import { Controller, Post, Body, UseGuards, Put,
    HttpException, HttpStatus, Param, Get, Type, Delete,
     UseInterceptors, UploadedFiles,
    } from '@nestjs/common';
@@ -185,10 +185,15 @@ export class ChatController {
       return await this.chatService.getMessagesToUser(currentUserOBJ, userIdOBJ);
     }
 
+  @Put('revokedMesage/:messageId')
+  @UseGuards(AuthGuardD)
+  async revokeAMessage(
+    @CurrentUser() currentUser: User,
+    @Param('messageId') messageId: Types.ObjectId,
+  ){
+    const messageOBJ = new Types.ObjectId(messageId.toString());
+    const currentUserOBJ = new Types.ObjectId(currentUser._id.toString());
+    return await this.chatService.revokeAMessage(messageOBJ,currentUserOBJ);
+  }
 
-
-
-    
-    
-    
 }

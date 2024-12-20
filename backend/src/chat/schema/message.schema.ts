@@ -29,8 +29,15 @@ export class Message extends Document{
   @Prop()
   mediaURL: string[];
 
-  // @Prop({ type: Types.ObjectId, ref: 'RoomChat', required: true })
-  // RoomChat: RoomChat
+
+  @Prop({enum: ['sent', 'received', 'seen'], default: 'sent'})
+  status: string;
+
+  @Prop()
+  reading: boolean;
+
+  @Prop({default: true})
+  isLive: boolean;
 
 }
 

@@ -209,22 +209,63 @@ export class ChatService {
       return await Message.save();
     }
 
-    async getMessagesToUser(userId: Types.ObjectId, receiverId: Types.ObjectId): Promise<Message[]> {
+    async getMessagesToUser(userId: Types.ObjectId, receiverId: Types.ObjectId): Promise<any[]> {
       const messages = await this.MessageModel.find({
         $or: [
           { sender: userId, receiver: receiverId },
           { sender: receiverId, receiver: userId },
         ],
       })
-        .sort({ createdAt: 1 }) 
+        .sort({ createdAt: 1 })
         .exec();
     
       if (!messages.length) {
         throw new HttpException('No messages found', HttpStatus.NOT_FOUND);
       }
+      const processedMessages = messages.map((message) => {
+        if (!message.isLive) {
+          return {
+            _id: message._id,
+            sender: message.sender,
+            receiver: message.receiver,
+            content: 'The message has been revoked', 
+          };
+        }
+        return message;
+      });
     
-      return messages;
+      return processedMessages;
     }
+    
+
+    async revokeAMessage(messageId: Types.ObjectId, userId: Types.ObjectId): Promise<Message> {
+      // Tìm tin nhắn theo ID
+      const message = await this.MessageModel.findById(messageId);
+      console.log(message, ', message);');
+    
+      if (!message) {
+        throw new HttpException('Message not found', HttpStatus.NOT_FOUND);
+      }
+    
+      if (message.sender.toString() !== userId.toString()) {
+        throw new HttpException('You are not authorized to revoke this message', HttpStatus.FORBIDDEN);
+      }
+
+      const revokedMessage = await this.MessageModel.findByIdAndUpdate(
+        messageId,
+        {
+          isLive: false,
+          content: null,
+          mediaURL: null,
+        },
+        { new: true }
+      );
+    
+      return revokedMessage;
+    }
+    
+
+
     
 }
 
