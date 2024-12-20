@@ -31,8 +31,23 @@ export async function uploadAvatar(file) {
     try {
         const formData = new FormData();
         formData.append('files', file);
-        
         const request = await axios.post(`http://localhost:3001/user/upload-avatar`, formData, {
+            headers: {
+                Authorization: `Bearer ${authToken.getToken()}`,
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+        return request
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export async function uploadBackground(file) {
+    try {
+        const formData = new FormData();
+        formData.append('files', file);
+        const request = await axios.post(`http://localhost:3001/user/uploadcoveravatar`, formData, {
             headers: {
                 Authorization: `Bearer ${authToken.getToken()}`,
                 'Content-Type': 'multipart/form-data'

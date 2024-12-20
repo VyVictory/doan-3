@@ -2,11 +2,16 @@ import React from 'react'
 import { useState, useEffect } from 'react';
 import { PhotoIcon, CloudArrowUpIcon } from '@heroicons/react/24/solid';
 
-import { profileUserCurrent, updateName, uploadAvatar } from '../../../service/ProfilePersonal';
+import { profileUserCurrent, updateName, uploadAvatar, uploadBackground } from '../../../service/ProfilePersonal';
 export default function ModalUpdateAVT() {
     const [dataProfile, setDataProfile] = useState({})
     const [avatar, setAvatar] = useState(null);
     const [upAvatar, setUpAvatar] = useState(null);
+
+    const [loading, setLoading] = useState(false)
+    const [bg, setBg] = useState(null);
+    const [upBg, setUpBg] = useState(null);
+
     const [name, setName] = useState({
         firstName: "",
         lastName: ""
@@ -45,6 +50,20 @@ export default function ModalUpdateAVT() {
         // setAvatar(file);
     };
 
+    //bg
+    const handleFileBgChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const newAvatarURL = URL.createObjectURL(file);
+            setBg(newAvatarURL);
+            setDataProfile((prevData) => ({
+                ...prevData,
+                coverImage: newAvatarURL
+            }))
+            setUpBg(file);
+        }
+    };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setName(prevState => ({
@@ -56,10 +75,15 @@ export default function ModalUpdateAVT() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            setLoading(true)
             await updateName(name.firstName, name.lastName);
             if (upAvatar) {
                 await uploadAvatar(upAvatar);
             }
+            if (upBg) {
+                await uploadBackground(upBg);
+            }
+            setLoading(false)
             alert('Cập nhật thành công');
 
         } catch (error) {
@@ -70,7 +94,7 @@ export default function ModalUpdateAVT() {
         }
     };
 
-
+    console.log(upBg)
     return (
         <dialog id="my_modal_2" className="modal ">
             <form className="modal-box" onSubmit={handleSubmit} enctype="multipart/form-data">
@@ -132,7 +156,9 @@ export default function ModalUpdateAVT() {
                         )}
                         <input
                             type="file"
-                            accept="image/*"
+
+                            name="files"
+                            onChange={handleFileBgChange}
                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                             aria-label="Upload profile picture"
                         />
@@ -157,7 +183,7 @@ export default function ModalUpdateAVT() {
                         )}
                         <input
                             type="file"
-                            id='files'
+
                             name="files"
                             onChange={handleFileChange}
                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
@@ -166,15 +192,18 @@ export default function ModalUpdateAVT() {
 
                     </div>
                 </div>
-
                 <div className="modal-action">
-                    <form method="dialog" className='flex gap-4'>
-                        {/* if there is a button in form, it will close the modal */}
-                        <button className="btn bg-red-600 text-white hover:bg-red-500">Hủy</button>
-                    </form>
-                    <button type='submit' className="btn bg-sky-600 text-white hover:bg-sky-500">Cập nhật</button>
-
+                    {loading ? <p>Loading...</p> :
+                        <div className='flex gap-4'>
+                            <form method="dialog">
+                                {/* if there is a button in form, it will close the modal */}
+                                <button className="btn bg-red-600 text-white hover:bg-red-500">Hủy</button>
+                            </form>
+                            <button type='submit' className="btn bg-sky-600 text-white hover:bg-sky-500">Cập nhật</button>
+                        </div>
+                    }
                 </div>
+
             </form>
         </dialog>
     )
