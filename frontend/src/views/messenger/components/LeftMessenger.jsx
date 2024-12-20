@@ -23,9 +23,9 @@ const LeftMessenger = ({ bt_chanetransfer }) => {
     return (
         <>
             <div className=" border-r-gray-300 border-r  h-full flex flex-col">
-                <div className="w-full flex justify-center">
+                <div className="w-full flex justify-center ">
                     <ToggleButtonGroup
-                        className="flex justify-center rounded-lg shadow-md bg-white z-10 w-full max-w-lg"
+                        className="flex justify-center bg-white  w-full max-w-lg h-14 rounded-none"
                         color="primary"
                         value={alignment}
                         exclusive
@@ -34,21 +34,21 @@ const LeftMessenger = ({ bt_chanetransfer }) => {
                     >
                         <ToggleButton
                             value="web"
-                            className="flex-1 py-2 rounded-md font-medium transition-all hover:bg-blue-50"
+                            className="flex-1  font-medium transition-all hover:bg-blue-50"
                         >
-                            Web
+                            InBox
                         </ToggleButton>
                         <ToggleButton
                             value="android"
-                            className="flex-1 py-2 rounded-md font-medium transition-all hover:bg-blue-50"
+                            className="flex-1  font-medium transition-all hover:bg-blue-50"
                         >
-                            Android
+                            Nhóm
                         </ToggleButton>
                         <ToggleButton
                             value="ios"
-                            className="flex-1 py-2 rounded-md font-medium transition-all hover:bg-blue-50"
+                            className="flex-1 font-medium transition-all hover:bg-blue-50"
                         >
-                            iOS
+                            New
                         </ToggleButton>
                     </ToggleButtonGroup>
                 </div>

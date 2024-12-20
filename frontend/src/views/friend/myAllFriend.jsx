@@ -48,7 +48,7 @@ export default function MyAllFriend() {
                 <div className="w-full grid  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                     {requests.map((request, index) => (
                         <MyFriendCard
-                            iduser={request.receiver._id}
+                            iduser={request?.receiver?._id || request?.sender?._id}
                             idrequest={request._id}
                             key={index}
                         />
