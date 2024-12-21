@@ -29,6 +29,19 @@ const CardUserList = ({ userdata }) => {
             console.error(error);
         }
     };
+    const handCancelRequest = async (id) =>{
+        try {
+            const rs = await friend.cancelFriendRequest(id)
+            if (rs.success) {
+                toast.success(rs?.message ? rs.message : 'Đã hủy yêu cầu kết bạn', NotificationCss.Fail);
+            } else {
+                toast.error(rs?.message ? rs.message : 'Lỗi khi hủy yêu cầu kết bạn', NotificationCss.Fail);
+            }
+            // console.log(rs);
+        } catch (error) {
+            console.error(error);
+        }
+    };
     const handDetailUser = async (id) => {
         window.location.href = `/user/${id}`;
     };
@@ -36,7 +49,7 @@ const CardUserList = ({ userdata }) => {
         <>
             <button
                 onClick={() => { handDetailUser(userdata._id) }}
-                className="w-full flex flex-row rounded-lg hover:bg-green-50 justify-between items-center p-2 max-h-[80px] sm:max-h-[60px] md:max-h-[70px] lg:max-h-[80px]">
+                className="w-full flex flex-row rounded-lg hover:bg-gray-100 justify-between items-center p-2 max-h-[80px] sm:max-h-[60px] md:max-h-[70px] lg:max-h-[80px]">
                 <div className="flex flex-row items-center">
                     <div >
                         <img className="w-14 h-14 rounded-full" src={userdata && userdata.avatar ? userdata.avatar : userImg} />
@@ -60,6 +73,8 @@ const CardUserList = ({ userdata }) => {
                                         handCloseFriend(userdata._id);
                                         break;
                                     default:
+                                        handCancelRequest(userdata._id);
+                                        break;
                                     // code block
                                 }
                             }

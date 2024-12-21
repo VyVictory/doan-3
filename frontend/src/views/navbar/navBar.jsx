@@ -9,20 +9,19 @@ import { profileUserCurrent } from '../../service/ProfilePersonal';
 import { useUser } from '../../service/UserContext';
 import logoweb from '../../img/logoweb.avif'
 export default function Navbar() {
+
     const { userContext, setUserContext } = useUser(); // Access user data from context
-    const [user, setUser] = useState({});
     useEffect(() => {
         const fetchData = async () => {
             const response = await profileUserCurrent(); // Assume profileUserCurrent fetches user data
             if (response && response.data) {
-                setUser(response.data)
                 setUserContext(response.data); // Update the user state in context
             } else {
                 console.warn("No data found in response.");
             }
         };
         fetchData();
-    }, [setUser]);
+    }, []);
     const location = useLocation();
     const isActiveTab = (path) => location.pathname === path;
     const isActiveString = (path) => window.location.pathname.startsWith(path);
@@ -31,7 +30,6 @@ export default function Navbar() {
         width: window.innerWidth,
         height: window.innerHeight,
     });
-
     const [chanecontainer, setChanecontainer] = useState(windowSize.width < 767)
     useEffect(() => {
         // Hàm cập nhật kích thước màn hình
@@ -170,7 +168,7 @@ export default function Navbar() {
 
 
                     {authToken.getToken() !== null ? (
-                        <DropdownProfile user={user} />
+                        <DropdownProfile user={userContext} />
                     ) : (
                         <div className="m-1 z-10">
                             <Link to={"/login"} className='bg-[#007bff] px-3 py-3 rounded-lg'>Đăng nhập</Link>

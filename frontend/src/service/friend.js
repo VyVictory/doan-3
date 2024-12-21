@@ -102,7 +102,25 @@ const cancelFriend = async (id) => {
         return { success: false, data: response.response.data.message };
     }
 };
+const cancelFriendRequest = async (id) => {
 
+    try {
+        const userrequest = await axios.post(`${url}/user/friendrequest/${id}`,{},
+            {
+                headers: { Authorization: `Bearer ${authToken.getToken()}` },
+            }
+        );
+        const response = await axios.post(`${url}/user/rejectFriendRequest/${userrequest?._id}`,{},
+            {
+                headers: { Authorization: `Bearer ${authToken.getToken()}` },
+            }
+        );
+        
+        return { success: true, data: response.data };
+    } catch (response) {
+        return { success: false, data: response.response.data.message };
+    }
+};
 async function getListFriendAnother(userId) {
     try {
         const request = await axios.get(`${url}/user/getlistfriendanother/${userId}`,
@@ -112,7 +130,6 @@ async function getListFriendAnother(userId) {
         )
         return request
     } catch (error) {
-
     }
 }
 export default {
@@ -124,4 +141,6 @@ export default {
     getListMyFriend,
     getListFriendAnother,
     checkFriend,
+    cancelFriendRequest,
+    
 }
