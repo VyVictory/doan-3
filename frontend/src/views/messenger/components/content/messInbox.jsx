@@ -12,7 +12,7 @@ import Loading from '../../../../components/Loading';
 import { Box, IconButton, Modal } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { PhotoIcon } from '@heroicons/react/24/solid';
-import { ChevronRightIcon, ChevronLeftIcon, ArrowUturnLeftIcon  } from "@heroicons/react/24/solid";
+import { ChevronRightIcon, ChevronLeftIcon, ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
 import { useContext } from "react";
 import { MessengerContext } from '../../layoutMessenger';
 
@@ -55,7 +55,7 @@ const MessengerInbox = () => {
             console.error("Error revoking message:", error);
         }
     };
-    
+
 
     const scrollToBottom = () => {
         if (messagesEndRef.current) {
@@ -243,12 +243,10 @@ const MessengerInbox = () => {
 
 
 
-    console.log(hoveredMessageId)
+    console.log(groupedMessages)
     return (
         <div className="flex flex-col h-full ">
-
             <div className="p-2 flex items-center border-b h-14 bg-white shadow-sm">
-
                 <button onClick={() => window.location.href = `/user/${userdata?._id}`}>
                     <img
                         className="w-10 h-10 rounded-full mr-2"
@@ -283,12 +281,18 @@ const MessengerInbox = () => {
                                                 ? 'justify-end'
                                                 : mess.receiver === userContext._id
                                                     ? ''
-                                                    : 'justify-end'} ${mess?.author?._id === mess?.receiver
-                                                        ? 'pl-16 '
-                                                        : mess.receiver === userContext._id
-                                                            ? 'pr-16 '
-                                                            : 'pl-16 '}`}
-                                            onMouseEnter={() => setHoveredMessageId(mess._id)} // Set the hovered message
+                                                    : 'justify-end'}
+                                                     ${mess?.author?._id === mess?.receiver
+                                                    ? 'pl-16 '
+                                                    : mess.receiver === userContext._id
+                                                        ? 'pr-16 '
+                                                        : 'pl-16 '}`}
+
+                                            onMouseEnter={() => {
+                                                if ((mess?.author?._id !== mess?.receiver && mess.receiver !== userContext._id) || (mess?.author?._id == mess.receiver)) {
+                                                    setHoveredMessageId(mess._id);
+                                                }
+                                            }} // Set the hovered message
                                             onMouseLeave={() => setHoveredMessageId(null)} // Clear the hovered message
                                         >
 
@@ -296,22 +300,10 @@ const MessengerInbox = () => {
                                                 {hoveredMessageId === mess._id && (
                                                     <div className='h-full flex items-end p-3 pb-4'>
                                                         <button onClick={() => handleRevokedClick(mess._id)}>
-                                                            <ArrowUturnLeftIcon  className="h-6 w-7 text-gray-500 bg-gray-100 rounded-sm " />
+                                                            <ArrowUturnLeftIcon className="h-6 w-7 text-gray-500 bg-gray-100 rounded-sm " />
                                                         </button>
                                                     </div>
                                                 )}
-                                                {/* {optionsVisible === mess._id && (
-                                                    <div className="absolute inset-0 flex items-center justify-center z-50">
-                                                        <div className="bg-white shadow-lg rounded-md w-32 p-2">
-                                                            <ul>
-                                                                <li className="p-2 text-sm text-gray-600 hover:bg-gray-100 cursor-pointer">Recall</li>
-                                                                <li className="p-2 text-sm text-gray-600 hover:bg-gray-100 cursor-pointer">Report</li>
-                                                                <li className="p-2 text-sm text-gray-600 hover:bg-gray-100 cursor-pointer">Delete</li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                )} */}
-
                                                 <div
                                                     className={clsx(
                                                         ' rounded-lg shadow-md shadow-slate-300 pb-2 border min-w-28 min-h-11 my-2 ',
@@ -323,7 +315,6 @@ const MessengerInbox = () => {
                                                     )}
                                                 >
                                                     {/* <div>Recall</div> */}
-
                                                     {mess?.mediaURL?.length > 0 && mess.mediaURL.map((img, imgIndex) => (
                                                         <div className='w-full bg-white flex justify-center'>
                                                             <img
@@ -339,10 +330,7 @@ const MessengerInbox = () => {
 
                                             </div>
                                             {/* Show "Recall" button when the message is hovered */}
-
                                         </div>
-
-
                                         {/* Scroll to the bottom */}
                                         {groupedMessages[date].length === index + 1 ? <div ref={messagesEndRef} /> : ''}
                                     </React.Fragment>
