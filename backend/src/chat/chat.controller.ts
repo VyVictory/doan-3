@@ -152,12 +152,13 @@ export class ChatController {
         };
         
         const notificationUsers = [
-          { user: userId.toString(), author: currentUser._id.toString() }, // Người nhận
-          { user: currentUser._id.toString(), author: currentUser._id.toString() }, // Người gửi cũng nhận thông báo
+          { user: userId.toString(), author: currentUser._id.toString() },
+          { user: currentUser._id.toString(), author: currentUser._id.toString() }, 
         ];
   
         const messageSee = {
           ...sendMessageDto,
+          mediaURL : message.mediaURL,
           author: currentAuthor,
         };
   
