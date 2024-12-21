@@ -484,9 +484,9 @@ export class UserService {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
 
-    if (user.coverimgaePublicId) {
-      await this.cloudinaryService.deleteFile(user.avatarPublicId);
-    }
+    // if (user.coverimgaePublicId) {
+    //   await this.cloudinaryService.deleteFile(user.avatarPublicId);
+    // }
 
     // Kiểm tra số lượng file
     if (!files || files.length === 0) {

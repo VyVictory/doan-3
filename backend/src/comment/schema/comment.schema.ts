@@ -6,7 +6,7 @@ import { validate } from 'class-validator';
   timestamps: true, // Tự động thêm createdAt và updatedAt
 })
 export class Comment extends Document {
-  @Prop({ required: true })
+  @Prop()
   content: string;
 
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })

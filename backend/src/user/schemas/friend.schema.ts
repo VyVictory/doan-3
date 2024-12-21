@@ -7,10 +7,10 @@ import { User } from './user.schemas';
   timestamps: true,
 })
 export class Friend extends Document {
-    @Prop({ type: String, ref: 'User', required: true })
+    @Prop({ type: Types.ObjectId, ref: 'User', required: true })
     sender: User;
   
-    @Prop({ type: String, ref: 'User', required: true })
+    @Prop({ type: Types.ObjectId, ref: 'User', required: true })
     receiver: User;
   
     @Prop({ required: true })
