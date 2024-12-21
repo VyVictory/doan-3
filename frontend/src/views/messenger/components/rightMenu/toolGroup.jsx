@@ -36,7 +36,7 @@ const ToolGroup = () => {
     };
 
     const handleInputChange = (e) => {
-        setSearchTerm(e.target.value);
+        setSearchTerm(e.target.value); // Update search term
     };
 
     useEffect(() => {
@@ -64,6 +64,16 @@ const ToolGroup = () => {
             prevSelected.filter((id) => id !== friendId)
         );
     };
+
+    // Filter friends based on search term
+    const filteredFriends = friends.filter((friend) => {
+        const friendName = friend.receiver
+            ? `${friend.receiver.firstName} ${friend.receiver.lastName}`
+            : friend.sender
+            ? `${friend.sender.firstName} ${friend.sender.lastName}`
+            : '';
+        return friendName.toLowerCase().includes(searchTerm.toLowerCase());
+    });
 
     return (
         <div className="flex flex-col h-full">
@@ -159,7 +169,7 @@ const ToolGroup = () => {
                             {loading ? (
                                 <Loading />
                             ) : (
-                                friends.map((friend, index) => (
+                                filteredFriends.map((friend, index) => (
                                     <div key={index} className="flex items-center mb-2 justify-center">
                                         <div className="hover:bg-gray-200 px-2 rounded-md shadow-sm w-full">
                                             <button className="flex items-center py-2 w-full">
