@@ -7,7 +7,7 @@ import DropdownProfile from './DropdownProfile';
 import authToken from "../../components/authToken";
 import { profileUserCurrent } from '../../service/ProfilePersonal';
 import { useUser } from '../../service/UserContext';
-
+import logoweb from '../../img/logoweb.avif'
 export default function Navbar() {
     const { userContext, setUserContext } = useUser(); // Access user data from context
     const [user, setUser] = useState({});
@@ -108,7 +108,7 @@ export default function Navbar() {
                     </div>
                     <button className={`pl-5 pr-2 z-10 ${windowSize.width < 400 ? 'hidden' : ''}`}>
                         <Link to={"/"}>
-                            <img src="https://i.pinimg.com/564x/e3/e5/dc/e3e5dc4143d77b3dcea61776d372928c.jpg" alt=''
+                            <img src={logoweb} alt=''
                                 className="h-12 aspect-square rounded-full shadow-md flex items-center justify-center" />
                         </Link>
                     </button>
