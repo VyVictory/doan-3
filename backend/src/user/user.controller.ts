@@ -236,6 +236,15 @@ export class UserController {
       return this.userService.getMyFriend(currentUser._id.toString());
     }
 
+    @Delete('removeFriendRequest/:friendRequestId')
+    @UseGuards(AuthGuardD)
+    async removeFriendRequest(
+      @CurrentUser() currentUser: User,
+      @Param('friendRequestId') friendRequestId: string,
+    ){
+      return this.userService.removeFriendRequest(currentUser._id.toString(), friendRequestId);
+    }
+
     @Get('getlistfriendanother/:userId')
     @UseGuards(AuthGuardD)
     async getListFriendAnother(

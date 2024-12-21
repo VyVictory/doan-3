@@ -272,7 +272,7 @@ export class UserService {
     return { message: 'Friend request rejected successfully' };
   }
 
-  async removeFriendRequest(currentUserId: string, friendRequestId: string,): Promise<{ message: string }> {
+  async removeFriendRequest(currentUserId: string, friendRequestId: string,): Promise<{ message: string, FriendRequest: FriendRequest }> {
     const friendRequest = await this.FriendRequestModel.findById(friendRequestId);
     if (!friendRequest) {
       throw new NotFoundException('No such friend request found');
@@ -282,7 +282,7 @@ export class UserService {
       throw new ForbiddenException('You are not authorized to delete this friend request');
     }
     await this.FriendRequestModel.findByIdAndDelete(friendRequestId);
-    return { message: 'Friend request deleted successfully' };
+    return { message: 'Friend request deleted successfully' , FriendRequest: friendRequest};
   }
 
   async unFriend(currentUserId: string, friendId: string): Promise<Friend> {
