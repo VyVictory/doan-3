@@ -29,9 +29,14 @@ export default function FriendProfile() {
                   <img
                     className="w-14 aspect-square rounded-full shadow-md"
                     alt=""
-                    src={`${e.receiver.avatar}`} />
+                    src={e && (e?.receiver?.avatar || e?.sender?.avatar) ?
+                      (e?.receiver?.avatar || e?.sender?.avatar) :
+                      "https://th.bing.com/th/id/OIP.PKlD9uuBX0m4S8cViqXZHAHaHa?rs=1&pid=ImgDetMain"} />
+
                   <div>
-                    <h3 className="text-base font-semibold leading-7 tracking-tight text-gray-900 ">{e.receiver.firstName} {e.receiver.lastName}</h3>
+                    <h3 className="text-base font-semibold leading-7 tracking-tight text-gray-900 ">
+                      {e?.receiver?.firstName || e?.sender?.firstName} {e?.receiver?.lastName || e?.sender?.lastName}
+                    </h3>
                   </div>
                 </div>
                 <DropdownMyfriend />
