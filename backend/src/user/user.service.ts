@@ -10,7 +10,8 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, ObjectId, ObjectIdToString, Types } from 'mongoose';
+import { Model, ObjectId, Types } from 'mongoose';
+import ObjectIdToString from 'mongoose';
 import { User } from './schemas/user.schemas';
 import { RegisterDto } from './dto/register.dto';
 import * as bcrypt from 'bcryptjs';
