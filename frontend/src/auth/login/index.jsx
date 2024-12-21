@@ -5,7 +5,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import authToken from '../../components/authToken';
 import NotificationCss from '../../module/cssNotification/NotificationCss';
-
+import Apiuri from '../../service/apiuri';
+const uri = Apiuri()
 export default function Login() {
     const [formData, setFormData] = useState({
         numberPhone: '0372830048',
@@ -27,7 +28,7 @@ export default function Login() {
         const validationErrors = validateForm();
         if (Object.keys(validationErrors).length === 0) {
             try {
-                const response = await axios.post('http://localhost:3001/user/login', formData);
+                const response = await axios.post(`${uri}/user/login`, formData);
                 if (response.status === 201) {
                     authToken.setToken(response.data.accessToken); // Save token
                     toast.success('Đăng nhập thành công! Chào mừng bạn trở lại.', NotificationCss.Success);

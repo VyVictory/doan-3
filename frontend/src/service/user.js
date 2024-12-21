@@ -1,8 +1,11 @@
 import axios from 'axios';
 import authToken from '../components/authToken';
+import Apiuri from './apiuri';
+const url = Apiuri()
+
 const getAllUser = async (id) => {
     try {
-        const response = await axios.get(`http://localhost:3001/user/getAllUser`,
+        const response = await axios.get(`${url}/user/getAllUser`,
 
             {
                 headers: { Authorization: `Bearer ${authToken.getToken()}` },
@@ -20,7 +23,7 @@ const getProfileUser = async (id) => {
         return { success: false };
     }
     try {
-        const response = await axios.get(`http://localhost:3001/user/getDetailUser/${id}`,
+        const response = await axios.get(`${url}/user/getDetailUser/${id}`,
             {
                 headers: { Authorization: `Bearer ${authToken.getToken()}` },
             }
@@ -33,7 +36,7 @@ const getProfileUser = async (id) => {
 
 const checkLogin = async () => {
     try {
-        const response = await axios.get(`http://localhost:3001/user/current`, {
+        const response = await axios.get(`${url}/user/current`, {
             headers: { Authorization: `Bearer ${authToken.getToken()}` },
         });
 
