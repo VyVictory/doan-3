@@ -16,7 +16,7 @@ export default function HomePost() {
     const [loading, setLoading] = useState(true);
     const [postsToShow, setPostsToShow] = useState(10); // Controls the number of posts to display
     const [currentIndex, setCurrentIndex] = useState(0);
-    
+
     useEffect(() => {
         const fetchdata = async () => {
             setLoading(true);
@@ -47,7 +47,7 @@ export default function HomePost() {
     };
 
     const handleNext = (post) => {
-        setCurrentIndex((prevIndex) => (prevIndex === post.img.length - 1 ? 0 : prevIndex + 1));
+        setCurrentIndex((nextIndex) => (nextIndex === post.img.length - 1 ? 0 : nextIndex + 1));
     };
 
     //Like
@@ -159,7 +159,7 @@ export default function HomePost() {
                                     )}
                                 </div>
                                 {post.img.length > 0 && (
-                                    <div className="carousel rounded-box w-96 h-64 relative">
+                                    <div key={post.img} className="carousel rounded-box w-96 h-64 relative">
                                         {post.img.length > 1 && (
                                             <button
                                                 onClick={() => handlePrev(post)}
