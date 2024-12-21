@@ -15,7 +15,7 @@ import { PhotoIcon } from '@heroicons/react/24/solid';
 import { ChevronRightIcon, ChevronLeftIcon, ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
 import { useContext } from "react";
 import { MessengerContext } from '../../layoutMessenger';
-import { toast,ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import NotificationCss from '../../../../module/cssNotification/NotificationCss';
 const MessengerInbox = () => {
     const { userContext } = useUser();
@@ -249,17 +249,19 @@ const MessengerInbox = () => {
     console.log(groupedMessages)
     return (
         <div className="flex flex-col h-full ">
-            <div className="p-2 flex items-center border-b h-14 bg-white shadow-sm">
-                <button onClick={() => window.location.href = `/user/${userdata?._id}`}>
-                    <img
-                        className="w-10 h-10 rounded-full mr-2"
-                        src={userdata?.avatar || imgUser}
-                        alt="User Avatar"
-                    />
-                </button>
-                group 
-                <h3 className="font-semibold text-nowrap">{`${userdata.lastName || ''} ${userdata.firstName || ''}`.trim()}</h3>
-                <div className="w-full flex justify-end">
+            <div className="p-2 flex border-b h-14 bg-white shadow-sm">
+                <div className='w-full flex flex-row items-center'>
+                    <button onClick={() => window.location.href = `/user/${userdata?._id}`}>
+                        <img
+                            className="w-10 h-10 rounded-full mr-2"
+                            src={userdata?.avatar || imgUser}
+                            alt="User Avatar"
+                        />
+                    </button>
+                    <h3 className="font-semibold text-nowrap">{`${userdata.lastName || ''} ${userdata.firstName || ''}`.trim()}</h3>
+                </div>
+
+                <div className=" flex justify-end">
                     <button onClick={handleHiddenRight} >
                         {
                             RightShow ? <ChevronRightIcon className="h-8 w-8 text-gray-700" />
@@ -270,10 +272,10 @@ const MessengerInbox = () => {
                     </button>
                 </div>
             </div>
-            <div className='overflow-y-scroll p-4 pt-1 bg-gray-100'>
+            <div className='overflow-y-scroll h-full p-4 pt-1 bg-gray-100'>
                 {Object.keys(groupedMessages).map((date) => (
                     <div key={date} className="">
-                        <div className="mb-4 pb-2 px-3">
+                        <div className="mb-4 pb-2 px-3 ">
                             <div className="text-center text-gray-500 text-sm my-2">
                                 {format(new Date(date), 'MMMM dd, yyyy')}
                             </div>
@@ -300,7 +302,7 @@ const MessengerInbox = () => {
                                             onMouseLeave={() => setHoveredMessageId(null)} // Clear the hovered message
                                         >
 
-                                            <div className='flex flex-row'>
+                                            <div className='flex flex-row '>
                                                 {hoveredMessageId === mess._id && (
                                                     <div className='h-full flex p-2 items-center'>
                                                         <button onClick={() => handleRevokedClick(mess._id)}>
