@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import NotificationCss from '../../module/cssNotification/NotificationCss';
 
 export default function Register() {
     const [formData, setFormData] = useState({
@@ -39,8 +41,8 @@ export default function Register() {
                 const response = await axios.post('http://localhost:3001/user/register', dataToSubmit);
 
                 if (response.status === 201) {
-                    alert('Đăng ký thành công!');
-                    navigate('/login')
+                    toast.success('Đăng ký thành công!', NotificationCss.Success);
+                    setTimeout(() => navigate('/login'), 2000); 
                 }
 
                 // Xử lý thành công (ví dụ: chuyển hướng sang trang khác)
@@ -69,6 +71,7 @@ export default function Register() {
     };
 
     return (
+        <>
         <div className='bg-gradient-to-r from-[#514A9D] to-[#24C6DC] h-screen grid place-items-center'>
             <form method='POST'
                 onSubmit={handleSubmit}
@@ -167,5 +170,8 @@ export default function Register() {
                 </div>
             </form>
         </div>
+     
+        <ToastContainer />
+        </>
     );
 }

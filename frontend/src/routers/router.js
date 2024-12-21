@@ -21,6 +21,7 @@ import MyAllFriend from "../views/friend/myAllFriend.jsx";
 import MessengerInbox from "../views/messenger/components/messInbox.jsx";
 import FriendOtherProfile from "../views/profile/OtherProfiles/FriendOtherProfile.jsx";
 import authToken from "../components/authToken.jsx";
+import Test from "./test.jsx";
 
 function routers() {
     return (
@@ -56,6 +57,7 @@ function routers() {
                 </Route>
                 {/* Redirect to login if not authenticated */}
                 <Route path="/login" element={<Login />} />
+                <Route path="/test" element={<Test />} />
                 <Route path="/register" element={<Register />} />
 
             </Routes>

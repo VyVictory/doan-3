@@ -13,4 +13,23 @@
     75% { color: #00ff00; }  /* Green */
     100% { color: #0000ff; } /* Blue */
 }
+/* @keyframes dotsAnimation {
+    0% {
+      content: ".";
+    }
+    33% {
+      content: "..";
+    }
+    66% {
+      content: "...";
+    }
+    100% {
+      content: ".";
+    }
+  }
+  
+  .dotss {
+    display: inline-block;
+    animation: dotsAnimation 1.5s infinite;
+  } */
   
