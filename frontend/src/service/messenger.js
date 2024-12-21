@@ -14,6 +14,7 @@ const getListMessenger = async (iduser, message) => {
         return { success: false, data: response.response.data.message };
     }
 };
+
 const getListMessengerByUser = async (iduser) => {
     // if(!iduser){
     //     return { success: false};
@@ -57,10 +58,23 @@ const sendMess = async (iduser, message, file) => {
         return { success: false, data: error.response ? error.response.data.message : 'An error occurred' };
     }
 };
-
+const revokedMesage = async (idMess) => {
+    ///chat/revokedMesage/{messageId}
+    try {
+        const response = await axios.put(`${url}/chat/revokedMesage/${idMess}`,{},
+            {
+                headers: { Authorization: `Bearer ${authToken.getToken()}` },
+            }
+        );
+        return { success: true, data: response.data };
+    } catch (response) {
+        return { success: false, data: response.response.data.message };
+    }
+};
 //getmessagestouser
 export default {
     sendMess,
     getListMessenger,
     getListMessengerByUser,
+    revokedMesage,
 }

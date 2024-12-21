@@ -21,6 +21,11 @@
 .custom-scroll::-webkit-scrollbar {
   display: none; /* Ẩn thanh cuộn trên Chrome, Safari và Edge */
 }
+.message-container {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
 
 /* @keyframes dotsAnimation {
     0% {

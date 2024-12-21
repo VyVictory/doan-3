@@ -12,7 +12,7 @@ import Loading from '../../../../components/Loading';
 import { Box, IconButton, Modal } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { PhotoIcon } from '@heroicons/react/24/solid';
-import { ChevronRightIcon, ChevronLeftIcon } from "@heroicons/react/24/solid";
+import { ChevronRightIcon, ChevronLeftIcon, ArrowUturnLeftIcon  } from "@heroicons/react/24/solid";
 import { useContext } from "react";
 import { MessengerContext } from '../../layoutMessenger';
 
@@ -35,6 +35,27 @@ const MessengerInbox = () => {
     const [preview, setPreview] = useState(null);
     const [openModal, setOpenModal] = useState(false); // Trạng thái modal
     const [modalImage, setModalImage] = useState(null); // Ảnh phóng to
+
+
+    const [hoveredMessageId, setHoveredMessageId] = useState(null);
+
+    const handleRevokedClick = async (messageId) => {
+        try {
+            const res = await messenger.revokedMesage(messageId); // API call to revoke the message
+            if (res.success) {
+                // On success, remove the revoked message from the current displayed list
+                setMessengerdata((prevMessages) =>
+                    prevMessages.filter((message) => message._id !== messageId)
+                );
+            } else {
+                // Optionally handle failure case
+                console.error("Failed to revoke message:", res);
+            }
+        } catch (error) {
+            console.error("Error revoking message:", error);
+        }
+    };
+    
 
     const scrollToBottom = () => {
         if (messagesEndRef.current) {
@@ -145,7 +166,7 @@ const MessengerInbox = () => {
 
         setInboxData(inboxUpdate);
     }, [messengerdata, userdata, setInboxData]);
-    
+
     useWebSocket(onMessageReceived);
 
     const handleInputChange = useCallback((e) => {
@@ -160,8 +181,9 @@ const MessengerInbox = () => {
     }, []);
 
     const handleSendMessenger = useCallback(async () => {
-        if (!message.trim() || sending) return; // Prevent sending if already in progress
 
+        if (!message.trim() && !file || sending) return; // Prevent sending if already in progress
+        console.log('aaa')
         setSending(true); // Set sending state
         try {
             const res = await messenger.sendMess(iduser, message.trim(), file);
@@ -180,7 +202,15 @@ const MessengerInbox = () => {
             setSending(false); // Reset sending state
         }
     }, [iduser, message, sending, file]);
+    const handleRevokedMessenger = async (id) => {
+        try {
+            const res = await messenger.revokedMesage(id);
 
+        } catch (error) {
+            console.error('Error sending message:', error);
+        }
+    }
+    // revokedMesage
     const handleKeyDown = useCallback(
         (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
@@ -213,7 +243,7 @@ const MessengerInbox = () => {
 
 
 
-    console.log(groupedMessages)
+    console.log(hoveredMessageId)
     return (
         <div className="flex flex-col h-full ">
 
@@ -245,72 +275,80 @@ const MessengerInbox = () => {
                             <div className="text-center text-gray-500 text-sm my-2">
                                 {format(new Date(date), 'MMMM dd, yyyy')}
                             </div>
-                            {groupedMessages[date].map((mess, index) => (
-                                <React.Fragment key={`${mess._id}-${index}`}>
-
-                                    <div className={`flex w-full ${mess?.author?._id === mess?.receiver
-                                        ? 'justify-end'
-                                        : mess.receiver === userContext._id
-                                            ? ''
-                                            : 'justify-end'}`}>
-                                        <div className=''>
-                                            <div
-                                                className={clsx(
-                                                    'rounded-lg shadow-md shadow-slate-300 pb-2 border min-w-28 min-h-11 my-2',
-                                                    mess?.author?._id === mess?.receiver
-                                                        ? 'bg-blue-100 ml-24 '
+                            {
+                                groupedMessages[date].map((mess, index) => (
+                                    <React.Fragment key={`${mess._id}-${index}`}>
+                                        <div
+                                            className={`flex ${mess?.author?._id === mess?.receiver
+                                                ? 'justify-end'
+                                                : mess.receiver === userContext._id
+                                                    ? ''
+                                                    : 'justify-end'} ${mess?.author?._id === mess?.receiver
+                                                        ? 'pl-16 '
                                                         : mess.receiver === userContext._id
-                                                            ? 'bg-white mr-24 '
-                                                            : 'bg-blue-100 ml-24 '
-                                                )}
-                                            >
-                                                {mess?.mediaURL?.length > 0 && mess.mediaURL.map((img, imgIndex) => (
-                                                    <div className='w-full bg-white flex justify-center'>
-                                                        <img
-                                                            onClick={() => handleOpenModal(img)}
-                                                            src={img} alt={`Message Media ${imgIndex}`} className="max-w-full max-h-72 object-cover rounded-t-lg" />
-                                                    </div>
-                                                ))}
-                                                <p className="text-black p-2">{mess.content}</p>
-                                                <p className="text-xs text-gray-400 text-left pl-2">
-                                                    {format(new Date(mess.createdAt), 'hh:mm a')}
-                                                </p>
-                                            </div>
-                                        </div>
+                                                            ? 'pr-16 '
+                                                            : 'pl-16 '}`}
+                                            onMouseEnter={() => setHoveredMessageId(mess._id)} // Set the hovered message
+                                            onMouseLeave={() => setHoveredMessageId(null)} // Clear the hovered message
+                                        >
 
-                                    </div>
-                                    {
-                                        groupedMessages[date].length == index + 1 ? <div ref={messagesEndRef} /> : ''
-                                    }
-                                    {/* Check for mediaURL and render images */}
-                                    {/* {mess?.mediaURL?.length > 0 && mess.mediaURL.map((img, imgIndex) => (
-                                        <div className={`flex w-full ${mess?.author?._id === mess?.receiver
-                                            ? 'justify-end'
-                                            : mess.receiver === userContext._id
-                                                ? ''
-                                                : 'justify-end'}`}>
-                                            <div className=''>
+                                            <div className='flex flex-row'>
+                                                {hoveredMessageId === mess._id && (
+                                                    <div className='h-full flex items-end p-3 pb-4'>
+                                                        <button onClick={() => handleRevokedClick(mess._id)}>
+                                                            <ArrowUturnLeftIcon  className="h-6 w-7 text-gray-500 bg-gray-100 rounded-sm " />
+                                                        </button>
+                                                    </div>
+                                                )}
+                                                {/* {optionsVisible === mess._id && (
+                                                    <div className="absolute inset-0 flex items-center justify-center z-50">
+                                                        <div className="bg-white shadow-lg rounded-md w-32 p-2">
+                                                            <ul>
+                                                                <li className="p-2 text-sm text-gray-600 hover:bg-gray-100 cursor-pointer">Recall</li>
+                                                                <li className="p-2 text-sm text-gray-600 hover:bg-gray-100 cursor-pointer">Report</li>
+                                                                <li className="p-2 text-sm text-gray-600 hover:bg-gray-100 cursor-pointer">Delete</li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                )} */}
+
                                                 <div
-                                                    key={`${index}-${imgIndex}`}
                                                     className={clsx(
-                                                        'rounded-lg shadow-sm pb-2 border min-h-11 my-4',
+                                                        ' rounded-lg shadow-md shadow-slate-300 pb-2 border min-w-28 min-h-11 my-2 ',
                                                         mess?.author?._id === mess?.receiver
-                                                            ? 'ml-24 border-blue-500'
+                                                            ? 'bg-blue-100 '
                                                             : mess.receiver === userContext._id
-                                                                ? 'bg-white mr-24 border-gray-300'
-                                                                : 'bg-blue-100 ml-24 border-blue-500'
+                                                                ? 'bg-white '
+                                                                : 'bg-blue-100 '
                                                     )}
                                                 >
-                                                    <img src={img} alt={`Message Media ${imgIndex}`} className="max-w-full max-h-72 object-cover rounded-lg" />
-                                                    <p className="text-xs text-gray-400 text-left mt-2">
+                                                    {/* <div>Recall</div> */}
+
+                                                    {mess?.mediaURL?.length > 0 && mess.mediaURL.map((img, imgIndex) => (
+                                                        <div className='w-full bg-white flex justify-center'>
+                                                            <img
+                                                                onClick={() => handleOpenModal(img)}
+                                                                src={img} alt={`Message Media ${imgIndex}`} className="max-w-full max-h-72 object-cover rounded-t-lg" />
+                                                        </div>
+                                                    ))}
+                                                    <p className="text-black p-2 break-words max-w-prose">{mess.content}</p>
+                                                    <p className="text-xs text-gray-400 text-left pl-2">
                                                         {format(new Date(mess.createdAt), 'hh:mm a')}
                                                     </p>
                                                 </div>
+
                                             </div>
+                                            {/* Show "Recall" button when the message is hovered */}
+
                                         </div>
-                                    ))} */}
-                                </React.Fragment>
-                            ))}
+
+
+                                        {/* Scroll to the bottom */}
+                                        {groupedMessages[date].length === index + 1 ? <div ref={messagesEndRef} /> : ''}
+                                    </React.Fragment>
+                                ))
+
+                            }
                         </div>
                     </div>
                 ))}
