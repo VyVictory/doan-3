@@ -27,6 +27,19 @@ export async function updateName(firstName, lastName) {
     }
 }
 
+export async function updateInformation(birthday, gender, address) {
+    try {
+        const request = await axios.put(`http://localhost:3001/user/update`, { birthday, gender, address }, {
+            headers: {
+                Authorization: `Bearer ${authToken.getToken()}`
+            }
+        })
+        return request
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 export async function uploadAvatar(file) {
     try {
         const formData = new FormData();

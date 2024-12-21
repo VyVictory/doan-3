@@ -250,10 +250,9 @@ export class PostService {
 
     async getPostsByUser(userId: string, currentUserId?: string): Promise<Post[]> {
         try {
-            // Lấy tất cả bài viết của người dùng theo author
+
             const posts = await this.PostModel.find({ author: userId });
     
-            // Xử lý từng bài viết để kiểm tra quyền truy cập
             const filteredPosts = await Promise.all(
                 posts.map(async (post) => {
     
@@ -300,6 +299,15 @@ export class PostService {
 
     async getHomeFeed(userId: string): Promise<PostF[]> {
         try {
+            //tìm bản thân trong danh sách userModel(mục đích xem bản thân có tồn tại không)
+            //ok logic là thế này: 
+
+            //đầu tiên lấy toàn bộ bài viết
+            //sau đó bắt đầu lọc với điều kiện 
+            //1 bài viết đó phải là public, nếu là privacy thì bản thân(_id) phải có trong mảng allower user
+            //còn nếu đó là friend thì xem bản thân và author có phải friend không nếu có thì lấy không thì lấy not
+            //sau đó trừ toàn bộ bài viết có privacy là private
+            //sau đó tính điểm cho từng bài viết rồi sort
             // Tìm người dùng và populate danh sách bạn bè
             const user = await this.UserModel.findById(userId);
             if (!user) {
@@ -309,10 +317,9 @@ export class PostService {
             // Lấy danh sách bạn bè từ bảng Friend
             const friends = await this.FriendModel.find({
                 $or: [
-                    { sender: userId },  // Bạn bè gửi kết bạn
+                    { sender: userId }, // Bạn bè gửi kết bạn
                     { receiver: userId }, // Bạn bè nhận kết bạn
                 ],
-                status: 'friend', // Chỉ những bạn bè đã chấp nhận kết bạn
             }).exec();
     
             const friendIds = friends.map(friend => {
@@ -323,31 +330,30 @@ export class PostService {
             const conditions: Array<any> = [
                 { privacy: 'public' },
                 { privacy: 'specific', allowedUsers: userId },
-                {
-                    $or: [
-                        { privacy: 'public' },
-                        { privacy: 'specific', allowedUsers: userId },
-                        { author: { $in: friendIds } }  // Lọc bài viết của bạn bè
-                    ]
-                }
+                { author: { $in: friendIds } }, // Bài viết của bạn bè (nếu không phải private)
             ];
     
             // Lấy tất cả bài viết dựa trên điều kiện
-            const posts = await this.PostModel.find({ $or: conditions })
+            const posts = await this.PostModel.find({
+                $and: [
+                    { privacy: { $ne: 'private' } }, // Loại trừ bài viết private
+                    { $or: conditions }, // Chỉ lấy bài viết công khai, specific, hoặc của bạn bè
+                ],
+            })
                 .populate('author', 'firstName lastName avatar birthday')
                 .populate('likes', '_id')
                 .populate('comments', '_id')
-                .lean()  // Trả về đối tượng JavaScript thay vì Mongoose document
+                .lean() // Trả về đối tượng JavaScript thay vì Mongoose document
                 .exec();
     
             // Tính điểm xếp hạng cho các bài viết
             const scoredPosts = posts.map((post) => {
                 const postObj = typeof post.toObject === 'function' ? post.toObject() : post;
-                const timeSincePosted = (Date.now() - new Date(postObj.createdAt).getTime()) / (1000 * 60 * 60);  // Tính số giờ kể từ khi đăng
-                const userInterest = friendIds.some((friendId) => friendId.toString() === postObj.author.toString()) ? 1.5 : 1;  // Điểm quan tâm từ bạn bè
-                const engagement = postObj.likes.length * 3 + postObj.comments.length * 5;  // Điểm tương tác
-                const timeDecay = 1 / (1 + timeSincePosted);  // Giảm dần theo thời gian
-                const contentQuality = postObj.privacy === 'public' ? 1 : 0.8;  // Điểm chất lượng nội dung
+                const timeSincePosted = (Date.now() - new Date(postObj.createdAt).getTime()) / (1000 * 60 * 60); // Tính số giờ kể từ khi đăng
+                const userInterest = friendIds.some((friendId) => friendId.toString() === postObj.author.toString()) ? 1.5 : 1; // Điểm quan tâm từ bạn bè
+                const engagement = postObj.likes.length * 3 + postObj.comments.length * 5; // Điểm tương tác
+                const timeDecay = 1 / (1 + timeSincePosted); // Giảm dần theo thời gian
+                const contentQuality = postObj.privacy === 'public' ? 1 : 0.8; // Điểm chất lượng nội dung
     
                 // Tính điểm tổng thể của bài viết
                 const rankingScore = userInterest * (engagement + contentQuality) * timeDecay;
@@ -363,6 +369,7 @@ export class PostService {
             throw new HttpException('An error occurred while fetching posts', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    
     
     
 

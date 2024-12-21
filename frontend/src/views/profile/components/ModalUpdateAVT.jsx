@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { PhotoIcon, CloudArrowUpIcon } from '@heroicons/react/24/solid';
 
 import { profileUserCurrent, updateName, uploadAvatar, uploadBackground } from '../../../service/ProfilePersonal';
+
 export default function ModalUpdateAVT() {
     const [dataProfile, setDataProfile] = useState({})
     const [avatar, setAvatar] = useState(null);
