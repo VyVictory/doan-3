@@ -1,8 +1,10 @@
 import axios from 'axios';
 import authToken from '../components/authToken';
+import Apiuri from './apiuri';
+const url = Apiuri()
 const AddFriend = async (id) => {
     try {
-        const response = await axios.post(`http://localhost:3001/user/friendrequest/${id}`, {},
+        const response = await axios.post(`${url}/user/friendrequest/${id}`, {},
             {
                 headers: { Authorization: `Bearer ${authToken.getToken()}` },
             }
@@ -18,7 +20,7 @@ const AddFriend = async (id) => {
 };
 const getListFriendRequest = async () => {
     try {
-        const response = await axios.get(`http://localhost:3001/user/getMyFriendRequest`,
+        const response = await axios.get(`${url}/user/getMyFriendRequest`,
             {
                 headers: { Authorization: `Bearer ${authToken.getToken()}` },
             }
@@ -30,7 +32,7 @@ const getListFriendRequest = async () => {
 };
 const getListMyFriend = async () => {
     try {
-        const response = await axios.get(`http://localhost:3001/user/getMyFriend`,
+        const response = await axios.get(`${url}/user/getMyFriend`,
             {
                 headers: { Authorization: `Bearer ${authToken.getToken()}` },
             }
@@ -43,7 +45,7 @@ const getListMyFriend = async () => {
 const accectRequestAddFriend = async (id) => {
     try {
 
-        const response = await axios.post(`http://localhost:3001/user/acceptfriend/${id}`, {},
+        const response = await axios.post(`${url}/user/acceptfriend/${id}`, {},
             {
                 headers: { Authorization: `Bearer ${authToken.getToken()}` },
             }
@@ -56,7 +58,7 @@ const accectRequestAddFriend = async (id) => {
 };
 const declineRequestAddFriend = async (id) => {
     try {
-        const response = await axios.post(`http://localhost:3001/user/rejectFriendRequest/${id}`, {},
+        const response = await axios.post(`${url}/user/rejectFriendRequest/${id}`, {},
             {
                 headers: { Authorization: `Bearer ${authToken.getToken()}` },
             }
@@ -69,7 +71,7 @@ const declineRequestAddFriend = async (id) => {
 };
 const checkFriend = async (id) => {
     try {
-        const response = await axios.get(`http://localhost:3001/user/getAllUser`, {
+        const response = await axios.get(`${url}/user/getAllUser`, {
             headers: { Authorization: `Bearer ${authToken.getToken()}` },
         });
 
@@ -89,7 +91,7 @@ const checkFriend = async (id) => {
 
 const cancelFriend = async (id) => {
     try {
-        const response = await axios.delete(`http://localhost:3001/user/unfriend/${id}`,
+        const response = await axios.delete(`${url}/user/unfriend/${id}`,
             {
                 headers: { Authorization: `Bearer ${authToken.getToken()}` },
             }
@@ -103,7 +105,7 @@ const cancelFriend = async (id) => {
 
 async function getListFriendAnother(userId) {
     try {
-        const request = await axios.get(`http://localhost:3001/user/getlistfriendanother/${userId}`,
+        const request = await axios.get(`${url}/user/getlistfriendanother/${userId}`,
             {
                 headers: { Authorization: `Bearer ${authToken.getToken()}` },
             }

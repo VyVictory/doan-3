@@ -1,8 +1,10 @@
 import axios from 'axios';
 import authToken from '../components/authToken';
+import Apiuri from './apiuri';
+const url = Apiuri()
 const getListMessenger = async (iduser, message) => {
     try {
-        const response = await axios.get(`http://localhost:3001/chat/getMylistChat`,
+        const response = await axios.get(`${url}/chat/getMylistChat`,
             {
                 headers: { Authorization: `Bearer ${authToken.getToken()}` },
             }
@@ -18,7 +20,7 @@ const getListMessengerByUser = async (iduser) => {
     // }
 
     try {
-        const response = await axios.get(`http://localhost:3001/chat/getmessagestouser/${iduser}`,
+        const response = await axios.get(`${url}/chat/getmessagestouser/${iduser}`,
             {
                 headers: { Authorization: `Bearer ${authToken.getToken()}` },
             }
@@ -40,7 +42,7 @@ const sendMess = async (iduser, message, file) => {
         }
 
         const response = await axios.post(
-            `http://localhost:3001/chat/sendmessageToUser/${iduser}`,
+            `${url}/chat/sendmessageToUser/${iduser}`,
             formData,
             {
                 headers: {
