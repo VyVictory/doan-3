@@ -38,6 +38,7 @@ const RightMessenger = () => {
             {/* Nội dung động */}
             <div className=" min-w-80 h-full">
                 {renderContent()}
+                
             </div>
         </div>
     );

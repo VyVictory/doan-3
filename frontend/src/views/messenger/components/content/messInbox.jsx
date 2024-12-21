@@ -269,10 +269,10 @@ const MessengerInbox = () => {
                     </button>
                 </div>
             </div>
-            <div className='overflow-y-scroll p-4 pt-1 bg-gray-100'>
+            <div className='overflow-y-scroll h-full p-4 pt-1 bg-gray-100'>
                 {Object.keys(groupedMessages).map((date) => (
                     <div key={date} className="">
-                        <div className="mb-4 pb-2 px-3">
+                        <div className="mb-4 pb-2 px-3 ">
                             <div className="text-center text-gray-500 text-sm my-2">
                                 {format(new Date(date), 'MMMM dd, yyyy')}
                             </div>
@@ -299,7 +299,7 @@ const MessengerInbox = () => {
                                             onMouseLeave={() => setHoveredMessageId(null)} // Clear the hovered message
                                         >
 
-                                            <div className='flex flex-row'>
+                                            <div className='flex flex-row '>
                                                 {hoveredMessageId === mess._id && (
                                                     <div className='h-full flex p-2 items-center'>
                                                         <button onClick={() => handleRevokedClick(mess._id)}>
