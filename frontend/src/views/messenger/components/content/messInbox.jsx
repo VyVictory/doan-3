@@ -15,7 +15,8 @@ import { PhotoIcon } from '@heroicons/react/24/solid';
 import { ChevronRightIcon, ChevronLeftIcon, ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
 import { useContext } from "react";
 import { MessengerContext } from '../../layoutMessenger';
-
+import { toast,ToastContainer } from 'react-toastify';
+import NotificationCss from '../../../../module/cssNotification/NotificationCss';
 const MessengerInbox = () => {
     const { userContext } = useUser();
     const { RightShow, handleHiddenRight, setContent, setInboxData } = useContext(MessengerContext);
@@ -47,9 +48,11 @@ const MessengerInbox = () => {
                 setMessengerdata((prevMessages) =>
                     prevMessages.filter((message) => message._id !== messageId)
                 );
+                toast.success(res?.message || 'Bạn vừa thu hồi tin nhắn thành công', NotificationCss.Success);
             } else {
                 // Optionally handle failure case
                 console.error("Failed to revoke message:", res);
+                toast.error(res?.message || 'Lỗi khi thu hồi tin nhắn', NotificationCss.Fail);
             }
         } catch (error) {
             console.error("Error revoking message:", error);
@@ -298,7 +301,7 @@ const MessengerInbox = () => {
 
                                             <div className='flex flex-row'>
                                                 {hoveredMessageId === mess._id && (
-                                                    <div className='h-full flex items-end p-3 pb-4'>
+                                                    <div className='h-full flex p-2 items-center'>
                                                         <button onClick={() => handleRevokedClick(mess._id)}>
                                                             <ArrowUturnLeftIcon className="h-6 w-7 text-gray-500 bg-gray-100 rounded-sm " />
                                                         </button>
@@ -449,7 +452,7 @@ const MessengerInbox = () => {
                     </Box>
                 </Modal>
             </div>
-
+            <ToastContainer style={{ marginTop: '55px' }} />
         </div >
     );
 };
