@@ -238,9 +238,9 @@ const MessengerInbox = () => {
                     </button>
                 </div>
             </div>
-            <div className='overflow-y-scroll p-4 pt-1 h-full bg-gray-100'>
+            <div className='overflow-y-scroll p-4 pt-1 bg-gray-100'>
                 {Object.keys(groupedMessages).map((date) => (
-                    <div key={date} className=" h-full">
+                    <div key={date} className="">
                         <div className="mb-4 pb-2 px-3">
                             <div className="text-center text-gray-500 text-sm my-2">
                                 {format(new Date(date), 'MMMM dd, yyyy')}
