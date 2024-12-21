@@ -16,6 +16,7 @@ export default function HomePost() {
     const [loading, setLoading] = useState(true);
     const [postsToShow, setPostsToShow] = useState(10); // Controls the number of posts to display
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [currentIndexes, setCurrentIndexes] = useState({});
 
     useEffect(() => {
         const fetchdata = async () => {
@@ -43,11 +44,17 @@ export default function HomePost() {
 
     // Carousel Handlers
     const handlePrev = (post) => {
-        setCurrentIndex((prevIndex) => (prevIndex === 0 ? post.img.length - 1 : prevIndex - 1));
+        setCurrentIndexes((prevIndexes) => ({
+            ...prevIndexes,
+            [post._id]: (prevIndexes[post._id] > 0 ? prevIndexes[post._id] : post.img.length) - 1
+        }));
     };
 
     const handleNext = (post) => {
-        setCurrentIndex((nextIndex) => (nextIndex === post.img.length - 1 ? 0 : nextIndex + 1));
+        setCurrentIndexes((prevIndexes) => ({
+            ...prevIndexes,
+            [post._id]: (prevIndexes[post._id] + 1) % post.img.length
+        }));
     };
 
     //Like
@@ -159,29 +166,19 @@ export default function HomePost() {
                                     )}
                                 </div>
                                 {post.img.length > 0 && (
-                                    <div key={post.img} className="carousel rounded-box w-96 h-64 relative">
+                                    <div className="carousel rounded-box w-96 h-64 relative">
                                         {post.img.length > 1 && (
-                                            <button
-                                                onClick={() => handlePrev(post)}
-                                                className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full"
-                                            >
-                                                ‹
-                                            </button>
+                                            <button onClick={() => handlePrev(post)} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">‹</button>
                                         )}
                                         <div className="carousel-item w-full">
                                             <img
-                                                src={post.img[currentIndex]}
+                                                src={post.img[currentIndexes[post._id] || 0]}
                                                 className="w-full"
                                                 alt="Post visual"
                                             />
                                         </div>
                                         {post.img.length > 1 && (
-                                            <button
-                                                onClick={() => handleNext(post)}
-                                                className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full"
-                                            >
-                                                ›
-                                            </button>
+                                            <button onClick={() => handleNext(post)} className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">›</button>
                                         )}
                                     </div>
                                 )}
