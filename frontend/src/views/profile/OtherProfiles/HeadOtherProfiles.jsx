@@ -44,6 +44,20 @@ export default function HeadOtherProfiles({ dataProfile }) {
             console.error(error);
         }
     };
+    const handRemoveFriend = async (id) => {
+        try {
+            const rs = await friend.cancelFriend(id);
+            if (rs.success) {
+                toast.success(rs?.message ? rs.message : 'Đã hủy kết bạn', NotificationCss.Success);
+                setFriendStatus("pending");
+            } else {
+                toast.error(rs?.message ? rs.message : 'hủy kết bạn thất bại', NotificationCss.Fail);
+            }
+            console.log(rs);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     if (loading) {
         return (
@@ -81,7 +95,7 @@ export default function HeadOtherProfiles({ dataProfile }) {
                     <div className="flex gap-2">
                         {friendStatus === "friend" ? (
                             <button
-                                onClick={() => dataProfile ? handAddFriend(dataProfile._id) : ''}
+                                onClick={() => dataProfile ? handRemoveFriend(dataProfile._id) : ''}
                                 className="bg-red-600 text-white p-2 rounded-full flex items-center gap-1"
                             >
                                 <UserMinusIcon className="size-5 fill-white" />

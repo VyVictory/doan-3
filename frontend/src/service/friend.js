@@ -96,26 +96,28 @@ const cancelFriend = async (id) => {
                 headers: { Authorization: `Bearer ${authToken.getToken()}` },
             }
         );
-        
+
         return { success: true, data: response.data };
     } catch (response) {
         return { success: false, data: response.response.data.message };
     }
 };
 const cancelFriendRequest = async (id) => {
-
     try {
-        const userrequest = await axios.post(`${url}/user/friendrequest/${id}`,{},
+        const userrequest = await axios.get(`${url}/user/getMyFriendRequest`,
             {
                 headers: { Authorization: `Bearer ${authToken.getToken()}` },
             }
         );
-        const response = await axios.post(`${url}/user/rejectFriendRequest/${userrequest?._id}`,{},
+        const idRequest = userrequest.data
+            .filter((item) => item.receiver === id || item.sender === id)
+            .map((item) => item._id);
+        console.log(userrequest.data)
+        const response = await axios.post(`${url}/user/rejectFriendRequest/${idRequest}`, {},
             {
                 headers: { Authorization: `Bearer ${authToken.getToken()}` },
             }
         );
-        
         return { success: true, data: response.data };
     } catch (response) {
         return { success: false, data: response.response.data.message };
@@ -142,5 +144,5 @@ export default {
     getListFriendAnother,
     checkFriend,
     cancelFriendRequest,
-    
+
 }
