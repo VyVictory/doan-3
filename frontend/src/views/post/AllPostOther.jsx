@@ -12,6 +12,7 @@ export default function AllPostOther({ user }) {
     const [posts, setPosts] = useState([]);
     const [userLogin, setUserLogin] = useState({})
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [currentIndexes, setCurrentIndexes] = useState({});
     const { id } = useParams();
     useEffect(() => {
         const fetchdata = async () => {
@@ -109,12 +110,19 @@ export default function AllPostOther({ user }) {
 
     //carousel
     const handlePrev = (post) => {
-        setCurrentIndex((prevIndex) => (prevIndex === 0 ? post.img.length - 1 : prevIndex - 1));
+        setCurrentIndexes((prevIndexes) => ({
+            ...prevIndexes,
+            [post._id]: (prevIndexes[post._id] > 0 ? prevIndexes[post._id] : post.img.length) - 1
+        }));
     };
 
     const handleNext = (post) => {
-        setCurrentIndex((prevIndex) => (prevIndex === post.img.length - 1 ? 0 : prevIndex + 1));
+        setCurrentIndexes((prevIndexes) => ({
+            ...prevIndexes,
+            [post._id]: (prevIndexes[post._id] + 1) % post.img.length
+        }));
     };
+
     return (
         <>
             {
@@ -144,7 +152,7 @@ export default function AllPostOther({ user }) {
                                     )}
                                     <div className="carousel-item w-full">
                                         <img
-                                            src={post.img[currentIndex]}
+                                            src={post.img[currentIndexes[post._id] || 0]}
                                             className="w-full"
                                             alt="Post visual"
                                         />
