@@ -2,21 +2,24 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { PaperAirplaneIcon } from '@heroicons/react/16/solid';
 import { useLocation } from 'react-router-dom';
 import clsx from 'clsx';
-import imgUser from '../../../img/user.png';
-import user from '../../../service/user';
-import messenger from '../../../service/messenger';
-import { useUser } from '../../../service/UserContext';
+import imgUser from '../../../../img/user.png';
+import user from '../../../../service/user';
+import messenger from '../../../../service/messenger';
+import { useUser } from '../../../../service/UserContext';
 import { format } from 'date-fns';
-import useWebSocket from './usewebsocket';
-import Loading from '../../../components/Loading';
-import { Button, Typography, Box, IconButton, Modal } from '@mui/material';
+import useWebSocket from '../webSocket/usewebsocket';
+import Loading from '../../../../components/Loading';
+import { Box, IconButton, Modal } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { PhotoIcon } from '@heroicons/react/24/solid';
-
-const MessengerInbox = () => {
+import { ChevronRightIcon, ChevronLeftIcon } from "@heroicons/react/24/solid";
+import { useContext } from "react";
+import { MessengerContext } from '../../layoutMessenger';
+const MessengerGroup = () => {
     const { userContext } = useUser();
-    const location = useLocation();
+    const { RightShow, handleHiddenRight } = useContext(MessengerContext);
 
+    const location = useLocation();
     const [textareaHeight, setTextareaHeight] = useState(40);
     const [iduser, setIdUser] = useState(null);
     const [userdata, setUserdata] = useState({});
@@ -194,8 +197,10 @@ const MessengerInbox = () => {
     }, {});
     console.log(groupedMessages)
     return (
-        <div className="flex flex-col h-full w-full">
+        <div className="flex flex-col h-full ">
+
             <div className="p-2 flex items-center border-b h-14 bg-white shadow-sm">
+
                 <button onClick={() => window.location.href = `/user/${userdata?._id}`}>
                     <img
                         className="w-10 h-10 rounded-full mr-2"
@@ -203,14 +208,22 @@ const MessengerInbox = () => {
                         alt="User Avatar"
                     />
                 </button>
-                <h3 className="font-semibold">{`${userdata.lastName || ''} ${userdata.firstName || ''}`.trim()}</h3>
+                <h3 className="font-semibold text-nowrap">{`${userdata.lastName || ''} ${userdata.firstName || ''}`.trim()}</h3>
+                <div className="w-full flex justify-end">
+                    <button onClick={handleHiddenRight} >
+                        {
+                            RightShow ? <ChevronRightIcon className="h-8 w-8 text-gray-700" />
+                                :
+                                <ChevronLeftIcon className="h-8 w-8 text-gray-700" />
+                        }
+
+                    </button>
+                </div>
             </div>
-
-
             <div className='overflow-y-scroll p-4 pt-1 h-full'>
                 {Object.keys(groupedMessages).map((date) => (
                     <div key={date} className=" h-full">
-                        <div className="mb-4 pb-2 px-3"> 
+                        <div className="mb-4 pb-2 px-3">
                             <div className="text-center text-gray-500 text-sm my-2">
                                 {format(new Date(date), 'MMMM dd, yyyy')}
                             </div>
@@ -397,4 +410,4 @@ const MessengerInbox = () => {
     );
 };
 
-export default MessengerInbox;
+export default MessengerGroup;

@@ -18,9 +18,10 @@ import OtherPosts from "../views/profile/OtherProfiles/OtherPosts.jsx";
 import Bookmark from "../views/bookmark/page.jsx";
 import MyFriendCard from "../views/friend/card/myFriendCard.jsx";
 import MyAllFriend from "../views/friend/myAllFriend.jsx";
-import MessengerInbox from "../views/messenger/components/messInbox.jsx";
+import MessengerInbox from "../views/messenger/components/content/messInbox.jsx";
 import FriendOtherProfile from "../views/profile/OtherProfiles/FriendOtherProfile.jsx";
 import authToken from "../components/authToken.jsx";
+import MessengerGroup from "../views/messenger/components/content/messGroup.jsx";
 import Test from "./test.jsx";
 
 function routers() {
@@ -44,6 +45,7 @@ function routers() {
                     <Route path="messenger" element={<LayoutMessenger />}>
                         <Route index element={<MessengerInbox />} />
                         <Route path="inbox" element={<MessengerInbox />} />
+                        <Route path="group" element={<MessengerGroup />} />
                     </Route>
                     <Route path="user/:id" element={<OtherProfiles />}>
                         <Route index element={<OtherPosts />} />

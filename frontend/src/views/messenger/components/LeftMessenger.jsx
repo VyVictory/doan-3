@@ -1,98 +1,61 @@
 import { useState, useEffect } from "react";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import friend from "../../../service/friend";
-import UserFriendCard from "./userFriendCard";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
-import Loading from "../../../components/Loading";
+import { InboxIcon, UserGroupIcon, UsersIcon } from "@heroicons/react/24/solid";
+import { useNavigate } from "react-router-dom";
 
+import AllFriend from "./allFriend";
+import AllGroup from "./allGroup";
+import AllInbox from "./allInbox";
 const LeftMessenger = () => {
-    const [alignment, setAlignment] = useState("web");
-    const [friends, setFriends] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const navigate = useNavigate(); // React Router navigation function
+    const [alignment, setAlignment] = useState("friends");
 
+    const navigate = useNavigate(); // React Router navigation function
     const handleChange = (event, newAlignment) => {
         setAlignment(newAlignment);
     };
-
-    useEffect(() => {
-        const fetchdata = async () => {
-            try {
-                const res = await friend.getListMyFriend();
-                if (res.success) {
-                    setFriends(res.data);
-                } else {
-                    setFriends([]);
-                }
-            } catch (error) {
-                console.error("Error fetching friend list:", error);
-                setFriends([]);
-            } finally {
-                setLoading(false); // Stop loading
-            }
-        };
-        fetchdata();
-        console.log(friends)
-    }, []);
-    
-
+    const renderContent = () => {
+        switch (alignment) {
+            case "inboxs":
+                return <AllInbox />;
+            case "groups":
+                return <AllGroup />;
+            case "friends":
+                return <AllFriend />;
+            default:
+                return <AllFriend />;
+        }
+    };
     return (
         <div className="border-r-gray-300 border-r h-full flex flex-col">
             <div className="w-full flex justify-center">
                 <ToggleButtonGroup
-                    className="flex justify-center bg-white w-full max-w-lg h-14 rounded-none"
+                    className="flex justify-center bg-white w-full max-w-lg h-14 rounded-none "
                     color="primary"
                     value={alignment}
                     exclusive
                     onChange={handleChange}
                     aria-label="Platform"
                 >
-                    <ToggleButton value="web" className="flex-1 font-medium transition-all hover:bg-blue-50">
-                        InBox
+                    <ToggleButton value="inboxs" className="flex-1 font-medium transition-all hover:bg-blue-50">
+                        <InboxIcon className="h-6 w-6 text-orange-300" />
+                        <span className="ml-2 text-nowrap">Inbox</span>
                     </ToggleButton>
-                    <ToggleButton value="android" className="flex-1 font-medium transition-all hover:bg-blue-50">
-                        Nhóm
+                    <ToggleButton value="groups" className="flex-1 font-medium transition-all hover:bg-blue-50">
+                        <UserGroupIcon className="h-6 w-6 text-blue-400" />
+                        <span className="ml-2 text-nowrap">Nhóm</span>
                     </ToggleButton>
-                    <ToggleButton value="ios" className="flex-1 font-medium transition-all hover:bg-blue-50">
-                        New
+                    <ToggleButton value="friends" className="flex-1 font-medium transition-all hover:bg-blue-50">
+                        <UsersIcon className="h-6 w-6 text-green-400" />
+                        <span className="ml-2 text-nowrap">Bạn Bè</span>
                     </ToggleButton>
                 </ToggleButtonGroup>
             </div>
-            {
-                loading ?
-                    <Loading/> 
-                    :
-                    <ul
-                        className="h-full flex flex-col px-2"
-                        style={{
-                            overflowY: "scroll",
-                            scrollbarWidth: "none", // Firefox
-                            msOverflowStyle: "none", // Internet Explorer and Edge
-                        }}
-                    >
-                        {friends.map((friend, index) => (
-                            <li key={index}>
-                                <button
-                                    onClick={() =>
-                                        navigate(`inbox/?iduser=${friend?.receiver?._id || friend?.sender?._id}`)
-                                    }
-                                    className="flex items-center py-2 w-full"
-                                >
-                                    {friend.receiver && friend.receiver._id && (
-                                        <UserFriendCard iduser={friend.receiver._id} />
-                                    )}
-                                    {friend.sender && friend.sender._id && (
-                                        <UserFriendCard iduser={friend.sender._id} />
-                                    )}
-                                </button>
-                            </li>
-                        ))}
 
-                    </ul>
-            }
-
-
+            {/* Nội dung động */}
+            <div className="flex-1 p-2">
+                {renderContent()}
+            </div>
         </div>
     );
 };
