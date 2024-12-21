@@ -82,7 +82,7 @@ export class UserController {
     ){
 
       const currentUserID = new Types.ObjectId(currentUser._id.toString());
-      return this.userService.findAllUsers(currentUserID)
+      return this.userService.findAllUsers(currentUser._id.toString())
     }
 
     @Post('send-otp-resetpassword')
@@ -223,6 +223,7 @@ export class UserController {
       @CurrentUser() currentUser: User,
       @Param('friendId') friendId: string,
     ){
+      const swageUserId = new Types.ObjectId(currentUser._id.toString())
       return this.userService.unFriend(currentUser._id.toString(), friendId);
     }
 
