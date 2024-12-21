@@ -1,21 +1,33 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Files from "./component/files";
 import PictureAndVideo from "./component/pictureAndVideo";
 import { UserGroupIcon, PlusIcon } from '@heroicons/react/24/solid';
-import { Box, IconButton, Modal, Button } from '@mui/material';
+import { Box, IconButton, Modal, Button, Checkbox } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { PhotoIcon } from '@heroicons/react/24/solid';
 
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import { XMarkIcon } from '@heroicons/react/24/outline';
+import friend from '../../../../service/friend';
+import Loading from '../../../../components/Loading';
+import UserFriendCard from '../userFriendCard';
+import CardFriendAddGroup from './component/cardFriendAddGroup';
 
 const ToolGroup = () => {
     const [openModal, setOpenModal] = useState(false); // Trạng thái modal
+    const [selectedFriends, setSelectedFriends] = useState([]);
     const handleOpenModal = () => {
         setOpenModal(true); // Mở modal
     };
-
+    // Thêm hoặc xóa người dùng khỏi danh sách được chọn
+    const toggleFriendSelection = (friendId) => {
+        setSelectedFriends((prevSelected) =>
+            prevSelected.includes(friendId)
+                ? prevSelected.filter((id) => id !== friendId) // Xóa nếu đã chọn
+                : [...prevSelected, friendId] // Thêm nếu chưa chọn
+        );
+    };
     // Hàm đóng modal
     const handleCloseModal = () => {
         setOpenModal(false); // Đóng modal
@@ -26,9 +38,27 @@ const ToolGroup = () => {
         setSearchTerm(e.target.value);
     };
 
-    const handleClearSearch = () => {
-        setSearchTerm("/search");
-    };
+    const [friends, setFriends] = useState([]);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        const fetchdata = async () => {
+            try {
+                const res = await friend.getListMyFriend();
+                if (res.success) {
+                    setFriends(res.data);
+                } else {
+                    setFriends([]);
+                }
+            } catch (error) {
+                console.error("Error fetching friend list:", error);
+                setFriends([]);
+            } finally {
+                setLoading(false); // Stop loading
+            }
+        };
+        fetchdata();
+        console.log(friends)
+    }, []);
     return (
         <div className="flex flex-col h-full">
             <div className={`bg-white border-b flex justify-between items-center h-[56px]`}>
@@ -90,7 +120,7 @@ const ToolGroup = () => {
                         <div className="w-full border-b-2 p-2">
                             <strong>Tạo nhóm</strong>
                         </div>
-                        <div className="w-[90%] ml-[5%] flex justify-center items-center">
+                        <div className="w-[96%] ml-[2%] flex justify-center items-center">
                             <div className="w-full border-b-2 p-3 flex flex-col items-center">
                                 <div className="w-full flex flex-row mb-2">
                                     <label htmlFor="file-input" className="mr-1">
@@ -121,21 +151,89 @@ const ToolGroup = () => {
                             </div>
                         </div>
                     </div>
-
                     {/* Main Content */}
-                    <div
-                        className="flex-grow mx-6"
-                        style={{
-                            overflowY: 'auto', // Enable vertical scrolling
-                            padding: '8px',
-                        }}
-                    >
-                        {Array.from({ length: 20 }).map((_, index) => (
-                            <div key={index} className="flex justify-center items-center mb-2">
-                                a
+                    <div className="flex justify-between">
+                        {/* First List */}
+                        {/* <div
+                            className="flex-grow px-2 py-4 custom-scroll"
+                            style={{
+                                maxHeight: '300px', // Set a fixed maximum height for the div
+                                overflowY: 'auto', // Enable vertical scrolling
+                            }}
+                        >
+                            {loading ? (
+                                <Loading />
+                            ) : (
+                                friends.map((friend, index) => (
+                                    <div key={index} className="flex items-center mb-2 justify-center">
+                                        <div className="hover:bg-gray-200 px-2 rounded-md shadow-sm w-full">
+                                            <button className="flex items-center py-2 w-full">
+                                                <Checkbox />
+                                                {friend.receiver && friend.receiver._id && (
+                                                    <CardFriendAddGroup iduser={friend.receiver._id} />
+                                                )}
+                                                {friend.sender && friend.sender._id && (
+                                                    <CardFriendAddGroup iduser={friend.sender._id} />
+                                                )}
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div> */}
+
+                        {/* Second List */}
+                        <div
+                            className="flex-grow px-2 py-4 custom-scroll"
+                            style={{
+                                maxHeight: '300px', // Set a fixed maximum height for the div
+                                overflowY: 'auto', // Enable vertical scrolling
+                            }}
+                        >
+                            {loading ? (
+                                <Loading />
+                            ) : (
+                                friends.map((friend, index) => (
+                                    <div key={index} className="flex items-center mb-2 justify-center">
+                                        <div className="hover:bg-gray-200 px-2 rounded-md shadow-sm w-full">
+                                            <button className="flex items-center py-2 w-full">
+                                                <Checkbox
+                                                    checked={selectedFriends.includes(friend.receiver?._id || friend.sender?._id)}
+                                                    onChange={() =>
+                                                        toggleFriendSelection(friend.receiver?._id || friend.sender?._id)
+                                                    }
+                                                />
+                                                {friend.receiver && friend.receiver._id ? (
+                                                    <CardFriendAddGroup iduser={friend.receiver._id} />
+                                                ) : friend.sender && friend.sender._id ? (
+                                                    <CardFriendAddGroup iduser={friend.sender._id} />
+                                                ) : null}
+                                            </button>
+
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                        {/* Danh sách đã chọn */}
+                        {selectedFriends.length > 0 ? (
+                            <div className="flex-grow px-2 py-4 custom-scroll border-l" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                                {
+                                    selectedFriends.map((friendId) => {
+                                        const selectedFriend = friends.find((friend) => friend.id === friendId);
+                                        return (
+                                            <div key={friendId} className="flex items-center mb-2 justify-center">
+                                                <CardFriendAddGroup iduser={friendId} />
+                                            </div>
+                                        );
+                                    })
+                                }
                             </div>
-                        ))}
+                        ) : (
+                            ''
+                        )}
                     </div>
+
 
                     {/* Footer */}
                     <div className="w-full border-t-2 p-2 flex justify-end">
