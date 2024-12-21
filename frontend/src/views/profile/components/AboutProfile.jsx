@@ -35,7 +35,7 @@ export default function About() {
                     onClick={() => document.getElementById('my_modal_1').showModal()}>
                     <PencilSquareIcon className='size-8' />
                 </button>
-                <ModalUpdateProfile user={dataProfile} />
+                <ModalUpdateProfile />
             </div>
             <div className="mt-6 border-t-[1px] border-gray-100">
                 <dl className="divide-y divide-gray-500">
