@@ -47,7 +47,7 @@ export default function FriendCard({ iduser, idrequest }) {
     };
 
     return (
-        <div className="border border-gray-300 shadow-2xl max-w-52 rounded-lg m-2">
+        <div className="border border-gray-300 shadow-2xl max-w-52 rounded-lg m-2 flex justify-between flex-col ">
 
             <Link onClick={() => handDetailUser(userdata?._id)}>
                 <img
@@ -69,10 +69,10 @@ export default function FriendCard({ iduser, idrequest }) {
                 </strong>
             </div>
 
-            <div className="flex flex-row gap-2 px-2 mb-2">
+            <div className="flex flex-row gap-2 px-2 mb-2 items-center">
                 <button
                     onClick={userdata?._id ? () => chaneUrl(`/messenger/?iduser=${userdata._id}`) : undefined}
-                    className="w-full bg-gray-300 py-2 text-black rounded-lg transition-transform transform hover:scale-105"
+                    className="w-full  bg-gray-300 py-2 text-black rounded-lg transition-transform transform hover:scale-105"
                 >
                     Nhắn tin
                 </button>
