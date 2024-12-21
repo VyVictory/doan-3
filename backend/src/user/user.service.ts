@@ -310,25 +310,42 @@ export class UserService {
     return this.FriendRequestModel.find({ sender: userId });
   }
 
+//   async getMyFriend(userId: string): Promise<any[]> {
+//     console.log('Input userId:', userId);
+
+//     const friendList = await this.FriendModel.find({
+//         $or: [
+//             { sender: userId },
+//             { receiver: userId }
+//         ],
+//         status: 'friend'
+//     }).exec(); // Bỏ populate để xem kết quả
+
+//     console.log('Raw Friend List (without populate):', friendList);
+//     return friendList;
+// }
+
+
   async getMyFriend(userId: string): Promise<Friend[]> {
-    const UserOBJ = new Types.ObjectId(userId);
-  
-    // Tìm các bạn bè mà sender hoặc receiver là userId
+    // Log dữ liệu đầu vào
+    console.log('Input userId:', userId);
+
+    // Truy vấn danh sách bạn bè
     const friendList = await this.FriendModel.find({
       $or: [
-        { sender: UserOBJ },
-        { receiver: UserOBJ }
+        { sender: userId },
+        { receiver: userId }
       ]
     })
     .populate({
       path: 'sender',
       select: 'firstName lastName avatar',
-      match: { _id: { $ne: UserOBJ } }
+      match: { _id: { $ne: userId } }
     })
     .populate({
       path: 'receiver',
       select: 'firstName lastName avatar',
-      match: { _id: { $ne: UserOBJ } }
+      match: { _id: { $ne: userId } }
     })
     .exec();
   
@@ -336,6 +353,12 @@ export class UserService {
       return (friend.sender && friend.sender._id !== userId) || (friend.receiver && friend.receiver._id !== userId);
     });
   }
+
+
+
+
+  
+  
   
   
   
@@ -510,16 +533,6 @@ export class UserService {
       throw new HttpException('Could not retrieve users', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-  
-  
-  
-  
-  
-  
-  
-  
-
-  
   
 
   async resetPassword(email: string, otp: string, resetPasswordDto: ResetPasswordDto): Promise<string> {

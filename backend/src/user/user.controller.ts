@@ -232,7 +232,7 @@ export class UserController {
     async getMyFriend(
       @CurrentUser() currentUser: User,
     ){
-      
+      const swageUserId = new Types.ObjectId(currentUser._id.toString())
       return this.userService.getMyFriend(currentUser._id.toString());
     }
 
