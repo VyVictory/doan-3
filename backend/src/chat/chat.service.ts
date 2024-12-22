@@ -128,30 +128,45 @@ export class ChatService {
 
 
 
-    async getMylishChat(userId: string | Types.ObjectId): Promise<{ Group: Group[], Participants: any[] }> {
-      // Chuyển đổi userId thành ObjectId nếu là string
+    async getMylishChat(userId: string | Types.ObjectId): Promise<{ Group: Group[]; Participants: any[] }> {
       const userObjectId = typeof userId === 'string' ? new Types.ObjectId(userId) : userId;
-      
-      // Lấy danh sách sender và receiver liên quan đến userId
-      const distinctUserIds = await this.MessageModel.distinct('sender', {
-        $or: [{ sender: userObjectId }, { receiver: userObjectId }],
-      });
     
-      // Lấy danh sách participants, chuẩn hóa ID trong cơ sở dữ liệu
+
+      const distinctUserIds = await this.MessageModel.distinct('sender', {
+        $or: [
+          { sender: userObjectId },
+          { receiver: userObjectId },
+        ],
+      }).then(ids => ids.map(id => id.toString()));
+    
+
+      const normalizeIds = (ids: (string | Types.ObjectId)[]) => {
+        return ids.map(id => {
+
+          if (typeof id === 'string' && Types.ObjectId.isValid(id)) {
+            return new Types.ObjectId(id);
+          }
+          return id;
+        });
+      };
+    
+      // Lấy các participants (người tham gia khác với user hiện tại)
       const participants = await this.UserModel.find({
-        _id: { $in: distinctUserIds.map(id => new Types.ObjectId(id.toString())), $ne: userObjectId },
+        _id: { $in: normalizeIds(distinctUserIds), $ne: userObjectId }, // Exclude the current user
       }).select('firstName lastName avatar');
     
-      // Lấy các nhóm mà userId tham gia, chuẩn hóa participants
-      const groups = await this.GroupModel.find({ participants: userObjectId })
-        .select('name avatarGroup')
-        .exec();
+      // Lấy nhóm mà user tham gia
+      const groups = await this.GroupModel.find({
+        participants: { $in: normalizeIds([userObjectId]) }, // Normalize userObjectId
+      }).select('name avatarGroup').exec();
     
       return {
         Group: groups,
         Participants: participants,
       };
     }
+    
+    
     
 
     async removeMemberInGroup(groupId: Types.ObjectId, userId: Types.ObjectId): Promise<Group> {
