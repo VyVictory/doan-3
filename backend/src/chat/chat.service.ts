@@ -261,31 +261,45 @@ export class ChatService {
     }
     
 
-    async revokeAMessage(messageId: Types.ObjectId, userId: Types.ObjectId): Promise<Message> {
-      // Tìm tin nhắn theo ID
-      const message = await this.MessageModel.findById(messageId);
-      console.log(message, ', message);');
+    async revokeAMessage(messageId: Types.ObjectId, userId: Types.ObjectId): Promise<Message | GroupMessage> {
+      // Tìm tin nhắn trong MessageModel
+      let message = await this.MessageModel.findById(messageId);
+      let messageSource = 'MessageModel';
     
+      // Nếu không tìm thấy, tìm trong GroupMessageModel
+      if (!message) {
+        message = await this.GroupMessageModel.findById(messageId);
+        messageSource = 'GroupMessageModel';
+      }
+    
+      // Nếu không tìm thấy tin nhắn trong cả hai model
       if (!message) {
         throw new HttpException('Message not found', HttpStatus.NOT_FOUND);
       }
     
+      // Kiểm tra quyền thu hồi tin nhắn
       if (message.sender.toString() !== userId.toString()) {
         throw new HttpException('You are not authorized to revoke this message', HttpStatus.FORBIDDEN);
       }
-
-      const revokedMessage = await this.MessageModel.findByIdAndUpdate(
-        messageId,
-        {
-          isLive: false,
-          content: null,
-          mediaURL: null,
-        },
-        { new: true }
-      );
     
-      return revokedMessage;
+      // Thu hồi tin nhắn (cập nhật trạng thái và xóa nội dung nhạy cảm)
+      const updateFields = {
+        isLive: false,
+        content: null,
+        mediaURL: null,
+      };
+    
+      if (messageSource === 'MessageModel') {
+        message = await this.MessageModel.findByIdAndUpdate(messageId, updateFields, { new: true });
+      } else if (messageSource === 'GroupMessageModel') {
+        message = await this.GroupMessageModel.findByIdAndUpdate(messageId, updateFields, { new: true });
+      }
+    
+      // Trả về tin nhắn đã được thu hồi
+      return message;
     }
+    
+    
 
 
     async addMembersToGroup(
