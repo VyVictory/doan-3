@@ -25,12 +25,10 @@ const PictureAndVideo = () => {
         }
         setOpenModal(true); // Mở modal
     };
-
     // Hàm đóng modal
     const handleCloseModal = () => {
         setOpenModal(false); // Đóng modal
     };
-
     // Hàm xử lý xem thêm ảnh
     const handleSeeMore = () => {
         setVisibleImagesCount(prevCount => prevCount + 3); // Tăng số lượng ảnh hiển thị lên 3

@@ -29,6 +29,7 @@ const MessengerInbox = () => {
     const [sending, setSending] = useState(false); // Added sending state
     const [message, setMessage] = useState('');
     const [messengerdata, setMessengerdata] = useState([]);
+    const [dataGroup, setDataGroup] = useState([]);
     const [error, setError] = useState(null);
     const messagesEndRef = useRef(null);
 
@@ -40,7 +41,11 @@ const MessengerInbox = () => {
 
 
     const [hoveredMessageId, setHoveredMessageId] = useState(null);
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
 
+        setIdUser(queryParams.get('idgroup'));
+    }, [location]);
     const handleRevokedClick = async (messageId) => {
         try {
             const res = await messenger.revokedMesage(messageId); // API call to revoke the message
@@ -71,11 +76,7 @@ const MessengerInbox = () => {
         scrollToBottom(); // Tự động cuộn mỗi khi dữ liệu tin nhắn thay đổi
     }, [messengerdata, scrollToBottom]);
 
-    useEffect(() => {
-        const queryParams = new URLSearchParams(location.search);
-        const userId = queryParams.get('idgroup');
-        setIdUser(userId);
-    }, [location.search]);
+
 
     useEffect(() => {
         if (!iduser || iduser === '') {
@@ -99,7 +100,7 @@ const MessengerInbox = () => {
             }
         };
         fetchUserData();
-        setContent('inbox')
+
     }, [iduser]);
     //file
     const handleFileChange = (event) => {
@@ -133,6 +134,7 @@ const MessengerInbox = () => {
                 const res = await group.getMessengerGroup(iduser);
                 if (res.success) {
                     setMessengerdata(res.data.messages);
+                    setDataGroup(res.data)
                     // console.log(res.data.messages)
                 }
             } catch (error) {
@@ -140,6 +142,7 @@ const MessengerInbox = () => {
             }
         };
         fetchMessengerData();
+        setContent('group')
     }, [iduser]);
 
     const onMessageReceived = useCallback(
@@ -167,12 +170,11 @@ const MessengerInbox = () => {
 
         // Cập nhật dữ liệu nếu `groupedMessages` tồn tại
         const inboxUpdate = {
-            data: userdata,
+            data: dataGroup,
             messenger: messengerdata,
         };
-
         setInboxData(inboxUpdate);
-    }, [messengerdata, userdata, setInboxData]);
+    }, [messengerdata, dataGroup, setInboxData]);
 
 
 
@@ -251,18 +253,20 @@ const MessengerInbox = () => {
         }
         return acc;
     }, {});
+    console.log(dataGroup)
     return (
         <div className="flex flex-col h-full ">
             <div className="p-2 flex border-b h-14 bg-white shadow-sm">
                 <div className='w-full flex flex-row items-center'>
-                    <button onClick={() => window.location.href = `/user/${userdata?._id}`}>
+                    <button >
+                        {/* onClick={() => window.location.href = `/user/${userdata?._id}`} */}
                         <img
                             className="w-10 h-10 rounded-full mr-2"
-                            src={userdata?.avatar || imgUser}
+                            src={dataGroup?.group?.avatarGroup[0] || imgUser}
                             alt="User Avatar"
                         />
                     </button>
-                    <h3 className="font-semibold text-nowrap">{`${userdata.lastName || ''} ${userdata.firstName || ''}`.trim()}</h3>
+                    <h3 className="font-semibold text-nowrap">{`${dataGroup?.group?.name ? dataGroup.group.name : 'Group No Name'}`}</h3>
                 </div>
                 <div className=" flex justify-end">
                     <button onClick={handleHiddenRight} >

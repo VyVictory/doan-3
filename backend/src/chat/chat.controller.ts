@@ -165,7 +165,6 @@ export class ChatController {
 
       const messageSee = {
         ...sendMessageDto,
-        _id: message._id,
         mediaURL: message.mediaURL,
         author: currentAuthor,
       };
