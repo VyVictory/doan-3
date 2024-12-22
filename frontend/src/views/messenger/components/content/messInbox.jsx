@@ -131,6 +131,8 @@ const MessengerInbox = () => {
             try {
                 const res = await messenger.getListMessengerByUser(iduser);
                 if (res.success) {
+                    console.log('next')
+                    console.log(res.data)
                     setMessengerdata(res.data);
                 }
             } catch (error) {
@@ -155,6 +157,7 @@ const MessengerInbox = () => {
         },
         [userContext._id]
     );
+    useWebSocket(onMessageReceived);    
     useEffect(() => {
         // Kiểm tra và xử lý điều kiện bên trong hook
         if (!messengerdata || Object.keys(messengerdata).length === 0) {
@@ -170,7 +173,7 @@ const MessengerInbox = () => {
         setInboxData(inboxUpdate);
     }, [messengerdata, userdata, setInboxData]);
 
-    useWebSocket(onMessageReceived);
+ 
 
     const handleInputChange = useCallback((e) => {
         const textarea = e.target;

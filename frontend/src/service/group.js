@@ -66,6 +66,31 @@ const getMessengerGroup = async (idgr) => {
         return { success: false, data: response.response.data.message };
     }
 };
+const sendMessGroup = async (idgroup, message, file) => {
+    try {
+        const formData = new FormData();
+        formData.append('content', message); // Thêm nội dung tin nhắn
+
+        if (file) {
+            formData.append('files', file); // Đảm bảo tên trường là 'files' (khớp với backend)
+        }
+
+        const response = await axios.post(
+            `${url}/chat/sendmessagetoGroup/${idgroup}`,
+            formData,
+            {
+                headers: {
+                    'Authorization': `Bearer ${authToken.getToken()}`,
+                    'Content-Type': 'multipart/form-data',
+                },
+            }
+        );
+
+        return { success: true, data: response.data };
+    } catch (error) {
+        return { success: false, data: error.response ? error.response.data.message : 'An error occurred' };
+    }
+};
 ///chat/MembersGroup/{idgr}
 //getmessagestouser
 export default {
@@ -73,4 +98,5 @@ export default {
     getMyListChat,
     getMemberIngroup,
     getMessengerGroup,
+    sendMessGroup,
 }
