@@ -52,15 +52,20 @@ export class PostController {
             throw new HttpException('User not found or not authenticated', HttpStatus.UNAUTHORIZED);
         }
         
-        const author = {
-            _id: currentUser._id,
-            firstName: currentUser.firstName,
-            lastName: currentUser.lastName,
-            avatar: currentUser.avatar,
-          }
+        const notification = {
+            title: 'new like in post',
+            body: `new like from ${currentUser.firstName} ${currentUser.lastName}`,
+            avatart : currentUser.avatar,
+            data: {
+              postId: id,
+              userId: currentUser._id.toString(),
+              type: 'like',
+            },
+        }
         try {
-            // this.eventService.notificationToUser()
-            return await this.postService.likePost(id, currentUser._id.toString());
+            const {authorId, post} = await this.postService.likePost(id, currentUser._id.toString());
+            this.eventService.notificationToUser(authorId, 'new like in post', notification );
+            return post;
         } catch (error) {
             throw new HttpException('An error occurred while liking post', HttpStatus.INTERNAL_SERVER_ERROR);
             
