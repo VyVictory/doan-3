@@ -5,7 +5,7 @@ const url = Apiuri()
 const createGroup = async (groupName, members) => {
     try {
         const response = await axios.post(`${url}/chat/creategroup`, {
-            groupName: groupName,
+            name: groupName,
             participants: members
         },
             {

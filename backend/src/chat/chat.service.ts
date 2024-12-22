@@ -26,12 +26,14 @@ export class ChatService {
 
     async createGroup(createGroupDto: CreateGroupDto, userId: Types.ObjectId){
         const { name, avatarGroup, participants } = createGroupDto;
-
+        const participantIds = participants.map(participant =>
+          new Types.ObjectId(participant)
+      );
         const group = new this.GroupModel({
           name,
           avatarGroup,
           owner: userId,
-          participants: [...participants, userId],
+          participants: [...participantIds, userId],
         });
     
         return await group.save();

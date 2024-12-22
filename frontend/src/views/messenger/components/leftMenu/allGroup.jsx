@@ -98,7 +98,7 @@ const AllGroup = () => {
                                             }
                                             className="flex items-center w-full"
                                         >
-                                           <GroupCard idgr={group._id}/>
+                                           <GroupCard group={group}/>
                                         </button>
                                     </li>
 
