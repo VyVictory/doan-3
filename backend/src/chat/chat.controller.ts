@@ -65,20 +65,21 @@ export class ChatController {
 
         };
 
-        
+
         const groupParticipants = await this.chatService.getMemberGroup(groupId);
 
         if (!Array.isArray(groupParticipants)) {
           throw new HttpException('Invalid group participants data', HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        console.log('groupParticipants:', groupParticipants);
 
        
         groupParticipants.forEach((participant) => {
-          if (participant._id.toString() !== currentUser._id.toString()) {
+          
             this.eventService.notificationToUser(participant._id.toString(), 'newmessage', messageSee);
-          }
+          
         });
-        console.log('Saved message:', message); // Log dữ liệu tin nhắn đã lưu
+        console.log('Saved message:', message);
         return message;
       }
 

@@ -17,6 +17,7 @@ import { SmsModule } from './sms/sms.module';
 import { ChatModule } from './chat/chat.module';
 import { FriendModule } from './friend/friend.module';
 import { EventModule } from './event/event.module';
+import { EventService } from './event/event.service';
 
 
 @Global()
