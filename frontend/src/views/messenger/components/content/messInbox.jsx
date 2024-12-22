@@ -7,7 +7,7 @@ import user from '../../../../service/user';
 import messenger from '../../../../service/messenger';
 import { useUser } from '../../../../service/UserContext';
 import { format } from 'date-fns';
-import useWebSocket from '../webSocket/usewebsocket';
+import useWebSocket from '../../../../service/webSocket/usewebsocket';
 import Loading from '../../../../components/Loading';
 import { Box, IconButton, Modal } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
@@ -246,7 +246,7 @@ const MessengerInbox = () => {
         acc[date].push(message);
         return acc;
     }, {});
-    // console.log(groupedMessages)
+    console.log(groupedMessages)
     return (
         <div className="flex flex-col h-full ">
             <div className="p-2 flex border-b h-14 bg-white shadow-sm">

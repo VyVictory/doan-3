@@ -100,7 +100,7 @@ export class CommentController {
       throw new HttpException('User not found or not authenticated', HttpStatus.UNAUTHORIZED);
     }
 
-    return await this.commentService.reply(id, currentUser._id.toString(), replyDto, files.files);
+    return await this.commentService.reply(id, currentUser._id.toString(), replyDto, files?.files);
   }
 }
 

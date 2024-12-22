@@ -3,13 +3,13 @@ import { getComment, handleLike, handleUnLike } from '../../../service/CommentSe
 import { differenceInMinutes, differenceInHours, differenceInDays } from 'date-fns';
 import AVTUser from '../AVTUser';
 import 'animate.css';
-import { Form } from 'react-router-dom';
+import { Form, Link } from 'react-router-dom';
 import FormReply from './FormReply';
 import FormComment from './FormComment';
 
 export default function Comment({ postId, user }) {
   const [comment, setComment] = useState([])
-  const [open, setOpen] = useState(false)
+  const [openReplyId, setOpenReplyId] = useState(null);
   useEffect(() => {
     const fetchdata = async () => {
       try {
@@ -63,8 +63,8 @@ export default function Comment({ postId, user }) {
     }
   }
 
-  const handleReply = () => {
-    setOpen(!open)
+  const handleReply = (cmtId) => {
+    setOpenReplyId(openReplyId === cmtId ? null : cmtId);
   }
 
   //
@@ -74,7 +74,7 @@ export default function Comment({ postId, user }) {
     <div>
 
       <div className='mt-3 border-[1px] rounded-xl grid gap-5'>
-        {comment.map((e) => (
+        {comment.filter((com_e) => com_e.replyTo.length === 0).map((e) => (
 
           <div key={e._id} className="bg-card dark:bg-card-foreground p-4 rounded-lg rounded-b-none border-b-2 ">
             <div className=' '>
@@ -82,7 +82,7 @@ export default function Comment({ postId, user }) {
                 {/* <img className="h-12 w-12 rounded-full mr-4" src="https://placehold.co/50x50" alt="user-avatar" /> */}
                 <AVTUser user={e?.author} />
                 <div>
-                  <h3 className="text-lg font-semibold">{e?.author?.lastName} {e?.author?.firstName}</h3>
+                  <Link to={`/user/${e?.author?._id}`} className="text-lg font-semibold">{e?.author?.lastName} {e?.author?.firstName}</Link>
                   <p className="text-sm text-muted-foreground">{formatDate(e.createdAt)}</p>
                 </div>
               </div>
@@ -98,14 +98,14 @@ export default function Comment({ postId, user }) {
                   </button>
 
                 </div>
-                <button onClick={handleReply} className="text-secondary">Phản hồi</button>
+                <button onClick={() => handleReply(e._id)} className="text-secondary">Phản hồi</button>
               </div>
             </div>
-            <FormReply open={open} keycmt={e?.author} />
-            {e?.replyTo?.length > 0 && (
-              <div>123</div>
-            )}
+            <FormReply open={openReplyId === e._id} keycmt={e} />
           </div>
+        ))}
+        {comment.filter((com_e) => com_e.replyTo.length === 1).map((e) => (
+          <div>{e.content}</div>
         ))}
       </div>
     </div>

@@ -12,6 +12,8 @@ import Loading from '../../../../components/Loading';
 import UserFriendCard from '../userFriendCard';
 import CardFriendAddGroup from './component/cardFriendAddGroup';
 import group from '../../../../service/group';
+import ListMemberGroup from './component/listMemberGroup';
+
 import { ToastContainer, toast } from 'react-toastify';
 import NotificationCss from '../../../../module/cssNotification/NotificationCss';
 
@@ -113,9 +115,8 @@ const ToolGroup = () => {
             </div>
 
             <div className="overflow-y-scroll flex-1 custom-scroll">
+                <ListMemberGroup/>
                 <PictureAndVideo />
-                <Files />
-                <Files />
                 <Files />
             </div>
 

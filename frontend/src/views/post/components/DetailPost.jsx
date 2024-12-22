@@ -137,7 +137,7 @@ export default function DetailPost() {
                 <AVTUser user={user} />
                 <article className='text-wrap grid gap-5'>
                   <div className='grid'>
-                    <Link className='font-bold text-lg hover:link ' to="#">{user.lastName} {user.firstName}</Link>
+                    <Link className='font-bold text-lg hover:link ' to={`/user/${user._id}`}>{user.lastName} {user.firstName}</Link>
                     <div className='flex gap-2'>
                       <span className='text-xs'>{formatDate(posts.createdAt)}</span>
                       <span className='text-xs'>{formatPrivacy(posts.privacy)}</span>

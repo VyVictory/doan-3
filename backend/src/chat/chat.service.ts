@@ -155,13 +155,15 @@ export class ChatService {
       // Lấy các participants (người tham gia khác với user hiện tại)
       const participants = await this.UserModel.find({
         _id: { $in: normalizeIds(distinctUserIds), $ne: userObjectId }, // Exclude the current user
-      }).select('firstName lastName avatar');
+      }).select('firstName lastName avatar')
+      // .sort({createdAt : -1})
     
       // Lấy nhóm mà user tham gia
       const groups = await this.GroupModel.find({
         participants: { $in: normalizeIds([userObjectId]) }, // Normalize userObjectId
-      }).select('name avatarGroup').exec();
-    
+      }).select('name avatarGroup')
+      // .sort({createdAt : -1})
+      .exec();
       return {
         Group: groups,
         Participants: participants,
