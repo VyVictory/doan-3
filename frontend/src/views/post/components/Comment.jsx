@@ -3,13 +3,15 @@ import { getComment, handleLike, handleUnLike } from '../../../service/CommentSe
 import { differenceInMinutes, differenceInHours, differenceInDays } from 'date-fns';
 import AVTUser from '../AVTUser';
 import 'animate.css';
-import { Form, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import FormReply from './FormReply';
-import FormComment from './FormComment';
+import CommentReply from './CommentReply';
+
 
 export default function Comment({ postId, user }) {
   const [comment, setComment] = useState([])
   const [openReplyId, setOpenReplyId] = useState(null);
+  const [isReplyOpen, setIsReplyOpen] = useState(false);
   useEffect(() => {
     const fetchdata = async () => {
       try {
@@ -67,21 +69,23 @@ export default function Comment({ postId, user }) {
     setOpenReplyId(openReplyId === cmtId ? null : cmtId);
   }
 
+  const handleReplyList = (cmtId) => {
+    setIsReplyOpen(isReplyOpen === cmtId ? null : cmtId);
+  }
   //
 
 
   return (
     <div>
-
       <div className='mt-3 border-[1px] rounded-xl grid gap-5'>
         {comment.filter((com_e) => com_e.replyTo.length === 0).map((e) => (
-
           <div key={e._id} className="bg-card dark:bg-card-foreground p-4 rounded-lg rounded-b-none border-b-2 ">
             <div className=' '>
               <div className="flex items-center gap-2 ">
                 {/* <img className="h-12 w-12 rounded-full mr-4" src="https://placehold.co/50x50" alt="user-avatar" /> */}
                 <AVTUser user={e?.author} />
                 <div>
+
                   <Link to={`/user/${e?.author?._id}`} className="text-lg font-semibold">{e?.author?.lastName} {e?.author?.firstName}</Link>
                   <p className="text-sm text-muted-foreground">{formatDate(e.createdAt)}</p>
                 </div>
@@ -102,11 +106,11 @@ export default function Comment({ postId, user }) {
               </div>
             </div>
             <FormReply open={openReplyId === e._id} keycmt={e} />
+            <button onClick={() => handleReplyList(e._id)}>Xem các phản hồi</button>
+            {isReplyOpen && <CommentReply open={isReplyOpen === e._id} postId={postId} user={user} cmtId={e._id} />}
           </div>
         ))}
-        {comment.filter((com_e) => com_e.replyTo.length === 1).map((e) => (
-          <div>{e.content}</div>
-        ))}
+
       </div>
     </div>
   )

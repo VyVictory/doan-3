@@ -2,7 +2,7 @@ import axios from 'axios';
 import authToken from '../components/authToken';
 import Apiuri from './apiuri';
 const url = Apiuri()
-const AddFriend = async (id) => {
+const AddFriend = async (id, useWebSocket) => {
     try {
         const response = await axios.post(`${url}/user/friendrequest/${id}`, {},
             {
@@ -10,14 +10,20 @@ const AddFriend = async (id) => {
             }
         );
         if (response.data) {
+            // Phát tín hiệu WebSocket sau khi yêu cầu thành công
+
             return { success: true, data: response.data, message: 'đã gửi yêu cầu kết bạn thành công' };
         } else {
             return { success: false, message: 'ôi không có lỗi gì đó' };
         }
-    } catch (response) {
-        return { success: false, message: response.response.data.message };
+    } catch (error) {
+        return {
+            success: false,
+            message: error.response?.data?.message || 'Đã xảy ra lỗi khi gửi yêu cầu kết bạn',
+        };
     }
 };
+
 const getListFriendRequest = async () => {
     try {
         const response = await axios.get(`${url}/user/getMyFriendRequest`,

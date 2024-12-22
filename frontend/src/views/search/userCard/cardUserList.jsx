@@ -3,13 +3,16 @@ import userImg from '../../../img/user.png';
 import friend from '../../../service/friend';
 import { ToastContainer, toast } from 'react-toastify';
 import NotificationCss from '../../../module/cssNotification/NotificationCss';
-
+import authToken from '../../../components/authToken';
+import useWebSocket from '../../../service/webSocket/usewebsocket';
 const CardUserList = ({ userdata: initialUserData }) => {
-    const [userdata, setUserdata] = useState(initialUserData);
 
+    const [userdata, setUserdata] = useState(initialUserData);
     const handAddFriend = async (id) => {
         try {
-            const rs = await friend.AddFriend(id);
+
+            const rs = await friend.AddFriend(id, useWebSocket);
+            console.log(rs.message);
             if (rs.success) {
                 setUserdata((prev) => ({ ...prev, status: 'waiting' }));
                 toast.success(rs?.message || 'Đã gửi yêu cầu kết bạn', NotificationCss.Success);
@@ -92,18 +95,17 @@ const CardUserList = ({ userdata: initialUserData }) => {
                                 }
                             }
                         }}
-                        className={`rounded-xl p-2 min-w-24 shadow-sm shadow-gray-300 ${
-                            userdata.status === 'friend'
-                                ? 'hover:text-red-600 text-red-500 hover:bg-red-200 bg-red-100'
-                                : 'hover:text-blue-600 text-blue-500 hover:bg-blue-200 bg-blue-100'
-                        }`}
+                        className={`rounded-xl p-2 min-w-24 shadow-sm shadow-gray-300 ${userdata.status === 'friend'
+                            ? 'hover:text-red-600 text-red-500 hover:bg-red-200 bg-red-100'
+                            : 'hover:text-blue-600 text-blue-500 hover:bg-blue-200 bg-blue-100'
+                            }`}
                     >
                         <strong className="text-sm">
                             {userdata.status === 'no friend'
                                 ? 'Add Friend'
                                 : userdata.status === 'friend'
-                                ? 'Cancel Friend'
-                                : 'Cancel Request'}
+                                    ? 'Cancel Friend'
+                                    : 'Cancel Request'}
                         </strong>
                     </button>
                 </div>

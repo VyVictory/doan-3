@@ -22,11 +22,10 @@ export default function FormReply({ open, keycmt }) {
         } catch (error) {
             console.log(error)
         }
-        // finally {
-        //     window.location.reload()
-        // }
+        finally {
+            window.location.reload()
+        }
     }
-    console.log(formdata)
     return (
         <>
             {open === true && (
