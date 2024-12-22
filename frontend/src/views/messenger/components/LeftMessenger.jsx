@@ -5,9 +5,9 @@ import { InboxIcon, UserGroupIcon, UsersIcon } from "@heroicons/react/24/solid";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 
-import AllFriend from "./allFriend";
-import AllGroup from "./allGroup";
-import AllInbox from "./allInbox";
+import AllFriend from "./leftMenu/allFriend";
+import AllGroup from "./leftMenu/allGroup";
+import AllInbox from "./leftMenu/allInbox";
 import { MessengerContext } from "../layoutMessenger";
 
 const LeftMessenger = () => {

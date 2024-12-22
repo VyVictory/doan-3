@@ -11,6 +11,9 @@ import friend from '../../../../service/friend';
 import Loading from '../../../../components/Loading';
 import UserFriendCard from '../userFriendCard';
 import CardFriendAddGroup from './component/cardFriendAddGroup';
+import group from '../../../../service/group';
+import { ToastContainer, toast } from 'react-toastify';
+import NotificationCss from '../../../../module/cssNotification/NotificationCss';
 
 const ToolGroup = () => {
     const [openModal, setOpenModal] = useState(false); // Modal state
@@ -70,14 +73,38 @@ const ToolGroup = () => {
         const friendName = friend.receiver
             ? `${friend.receiver.firstName} ${friend.receiver.lastName}`
             : friend.sender
-            ? `${friend.sender.firstName} ${friend.sender.lastName}`
-            : '';
+                ? `${friend.sender.firstName} ${friend.sender.lastName}`
+                : '';
         return friendName.toLowerCase().includes(searchTerm.toLowerCase());
     });
+    const handCreateGroup = async () => {
+        if (!selectedFriends.length) {
+            return toast.error("Please select members for the group", NotificationCss.Fail);
+        }
+
+        try {
+            const groupName = document.querySelector("input[placeholder='Nhập tên nhóm']").value;
+            if (!groupName.trim()) {
+                return toast.error("Group name cannot be empty", NotificationCss.Fail);
+            }
+
+            const response = await group.createGroup(groupName, selectedFriends);
+            if (response.success) {
+                toast.success(response.data.message || "Group created successfully", NotificationCss.Success);
+                setOpenModal(false);
+                setSelectedFriends([]); // Clear selection
+            } else {
+                toast.error(response.data || "Failed to create group", NotificationCss.Fail);
+            }
+        } catch (error) {
+            console.error("Group creation error:", error);
+            toast.error("An unexpected error occurred", NotificationCss.Fail);
+        }
+    };
 
     return (
         <div className="flex flex-col h-full">
-            <div className="bg-white border-b flex justify-between items-center h-[56px]">
+            <div className="bg-white border-b border-l-2 flex justify-between items-center h-[56px]">
                 <strong className="text-center w-full">Thông tin nhóm</strong>
                 <button onClick={handleOpenModal} className="flex items-center absolute hover:bg-blue-100 p-2 right-0 mr-2 rounded-xl">
                     <UserGroupIcon className="h-6 w-6 text-gray-700" />
@@ -215,10 +242,13 @@ const ToolGroup = () => {
                     {/* Footer */}
                     <div className="w-full border-t-2 p-2 flex justify-end">
                         <button className="bg-gray-300 mr-2 w-24 p-2 rounded-lg text-black">Hủy</button>
-                        <button className="bg-blue-500 w-24 p-2 rounded-lg text-white">Tạo nhóm</button>
+                        <button
+                            onClick={() => handCreateGroup()}
+                            className="bg-blue-500 w-24 p-2 rounded-lg text-white">Tạo nhóm</button>
                     </div>
                 </Box>
             </Modal>
+            <ToastContainer style={{ marginTop: '55px' }} />
         </div>
     );
 };

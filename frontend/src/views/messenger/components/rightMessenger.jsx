@@ -7,9 +7,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 
-import AllFriend from "./allFriend";
-import AllGroup from "./allGroup";
-import AllInbox from "./allInbox";
+import AllFriend from "./leftMenu/allFriend";
+import AllGroup from "./leftMenu/allGroup";
+import AllInbox from "./leftMenu/allInbox";
 import ToolInbox from "./rightMenu/toolInbox";
 import ToolGroup from "./rightMenu/toolGroup";
 

@@ -243,10 +243,7 @@ const MessengerInbox = () => {
         acc[date].push(message);
         return acc;
     }, {});
-
-
-
-    console.log(groupedMessages)
+    // console.log(groupedMessages)
     return (
         <div className="flex flex-col h-full ">
             <div className="p-2 flex border-b h-14 bg-white shadow-sm">
@@ -260,7 +257,6 @@ const MessengerInbox = () => {
                     </button>
                     <h3 className="font-semibold text-nowrap">{`${userdata.lastName || ''} ${userdata.firstName || ''}`.trim()}</h3>
                 </div>
-
                 <div className=" flex justify-end">
                     <button onClick={handleHiddenRight} >
                         {
@@ -268,7 +264,6 @@ const MessengerInbox = () => {
                                 :
                                 <ChevronLeftIcon className="h-8 w-8 text-gray-700" />
                         }
-
                     </button>
                 </div>
             </div>
