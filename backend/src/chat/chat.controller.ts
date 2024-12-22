@@ -54,7 +54,7 @@ export class ChatController {
 
 
     const currentAuthor = {
-      _id:currentUser._id,
+      _id: currentUser._id,
       firstName: currentUser.firstName,
       lastName: currentUser.lastName,
       avatar: currentUser.avatar,
@@ -64,14 +64,13 @@ export class ChatController {
       ...sendMessageDto,
       mediaURL: message.mediaURL,
       author: currentAuthor,
-      _id:message._id,
-      sender:{
+      _id: message._id,
+      sender: {
         _id: currentUser._id,
         firstName: currentUser.firstName,
         lastName: currentUser.lastName,
         avatar: currentUser.avatar
       }
-
     };
 
 
@@ -82,11 +81,11 @@ export class ChatController {
     }
     console.log('groupParticipants:', groupParticipants);
 
-   
+
     groupParticipants.forEach((participant) => {
-      
-        this.eventService.notificationToUser(participant._id.toString(), 'newmessage', messageSee);
-      
+
+      this.eventService.notificationToUser(participant._id.toString(), 'newmessage', messageSee);
+
     });
     console.log('Saved message:', message);
     return message;
@@ -171,7 +170,7 @@ export class ChatController {
         ...sendMessageDto,
         mediaURL: message.mediaURL,
         author: currentAuthor,
-        _id:message._id,
+        _id: message._id,
       };
 
       notificationUsers.map(async (notif) => {
