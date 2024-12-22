@@ -59,8 +59,9 @@ const AllFriend = () => {
             {loading ? (
                 <Loading />
             ) : (
-                <div className="flex flex-col h-full">
+                <>
                     {/* Search Input */}
+                    
                     <div className=" border-b flex justify-between items-center h-[56px]">
                         <input
                             type="text"
@@ -96,13 +97,55 @@ const AllFriend = () => {
                                             )}
                                         </button>
                                     </li>
-                                    
+
                                 ))
                             )}
+                            {filteredFriends.length === 0 ? (
+                                <li className="px-2 py-4 text-center text-white">Không có bạn bè nào phù hợp với tìm kiếm.</li>
+                            ) : (
+                                filteredFriends.map((friend, index) => (
+                                    <li key={index} className="hover:bg-blue-300 px-2 py-3 rounded-md shadow-sm">
+                                        <button
+                                            onClick={() =>
+                                                navigate(`inbox/?iduser=${friend?.receiver?._id || friend?.sender?._id}`)
+                                            }
+                                            className="flex items-center w-full"
+                                        >
+                                            {friend.receiver && friend.receiver._id && (
+                                                <UserFriendCard iduser={friend.receiver._id} />
+                                            )}
+                                            {friend.sender && friend.sender._id && (
+                                                <UserFriendCard iduser={friend.sender._id} />
+                                            )}
+                                        </button>
+                                    </li>
 
+                                ))
+                            )} {filteredFriends.length === 0 ? (
+                                <li className="px-2 py-4 text-center text-white">Không có bạn bè nào phù hợp với tìm kiếm.</li>
+                            ) : (
+                                filteredFriends.map((friend, index) => (
+                                    <li key={index} className="hover:bg-blue-300 px-2 py-3 rounded-md shadow-sm">
+                                        <button
+                                            onClick={() =>
+                                                navigate(`inbox/?iduser=${friend?.receiver?._id || friend?.sender?._id}`)
+                                            }
+                                            className="flex items-center w-full"
+                                        >
+                                            {friend.receiver && friend.receiver._id && (
+                                                <UserFriendCard iduser={friend.receiver._id} />
+                                            )}
+                                            {friend.sender && friend.sender._id && (
+                                                <UserFriendCard iduser={friend.sender._id} />
+                                            )}
+                                        </button>
+                                    </li>
+
+                                ))
+                            )}
                         </ul>
                     </div>
-                </div>
+                </>
             )}
         </>
     );

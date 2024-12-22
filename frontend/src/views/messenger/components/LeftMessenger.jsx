@@ -34,34 +34,37 @@ const LeftMessenger = () => {
         }
     };
     return (
-        <div className="border-r-gray-300 border-r ">
-            <div className="w-full flex justify-center">
-                <ToggleButtonGroup
-                    className="flex justify-center bg-white w-full max-w-lg h-14 rounded-none "
-                    color="primary"
-                    value={alignment}
-                    exclusive
-                    onChange={handleChange}
-                    aria-label="Platform"
-                >
-                    <ToggleButton value="inbox" className="flex-1 font-medium transition-all hover:bg-blue-50">
-                        <InboxIcon className="h-6 w-6 text-orange-300" />
-                        <span className="ml-2 text-nowrap">Inbox</span>
-                    </ToggleButton>
-                    <ToggleButton value="group" className="flex-1 font-medium transition-all hover:bg-blue-50">
-                        <UserGroupIcon className="h-6 w-6 text-blue-400" />
-                        <span className="ml-2 text-nowrap">Nhóm</span>
-                    </ToggleButton>
-                    <ToggleButton value="friend" className="flex-1 font-medium transition-all hover:bg-blue-50">
-                        <UsersIcon className="h-6 w-6 text-green-400" />
-                        <span className="ml-2 text-nowrap">Bạn Bè</span>
-                    </ToggleButton>
-                </ToggleButtonGroup>
-            </div>
+        <div className="h-full flex flex-col border-r-gray-300 border-r ">
+            <div className=" min-w-80 h-full">
+                <div className="flex flex-col h-full">
+                    <div className="w-full flex justify-center relative">
+                        <ToggleButtonGroup
+                            className="flex justify-center bg-white w-full max-w-lg h-14 rounded-none "
+                            color="primary"
+                            value={alignment}
+                            exclusive
+                            onChange={handleChange}
+                            aria-label="Platform"
+                        >
+                            <ToggleButton value="inbox" className="flex-1 font-medium transition-all hover:bg-blue-50">
+                                <InboxIcon className="h-6 w-6 text-orange-300" />
+                                <span className="ml-2 text-nowrap">Inbox</span>
+                            </ToggleButton>
+                            <ToggleButton value="group" className="flex-1 font-medium transition-all hover:bg-blue-50">
+                                <UserGroupIcon className="h-6 w-6 text-blue-400" />
+                                <span className="ml-2 text-nowrap">Nhóm</span>
+                            </ToggleButton>
+                            <ToggleButton value="friend" className="flex-1 font-medium transition-all hover:bg-blue-50">
+                                <UsersIcon className="h-6 w-6 text-green-400" />
+                                <span className="ml-2 text-nowrap">Bạn Bè</span>
+                            </ToggleButton>
+                        </ToggleButtonGroup>
+                    </div>
 
-            {/* Nội dung động */}
-            <div className="flex-1 p-2 pt-0 h-full">
-                {renderContent()}
+                    {/* Nội dung động */}
+
+                    {renderContent()}
+                </div>
             </div>
         </div>
     );
