@@ -212,19 +212,19 @@ export class UserService {
   async acceptRequestFriends(
     currentUserId: string,
     friendRequestId: string,
-  ): Promise<Friend> {
+  ): Promise<{ friend: Friend; senderId: string }> {
     const friendRequest = await this.FriendRequestModel.findById(friendRequestId);
-
+  
     if (!friendRequest) {
       throw new NotFoundException('No friend request found');
     }
-
+  
     const { sender, receiver } = friendRequest;
-
+  
     if (currentUserId !== receiver.toString()) {
       throw new ForbiddenException('You are not authorized to accept this friend request');
     }
-
+  
     // Kiểm tra xem hai người đã là bạn bè hay chưa
     const existingFriendship = await this.FriendModel.findOne({
       $or: [
@@ -232,23 +232,25 @@ export class UserService {
         { sender: receiver, receiver: sender },
       ],
     });
-
+  
     if (existingFriendship) {
       throw new ConflictException('You are already friends with this user.');
     }
-
+  
     // Xóa yêu cầu kết bạn
     await friendRequest.deleteOne();
-
+  
     // Tạo mối quan hệ bạn bè
     const friend = await this.FriendModel.create({
       sender,
       receiver,
       status: 'friend',
     });
-
-    return friend;
+  
+    // Trả về mối quan hệ bạn bè và ID người gửi yêu cầu
+    return { friend, senderId: sender.toString() };
   }
+  
 
 
 

@@ -198,7 +198,7 @@ export class UserController {
     }
     try {
       const request = await this.userService.FriendsRequest(currentUser._id.toString(), userId);
-      // this.eventService.notificationToUser(userId, 'new friend request from', author);
+      this.eventService.notificationToUser(userId, 'new friend request from', author);
       return request;
     } catch (error) {
       console.error('Error sending friend request:', error);
@@ -219,9 +219,9 @@ export class UserController {
       avatar: currentUser.avatar,
     }
     try {
-      const request = await this.userService.acceptRequestFriends(currentUser._id.toString(), friendRequestId);
-      this.eventService.notificationToUser(currentUser._id.toString(), 'accept friend request from', author);
-      return request;
+      const {senderId, friend} = await this.userService.acceptRequestFriends(currentUser._id.toString(), friendRequestId);
+      this.eventService.notificationToUser(senderId, 'accept friend request', author);
+      return friend;
     } catch (error) {
       console.error('Error sending friend request:', error);
       throw error;
