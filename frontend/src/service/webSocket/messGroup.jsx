@@ -234,7 +234,7 @@ const MessengerInbox = () => {
                                                 )}
                                             >
                                                 {mess?.mediaURL?.length > 0 && mess.mediaURL.map((img, imgIndex) => (
-                                                    <div className='w-full bg-white flex justify-center'>
+                                                    <div key={imgIndex} className='w-full bg-white flex justify-center'>
                                                         <img
                                                             onClick={() => handleOpenModal(img)}
                                                             src={img} alt={`Message Media ${imgIndex}`} className="max-w-full max-h-72 object-cover rounded-t-lg" />
@@ -278,6 +278,7 @@ const MessengerInbox = () => {
                             {/* Nút xóa file */}
                             <IconButton
                                 onClick={handleRemoveFile}
+                                key={file.id}
                                 sx={{
                                     position: 'absolute',
                                     top: 1,

@@ -54,7 +54,7 @@ export class ChatController {
 
 
     const currentAuthor = {
-      
+      _id:currentUser._id,
       firstName: currentUser.firstName,
       lastName: currentUser.lastName,
       avatar: currentUser.avatar,
@@ -64,8 +64,12 @@ export class ChatController {
       ...sendMessageDto,
       mediaURL: message.mediaURL,
       author: currentAuthor,
+      _id:message._id,
       sender:{
-        _id: currentUser._id
+        _id: currentUser._id,
+        firstName: currentUser.firstName,
+        lastName: currentUser.lastName,
+        avatar: currentUser.avatar
       }
 
     };
