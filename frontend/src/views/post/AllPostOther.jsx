@@ -179,7 +179,7 @@ export default function AllPostOther({ user }) {
                                         <span>{post.dislikes.length}</span>
                                     </button>
                                 </div>
-                                <Link  className={"flex items-end gap-1"}>
+                                <Link to={`/post/${post._id}`} className={"flex items-end gap-1"}>
                                     <ChatBubbleLeftIcon className="size-5" />
                                     <span>{post.comments.length}</span>
                                 </Link>
