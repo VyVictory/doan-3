@@ -12,6 +12,7 @@ import { CreateGroupDto } from './dto/createGroup.dto';
 import { SendMessageDto } from './dto/sendMessage.dto';
 import { EventService } from '../event/event.service';
 import { authorize } from 'passport';
+import { addMembersToGroupDto } from './dto/addMemberGroup.dto';
 
 
 
@@ -199,5 +200,28 @@ export class ChatController {
     const currentUserOBJ = new Types.ObjectId(currentUser._id.toString());
     return await this.chatService.revokeAMessage(messageOBJ,currentUserOBJ);
   }
+
+  @Put('addMembersTogroup/:groupId')
+  @UseGuards(AuthGuardD)
+  async addMembersToGroup(
+    @CurrentUser() currentUser: User,
+    @Param('groupId') groupId: Types.ObjectId,
+    @Body('participants') addMembersToGroupDto: addMembersToGroupDto,
+  ){
+    try {
+      if (!currentUser) {
+        throw new HttpException('User not found or not authenticated', HttpStatus.UNAUTHORIZED);
+      }
+      if (!Array.isArray(addMembersToGroupDto)) {
+        throw new HttpException('Invalid user data', HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+      return await this.chatService.addMembersToGroup(addMembersToGroupDto,groupId);
+    } catch (error) {
+      console.log('error in chatcontroller /addMembersTogroup', error);
+    }
+    
+  }
+
+
 
 }

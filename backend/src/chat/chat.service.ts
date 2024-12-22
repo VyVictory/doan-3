@@ -10,6 +10,7 @@ import { content } from 'googleapis/build/src/apis/content';
 import { Group } from './schema/group.schema';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { RoomChat } from './schema/roomChat.schema';
+import { addMembersToGroupDto } from './dto/addMemberGroup.dto';
 
 @Injectable()
 export class ChatService {
@@ -127,25 +128,28 @@ export class ChatService {
 
 
 
-    async getMylishChat(userId: Types.ObjectId): Promise<{ Group: Group[], Participants: any[] }> {
+    async getMylishChat(userId: string | Types.ObjectId): Promise<{ Group: Group[], Participants: any[] }> {
+      // Chuyển đổi userId thành ObjectId nếu là string
+      const userObjectId = typeof userId === 'string' ? new Types.ObjectId(userId) : userId;
+      
       // Lấy danh sách sender và receiver liên quan đến userId
       const distinctUserIds = await this.MessageModel.distinct('sender', {
-        $or: [{ sender: userId }, { receiver: userId }]
+        $or: [{ sender: userObjectId }, { receiver: userObjectId }],
       });
     
-      // Lọc ra những người đã nhắn tin với userId và loại trừ bản thân
+      // Lấy danh sách participants, chuẩn hóa ID trong cơ sở dữ liệu
       const participants = await this.UserModel.find({
-        _id: { $in: distinctUserIds, $ne: userId },
-      }).select('firstName lastName avatar'); 
+        _id: { $in: distinctUserIds.map(id => new Types.ObjectId(id.toString())), $ne: userObjectId },
+      }).select('firstName lastName avatar');
     
-      // Lấy danh sách nhóm mà userId tham gia
-      const groups = await this.GroupModel.find({ participants: userId })
-      .select('name avatarGroup') 
-      .exec();
+      // Lấy các nhóm mà userId tham gia, chuẩn hóa participants
+      const groups = await this.GroupModel.find({ participants: userObjectId })
+        .select('name avatarGroup')
+        .exec();
     
       return {
         Group: groups,
-        Participants: participants, // Trả về danh sách người tham gia mà không có thông tin tin nhắn
+        Participants: participants,
       };
     }
     
@@ -263,8 +267,47 @@ export class ChatService {
     
       return revokedMessage;
     }
-    
 
+
+    async addMembersToGroup(
+      addMembersToGroupDto: addMembersToGroupDto,
+      groupId: Types.ObjectId,
+    ): Promise<Group> {
+      const { participants } = addMembersToGroupDto;
+    
+      // Kiểm tra xem group có tồn tại hay không
+      const group = await this.GroupModel.findById(groupId);
+      if (!group) {
+        throw new HttpException('Group not found', HttpStatus.NOT_FOUND);
+      }
+    
+      // Lấy danh sách participants hiện tại trong group
+      const existingParticipantIds = group.participants.map((id) => id.toString());
+    
+ 
+      const newParticipantIds = participants.filter(
+        (id) => !existingParticipantIds.includes(id.toString()),
+      );
+    
+      if (newParticipantIds.length === 0) {
+        throw new HttpException(
+          'All users are already in the group',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    
+      // Thêm userId mới vào participants
+      const newParticipants = await this.UserModel.find({ _id: { $in: newParticipantIds } });
+      group.participants.push(...newParticipants);
+    
+      // Lưu group sau khi thêm
+      return await group.save();
+    }
+    
+    
+    
+    
+    
 
     
 }
