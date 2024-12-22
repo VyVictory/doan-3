@@ -15,6 +15,7 @@ import { UploadAvatarDto } from './dto/uploadAvartar.dto';
 import { UploadCoverImgDto } from './dto/uploadCoverImg.dto';
 import { OptionalAuthGuard } from './guard/optional.guard';
 import { Types } from 'mongoose';
+import { EventService } from 'src/event/event.service';
 
 
 
@@ -23,6 +24,7 @@ export class UserController {
   constructor(
     private userService: UserService,
     private otpService: OtpService,
+    private eventService: EventService,
   ) {}
 
   @Post('register')
@@ -188,7 +190,20 @@ export class UserController {
     @CurrentUser() currentUser: User,
     @Param('userId') userId: string,
   ){
-    return this.userService.FriendsRequest(currentUser._id.toString(), userId);
+    const author = {
+      _id: currentUser._id,
+      firstName: currentUser.firstName,
+      lastName: currentUser.lastName,
+      avatar: currentUser.avatar,
+    }
+    try {
+      const request = await this.userService.FriendsRequest(currentUser._id.toString(), userId);
+      // this.eventService.notificationToUser(userId, 'new friend request from', author);
+      return request;
+    } catch (error) {
+      console.error('Error sending friend request:', error);
+      throw error;
+    }
   }
 
   @Post('acceptfriend/:friendRequestId')
@@ -197,7 +212,21 @@ export class UserController {
     @CurrentUser() currentUser: User,
     @Param('friendRequestId') friendRequestId: string,
   ){
-    return this.userService.acceptRequestFriends(currentUser._id.toString(), friendRequestId);
+    const author = {
+      _id: currentUser._id,
+      firstName: currentUser.firstName,
+      lastName: currentUser.lastName,
+      avatar: currentUser.avatar,
+    }
+    try {
+      const request = await this.userService.acceptRequestFriends(currentUser._id.toString(), friendRequestId);
+      this.eventService.notificationToUser(currentUser._id.toString(), 'accept friend request from', author);
+      return request;
+    } catch (error) {
+      console.error('Error sending friend request:', error);
+      throw error;
+    }
+
   }
 
   @Post('rejectFriendRequest/:friendRequestId')

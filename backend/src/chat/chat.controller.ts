@@ -52,6 +52,7 @@ export class ChatController {
 
     const message = await this.chatService.sendMessageToGroup(sendMessageDto, currentUserID, groupId, files?.files);
 
+
     const currentAuthor = {
       
       firstName: currentUser.firstName,
@@ -75,14 +76,15 @@ export class ChatController {
     if (!Array.isArray(groupParticipants)) {
       throw new HttpException('Invalid group participants data', HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    console.log('groupParticipants:', groupParticipants);
 
-
+   
     groupParticipants.forEach((participant) => {
-
-      this.eventService.notificationToUser(participant._id.toString(), 'newmessage', messageSee);
-
+      
+        this.eventService.notificationToUser(participant._id.toString(), 'newmessage', messageSee);
+      
     });
-    console.log('Saved message:', message); // Log dữ liệu tin nhắn đã lưu
+    console.log('Saved message:', message);
     return message;
   }
 
