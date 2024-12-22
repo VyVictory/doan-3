@@ -88,10 +88,10 @@ export default function FriendCard({ iduser, idrequest }) {
 
             <div className="flex flex-row gap-2 px-2 mb-2 items-center">
                 <button
-                    onClick={userdata?._id ? () => chaneUrl(`/messenger/?iduser=${userdata._id}`) : undefined}
+                    onClick={() => handDetailUser(userdata?._id)}
                     className="w-full  bg-gray-300 py-2 text-black rounded-lg transition-transform transform hover:scale-105"
                 >
-                    Nhắn tin
+                    Xem trang cá nhân
                 </button>
                 <div className='flex justify-center items-center'>
                     <div className="dropdown">
