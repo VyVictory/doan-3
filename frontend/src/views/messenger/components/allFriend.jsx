@@ -69,7 +69,7 @@ const AllFriend = () => {
                             className="w-full rounded-3xl border border-gray-300 pr-8 pl-9 py-2 text-black bg-white focus:outline-none"
                             placeholder="Tìm kiếm..."
                         />
-                        <a className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                        <a className="absolute ml-2 text-gray-400">
                             <MagnifyingGlassIcon className="h-4 w-4 fill-black" />
                         </a>
                     </div>
