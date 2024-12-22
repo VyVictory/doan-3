@@ -74,7 +74,7 @@ export default function CommentReply({ open, postId, user, cmtId }) {
                         <Loading />
                     ) : (
                         comment.length === 0 ? (
-                            <div className="text-center p-4">Chưa có phản hồi nàos</div>
+                            <div className="text-center p-4">Chưa có phản hồi nào</div>
                         ) : (
                             comment.filter(cmt => cmt?.replyTo[0] === cmtId).length === 0 ? (
                                 <div className="text-center p-4">Chưa có phản hồi nào</div>
