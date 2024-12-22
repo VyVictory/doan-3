@@ -6,7 +6,7 @@ const ToolInbox = () => {
         <div className="flex flex-col h-full">
             <div
 
-                className={`bg-white border-b flex justify-center items-center h-[56px]`}
+                className={`bg-white border-b flex border-l-2 justify-center items-center h-[56px]`}
             >
                 <strong className="w-full text-center text-nowrap">Thông tin hội thoại</strong>
             </div>

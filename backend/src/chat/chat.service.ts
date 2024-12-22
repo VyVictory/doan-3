@@ -10,6 +10,7 @@ import { content } from 'googleapis/build/src/apis/content';
 import { Group } from './schema/group.schema';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { RoomChat } from './schema/roomChat.schema';
+import { addMembersToGroupDto } from './dto/addMemberGroup.dto';
 
 @Injectable()
 export class ChatService {
@@ -25,12 +26,14 @@ export class ChatService {
 
     async createGroup(createGroupDto: CreateGroupDto, userId: Types.ObjectId){
         const { name, avatarGroup, participants } = createGroupDto;
-
+        const participantIds = participants.map(participant =>
+          new Types.ObjectId(participant)
+      );
         const group = new this.GroupModel({
           name,
           avatarGroup,
           owner: userId,
-          participants: [...participants, userId],
+          participants: [...participantIds, userId],
         });
     
         return await group.save();
@@ -127,27 +130,45 @@ export class ChatService {
 
 
 
-    async getMylishChat(userId: Types.ObjectId): Promise<{ Group: Group[], Participants: any[] }> {
-      // Lấy danh sách sender và receiver liên quan đến userId
+    async getMylishChat(userId: string | Types.ObjectId): Promise<{ Group: Group[]; Participants: any[] }> {
+      const userObjectId = typeof userId === 'string' ? new Types.ObjectId(userId) : userId;
+    
+
       const distinctUserIds = await this.MessageModel.distinct('sender', {
-        $or: [{ sender: userId }, { receiver: userId }]
-      });
+        $or: [
+          { sender: userObjectId },
+          { receiver: userObjectId },
+        ],
+      }).then(ids => ids.map(id => id.toString()));
     
-      // Lọc ra những người đã nhắn tin với userId và loại trừ bản thân
+
+      const normalizeIds = (ids: (string | Types.ObjectId)[]) => {
+        return ids.map(id => {
+
+          if (typeof id === 'string' && Types.ObjectId.isValid(id)) {
+            return new Types.ObjectId(id);
+          }
+          return id;
+        });
+      };
+    
+      // Lấy các participants (người tham gia khác với user hiện tại)
       const participants = await this.UserModel.find({
-        _id: { $in: distinctUserIds, $ne: userId },
-      }).select('firstName lastName avatar'); 
+        _id: { $in: normalizeIds(distinctUserIds), $ne: userObjectId }, // Exclude the current user
+      }).select('firstName lastName avatar');
     
-      // Lấy danh sách nhóm mà userId tham gia
-      const groups = await this.GroupModel.find({ participants: userId })
-      .select('name avatarGroup') 
-      .exec();
+      // Lấy nhóm mà user tham gia
+      const groups = await this.GroupModel.find({
+        participants: { $in: normalizeIds([userObjectId]) }, // Normalize userObjectId
+      }).select('name avatarGroup').exec();
     
       return {
         Group: groups,
-        Participants: participants, // Trả về danh sách người tham gia mà không có thông tin tin nhắn
+        Participants: participants,
       };
     }
+    
+    
     
 
     async removeMemberInGroup(groupId: Types.ObjectId, userId: Types.ObjectId): Promise<Group> {
@@ -263,8 +284,47 @@ export class ChatService {
     
       return revokedMessage;
     }
-    
 
+
+    async addMembersToGroup(
+      addMembersToGroupDto: addMembersToGroupDto,
+      groupId: Types.ObjectId,
+    ): Promise<Group> {
+      const { participants } = addMembersToGroupDto;
+    
+      // Kiểm tra xem group có tồn tại hay không
+      const group = await this.GroupModel.findById(groupId);
+      if (!group) {
+        throw new HttpException('Group not found', HttpStatus.NOT_FOUND);
+      }
+    
+      // Lấy danh sách participants hiện tại trong group
+      const existingParticipantIds = group.participants.map((id) => id.toString());
+    
+ 
+      const newParticipantIds = participants.filter(
+        (id) => !existingParticipantIds.includes(id.toString()),
+      );
+    
+      if (newParticipantIds.length === 0) {
+        throw new HttpException(
+          'All users are already in the group',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    
+      // Thêm userId mới vào participants
+      const newParticipants = await this.UserModel.find({ _id: { $in: newParticipantIds } });
+      group.participants.push(...newParticipants);
+    
+      // Lưu group sau khi thêm
+      return await group.save();
+    }
+    
+    
+    
+    
+    
 
     
 }

@@ -17,6 +17,7 @@ import { useContext } from "react";
 import { MessengerContext } from '../../layoutMessenger';
 import { toast, ToastContainer } from 'react-toastify';
 import NotificationCss from '../../../../module/cssNotification/NotificationCss';
+import group from '../../../../service/group';
 const MessengerInbox = () => {
     const { userContext } = useUser();
     const { RightShow, handleHiddenRight, setContent, setInboxData } = useContext(MessengerContext);
@@ -72,7 +73,7 @@ const MessengerInbox = () => {
 
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
-        const userId = queryParams.get('iduser');
+        const userId = queryParams.get('idgroup');
         setIdUser(userId);
     }, [location.search]);
 
@@ -129,7 +130,7 @@ const MessengerInbox = () => {
         if (iduser === '' || !iduser) return;
         const fetchMessengerData = async () => {
             try {
-                const res = await messenger.getListMessengerByUser(iduser);
+                const res = await group.getMessengerGroup(iduser);
                 if (res.success) {
                     setMessengerdata(res.data);
                 }
@@ -243,10 +244,7 @@ const MessengerInbox = () => {
         acc[date].push(message);
         return acc;
     }, {});
-
-
-
-    console.log(groupedMessages)
+    // console.log(groupedMessages)
     return (
         <div className="flex flex-col h-full ">
             <div className="p-2 flex border-b h-14 bg-white shadow-sm">
@@ -260,7 +258,6 @@ const MessengerInbox = () => {
                     </button>
                     <h3 className="font-semibold text-nowrap">{`${userdata.lastName || ''} ${userdata.firstName || ''}`.trim()}</h3>
                 </div>
-
                 <div className=" flex justify-end">
                     <button onClick={handleHiddenRight} >
                         {
@@ -268,7 +265,6 @@ const MessengerInbox = () => {
                                 :
                                 <ChevronLeftIcon className="h-8 w-8 text-gray-700" />
                         }
-
                     </button>
                 </div>
             </div>

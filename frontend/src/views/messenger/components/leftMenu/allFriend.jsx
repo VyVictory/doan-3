@@ -1,6 +1,6 @@
-import friend from "../../../service/friend";
-import UserFriendCard from "./userFriendCard";
-import Loading from "../../../components/Loading";
+import friend from "../../../../service/friend";
+import UserFriendCard from "../userFriendCard";
+import Loading from "../../../../components/Loading";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
@@ -59,8 +59,9 @@ const AllFriend = () => {
             {loading ? (
                 <Loading />
             ) : (
-                <div className="flex flex-col h-full">
+                <>
                     {/* Search Input */}
+                    
                     <div className=" border-b flex justify-between items-center h-[56px]">
                         <input
                             type="text"
@@ -96,13 +97,13 @@ const AllFriend = () => {
                                             )}
                                         </button>
                                     </li>
-                                    
+
                                 ))
                             )}
-
+                         
                         </ul>
                     </div>
-                </div>
+                </>
             )}
         </>
     );
