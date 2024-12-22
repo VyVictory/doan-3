@@ -75,7 +75,7 @@ const ListMemberGroup = () => {
     };
     const handAddMemberGroup = async (idgr, listMember) => {
         try {
-            const res = await group.addMemberGroup(idgr, listMember)
+            const res = await group.addMemberGroup(idgr, listMember[0])
             if (res.success) {
                toast.success('Thêm thành viên vào nhóm thành công.', NotificationCss.Success);
             }
