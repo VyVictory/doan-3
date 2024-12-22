@@ -115,7 +115,7 @@ const ToolGroup = () => {
             </div>
 
             <div className="overflow-y-scroll flex-1 custom-scroll">
-                <ListMemberGroup/>
+                <ListMemberGroup />
                 <PictureAndVideo />
                 <Files />
             </div>
@@ -249,7 +249,6 @@ const ToolGroup = () => {
                     </div>
                 </Box>
             </Modal>
-            <ToastContainer style={{ marginTop: '55px' }} />
         </div>
     );
 };

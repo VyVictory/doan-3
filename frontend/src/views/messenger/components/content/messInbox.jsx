@@ -453,7 +453,6 @@ const MessengerInbox = () => {
                     </Box>
                 </Modal>
             </div>
-            <ToastContainer style={{ marginTop: '55px' }} />
         </div >
     );
 };

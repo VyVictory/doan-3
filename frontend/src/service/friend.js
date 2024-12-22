@@ -1,9 +1,15 @@
 import axios from 'axios';
 import authToken from '../components/authToken';
 import Apiuri from './apiuri';
+import { useCallback } from 'react';
+import socket from './webSocket/socket';
+import useWebSocket from './webSocket/usewebsocket';
 const url = Apiuri()
-const AddFriend = async (id, useWebSocket) => {
+
+const AddFriend = async (id) => {
+
     try {
+
         const response = await axios.post(`${url}/user/friendrequest/${id}`, {},
             {
                 headers: { Authorization: `Bearer ${authToken.getToken()}` },
@@ -11,7 +17,7 @@ const AddFriend = async (id, useWebSocket) => {
         );
         if (response.data) {
             // Phát tín hiệu WebSocket sau khi yêu cầu thành công
-
+            socket.emit("addFriend", response.data);
             return { success: true, data: response.data, message: 'đã gửi yêu cầu kết bạn thành công' };
         } else {
             return { success: false, message: 'ôi không có lỗi gì đó' };
@@ -116,9 +122,9 @@ const cancelFriendRequest = async (id) => {
             }
         );
         const idRequest = userrequest.data
-            .filter((item) => item.receiver === id || item.sender === id)
+            .filter((item) => item.receiver !== id && item.sender !== id)
             .map((item) => item._id);
-        console.log(userrequest.data)
+        console.log(idRequest)
         const response = await axios.post(`${url}/user/rejectFriendRequest/${idRequest}`, {},
             {
                 headers: { Authorization: `Bearer ${authToken.getToken()}` },

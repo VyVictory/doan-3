@@ -99,9 +99,9 @@ export class ChatService {
         })
         .exec();
     
-      if (!messages.length) { 
-        throw new HttpException('Group has no messages', HttpStatus.NOT_FOUND);
-      }
+      // if (!messages.length) { 
+      //   throw new HttpException('Group has no messages', HttpStatus.NOT_FOUND);
+      // }
 
       return { group, messages };
     }
