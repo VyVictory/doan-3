@@ -362,7 +362,7 @@ export class UserService {
   
   
   
-  async getListFriendAnother(userId: Types.ObjectId): Promise<Friend[]> {
+  async getListFriendAnother(userId: string): Promise<Friend[]> {
     const friendList = await this.FriendModel.find({
       $or: [
         { sender: userId },

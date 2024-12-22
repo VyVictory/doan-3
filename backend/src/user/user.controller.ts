@@ -259,7 +259,7 @@ export class UserController {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
       const userIdOBJ = new Types.ObjectId(userId);
-      return this.userService.getListFriendAnother(userIdOBJ);
+      return this.userService.getListFriendAnother(userId);
     } 
 
     
