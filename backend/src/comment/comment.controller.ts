@@ -30,7 +30,7 @@ export class CommentController {
     console.log('Current User:', currentUser);
     console.log('Uploaded Files:', files);
 
-    return this.commentService.create(currentUser._id.toString(), postId, commetDto, files.files);
+    return this.commentService.create(currentUser._id.toString(), postId, commetDto, files?.files);
   }
 
   @Get()
@@ -76,6 +76,15 @@ export class CommentController {
     }
 
     return await this.commentService.likeComment(id, currentUser._id.toString());
+  }
+
+  @Put(':id/unlike')
+  @UseGuards(AuthGuardD)
+  async unlikeComment(@Param('id') id: string, @CurrentUser() currentUser: User) {
+    if (!currentUser) {
+      throw new HttpException('User not found or not authenticated', HttpStatus.UNAUTHORIZED);
+    }
+    return await this.commentService.unlikeComment(id, currentUser._id.toString());
   }
 
   @Post(':id/reply')
