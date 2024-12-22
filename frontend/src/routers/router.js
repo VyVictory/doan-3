@@ -23,6 +23,7 @@ import FriendOtherProfile from "../views/profile/OtherProfiles/FriendOtherProfil
 import authToken from "../components/authToken.jsx";
 import MessengerGroup from "../views/messenger/components/content/messGroup.jsx";
 import Test from "./test.jsx";
+import DetailPost from "../views/post/components/DetailPost.jsx";
 
 function routers() {
     return (
@@ -35,7 +36,7 @@ function routers() {
                         <Route path="list" element={<MyAllFriend />} />
                         <Route path="requests" element={<Friendinvitation />} />
                     </Route>
-                    <Route path="user" element={<Personal />} />
+                    <Route path="post/:id" element={<DetailPost />} />
                     <Route path="search" element={<Searchpage />} />
                     <Route path="myprofile" element={<Personal />}>
                         <Route index element={<MyPosts />} />
