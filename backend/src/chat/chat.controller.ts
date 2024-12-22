@@ -167,6 +167,7 @@ export class ChatController {
         ...sendMessageDto,
         mediaURL: message.mediaURL,
         author: currentAuthor,
+        _id:message._id,
       };
 
       notificationUsers.map(async (notif) => {
