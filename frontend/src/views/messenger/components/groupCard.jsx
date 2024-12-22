@@ -31,7 +31,7 @@ const GroupCard = ({ group }) => {
             <Loading />
         );
     }
-    console.log(groupdata)
+    // console.log(groupdata)
     return (
         <>
             <img

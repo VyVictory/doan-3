@@ -10,7 +10,6 @@ const UserFriendCard = ({ iduser }) => {
         const fetchdata = async () => {
             if (iduser) { // Check if iduser is valid
                 try {
-                    console.log('Fetching data for id:', iduser);
                     const res = await user.getProfileUser(iduser);
                     if (res.success) {
                         setUserdata(res.data);

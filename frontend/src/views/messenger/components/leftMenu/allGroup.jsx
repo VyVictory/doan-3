@@ -61,7 +61,7 @@ const AllGroup = () => {
             setFilteredGroups(filtered);
         }
     }, [searchTerm, groups]);
-    console.log(filteredGroups)
+    // console.log(filteredGroups)
     // console.log(groupd)
     return (
         <>
