@@ -133,7 +133,7 @@ const MessengerInbox = () => {
                 const res = await group.getMessengerGroup(iduser);
                 if (res.success) {
                     setMessengerdata(res.data.messages);
-                    console.log(res.data.messages)
+                    // console.log(res.data.messages)
                 }
             } catch (error) {
                 console.error('Error fetching messenger data:', error);
@@ -251,8 +251,6 @@ const MessengerInbox = () => {
         }
         return acc;
     }, {});
-
-    console.log(hoveredMessageId)
     return (
         <div className="flex flex-col h-full ">
             <div className="p-2 flex border-b h-14 bg-white shadow-sm">

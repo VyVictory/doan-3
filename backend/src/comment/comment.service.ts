@@ -42,10 +42,11 @@ export class CommentService {
     const saveCMT = await newCmt.save();
     await this.postModel.findByIdAndUpdate(
       postId,
-      { $push: { comments: saveCMT._id }, 
+      {
+        $push: { comments: saveCMT._id },
         $inc: { commentsCount: 1 }
       },
-    
+
       { new: true }
     );
     return saveCMT;
@@ -69,7 +70,7 @@ export class CommentService {
 
   //tìm tòn bộ cmt có trong post
   async findByPostId(postId: string): Promise<Comment[]> {
-    return this.commentModel.find({ post: postId }).populate('author', 'firstName lastName').exec();
+    return this.commentModel.find({ post: postId }).populate('author', 'firstName lastName avatar').exec();
   }
 
 
@@ -83,8 +84,8 @@ export class CommentService {
     await this.postModel.findByIdAndUpdate(
       deletedComment.post,
       {
-        $pull: { comments: id }, 
-        $inc: { commentsCount: -1 }, 
+        $pull: { comments: id },
+        $inc: { commentsCount: -1 },
       },
       { new: true },
     );
@@ -149,15 +150,26 @@ export class CommentService {
     const comment = await this.commentModel.findById(commentId);
 
     if (!comment) {
-        throw new NotFoundException(`Bình luận có ID "${commentId}" không tồn tại`);
+      throw new NotFoundException(`Bình luận có ID "${commentId}" không tồn tại`);
     }
 
     if (comment.likes.includes(userId)) {
-        throw new HttpException('Bạn đã thích bình luận này', HttpStatus.BAD_REQUEST);
+      throw new HttpException('Bạn đã thích bình luận này', HttpStatus.BAD_REQUEST);
     }
     comment.likes.push(userId);
     return await comment.save();
-}
+  }
 
+  async unlikeComment(commentId: string, userId: string): Promise<Comment> {
+    const comment = await this.commentModel.findById(commentId);
+    if (!comment) {
+      throw new NotFoundException(`Bình luận có ID "${commentId}" không tồn tại`);
+    }
+    if (!comment.likes.includes(userId)) {
+      throw new HttpException('Bạn chưa thể unlike', HttpStatus.BAD_REQUEST);
+    }
+    comment.likes = comment.likes.filter((id) => id !== userId);
+    return await comment.save();
+  }
 }
 

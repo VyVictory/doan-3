@@ -6,11 +6,12 @@ import { useState, useEffect } from 'react';
 import { getDetailPost, handleUnLike, handleLike, handleUnDisLike, handleDisLike } from '../../../service/PostService';
 import { profileUserCurrent } from '../../../service/ProfilePersonal';
 import { OtherProfile } from '../../../service/OtherProfile';
-import { format, differenceInMinutes, differenceInHours, differenceInDays, set } from 'date-fns';
+import { differenceInMinutes, differenceInHours, differenceInDays } from 'date-fns';
 import DropdownPostPersonal from './DropdownPostPersonal';
 import DropdownOtherPost from './DropdownOtherPost';
 import FormComment from './FormComment';
-
+import Comment from './Comment';
+import 'animate.css';
 
 export default function DetailPost() {
 
@@ -127,74 +128,77 @@ export default function DetailPost() {
   console.log(posts)
   return (
     <div className='grid justify-center'>
-      <div key={posts._id}
-        className='flex items-start w-full p-6 border border-gray-300 rounded-lg shadow-md shadow-zinc-300 gap-3'>
-        <div className='grid gap-2 w-full'>
-          <div className='flex  justify-between'>
-            <div className='flex gap-3'>
-              <AVTUser user={user} />
-              <article className='text-wrap grid gap-5'>
-                <div className='grid'>
-                  <Link className='font-bold text-lg hover:link ' to="#">{user.lastName} {user.firstName}</Link>
-                  <div className='flex gap-2'>
-                    <span className='text-xs'>{formatDate(posts.createdAt)}</span>
-                    <span className='text-xs'>{formatPrivacy(posts.privacy)}</span>
+      <div className='max-w-2xl'>
+        <div key={posts._id}
+          className='flex items-start w-full p-6 border border-gray-300 rounded-lg shadow-md shadow-zinc-300 gap-3'>
+          <div className='grid gap-2 w-full'>
+            <div className='flex  justify-between'>
+              <div className='flex gap-3'>
+                <AVTUser user={user} />
+                <article className='text-wrap grid gap-5'>
+                  <div className='grid'>
+                    <Link className='font-bold text-lg hover:link ' to="#">{user.lastName} {user.firstName}</Link>
+                    <div className='flex gap-2'>
+                      <span className='text-xs'>{formatDate(posts.createdAt)}</span>
+                      <span className='text-xs'>{formatPrivacy(posts.privacy)}</span>
+                    </div>
                   </div>
-                </div>
-              </article>
-            </div>
-            {userLogin._id === posts.author ? (
-              <DropdownPostPersonal postId={posts._id} />
-            ) : (
-              <DropdownOtherPost postId={posts._id} />
-            )}
-          </div>
-          <p>{posts.content}</p>
-          {posts?.img?.length > 0 && (
-            <div className="carousel rounded-box w-96 h-64 relative">
-              {posts?.img?.length > 1 && (
-                <button onClick={() => handlePrev(posts)} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">‹</button>
-              )}
-              <div className="carousel-item w-full">
-                <img
-                  src={posts?.img[currentIndexes[posts._id] || 0]}
-                  className="w-full"
-                  alt="Post visual"
-                />
+                </article>
               </div>
-              {posts?.img?.length > 1 && (
-                <button onClick={() => handleNext(posts)} className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">›</button>
+              {userLogin._id === posts.author ? (
+                <DropdownPostPersonal postId={posts._id} />
+              ) : (
+                <DropdownOtherPost postId={posts._id} />
               )}
             </div>
-          )}
-          <div className='flex justify-between'>
-            <div className='flex gap-2'>
-              <button onClick={() => handleLikeClick(posts._id)} className={"flex items-end gap-1"}>
-                {posts?.likes?.includes(userLogin._id)
-                  ? <HandThumbUpIcon className="size-5 animate__heartBeat" color='blue' />
-                  : <HandThumbUpIcon className="size-5 hover:text-blue-700 " />
-                }
-                <span>{posts?.likes?.length}</span>
+            <p>{posts.content}</p>
+            {posts?.img?.length > 0 && (
+              <div className="carousel rounded-box w-96 h-64 relative">
+                {posts?.img?.length > 1 && (
+                  <button onClick={() => handlePrev(posts)} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">‹</button>
+                )}
+                <div className="carousel-item w-full">
+                  <img
+                    src={posts?.img[currentIndexes[posts._id] || 0]}
+                    className="w-full"
+                    alt="Post visual"
+                  />
+                </div>
+                {posts?.img?.length > 1 && (
+                  <button onClick={() => handleNext(posts)} className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">›</button>
+                )}
+              </div>
+            )}
+            <div className='flex justify-between'>
+              <div className='flex gap-2'>
+                <button onClick={() => handleLikeClick(posts._id)} className={"flex items-end gap-1"}>
+                  {posts?.likes?.includes(userLogin._id)
+                    ? <HandThumbUpIcon className="size-5 animate__heartBeat" color='blue' />
+                    : <HandThumbUpIcon className="size-5 hover:text-blue-700 " />
+                  }
+                  <span>{posts?.likes?.length}</span>
+                </button>
+                <button onClick={() => handleDislikeClick(posts._id)} className={"flex items-end gap-1 "}>
+                  {posts?.dislikes?.includes(userLogin._id)
+                    ? <HandThumbDownIcon className="size-5 animate__heartBeat" color='red' />
+                    : <HandThumbDownIcon className="size-5 hover:text-red-700" />
+                  }
+                  <span>{posts?.dislikes?.length}</span>
+                </button>
+              </div>
+              <button className='flex items-end gap-1'>
+                <ChatBubbleLeftIcon className="size-5" />
+                <span>{posts?.comments?.length}</span>
               </button>
-              <button onClick={() => handleDislikeClick(posts._id)} className={"flex items-end gap-1 "}>
-                {posts?.dislikes?.includes(userLogin._id)
-                  ? <HandThumbDownIcon className="size-5 animate__heartBeat" color='red' />
-                  : <HandThumbDownIcon className="size-5 hover:text-red-700" />
-                }
-                <span>{posts?.dislikes?.length}</span>
+              <button>
+                <ShareIcon className="size-5" />
               </button>
             </div>
-            <button>
-              <ChatBubbleLeftIcon className="size-5" />
-              {/* <span>{posts.comments.length}</span> */}
-            </button>
-            <button>
-              <ShareIcon className="size-5" />
-            </button>
           </div>
         </div>
+        <FormComment postId={posts._id} />
+        <Comment postId={posts._id} user={userLogin} />
       </div>
-      <FormComment />
     </div>
   )
 }
