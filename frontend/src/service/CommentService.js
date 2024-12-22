@@ -48,7 +48,21 @@ export async function handleUnLike(cmtId) {
 
 export async function createComment(postId, content) {
     try {
-        const request = await axios.post(`${url}/comments/${postId}`, { postId, content }, {
+        const request = await axios.post(`${url}/comments/${postId}`, { content }, {
+            headers: {
+                Authorization: `Bearer ${authToken.getToken()}`
+            }
+        })
+        return request
+    } catch (error) {
+        console.log(error)
+    }
+}
+//create reply comment
+
+export async function createReplyComment(cmtId, content) {
+    try {
+        const request = await axios.post(`${url}/comments/${cmtId}/reply`, { content }, {
             headers: {
                 Authorization: `Bearer ${authToken.getToken()}`
             }
