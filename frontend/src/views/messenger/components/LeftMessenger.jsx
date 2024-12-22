@@ -34,7 +34,7 @@ const LeftMessenger = () => {
         }
     };
     return (
-        <div className="border-r-gray-300 border-r h-full flex flex-col">
+        <div className="border-r-gray-300 border-r ">
             <div className="w-full flex justify-center">
                 <ToggleButtonGroup
                     className="flex justify-center bg-white w-full max-w-lg h-14 rounded-none "
@@ -60,7 +60,7 @@ const LeftMessenger = () => {
             </div>
 
             {/* Nội dung động */}
-            <div className="flex-1 p-2">
+            <div className="flex-1 p-2 pt-0 h-full">
                 {renderContent()}
             </div>
         </div>
