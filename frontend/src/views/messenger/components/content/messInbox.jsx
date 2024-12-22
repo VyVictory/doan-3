@@ -157,7 +157,7 @@ const MessengerInbox = () => {
         },
         [userContext._id]
     );
-    useWebSocket(onMessageReceived);    
+    useWebSocket(onMessageReceived);
     useEffect(() => {
         // Kiểm tra và xử lý điều kiện bên trong hook
         if (!messengerdata || Object.keys(messengerdata).length === 0) {
@@ -173,7 +173,7 @@ const MessengerInbox = () => {
         setInboxData(inboxUpdate);
     }, [messengerdata, userdata, setInboxData]);
 
- 
+
 
     const handleInputChange = useCallback((e) => {
         const textarea = e.target;
@@ -319,13 +319,30 @@ const MessengerInbox = () => {
                                                     )}
                                                 >
                                                     {/* <div>Recall</div> */}
-                                                    {mess?.mediaURL?.length > 0 && mess.mediaURL.map((img, imgIndex) => (
-                                                        <div className='w-full bg-white flex justify-center'>
-                                                            <img
-                                                                onClick={() => handleOpenModal(img)}
-                                                                src={img} alt={`Message Media ${imgIndex}`} className="max-w-full max-h-72 object-cover rounded-t-lg" />
-                                                        </div>
-                                                    ))}
+                                                    {mess?.mediaURL?.length > 0 && mess.mediaURL.map((url, index) => {
+                                                        const isVideo = url.endsWith(".mp4"); // Check if the URL ends with '.mp4'
+                                                        return (
+                                                            <div key={index} className="w-full bg-white flex justify-center">
+                                                                {isVideo ? (
+                                                                    <video
+                                                                        controls
+                                                                        className="max-w-full max-h-72 object-cover rounded-t-lg"
+                                                                    >
+                                                                        <source src={url} type="video/mp4" />
+                                                                        Your browser does not support the video tag.
+                                                                    </video>
+                                                                ) : (
+                                                                    <img
+                                                                        onClick={() => handleOpenModal(url)}
+                                                                        src={url}
+                                                                        alt={`Message Media ${index}`}
+                                                                        className="max-w-full max-h-72 object-cover rounded-t-lg"
+                                                                    />
+                                                                )}
+                                                            </div>
+                                                        );
+                                                    })}
+
                                                     <p className="text-black p-2 break-words max-w-prose">{mess.content}</p>
                                                     <p className="text-xs text-gray-400 text-left pl-2">
                                                         {format(new Date(mess.createdAt), 'hh:mm a')}
@@ -440,16 +457,33 @@ const MessengerInbox = () => {
                         >
                             <CloseIcon color="error" />
                         </IconButton>
-                        <img
-                            className=''
-                            src={modalImage}
-                            alt="Modal Preview"
-                            style={{
-                                maxWidth: '90vw',
-                                maxHeight: '90vh',
-                                borderRadius: '8px',
-                            }}
-                        />
+                        {modalImage && (
+                            modalImage.endsWith(".mp4") ? (
+                                <video
+                                    controls
+                                    className="w-full h-full object-contain rounded"
+                                    style={{
+                                        maxWidth: '90vw',
+                                        maxHeight: '90vh',
+                                    }}
+                                >
+                                    <source src={modalImage} type="video/mp4" />
+                                    Your browser does not support the video tag.
+                                </video>
+                            ) : (
+                                <img
+                                    className=""
+                                    src={modalImage}
+                                    alt="Modal Preview"
+                                    style={{
+                                        maxWidth: '90vw',
+                                        maxHeight: '90vh',
+                                        borderRadius: '8px',
+                                    }}
+                                />
+                            )
+                        )}
+
                     </Box>
                 </Modal>
             </div>

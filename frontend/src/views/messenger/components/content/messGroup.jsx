@@ -46,7 +46,7 @@ const MessengerInbox = () => {
         const queryParams = new URLSearchParams(location.search);
 
         setIdUser(queryParams.get('idgroup'));
-        
+
     }, [location]);
     const handleRevokedClick = async (messageId) => {
         try {
@@ -345,15 +345,28 @@ const MessengerInbox = () => {
                                             {message?.sender?.firstName}
                                         </p>
                                         : ''}
-                                    {message?.mediaURL?.length > 0 && message?.mediaURL.map((url, idx) => (
-                                        <img
-                                            key={idx}
-                                            src={url}
-                                            alt="Media"
-                                            className="max-w-full max-h-72 object-cover rounded-t-lg"
-                                            onClick={() => handleOpenModal(url)}
-                                        />
-                                    ))}
+                                    {message?.mediaURL?.length > 0 && message.mediaURL.map((url, idx) => {
+                                        const isVideo = url.endsWith(".mp4"); // Check if the URL ends with '.mp4'
+                                        return isVideo ? (
+                                            <video
+                                                key={idx}
+                                                controls
+                                                className="max-w-full max-h-72 rounded-t-lg"
+                                            >
+                                                <source src={url} type="video/mp4" />
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        ) : (
+                                            <img
+                                                key={idx}
+                                                src={url}
+                                                alt="Media"
+                                                className="max-w-full max-h-72 object-cover rounded-t-lg"
+                                                onClick={() => handleOpenModal(url)}
+                                            />
+                                        );
+                                    })}
+
                                     <p className="text-black py-2">{message?.content}</p>
                                     <p className="text-xs text-gray-400">
                                         {format(new Date(message?.createdAt), 'hh:mm a')}
@@ -461,16 +474,33 @@ const MessengerInbox = () => {
                         >
                             <CloseIcon color="error" />
                         </IconButton>
-                        <img
-                            className=''
-                            src={modalImage}
-                            alt="Modal Preview"
-                            style={{
-                                maxWidth: '90vw',
-                                maxHeight: '90vh',
-                                borderRadius: '8px',
-                            }}
-                        />
+                        {modalImage && (
+                            modalImage.endsWith(".mp4") ? (
+                                <video
+                                    controls
+                                    className="w-full h-full object-contain rounded"
+                                    style={{
+                                        maxWidth: '90vw',
+                                        maxHeight: '90vh',
+                                    }}
+                                >
+                                    <source src={modalImage} type="video/mp4" />
+                                    Your browser does not support the video tag.
+                                </video>
+                            ) : (
+                                <img
+                                    className=""
+                                    src={modalImage}
+                                    alt="Modal Preview"
+                                    style={{
+                                        maxWidth: '90vw',
+                                        maxHeight: '90vh',
+                                        borderRadius: '8px',
+                                    }}
+                                />
+                            )
+                        )}
+
                     </Box>
                 </Modal>
             </div>
