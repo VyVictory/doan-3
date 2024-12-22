@@ -15,7 +15,6 @@ import { authorize } from 'passport';
 import { addMembersToGroupDto } from './dto/addMemberGroup.dto';
 
 
-
 @Controller('chat')
 export class ChatController {
     constructor(
