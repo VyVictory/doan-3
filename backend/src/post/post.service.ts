@@ -224,7 +224,7 @@ export class PostService {
                 }
             }
     
-            if (post.privacy === 'friend') {
+            if (post.privacy === 'friends') {
                 // Kiểm tra người dùng có phải là bạn của tác giả bài viết không
                 const isFriend = await this.FriendModel.exists({
                     $or: [
