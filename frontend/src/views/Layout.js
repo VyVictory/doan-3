@@ -18,12 +18,12 @@ export default function Layout() {
 
         // WebSocket setup
         const handleOpen = () => {
-            console.log("WebSocket connection established");
-            socket.send("Connection established");
+            console.log("WebSocket connection establishedsssssssssssssssss");
+            socket.send("Connection establishedssssssssssssssssssssssssssss");
         };
 
         const handleMessage = (event) => {
-            console.log("Message from server:", event.data);
+            console.log("Message from server socket:", event);
         };
 
         const handleError = (error) => {
@@ -31,13 +31,15 @@ export default function Layout() {
         };
 
         socket.addEventListener("open", handleOpen);
-        socket.addEventListener("message", handleMessage);
+        socket.addEventListener("newmessage", handleMessage);
+        socket.addEventListener("friendrequest", handleMessage);
         socket.addEventListener("error", handleError);
 
         // Cleanup WebSocket listeners on component unmount
         return () => {
             socket.removeEventListener("open", handleOpen);
-            socket.removeEventListener("message", handleMessage);
+            socket.removeEventListener("newmessage", handleMessage);
+            socket.removeEventListener("friendrequest", handleMessage);
             socket.removeEventListener("error", handleError);
         };
     }, [navigate]);

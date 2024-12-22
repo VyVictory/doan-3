@@ -8,6 +8,7 @@ import authToken from "../../components/authToken";
 import { profileUserCurrent } from '../../service/ProfilePersonal';
 import { useUser } from '../../service/UserContext';
 import logoweb from '../../img/logoweb.avif'
+import { ToastContainer } from 'react-toastify';
 export default function Navbar() {
 
     const { userContext, setUserContext } = useUser(); // Access user data from context
@@ -176,6 +177,7 @@ export default function Navbar() {
                     )}
                 </div>
             </div >
+            <ToastContainer style={{ marginTop: '55px' }} />
         </>
     );
 }

@@ -24,7 +24,7 @@ const MessengerInbox = () => {
     const location = useLocation();
     const [textareaHeight, setTextareaHeight] = useState(40);
     const [iduser, setIdUser] = useState(null);
-    const [userdata, setUserdata] = useState({});
+    // const [userdata, setUserdata] = useState({});
     const [loading, setLoading] = useState(true);
     const [sending, setSending] = useState(false); // Added sending state
     const [message, setMessage] = useState('');
@@ -42,9 +42,11 @@ const MessengerInbox = () => {
 
     const [hoveredMessageId, setHoveredMessageId] = useState(null);
     useEffect(() => {
+        setLoading(true)
         const queryParams = new URLSearchParams(location.search);
 
         setIdUser(queryParams.get('idgroup'));
+        
     }, [location]);
     const handleRevokedClick = async (messageId) => {
         try {
@@ -78,30 +80,30 @@ const MessengerInbox = () => {
 
 
 
-    useEffect(() => {
-        if (!iduser || iduser === '') {
-            setError('User ID is missing or invalid.');
-            setLoading(false);
-            return;
-        }
-        const fetchUserData = async () => {
-            try {
-                const res = await user.getProfileUser(iduser);
-                if (res.success) {
-                    setUserdata(res.data);
-                } else {
-                    setError('User does not exist.');
-                }
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-                setError('An error occurred while fetching user data.');
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchUserData();
+    // useEffect(() => {
+    //     if (!iduser || iduser === '') {
+    //         setError('User ID is missing or invalid.');
+    //         setLoading(false);
+    //         return;
+    //     }
+    //     const fetchUserData = async () => {
+    //         try {
+    //             const res = await user.getProfileUser(iduser);
+    //             if (res.success) {
+    //                 setUserdata(res.data);
+    //             } else {
+    //                 setError('User does not exist.');
+    //             }
+    //         } catch (error) {
+    //             console.error('Error fetching user data:', error);
+    //             setError('An error occurred while fetching user data.');
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+    //     fetchUserData();
 
-    }, [iduser]);
+    // }, [iduser]);
     //file
     const handleFileChange = (event) => {
         const selectedFile = event.target.files[0];
@@ -142,7 +144,8 @@ const MessengerInbox = () => {
             }
         };
         fetchMessengerData();
-        setContent('group')
+        setContent('group');
+        setLoading(false);
     }, [iduser]);
 
     const onMessageReceived = useCallback(
@@ -253,7 +256,7 @@ const MessengerInbox = () => {
         }
         return acc;
     }, {});
-    console.log(dataGroup)
+    // console.log(dataGroup)
     return (
         <div className="flex flex-col h-full ">
             <div className="p-2 flex border-b h-14 bg-white shadow-sm">
@@ -471,7 +474,6 @@ const MessengerInbox = () => {
                     </Box>
                 </Modal>
             </div>
-            <ToastContainer style={{ marginTop: '55px' }} />
         </div >
     );
 };

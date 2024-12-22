@@ -1,18 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import userImg from '../../../img/user.png';
 import friend from '../../../service/friend';
 import { ToastContainer, toast } from 'react-toastify';
 import NotificationCss from '../../../module/cssNotification/NotificationCss';
-import authToken from '../../../components/authToken';
 import useWebSocket from '../../../service/webSocket/usewebsocket';
+import { useContext } from 'react';
+import { useUser } from '../../../service/UserContext';
 const CardUserList = ({ userdata: initialUserData }) => {
-
+    const { userContext } = useUser();
     const [userdata, setUserdata] = useState(initialUserData);
-    const handAddFriend = async (id) => {
-        try {
+    // WebSocket message handler
 
-            const rs = await friend.AddFriend(id, useWebSocket);
+
+    // Add friend functionality
+    const handAddFriend = useCallback(async (id) => {
+        try {
+            const rs = await friend.AddFriend(id);
             console.log(rs.message);
+            //friendrequest
             if (rs.success) {
                 setUserdata((prev) => ({ ...prev, status: 'waiting' }));
                 toast.success(rs?.message || 'Đã gửi yêu cầu kết bạn', NotificationCss.Success);
@@ -22,8 +27,19 @@ const CardUserList = ({ userdata: initialUserData }) => {
         } catch (error) {
             console.error(error);
         }
-    };
-
+    }, []); // Add empty array to ensure it's only created once
+    const onMessageReceived = useCallback(
+        (newMessage) => {
+            if (!newMessage.receiver) {
+                newMessage.receiver = userContext._id;
+            }
+            if (!newMessage.createdAt) {
+                newMessage.createdAt = new Date().toISOString();
+            }
+        },
+        [userContext._id]
+    );
+    useWebSocket(onMessageReceived);
     const handCloseFriend = async (id) => {
         try {
             const rs = await friend.cancelFriend(id);
@@ -110,7 +126,7 @@ const CardUserList = ({ userdata: initialUserData }) => {
                     </button>
                 </div>
             </button>
-            <ToastContainer style={{ marginTop: '55px' }} />
+           
         </>
     );
 };

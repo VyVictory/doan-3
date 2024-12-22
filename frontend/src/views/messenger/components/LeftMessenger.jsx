@@ -2,24 +2,22 @@ import { useState, useEffect } from "react";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import { InboxIcon, UserGroupIcon, UsersIcon } from "@heroicons/react/24/solid";
-import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
-
 import AllFriend from "./leftMenu/allFriend";
 import AllGroup from "./leftMenu/allGroup";
 import AllInbox from "./leftMenu/allInbox";
 import { MessengerContext } from "../layoutMessenger";
 
 const LeftMessenger = () => {
-    const [alignment, setAlignment] = useState("friends");
+    const [alignment, setAlignment] = useState(''); // Initialize alignment state
     const { setContent, content } = useContext(MessengerContext);
-    const navigate = useNavigate(); // React Router navigation function
     const handleChange = (newAlignment) => {
         setAlignment(newAlignment);
+        setContent(newAlignment);
     };
     const renderContent = () => {
 
-        switch (alignment) {
+        switch (content) {
             case "inbox":
                 setContent("inbox")
                 return <AllInbox />;
@@ -27,7 +25,7 @@ const LeftMessenger = () => {
                 setContent("group")
                 return <AllGroup />;
             case "friend":
-                setContent("inbox")
+                setContent("friend")
                 return <AllFriend />;
             default:
                 return <AllFriend />;

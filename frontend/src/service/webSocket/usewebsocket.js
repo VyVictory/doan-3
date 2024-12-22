@@ -3,22 +3,19 @@ import { useEffect } from 'react';
 import socket from './socket';
 
 const useWebSocket = (onMessageReceived) => {
-  useEffect(() => {
-    // Notify when WebSocket connection is established
-    socket.on('connect', () => {
-      console.log('WebSocket connected successfully.');
-    });
 
+  useEffect(() => {
     // Listen for 'newmessage' from the WebSocket server
+    console.log('websocket reply')
     socket.on('newmessage', (data) => {
+
       console.log('Received new message:', data);
       onMessageReceived(data); // Call the callback with the new message data
     });
 
     // Cleanup on component unmount
     return () => {
-      socket.off('connect'); // Cleanup the connect event listener
-      socket.off('newmessage'); // Cleanup the newmessage event listener
+      socket.off('newmessage');
     };
   }, [onMessageReceived]);
 
