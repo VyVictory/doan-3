@@ -126,3 +126,16 @@ export async function getAllBookmark(userId) {
 
     }
 }
+//detail post
+export async function getDetailPost(postId) {
+    try {
+        const request = await axios.get(`${url}/post/${postId}/privacy`, {
+            headers: {
+                Authorization: `Bearer ${authToken.getToken()}`
+            }
+        })
+        return request
+    } catch (error) {
+
+    }
+}

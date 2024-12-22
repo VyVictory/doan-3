@@ -11,7 +11,6 @@ import DropdownOtherPost from './components/DropdownOtherPost';
 export default function AllPostOther({ user }) {
     const [posts, setPosts] = useState([]);
     const [userLogin, setUserLogin] = useState({})
-    const [currentIndex, setCurrentIndex] = useState(0);
     const [currentIndexes, setCurrentIndexes] = useState({});
     const { id } = useParams();
     useEffect(() => {
@@ -135,6 +134,7 @@ export default function AllPostOther({ user }) {
                             <div className='flex justify-between'>
                                 <article className='text-wrap grid gap-5'>
                                     <div className='grid'>
+                                        {post._id}
                                         <Link className='font-bold text-lg hover:link ' to="#">{user.lastName} {user.firstName}</Link>
                                         <div className='flex gap-2'>
                                             <span className='text-xs'>{formatDate(post.createdAt)}</span>
@@ -179,10 +179,10 @@ export default function AllPostOther({ user }) {
                                         <span>{post.dislikes.length}</span>
                                     </button>
                                 </div>
-                                <button className={"flex items-end gap-1"}>
+                                <Link  className={"flex items-end gap-1"}>
                                     <ChatBubbleLeftIcon className="size-5" />
                                     <span>{post.comments.length}</span>
-                                </button>
+                                </Link>
                                 <button className={"flex items-end gap-1"}>
                                     <ShareIcon className="size-5" />
                                 </button>
