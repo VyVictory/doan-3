@@ -133,7 +133,7 @@ const MessengerInbox = () => {
                 const res = await group.getMessengerGroup(iduser);
                 if (res.success) {
                     setMessengerdata(res.data.messages);
-                    console.log(res.data.messages)
+                    // console.log(res.data.messages)
                 }
             } catch (error) {
                 console.error('Error fetching messenger data:', error);
@@ -174,7 +174,7 @@ const MessengerInbox = () => {
         setInboxData(inboxUpdate);
     }, [messengerdata, userdata, setInboxData]);
 
-   
+
 
     const handleInputChange = useCallback((e) => {
         const textarea = e.target;
@@ -251,8 +251,6 @@ const MessengerInbox = () => {
         }
         return acc;
     }, {});
-
-    console.log( groupedMessages)
     return (
         <div className="flex flex-col h-full ">
             <div className="p-2 flex border-b h-14 bg-white shadow-sm">
@@ -290,17 +288,56 @@ const MessengerInbox = () => {
                                         : null
                                 }
                                 key={message?._id}
-                                className={`flex ${message?.sender?._id === userContext._id ? 'justify-end' : ''} ${ index === messages.length - 1
-                                        ? 'nwwwwwwwwwwwwwwwwwwww'
-                                        : null}`}
+                                className={`flex ${message?.sender?._id === userContext._id ? 'justify-end' : ''} ${index === messages.length - 1
+                                    ? 'nwwwwwwwwwwwwwwwwwwww'
+                                    : ''}`}
+                                onMouseEnter={() => {
+                                    if (message?.sender?._id === userContext._id) {
+                                        setHoveredMessageId(message._id);
+                                    }
+                                }} // Set the hovered message
+                                onMouseLeave={() => setHoveredMessageId(null)} // Clear the hovered message
                             >
+                                {
+                                    hoveredMessageId === message?._id && message?.sender?._id === userContext._id ?
+                                        <div>
+                                            <div className='h-full justify-center flex p-2 items-center'>
+                                                <button onClick={() => handleRevokedClick(message._id)}>
+                                                    <ArrowUturnLeftIcon className="h-6 w-7 text-gray-500 bg-gray-100 rounded-sm " />
+                                                </button>
+                                            </div>
+                                        </div>
+                                        : ''
+                                }
+                                {
+                                    message?.sender?._id !== userContext._id ?
+                                        <div className='h-full pt-2'>
+                                            <button onClick={() => window.location.href = `/user/${message?.sender?._id}`}>
+                                                <img
+                                                    className="w-10 h-10 rounded-full mr-2"
+                                                    src={message?.sender?.avatar || imgUser}
+                                                    alt="User Avatar"
+                                                />
+                                            </button>
+                                        </div>
+                                        : ''
+                                }
+
+
                                 <div
 
                                     className={clsx(
-                                        'rounded-lg shadow-md p-2 my-2',
+                                        'rounded-lg shadow-md p-2 my-2 min-w-28',
                                         message?.sender?._id === userContext._id ? 'bg-blue-100' : 'bg-white'
                                     )}
                                 >
+
+                                    {message?.sender?._id !== userContext._id ?
+                                        <p className="text-xs text-gray-400">
+                                            {message?.sender?.lastName}
+                                            {message?.sender?.firstName}
+                                        </p>
+                                        : ''}
                                     {message?.mediaURL?.length > 0 && message?.mediaURL.map((url, idx) => (
                                         <img
                                             key={idx}
@@ -310,7 +347,7 @@ const MessengerInbox = () => {
                                             onClick={() => handleOpenModal(url)}
                                         />
                                     ))}
-                                    <p className="text-black">{message?.content}</p>
+                                    <p className="text-black py-2">{message?.content}</p>
                                     <p className="text-xs text-gray-400">
                                         {format(new Date(message?.createdAt), 'hh:mm a')}
                                     </p>

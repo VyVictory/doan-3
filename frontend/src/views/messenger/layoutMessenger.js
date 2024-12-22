@@ -30,7 +30,7 @@ const LayoutMessenger = () => {
                 {
                     RightShow ?
                         <div className=' h-full'>
-                            {/* <RightMessenger /> */}
+                            <RightMessenger />
                         </div>
                         : <></>
                 }

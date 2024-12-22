@@ -131,8 +131,8 @@ const MessengerInbox = () => {
             try {
                 const res = await messenger.getListMessengerByUser(iduser);
                 if (res.success) {
-                    console.log('next')
-                    console.log(res.data)
+                    // console.log('next')
+                    // console.log(res.data)
                     setMessengerdata(res.data);
                 }
             } catch (error) {
@@ -237,7 +237,7 @@ const MessengerInbox = () => {
     const groupedMessages = messengerdata.reduce((acc, message) => {
         const createdAtDate = new Date(message.createdAt);
         if (isNaN(createdAtDate)) {
-            console.error('Invalid date value:', message.createdAt);
+            // console.error('Invalid date value:', message.createdAt);
             return acc;
         }
 

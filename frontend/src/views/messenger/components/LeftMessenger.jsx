@@ -14,7 +14,7 @@ const LeftMessenger = () => {
     const [alignment, setAlignment] = useState("friends");
     const { setContent, content } = useContext(MessengerContext);
     const navigate = useNavigate(); // React Router navigation function
-    const handleChange = (event, newAlignment) => {
+    const handleChange = (newAlignment) => {
         setAlignment(newAlignment);
     };
     const renderContent = () => {
@@ -41,20 +41,24 @@ const LeftMessenger = () => {
                         <ToggleButtonGroup
                             className="flex justify-center bg-white w-full max-w-lg h-14 rounded-none "
                             color="primary"
-                            value={alignment}
                             exclusive
-                            onChange={handleChange}
                             aria-label="Platform"
                         >
-                            <ToggleButton value="inbox" className="flex-1 font-medium transition-all hover:bg-blue-50">
+                            <ToggleButton
+                                onClick={() => handleChange('inbox')}
+                                value="inbox" className="flex-1 font-medium transition-all hover:bg-blue-50">
                                 <InboxIcon className="h-6 w-6 text-orange-300" />
                                 <span className="ml-2 text-nowrap">Inbox</span>
                             </ToggleButton>
-                            <ToggleButton value="group" className="flex-1 font-medium transition-all hover:bg-blue-50">
+                            <ToggleButton
+                                onClick={() => handleChange('group')}
+                                value="group" className="flex-1 font-medium transition-all hover:bg-blue-50">
                                 <UserGroupIcon className="h-6 w-6 text-blue-400" />
                                 <span className="ml-2 text-nowrap">Nhóm</span>
                             </ToggleButton>
-                            <ToggleButton value="friend" className="flex-1 font-medium transition-all hover:bg-blue-50">
+                            <ToggleButton
+                                onClick={() => handleChange('friend')}
+                                value="friend" className="flex-1 font-medium transition-all hover:bg-blue-50">
                                 <UsersIcon className="h-6 w-6 text-green-400" />
                                 <span className="ml-2 text-nowrap">Bạn Bè</span>
                             </ToggleButton>
