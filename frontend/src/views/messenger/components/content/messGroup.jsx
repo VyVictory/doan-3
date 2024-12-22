@@ -2,21 +2,25 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { PaperAirplaneIcon } from '@heroicons/react/16/solid';
 import { useLocation } from 'react-router-dom';
 import clsx from 'clsx';
-import imgUser from '../../../img/user.png';
-import user from '../../../service/user';
-import messenger from '../../../service/messenger';
-import { useUser } from '../../../service/UserContext';
+import imgUser from '../../../../img/user.png';
+import user from '../../../../service/user';
+import messenger from '../../../../service/messenger';
+import { useUser } from '../../../../service/UserContext';
 import { format } from 'date-fns';
-import useWebSocket from './usewebsocket';
-import Loading from '../../../components/Loading';
-import { Button, Typography, Box, IconButton, Modal } from '@mui/material';
+import useWebSocket from '../webSocket/usewebsocket';
+import Loading from '../../../../components/Loading';
+import { Box, IconButton, Modal } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { PhotoIcon } from '@heroicons/react/24/solid';
-
+import { ChevronRightIcon, ChevronLeftIcon, ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
+import { useContext } from "react";
+import { MessengerContext } from '../../layoutMessenger';
+import { toast, ToastContainer } from 'react-toastify';
+import NotificationCss from '../../../../module/cssNotification/NotificationCss';
 const MessengerInbox = () => {
     const { userContext } = useUser();
+    const { RightShow, handleHiddenRight, setContent, setInboxData } = useContext(MessengerContext);
     const location = useLocation();
-
     const [textareaHeight, setTextareaHeight] = useState(40);
     const [iduser, setIdUser] = useState(null);
     const [userdata, setUserdata] = useState({});
@@ -32,6 +36,29 @@ const MessengerInbox = () => {
     const [preview, setPreview] = useState(null);
     const [openModal, setOpenModal] = useState(false); // Trạng thái modal
     const [modalImage, setModalImage] = useState(null); // Ảnh phóng to
+
+
+    const [hoveredMessageId, setHoveredMessageId] = useState(null);
+
+    const handleRevokedClick = async (messageId) => {
+        try {
+            const res = await messenger.revokedMesage(messageId); // API call to revoke the message
+            if (res.success) {
+                // On success, remove the revoked message from the current displayed list
+                setMessengerdata((prevMessages) =>
+                    prevMessages.filter((message) => message._id !== messageId)
+                );
+                toast.success(res?.message || 'Bạn vừa thu hồi tin nhắn thành công', NotificationCss.Success);
+            } else {
+                // Optionally handle failure case
+                console.error("Failed to revoke message:", res);
+                toast.error(res?.message || 'Lỗi khi thu hồi tin nhắn', NotificationCss.Fail);
+            }
+        } catch (error) {
+            console.error("Error revoking message:", error);
+        }
+    };
+
 
     const scrollToBottom = () => {
         if (messagesEndRef.current) {
@@ -71,6 +98,7 @@ const MessengerInbox = () => {
             }
         };
         fetchUserData();
+        setContent('inbox')
     }, [iduser]);
     //file
     const handleFileChange = (event) => {
@@ -127,6 +155,20 @@ const MessengerInbox = () => {
         },
         [userContext._id]
     );
+    useEffect(() => {
+        // Kiểm tra và xử lý điều kiện bên trong hook
+        if (!messengerdata || Object.keys(messengerdata).length === 0) {
+            return; // Không làm gì nếu `groupedMessages` không hợp lệ
+        }
+
+        // Cập nhật dữ liệu nếu `groupedMessages` tồn tại
+        const inboxUpdate = {
+            data: userdata,
+            messenger: messengerdata,
+        };
+
+        setInboxData(inboxUpdate);
+    }, [messengerdata, userdata, setInboxData]);
 
     useWebSocket(onMessageReceived);
 
@@ -142,8 +184,9 @@ const MessengerInbox = () => {
     }, []);
 
     const handleSendMessenger = useCallback(async () => {
-        if (!message.trim() || sending) return; // Prevent sending if already in progress
 
+        if (!message.trim() && !file || sending) return; // Prevent sending if already in progress
+        console.log('aaa')
         setSending(true); // Set sending state
         try {
             const res = await messenger.sendMess(iduser, message.trim(), file);
@@ -162,7 +205,15 @@ const MessengerInbox = () => {
             setSending(false); // Reset sending state
         }
     }, [iduser, message, sending, file]);
+    const handleRevokedMessenger = async (id) => {
+        try {
+            const res = await messenger.revokedMesage(id);
 
+        } catch (error) {
+            console.error('Error sending message:', error);
+        }
+    }
+    // revokedMesage
     const handleKeyDown = useCallback(
         (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
@@ -192,94 +243,106 @@ const MessengerInbox = () => {
         acc[date].push(message);
         return acc;
     }, {});
+
+
+
     console.log(groupedMessages)
     return (
-        <div className="flex flex-col h-full w-full">
-            <div className="p-2 flex items-center border-b h-14 bg-white shadow-sm">
-                <button onClick={() => window.location.href = `/user/${userdata?._id}`}>
-                    <img
-                        className="w-10 h-10 rounded-full mr-2"
-                        src={userdata?.avatar || imgUser}
-                        alt="User Avatar"
-                    />
-                </button>
-                <h3 className="font-semibold">{`${userdata.lastName || ''} ${userdata.firstName || ''}`.trim()}</h3>
+        <div className="flex flex-col h-full ">
+            <div className="p-2 flex border-b h-14 bg-white shadow-sm">
+                <div className='w-full flex flex-row items-center'>
+                    <button onClick={() => window.location.href = `/user/${userdata?._id}`}>
+                        <img
+                            className="w-10 h-10 rounded-full mr-2"
+                            src={userdata?.avatar || imgUser}
+                            alt="User Avatar"
+                        />
+                    </button>
+                    <h3 className="font-semibold text-nowrap">{`${userdata.lastName || ''} ${userdata.firstName || ''}`.trim()}</h3>
+                </div>
+
+                <div className=" flex justify-end">
+                    <button onClick={handleHiddenRight} >
+                        {
+                            RightShow ? <ChevronRightIcon className="h-8 w-8 text-gray-700" />
+                                :
+                                <ChevronLeftIcon className="h-8 w-8 text-gray-700" />
+                        }
+
+                    </button>
+                </div>
             </div>
-
-
-            <div className='overflow-y-scroll p-4 pt-1 h-full'>
+            <div className='overflow-y-scroll h-full p-4 pt-1 bg-gray-100'>
                 {Object.keys(groupedMessages).map((date) => (
-                    <div key={date} className=" h-full">
-                        <div className="mb-4 pb-2 px-3"> 
+                    <div key={date} className="">
+                        <div className="mb-4 pb-2 px-3 ">
                             <div className="text-center text-gray-500 text-sm my-2">
                                 {format(new Date(date), 'MMMM dd, yyyy')}
                             </div>
-                            {groupedMessages[date].map((mess, index) => (
-                                <React.Fragment key={`${mess._id}-${index}`}>
+                            {
+                                groupedMessages[date].map((mess, index) => (
+                                    <React.Fragment key={`${mess._id}-${index}`}>
+                                        <div
+                                            className={`flex ${mess?.author?._id === mess?.receiver
+                                                ? 'justify-end'
+                                                : mess.receiver === userContext._id
+                                                    ? ''
+                                                    : 'justify-end'}
+                                                     ${mess?.author?._id === mess?.receiver
+                                                    ? 'pl-16 '
+                                                    : mess.receiver === userContext._id
+                                                        ? 'pr-16 '
+                                                        : 'pl-16 '}`}
 
-                                    <div className={`flex w-full ${mess?.author?._id === mess?.receiver
-                                        ? 'justify-end'
-                                        : mess.receiver === userContext._id
-                                            ? ''
-                                            : 'justify-end'}`}>
-                                        <div className=''>
-                                            <div
-                                                className={clsx(
-                                                    'rounded-lg shadow-md shadow-slate-300 pb-2 border min-w-28 min-h-11 my-2',
-                                                    mess?.author?._id === mess?.receiver
-                                                        ? 'bg-blue-100 ml-24 '
-                                                        : mess.receiver === userContext._id
-                                                            ? 'bg-white mr-24 '
-                                                            : 'bg-blue-100 ml-24 '
-                                                )}
-                                            >
-                                                {mess?.mediaURL?.length > 0 && mess.mediaURL.map((img, imgIndex) => (
-                                                    <div className='w-full bg-white flex justify-center'>
-                                                        <img
-                                                            onClick={() => handleOpenModal(img)}
-                                                            src={img} alt={`Message Media ${imgIndex}`} className="max-w-full max-h-72 object-cover rounded-t-lg" />
+                                            onMouseEnter={() => {
+                                                if ((mess?.author?._id !== mess?.receiver && mess.receiver !== userContext._id) || (mess?.author?._id == mess.receiver)) {
+                                                    setHoveredMessageId(mess._id);
+                                                }
+                                            }} // Set the hovered message
+                                            onMouseLeave={() => setHoveredMessageId(null)} // Clear the hovered message
+                                        >
+
+                                            <div className='flex flex-row '>
+                                                {hoveredMessageId === mess._id && (
+                                                    <div className='h-full flex p-2 items-center'>
+                                                        <button onClick={() => handleRevokedClick(mess._id)}>
+                                                            <ArrowUturnLeftIcon className="h-6 w-7 text-gray-500 bg-gray-100 rounded-sm " />
+                                                        </button>
                                                     </div>
-                                                ))}
-                                                <p className="text-black p-2">{mess.content}</p>
-                                                <p className="text-xs text-gray-400 text-left pl-2">
-                                                    {format(new Date(mess.createdAt), 'hh:mm a')}
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    {
-                                        groupedMessages[date].length == index + 1 ? <div ref={messagesEndRef} /> : ''
-                                    }
-                                    {/* Check for mediaURL and render images */}
-                                    {/* {mess?.mediaURL?.length > 0 && mess.mediaURL.map((img, imgIndex) => (
-                                        <div className={`flex w-full ${mess?.author?._id === mess?.receiver
-                                            ? 'justify-end'
-                                            : mess.receiver === userContext._id
-                                                ? ''
-                                                : 'justify-end'}`}>
-                                            <div className=''>
+                                                )}
                                                 <div
-                                                    key={`${index}-${imgIndex}`}
                                                     className={clsx(
-                                                        'rounded-lg shadow-sm pb-2 border min-h-11 my-4',
+                                                        ' rounded-lg shadow-md shadow-slate-300 pb-2 border min-w-28 min-h-11 my-2 ',
                                                         mess?.author?._id === mess?.receiver
-                                                            ? 'ml-24 border-blue-500'
+                                                            ? 'bg-blue-100 '
                                                             : mess.receiver === userContext._id
-                                                                ? 'bg-white mr-24 border-gray-300'
-                                                                : 'bg-blue-100 ml-24 border-blue-500'
+                                                                ? 'bg-white '
+                                                                : 'bg-blue-100 '
                                                     )}
                                                 >
-                                                    <img src={img} alt={`Message Media ${imgIndex}`} className="max-w-full max-h-72 object-cover rounded-lg" />
-                                                    <p className="text-xs text-gray-400 text-left mt-2">
+                                                    {/* <div>Recall</div> */}
+                                                    {mess?.mediaURL?.length > 0 && mess.mediaURL.map((img, imgIndex) => (
+                                                        <div className='w-full bg-white flex justify-center'>
+                                                            <img
+                                                                onClick={() => handleOpenModal(img)}
+                                                                src={img} alt={`Message Media ${imgIndex}`} className="max-w-full max-h-72 object-cover rounded-t-lg" />
+                                                        </div>
+                                                    ))}
+                                                    <p className="text-black p-2 break-words max-w-prose">{mess.content}</p>
+                                                    <p className="text-xs text-gray-400 text-left pl-2">
                                                         {format(new Date(mess.createdAt), 'hh:mm a')}
                                                     </p>
                                                 </div>
+
                                             </div>
+                                            {/* Show "Recall" button when the message is hovered */}
                                         </div>
-                                    ))} */}
-                                </React.Fragment>
-                            ))}
+                                        {/* Scroll to the bottom */}
+                                        {groupedMessages[date].length === index + 1 ? <div ref={messagesEndRef} /> : ''}
+                                    </React.Fragment>
+                                ))
+
+                            }
                         </div>
                     </div>
                 ))}
@@ -392,7 +455,7 @@ const MessengerInbox = () => {
                     </Box>
                 </Modal>
             </div>
-
+            <ToastContainer style={{ marginTop: '55px' }} />
         </div >
     );
 };

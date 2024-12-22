@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import user from "../../../service/user"; // Ensure you import the correct service or API client
-import imgUser from '../../../img/user.png'
-import Loading from "../../../components/Loading";
-const UserFriendCard = ({ iduser }) => {
+import user from "../../../../../service/user"; // Ensure you import the correct service or API client
+import imgUser from '../../../../../img/user.png'
+import Loading from "../../../../../components/Loading";
+const CardFriendAddGroup = ({ iduser }) => {
     const [userdata, setUserdata] = useState({});
     const [loading, setLoading] = useState(true);
 
@@ -42,15 +42,18 @@ const UserFriendCard = ({ iduser }) => {
                 }
                 alt="user" className="w-12 h-12 rounded-full mr-2 border-white border-2" />
             <div className="text-start line-clamp-3 ">
-                <h3 className="font-semibold">
+                <h3
+                    className="font-semibold truncate w-[110px] overflow-hidden whitespace-nowrap"
+                    title={userdata ? `${userdata.lastName || ''} ${userdata.firstName || ''}`.trim() : "No Name"}
+                >
                     {userdata
                         ? `${userdata.lastName || ''} ${userdata.firstName || ''}`.trim()
                         : "No Name"}
                 </h3>
-                <p className="text-gray-500 line-clamp-1">ô no không có tin xem trướcccccccccccccc</p>
+
             </div>
         </>
     );
 };
 
-export default UserFriendCard;
+export default CardFriendAddGroup;
