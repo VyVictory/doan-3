@@ -54,8 +54,8 @@ export default function ForgotPass() {
 
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-background ">
-            <div className="max-w-md w-full p-6 bg-card dark:bg-card-foreground rounded-lg shadow-lg">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-[#24C6DC] to-[#514A9D]">
+            <div className="max-w-md w-full p-6 bg-card bg-white rounded-lg shadow-lg">
                 <h2 className="text-2xl text-primary text-center mb-4">Bạn quên mật khẩu?</h2>
                 <p className="text-secondary text-center mb-6">Hãy điền email để lấy lại mật khẩu.</p>
                 <form className="space-y-4">
