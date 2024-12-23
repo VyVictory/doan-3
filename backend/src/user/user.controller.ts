@@ -88,15 +88,14 @@ export class UserController {
     }
 
     @Post('send-otp-resetpassword')
-    @UseGuards(AuthGuardD) // Đảm bảo người dùng đã đăng nhập
-    async sendOtp(@CurrentUser() currentUser: User) {
+    async sendOtp(
+      @Body('email') email: string,
+    ){
       try {
-        console.log('currentUser:', currentUser); // Kiểm tra toàn bộ đối tượng currentUser
-        const email = currentUser?.email;
         if (!email) {
           throw new Error("Email is required");
         }
-        await this.otpService.sendOtp(currentUser.email, 'Reset password');
+        await this.otpService.sendOtp(email, 'Reset password');
         return { message: 'OTP sent to your email.' };
       } catch (error) {
         console.error(error); // Log lỗi chi tiết
@@ -117,15 +116,14 @@ export class UserController {
     }
 
     @Post('reset-password')
-    @UseGuards(AuthGuardD) 
     async resetPassword(
-      @CurrentUser() currentUser: User, // Lấy thông tin người dùng từ currentUser
-      @Body('otp') otp: string, // Lấy OTP từ body
-      @Body() resetPasswordDto: ResetPasswordDto, // Lấy mật khẩu mới từ body
+      @Body('email') email: string,
+      @Body('otp') otp: string, 
+      @Body() resetPasswordDto: ResetPasswordDto, 
     ) {
       try {
         const message = await this.userService.resetPassword(
-          currentUser.email, 
+          email,
           otp,
           resetPasswordDto,
         );
