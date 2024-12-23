@@ -45,7 +45,7 @@ export default function Layout() {
 
     return (
         <UserProvider>
-            <div className="grid gap-[64px]">
+            <div className="grid gap-[64px] " style={{minWidth:'screen'}}>
                 <div>
                     <Navbar />
                 </div>
