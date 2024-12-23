@@ -7,7 +7,32 @@ import {
     UserMinusIcon
 } from '@heroicons/react/16/solid'
 import { Link } from 'react-router-dom'
-export default function DropdownMyfriend() {
+import friend from '../../service/friend';
+import NotificationCss from '../../module/cssNotification/NotificationCss';
+import { useState } from 'react';
+
+import { ToastContainer, toast } from 'react-toastify';
+
+export default function DropdownMyfriend({ userdata }) {
+    const [friendStatus, setFriendStatus] = useState(null);
+    const chaneUrl = async (url) => {
+        window.location.href = String(url);
+    };
+
+    const handRemoveFriend = async (id) => {
+        try {
+            const rs = await friend.cancelFriend(id);
+            if (rs.success) {
+                toast.success(rs?.message ? rs.message : 'Đã hủy kết bạn', NotificationCss.Success);
+                setFriendStatus("pending");
+            } else {
+                toast.error(rs?.message ? rs.message : 'hủy kết bạn thất bại', NotificationCss.Fail);
+            }
+            toast.error(rs?.message ? rs.message : 'hủy kết bạn thất bại', NotificationCss.Fail);
+        } catch (error) {
+            toast.error('hủy kết bạn thất bại', NotificationCss.Fail);
+        }
+    };
     return (
         <div className="dropdown">
             <div tabIndex={0} role="button" className="p-2 hover:bg-gray-300 rounded-full">
@@ -21,7 +46,8 @@ export default function DropdownMyfriend() {
                     </Link>
                 </li> */}
                 <li>
-                    <Link className="  data-[focus]:bg-[#3f3f46] p-2 rounded-md flex items-center gap-2" to="#">
+                    <Link onClick={userdata?._id ? () => chaneUrl(`/messenger/?iduser=${userdata?.receiver?._id || userdata?.sender?._id}`) : undefined}
+                        className="  data-[focus]:bg-[#3f3f46] p-2 rounded-md flex items-center gap-2" >
                         <ChatBubbleOvalLeftIcon className="size-5 fill-blue-300" />
                         Nhắn tin
                     </Link>
@@ -33,7 +59,8 @@ export default function DropdownMyfriend() {
                     </Link>
                 </li> */}
                 <li>
-                    <Link className=" data-[focus]:bg-[#3f3f46] p-2 rounded-md flex items-center gap-2" to="#">
+                    <Link onClick={() => userdata ? handRemoveFriend(userdata?.receiver?._id || userdata?.sender?._id) : ''}
+                        className=" data-[focus]:bg-[#3f3f46] p-2 rounded-md flex items-center gap-2" >
                         <UserMinusIcon className="size-5 fill-red-500" />
                         Hủy kết bạn
                     </Link>
