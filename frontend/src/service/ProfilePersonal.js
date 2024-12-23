@@ -28,9 +28,9 @@ export async function updateName(firstName, lastName) {
     }
 }
 
-export async function updateInformation(birthday, gender, address) {
+export async function updateInformation(birthday, gender, address, email) {
     try {
-        const request = await axios.put(`${url}/user/update`, { birthday, gender, address }, {
+        const request = await axios.put(`${url}/user/update`, { birthday, gender, address, email }, {
             headers: {
                 Authorization: `Bearer ${authToken.getToken()}`
             }

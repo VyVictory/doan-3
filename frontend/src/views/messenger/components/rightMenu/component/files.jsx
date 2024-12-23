@@ -44,13 +44,36 @@ const Files = () => {
                     {/* Hiển thị các ảnh/video nếu có */}
                     {mediaUrls.length > 0 ? (
                         <div className="flex gap-1 flex-wrap ml-1">
-                            {mediaUrls.slice(0, visibleImagesCount).map((url, index) => (
-                                <div key={index} className="w-24 h-24 border">
-                                    <img src={url} alt={`media-${index}`}
-                                        onClick={() => { handleOpenModal(url) }}
-                                        className="w-full h-full object-cover" />
-                                </div>
-                            ))}
+                            {mediaUrls.slice(0, visibleImagesCount).map((url, index) => {
+                                const isVideo = url.endsWith(".mp4"); // Check if the URL is a video (MP4)
+
+                                return (
+                                    <div
+                                        key={index}
+                                        className="w-24 h-24 border rounded overflow-hidden cursor-pointer transition-transform transform hover:scale-105"
+                                        onClick={() => handleOpenModal(url)} // Trigger modal on div click
+                                    >
+                                        {isVideo ? (
+                                            <video
+                                                className="w-full h-full object-cover"
+                                                muted
+                                                
+                                                loop
+                                            >
+                                                <source src={url} type="video/mp4" />
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        ) : (
+                                            <img
+                                                src={url}
+                                                alt={`media-${index}`}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        )}
+                                    </div>
+                                );
+                            })}
+
                         </div>
                     ) : (
                         <p>Không có ảnh hoặc video.</p>
@@ -89,16 +112,33 @@ const Files = () => {
                     >
                         <CloseIcon color="error" />
                     </IconButton>
-                    <img
-                        className=''
-                        src={modalImage}
-                        alt="Modal Preview"
-                        style={{
-                            maxWidth: '90vw',
-                            maxHeight: '90vh',
-                            borderRadius: '8px',
-                        }}
-                    />
+                    {modalImage && (
+                        modalImage.endsWith(".mp4") ? (
+                            <video
+                                controls
+                                className="w-full h-full object-contain rounded"
+                                style={{
+                                    maxWidth: '90vw',
+                                    maxHeight: '90vh',
+                                }}
+                            >
+                                <source src={modalImage} type="video/mp4" />
+                                Your browser does not support the video tag.
+                            </video>
+                        ) : (
+                            <img
+                                className=""
+                                src={modalImage}
+                                alt="Modal Preview"
+                                style={{
+                                    maxWidth: '90vw',
+                                    maxHeight: '90vh',
+                                    borderRadius: '8px',
+                                }}
+                            />
+                        )
+                    )}
+
                 </Box>
             </Modal>
         </div>

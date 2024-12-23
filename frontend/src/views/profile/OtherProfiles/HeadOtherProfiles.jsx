@@ -121,7 +121,6 @@ export default function HeadOtherProfiles({ dataProfile }) {
                     </div>
                 </div>
             </div>
-            <ToastContainer  style={{ marginTop: '55px' }}/>
         </>
 
     );

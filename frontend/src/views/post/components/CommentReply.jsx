@@ -69,19 +69,19 @@ export default function CommentReply({ open, postId, user, cmtId }) {
     return (
         <>
             {open === true && (
-                <div className=' mt-5 grid gap-3'>
+                <div className=' mt-5  border-2'>
                     {loading ? (
                         <Loading />
                     ) : (
                         comment.length === 0 ? (
-                            <div className="text-center p-4">Chưa có phản hồi nàos</div>
+                            <div className="text-center p-4">Chưa có phản hồi nào</div>
                         ) : (
                             comment.filter(cmt => cmt?.replyTo[0] === cmtId).length === 0 ? (
                                 <div className="text-center p-4">Chưa có phản hồi nào</div>
                             ) : (
                                 comment.map((cmt) => (
                                     cmt?.replyTo[0] === cmtId && (
-                                        <div key={cmt._id} className="bg-card dark:bg-card-foreground p-4 rounded-lg rounded-b-none border-2">
+                                        <div key={cmt._id} className="bg-card dark:bg-card-foreground p-4 rounded-lg rounded-b-none border-b-[1px]">
                                             <div className=''>
                                                 <div className="flex items-center gap-2 ">
                                                     {/* <img className="h-12 w-12 rounded-full mr-4" src="https://placehold.co/50x50" alt="user-avatar" /> */}

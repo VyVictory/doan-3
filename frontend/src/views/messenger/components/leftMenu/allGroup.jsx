@@ -92,14 +92,14 @@ const AllGroup = () => {
                             ) : (
                                 filteredGroups.map((group, index) => (
                                     <li key={index} className="hover:bg-blue-300 px-2 py-3 rounded-md shadow-sm">
-                                        <button
-                                            onClick={() =>
-                                                navigate(`group/?idgroup=${group?._id}`)
-                                            }
-                                            className="flex items-center w-full"
-                                        >
-                                           <GroupCard group={group}/>
-                                        </button>
+                                        <a href={`/messenger/group/?idgroup=${group?._id}`}>
+                                            <button
+                                                className="flex items-center w-full"
+                                            >
+                                                <GroupCard group={group} />
+                                            </button>
+                                        </a>
+
                                     </li>
 
                                 ))

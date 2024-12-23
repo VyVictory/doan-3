@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import user from "../../../service/user"; // Ensure you import the correct service or API client
 import imgUser from '../../../img/user.png'
 import Loading from "../../../components/Loading";
-import group from "../../../service/group";
 const GroupCard = ({ group }) => {
     const [groupdata, setGroupdata] = useState({});
     const [loading, setLoading] = useState(true);
