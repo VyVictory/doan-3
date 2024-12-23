@@ -26,6 +26,7 @@ import Test from "./test.jsx";
 import DetailPost from "../views/post/components/DetailPost.jsx";
 import ChangePassPage from "../auth/ChangePassPage.jsx";
 import UpdatePost from "../views/post/components/UpdatePost.jsx";
+import ForgotPass from "../auth/ForgotPass.jsx";
 
 function routers() {
     return (
@@ -66,6 +67,7 @@ function routers() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/test" element={<Test />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/forgotpass" element={<ForgotPass />} />
             </Routes>
         </BrowserRouter>
     );

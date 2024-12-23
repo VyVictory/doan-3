@@ -38,7 +38,7 @@ export default function Login() {
                 }
             } catch (error) {
                 console.error('Lỗi:', error.response ? error.response.data : error.message);
-                toast.error(error.response?.data?.message || 'Đăng nhập thất bại!',NotificationCss.Fail);
+                toast.error(error.response?.data?.message || 'Đăng nhập thất bại!', NotificationCss.Fail);
             }
         } else {
             setErrors(validationErrors);
@@ -78,7 +78,7 @@ export default function Login() {
                 <div className='mb-4'>
                     <label htmlFor="password" className="block text-gray-700 text-sm font-bold mb-2">
                         Mật khẩu
-                        <Link to="#" className="float-right font-normal text-gray-500 hover:text-gray-700">Quên mật khẩu?</Link>
+                        <Link to="/forgotpass" className="float-right font-normal text-gray-500 hover:text-gray-700">Quên mật khẩu?</Link>
                     </label>
                     <input
                         type="password"
