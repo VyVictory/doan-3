@@ -124,12 +124,26 @@ const cancelFriendRequest = async (id) => {
         const idRequest = userrequest.data
             .filter((item) => item.receiver !== id && item.sender !== id)
             .map((item) => item._id);
+        console.log('id tren:')
         console.log(idRequest)
-        const response = await axios.post(`${url}/user/rejectFriendRequest/${idRequest}`, {},
+        let idrq = [];
+        if (idRequest.length == 0) {
+            const userrequest = await axios.get(`${url}/friend/status/${id}`,
+                {
+                    headers: { Authorization: `Bearer ${authToken.getToken()}` },
+                }
+            );
+            console.log('id duoi:')
+            console.log(userrequest?.data?.idRequest)
+            idrq = userrequest?.data?.idRequest
+        } else {
+            idrq = idRequest
+        }
+        console.log(idrq)
+        const response = await axios.delete(`${url}/user/removeFriendRequest/${idrq}`,
             {
                 headers: { Authorization: `Bearer ${authToken.getToken()}` },
-            }
-        );
+            })
         return { success: true, data: response.data };
     } catch (response) {
         return { success: false, data: response.response.data.message };
@@ -156,5 +170,4 @@ export default {
     getListFriendAnother,
     checkFriend,
     cancelFriendRequest,
-
 }

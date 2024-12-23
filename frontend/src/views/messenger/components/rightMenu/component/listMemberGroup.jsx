@@ -169,7 +169,6 @@ const ListMemberGroup = () => {
                                     </a>
 
                                 ))
-
                             }
                         </div>
                     }
