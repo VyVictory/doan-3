@@ -127,8 +127,8 @@ export default function DetailPost() {
 
   console.log(posts)
   return (
-    <div className='grid justify-center'>
-      <div className='max-w-2xl'>
+    <div className='grid justify-center '>
+      <div className=' w-[600px]'>
         <div key={posts._id}
           className='flex items-start w-full p-6 border border-gray-300 rounded-lg shadow-md shadow-zinc-300 gap-3'>
           <div className='grid gap-2 w-full'>
