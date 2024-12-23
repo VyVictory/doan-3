@@ -81,7 +81,7 @@ export default function CommentReply({ open, postId, user, cmtId }) {
                             ) : (
                                 comment.map((cmt) => (
                                     cmt?.replyTo[0] === cmtId && (
-                                        <div key={cmt._id} className="bg-card dark:bg-card-foreground p-4 rounded-lg rounded-b-none ">
+                                        <div key={cmt._id} className="bg-card dark:bg-card-foreground p-4 rounded-lg rounded-b-none border-b-[1px]">
                                             <div className=''>
                                                 <div className="flex items-center gap-2 ">
                                                     {/* <img className="h-12 w-12 rounded-full mr-4" src="https://placehold.co/50x50" alt="user-avatar" /> */}

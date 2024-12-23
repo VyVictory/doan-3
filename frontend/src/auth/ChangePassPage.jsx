@@ -2,10 +2,9 @@ import React from 'react'
 import { useState } from 'react';
 import { changepass } from '../service/AuthService';
 import authToken from '../components/authToken';
-export default function ChangePassPage() {
+export default function ChangePassPage({ btnCancel }) {
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
-
     const [formData, setFormData] = useState({
         currentPassword: "",
         newPassword: "",
@@ -32,12 +31,6 @@ export default function ChangePassPage() {
                 } else {
                     delete newErrors.newPassword;
                 }
-                // Validate confirmNewPassword again when newPassword changes
-                if (formData.confirmNewPassword && value !== formData.confirmNewPassword) {
-                    newErrors.confirmNewPassword = "Xác nhận mật khẩu mới không khớp.";
-                } else {
-                    delete newErrors.confirmNewPassword;
-                }
                 break;
             case "confirmNewPassword":
                 if (value !== formData.newPassword) {
@@ -57,56 +50,33 @@ export default function ChangePassPage() {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
-
-        // Clear specific error when user starts typing again
-        if (name === "currentPassword" && errors.currentPassword) {
-            const newErrors = { ...errors };
-            delete newErrors.currentPassword;
-            setErrors(newErrors);
-        }
-
         validateField(name, value);
-    };
-    //
-    const validateForm = () => {
-
-        if (!formData.newPassword) errors.newPassword = 'Bắt buộc nhập mật khẩu';
-        if (formData.newPassword.length < 8) {
-            errors.newPassword = 'Mật khẩu quá ngắn';
-        }
-        if (formData.newPassword !== formData.confirmNewPassword) {
-            errors.confirmNewPassword = 'Mật khẩu không khớp nhau';
-        }
-        return errors;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             setLoading(true);
-            const validationErrors = validateForm();
-            if (Object.keys(validationErrors).length === 0) {
-                const response = await changepass(formData.currentPassword, formData.confirmNewPassword);
-                if (response.status === 200) {
-                    alert("Đổi mật khẩu thành công, vui lòng đăng nhập lại.");
-                    authToken.deleteToken();
-                    console.log(response)
-                    // history.push("/login");
-                    window.location.reload();
-                }
-                if (response.statusCode === 401) {
-                    setErrors({ currentPassword: "Mật khẩu hiện tại không đúng, vui lòng thử lại." });
-                }
+            const response = await changepass(formData.currentPassword, formData.newPassword);
+            if (response) {
+                authToken.deleteToken();
+                window.location.reload();
+                // history.push("/login");
             }
         }
         catch (error) {
-            console.log(error)
+            if (error.response && error.response.status === 401) {
+                setErrors({ currentPassword: "Mật khẩu hiện tại không đúng." });
+                alert("Mật khẩu hiện tại không đúng.");
+            } else {
+                console.error("Error changing password:", error);
+            }
         }
         finally {
             setLoading(false);
-
         }
     }
+    console.log(errors.status);
 
     return (
         <div className="bg-background text-primary-foreground min-h-screen flex items-center justify-center">
@@ -128,7 +98,6 @@ export default function ChangePassPage() {
                             {errors.currentPassword}
                         </p>
                     )}
-
                     <div>
                         <label htmlFor="newPassword" className="block text-sm font-medium">Mật khẩu mới</label>
                         <input
@@ -159,9 +128,7 @@ export default function ChangePassPage() {
                             {errors.confirmNewPassword}
                         </p>
                     )}
-                    <button type="submit" className="w-full bg-sky-500 text-primary-foreground py-2 rounded-md hover:bg-sky-400 transition duration-300">
-                        Đổi mật khẩu
-                    </button>
+                    <button type="submit" className="w-full bg-sky-500 text-primary-foreground py-2 rounded-md hover:bg-sky-400 transition duration-300">Change Password</button>
                 </form>
             </div>
         </div>
