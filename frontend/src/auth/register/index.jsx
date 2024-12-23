@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Đảm bảo CSS được import
+import 'react-toastify/dist/ReactToastify.css'; // Ensure CSS is imported
 import NotificationCss from '../../module/cssNotification/NotificationCss';
 import Apiuri from '../../service/apiuri';
 
@@ -51,7 +51,6 @@ export default function Register() {
         const validationErrors = validateForm();
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
-            // Hiển thị thông báo lỗi thông qua Toast
             Object.values(validationErrors).forEach((error) => {
                 toast.error(error, NotificationCss.Fail);
             });
@@ -82,116 +81,115 @@ export default function Register() {
             ...formData,
             [name]: value,
         });
-        handleRemoveError(name); // Xóa lỗi khi người dùng nhập lại
+        handleRemoveError(name);
     };
 
     return (
-        <>
-            <div className="bg-gradient-to-r from-[#514A9D] to-[#24C6DC] h-screen grid place-items-center">
-                <form
-                    method="POST"
-                    onSubmit={handleSubmit}
-                    className="text-black rounded-2xl bg-white px-10 py-8"
+        <div className="bg-gradient-to-br from-blue-500 to-purple-600 min-h-screen flex items-center justify-center">
+            <form
+                method="POST"
+                onSubmit={handleSubmit}
+                className="bg-white rounded-3xl shadow-lg p-8 w-full max-w-lg"
+            >
+                <h1 className="text-4xl font-extrabold text-center mb-6 text-gray-800">Đăng ký</h1>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                    <input
+                        type="text"
+                        name="lastName"
+                        className="bg-gray-100 shadow-inner rounded-lg p-3 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        placeholder="Họ"
+                        value={formData.lastName}
+                        onChange={handleChange}
+                        required
+                    />
+                    <input
+                        type="text"
+                        name="firstName"
+                        className="bg-gray-100 shadow-inner rounded-lg p-3 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        placeholder="Tên"
+                        value={formData.firstName}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <div className="grid mb-4">
+                    <input
+                        type="number"
+                        name="numberPhone"
+                        className="bg-gray-100 shadow-inner rounded-lg p-3 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none mb-4"
+                        placeholder="Số điện thoại"
+                        value={formData.numberPhone}
+                        onChange={handleChange}
+                        required
+                    />
+                    <input
+                        type="date"
+                        name="birthday"
+                        className="bg-gray-100 shadow-inner rounded-lg p-3 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none mb-4"
+                        value={formData.birthday}
+                        onChange={handleChange}
+                        required
+                    />
+                    <input
+                        type="text"
+                        name="address"
+                        className="bg-gray-100 shadow-inner rounded-lg p-3 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none mb-4"
+                        placeholder="Địa chỉ"
+                        value={formData.address}
+                        onChange={handleChange}
+                        required
+                    />
+                    <select
+                        name="gender"
+                        className="bg-gray-100 shadow-inner rounded-lg p-3 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none mb-4"
+                        value={formData.gender}
+                        onChange={handleChange}
+                        required
+                    >
+                        <option disabled value="">
+                            Giới tính
+                        </option>
+                        <option value="true">Nam</option>
+                        <option value="false">Nữ</option>
+                    </select>
+                    <input
+                        type="password"
+                        name="password"
+                        className={`bg-gray-100 shadow-inner rounded-lg p-3 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none`}
+                        placeholder="Mật khẩu"
+                        value={formData.password}
+                        onChange={handleChange}
+                        required
+                    />
+                    {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+                    <input
+                        type="password"
+                        name="confirmPassword"
+                        className={`
+                        bg-gray-100 shadow-inner rounded-lg p-3 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none mt-4`}
+                        placeholder="Nhập lại mật khẩu"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        required
+                    />
+                    {errors.confirmPassword && (
+                        <p className="text-red-500 text-sm ">{errors.confirmPassword}</p>
+                    )}
+                </div>
+                <button
+                    type="submit"
+                    className="w-full  py-3 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 transition duration-200"
                 >
-                    <h1 className="font-bold text-3xl text-center pt-[15px]">Đăng ký</h1>
-                    <div className="flex gap-20 mt-6 mb-4">
-                        <input
-                            type="text"
-                            name="lastName"
-                            className="bg-white shadow appearance-none border rounded w-full py-4 px-3 leading-tight focus:outline-none focus:shadow-outline"
-                            placeholder="Họ"
-                            value={formData.lastName}
-                            onChange={handleChange}
-                            required
-                        />
-                        <input
-                            type="text"
-                            name="firstName"
-                            className="bg-white shadow appearance-none border rounded w-full py-4 px-3 leading-tight focus:outline-none focus:shadow-outline"
-                            placeholder="Tên"
-                            value={formData.firstName}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <div className="grid gap-3">
-                        <input
-                            type="tel"
-                            name="numberPhone"
-                            className="bg-white shadow appearance-none border rounded w-full py-3 px-3 leading-tight focus:outline-none focus:shadow-outline"
-                            placeholder="Số điện thoại"
-                            value={formData.numberPhone}
-                            onChange={handleChange}
-                            required
-                        />
-                        <input
-                            type="date"
-                            name="birthday"
-                            className="border-black bg-white shadow appearance-none border rounded w-full py-3 px-3 leading-tight focus:outline-none focus:shadow-outline"
-                            value={formData.birthday}
-                            onChange={handleChange}
-                            required
-                        />
-                        <input
-                            type="text"
-                            name="address"
-                            className="bg-white shadow appearance-none border rounded w-full py-3 px-3 leading-tight focus:outline-none focus:shadow-outline"
-                            placeholder="Địa chỉ"
-                            value={formData.address}
-                            onChange={handleChange}
-                            required
-                        />
-                        <select
-                            name="gender"
-                            className="bg-white shadow appearance-none border rounded w-full py-3 px-3 leading-tight focus:outline-none focus:shadow-outline"
-                            value={formData.gender}
-                            onChange={handleChange}
-                            required
-                        >
-                            <option disabled value="">
-                                Giới tính
-                            </option>
-                            <option value="true">Nam</option>
-                            <option value="false">Nữ</option>
-                        </select>
-                        <input
-                            type="password"
-                            name="password"
-                            className="bg-white shadow appearance-none border rounded w-full py-3 px-3 leading-tight focus:outline-none focus:shadow-outline"
-                            placeholder="Mật khẩu"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
-                        />
-                        {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
-                        <input
-                            type="password"
-                            name="confirmPassword"
-                            className="bg-white shadow appearance-none border rounded w-full py-3 px-3 leading-tight focus:outline-none focus:shadow-outline"
-                            placeholder="Nhập lại mật khẩu"
-                            value={formData.confirmPassword}
-                            onChange={handleChange}
-                            required
-                        />
-                        {errors.confirmPassword && (
-                            <p style={{ color: 'red' }}>{errors.confirmPassword}</p>
-                        )}
-                        <button type="submit" className="btn btn-primary w-full mb-3 text-white">
-                            Đăng ký
-                        </button>
-                    </div>
-                    <div className="flex items-center justify-between mt-4">
-                        <span className="inline-block align-baseline">Bạn đã có tài khoản?</span>
-                        <Link
-                            to="/login"
-                            className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
-                        >
-                            Đăng nhập ngay
-                        </Link>
-                    </div>
-                </form>
-            </div>
-            <ToastContainer />
-        </>
+                    Đăng ký
+                </button>
+                <div className="flex items-center justify-between mt-6">
+                    <span className="text-sm text-gray-600">Bạn đã có tài khoản?</span>
+                    <Link to="/login" className="text-sm text-blue-500 hover:underline">
+                        Đăng nhập ngay
+                    </Link>
+                </div>
+            </form>
+            <ToastContainer position="top-right" autoClose={3000} />
+        </div>
     );
 }

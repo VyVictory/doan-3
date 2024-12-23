@@ -6,20 +6,22 @@ import 'react-toastify/dist/ReactToastify.css';
 import authToken from '../../components/authToken';
 import NotificationCss from '../../module/cssNotification/NotificationCss';
 import Apiuri from '../../service/apiuri';
-const uri = Apiuri()
+
+const uri = Apiuri();
+
 export default function Login() {
     const [formData, setFormData] = useState({
-        numberPhone: '0372830048',
-        password: 'Adsads1234@#',
+        numberPhone: '',
+        password: '',
     });
+
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
 
-    // Form validation
     const validateForm = () => {
         const validationErrors = {};
-        if (!formData.numberPhone) validationErrors.numberPhone = 'Bắt buộc nhập số điện thoại';
-        if (!formData.password) validationErrors.password = 'Bắt buộc nhập mật khẩu';
+        if (!formData.numberPhone) validationErrors.numberPhone = 'Vui lòng nhập số điện thoại.';
+        if (!formData.password) validationErrors.password = 'Vui lòng nhập mật khẩu.';
         return validationErrors;
     };
 
@@ -32,13 +34,16 @@ export default function Login() {
                 if (response.status === 201) {
                     authToken.setToken(response.data.accessToken); // Save token
                     toast.success('Đăng nhập thành công! Chào mừng bạn trở lại.', NotificationCss.Success);
-                    setTimeout(() => navigate('/'), 2000); // Redirect after 3 seconds
+                    setTimeout(() => navigate('/'), 2000); // Redirect after 2 seconds
                 } else {
-                    toast.error('Đăng nhập thất bại, vui lòng thử lại!', NotificationCss.Fail);
+                    toast.error('Đăng nhập thất bại, vui lòng thử lại.', NotificationCss.Fail);
                 }
             } catch (error) {
-                console.error('Lỗi:', error.response ? error.response.data : error.message);
-                toast.error(error.response?.data?.message || 'Đăng nhập thất bại!', NotificationCss.Fail);
+                console.error('Lỗi:', error.response?.data || error.message);
+                toast.error(
+                    error.response?.data?.message || 'Đã xảy ra lỗi. Vui lòng thử lại.',
+                    NotificationCss.Fail
+                );
             }
         } else {
             setErrors(validationErrors);
@@ -54,65 +59,90 @@ export default function Login() {
     };
 
     return (
-        <div className='bg-gradient-to-r from-[#24C6DC] to-[#514A9D] h-screen grid place-items-center'>
+        <div className="bg-gradient-to-br from-blue-500 to-purple-600 h-screen flex items-center justify-center">
             <form
                 onSubmit={handleSubmit}
-                method='POST'
-                className='text-black rounded-2xl bg-white px-12 py-8 min-w-[500px]'
+                className="bg-white shadow-lg rounded-3xl p-10 w-full max-w-sm"
             >
-                <h1 className='font-bold text-3xl text-center pt-[48px]'>Đăng nhập</h1>
+                <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">Đăng nhập</h1>
 
-                <div className='mb-4 pt-[24px]'>
-                    <label htmlFor="numberPhone" className="block text-gray-700 text-sm font-bold mb-2">Tài khoản</label>
+                <div className="mb-5">
+                    <label htmlFor="numberPhone" className="block text-gray-600 text-sm font-medium">
+                        Số điện thoại
+                    </label>
                     <input
-                        type="text"
+                        type="number"
                         name="numberPhone"
                         value={formData.numberPhone}
                         onChange={handleChange}
-                        className="bg-white shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        className="mt-2 block w-full px-4 py-3 text-gray-700 bg-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                         placeholder="Nhập số điện thoại"
                     />
-                    {errors.numberPhone && <p style={{ color: 'red' }} className="error">{errors.numberPhone}</p>}
+                    {errors.numberPhone && <p className="text-red-500 text-sm mt-2">{errors.numberPhone}</p>}
                 </div>
 
-                <div className='mb-4'>
-                    <label htmlFor="password" className="block text-gray-700 text-sm font-bold mb-2">
+                <div className="mb-5">
+                    <label htmlFor="password" className="block text-gray-600 text-sm font-medium">
                         Mật khẩu
-                        <Link to="/forgotpass" className="float-right font-normal text-gray-500 hover:text-gray-700">Quên mật khẩu?</Link>
+                        <Link to="/forgotpass" className="float-right text-sm text-blue-500 hover:underline">
+                            Quên mật khẩu?
+                        </Link>
                     </label>
                     <input
                         type="password"
                         name="password"
                         value={formData.password}
                         onChange={handleChange}
-                        className="bg-white shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        className="mt-2 block w-full px-4 py-3 text-gray-700 bg-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                         placeholder="Nhập mật khẩu"
                     />
-                    {errors.password && <p style={{ color: 'red' }} className="error">{errors.password}</p>}
+                    {errors.password && <p className="text-red-500 text-sm mt-2">{errors.password}</p>}
                 </div>
 
-                <button type="submit" className="btn btn-primary w-full mb-8">Đăng nhập</button>
+                <button
+                    type="submit"
+                    className="w-full py-3 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 transition duration-200"
+                >
+                    Đăng nhập
+                </button>
+                <div className="flex items-center justify-between mt-3 mb-4 text-nowrap">
+                    <label htmlFor="password" className="block text-gray-600 text-sm font-medium">
+                        <Link className="text-sm text-gray-400 hover:underline">
+                            Chưa có tài khoản?
+                        </Link>
+                    </label>
+                    <label htmlFor="password" className="block text-gray-600 text-sm font-medium">
+                        <Link to="/register" className="text-sm text-blue-500 hover:underline">
+                            Đăng ký ngay
+                        </Link>
+                    </label>
 
-                <div className='flex justify-center items-center mb-2'>
-                    <div>hoặc đăng nhập bằng</div>
                 </div>
-                <div className='grid justify-center mb-4'>
-                    <div className='border-2 p-2 rounded-xl border-yellow-400 font-semibold flex items-center gap-2'>
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24" width="22.875" viewBox="0 0 488 512">
-                            <path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z" />
-                        </svg>
-                        GOOGLE
+                <div className=''>
+                    <div className="flex items-center justify-between mt-1">
+                        <div className='border-t border-gray-300 w-full'>
+                        </div>
+                        <span className="text-sm text-gray-600 px-3 text-center">hoặc</span>
+                        <div className='border-t border-gray-300 w-full'>
+                        </div>
+                    </div>
+                    <div className="flex justify-center mt-4">
+                        <button
+                            type="button"
+                            className="flex items-center gap-2 py-2 px-4 border border-yellow-400 text-yellow-500 font-semibold rounded-lg hover:bg-yellow-100"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 488 512">
+                                <path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z" />
+                            </svg>
+                            GOOGLE
+                        </button>
                     </div>
                 </div>
 
-                <div className="flex items-center justify-between mt-4">
-                    <span className="inline-block align-baseline">Bạn chưa có tài khoản?</span>
-                    <Link to="/register" className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
-                        Đăng ký ngay
-                    </Link>
-                </div>
+
+
             </form>
-            <ToastContainer />
+            <ToastContainer position="top-center" autoClose={3000} />
         </div>
     );
 }
