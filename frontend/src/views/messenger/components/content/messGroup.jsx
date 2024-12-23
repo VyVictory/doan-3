@@ -26,6 +26,8 @@ const MessengerInbox = () => {
     const [iduser, setIdUser] = useState(null);
     // const [userdata, setUserdata] = useState({});
     const [loading, setLoading] = useState(true);
+    const [loadingHeader, setLoadingHeader] = useState(true);
+    const [loadingMess, setLoadingMess] = useState(true);
     const [sending, setSending] = useState(false); // Added sending state
     const [message, setMessage] = useState('');
     const [messengerdata, setMessengerdata] = useState([]);
@@ -42,7 +44,6 @@ const MessengerInbox = () => {
 
     const [hoveredMessageId, setHoveredMessageId] = useState(null);
     useEffect(() => {
-        setLoading(true)
         const queryParams = new URLSearchParams(location.search);
 
         setIdUser(queryParams.get('idgroup'));
@@ -146,6 +147,7 @@ const MessengerInbox = () => {
         fetchMessengerData();
         setContent('group');
         setLoading(false);
+        setLoadingMess(false)
     }, [iduser]);
 
     const onMessageReceived = useCallback(
@@ -165,7 +167,9 @@ const MessengerInbox = () => {
         [userContext._id]
     );
     useWebSocket(onMessageReceived);
+
     useEffect(() => {
+
         // Kiểm tra và xử lý điều kiện bên trong hook
         if (!messengerdata || Object.keys(messengerdata).length === 0) {
             return; // Không làm gì nếu `groupedMessages` không hợp lệ
@@ -176,6 +180,7 @@ const MessengerInbox = () => {
             data: dataGroup,
             messenger: messengerdata,
         };
+        setLoadingHeader(false)
         setInboxData(inboxUpdate);
     }, [messengerdata, dataGroup, setInboxData]);
 
@@ -245,6 +250,7 @@ const MessengerInbox = () => {
             const createdAtDate = new Date(message.createdAt);
             if (isNaN(createdAtDate)) {
                 console.warn('Invalid date:', message.createdAt);
+
                 return acc; // Skip invalid dates
             }
 
@@ -256,21 +262,30 @@ const MessengerInbox = () => {
         }
         return acc;
     }, {});
+    
     // console.log(dataGroup)
     return (
         <div className="flex flex-col h-full ">
             <div className="p-2 flex border-b h-14 bg-white shadow-sm">
-                <div className='w-full flex flex-row items-center'>
-                    <button >
-                        {/* onClick={() => window.location.href = `/user/${userdata?._id}`} */}
-                        <img
-                            className="w-10 h-10 rounded-full mr-2"
-                            src={dataGroup?.group?.avatarGroup[0] || imgUser}
-                            alt="User Avatar"
-                        />
-                    </button>
-                    <h3 className="font-semibold text-nowrap">{`${dataGroup?.group?.name ? dataGroup.group.name : 'Group No Name'}`}</h3>
-                </div>
+                {
+                    loadingHeader ?
+                        <div className='w-full flex flex-row items-center'>
+                            <Loading />
+                        </div> :
+                        <div className='w-full flex flex-row items-center'>
+                            <button >
+                                {/* onClick={() => window.location.href = `/user/${userdata?._id}`} */}
+                                <img
+                                    className="w-10 h-10 rounded-full mr-2"
+                                    src={dataGroup?.group?.avatarGroup[0] || imgUser}
+                                    alt="User Avatar"
+                                />
+                            </button>
+                            <h3 className="font-semibold text-nowrap">{`${dataGroup?.group?.name ? dataGroup.group.name : 'Group No Name'}`}</h3>
+                        </div>
+
+                }
+
                 <div className=" flex justify-end">
                     <button onClick={handleHiddenRight} >
                         {
@@ -281,102 +296,110 @@ const MessengerInbox = () => {
                     </button>
                 </div>
             </div>
+
             <div className="overflow-y-scroll h-full p-4 pt-1 bg-gray-100">
-                {Object.entries(groupedMessages).map(([date, messages]) => (
-                    <div key={date} className="mb-4">
-                        <div className="text-center text-gray-500 text-sm my-2">
-                            {format(new Date(date), 'MMMM dd, yyyy')}
-                        </div>
-                        {messages.map((message, index) => (
-                            <div
-                                ref={
-                                    index === messages.length - 1
-                                        ? messagesEndRef
-                                        : null
-                                }
-                                key={message?._id}
-                                className={`flex ${message?.sender?._id === userContext._id ? 'justify-end' : ''} ${index === messages.length - 1
-                                    ? 'nwwwwwwwwwwwwwwwwwwww'
-                                    : ''}`}
-                                onMouseEnter={() => {
-                                    if (message?.sender?._id === userContext._id) {
-                                        setHoveredMessageId(message._id);
-                                    }
-                                }} // Set the hovered message
-                                onMouseLeave={() => setHoveredMessageId(null)} // Clear the hovered message
-                            >
-                                {
-                                    hoveredMessageId === message?._id && message?.sender?._id === userContext._id ?
-                                        <div>
-                                            <div className='h-full justify-center flex p-2 items-center'>
-                                                <button onClick={() => handleRevokedClick(message._id)}>
-                                                    <ArrowUturnLeftIcon className="h-6 w-7 text-gray-500 bg-gray-100 rounded-sm " />
-                                                </button>
-                                            </div>
-                                        </div>
-                                        : ''
-                                }
-                                {
-                                    message?.sender?._id !== userContext._id ?
-                                        <div className='h-full pt-2'>
-                                            <button onClick={() => window.location.href = `/user/${message?.sender?._id}`}>
-                                                <img
-                                                    className="w-10 h-10 rounded-full mr-2"
-                                                    src={message?.sender?.avatar || imgUser}
-                                                    alt="User Avatar"
-                                                />
-                                            </button>
-                                        </div>
-                                        : ''
-                                }
-
-
-                                <div
-
-                                    className={clsx(
-                                        'rounded-lg shadow-md p-2 my-2 min-w-28',
-                                        message?.sender?._id === userContext._id ? 'bg-blue-100' : 'bg-white'
-                                    )}
-                                >
-
-                                    {message?.sender?._id !== userContext._id ?
-                                        <p className="text-xs text-gray-400">
-                                            {message?.sender?.lastName}
-                                            {message?.sender?.firstName}
-                                        </p>
-                                        : ''}
-                                    {message?.mediaURL?.length > 0 && message.mediaURL.map((url, idx) => {
-                                        const isVideo = url.endsWith(".mp4"); // Check if the URL ends with '.mp4'
-                                        return isVideo ? (
-                                            <video
-                                                key={idx}
-                                                controls
-                                                className="max-w-full max-h-72 rounded-t-lg"
-                                            >
-                                                <source src={url} type="video/mp4" />
-                                                Your browser does not support the video tag.
-                                            </video>
-                                        ) : (
-                                            <img
-                                                key={idx}
-                                                src={url}
-                                                alt="Media"
-                                                className="max-w-full max-h-72 object-cover rounded-t-lg"
-                                                onClick={() => handleOpenModal(url)}
-                                            />
-                                        );
-                                    })}
-
-                                    <p className="text-black py-2">{message?.content}</p>
-                                    <p className="text-xs text-gray-400">
-                                        {format(new Date(message?.createdAt), 'hh:mm a')}
-                                    </p>
+                {
+                    loadingMess == true ?
+                        <span className="loading loading-spinner loading-lg">Đang tải tin nhắn</span>
+                        :
+                        Object.entries(groupedMessages).map(([date, messages]) => (
+                            <div key={date} className="mb-4">
+                                <div className="text-center text-gray-500 text-sm my-2">
+                                    {format(new Date(date), 'MMMM dd, yyyy')}
                                 </div>
+                                {messages.map((message, index) => (
+                                    <div
+                                        ref={
+                                            index === messages.length - 1
+                                                ? messagesEndRef
+                                                : null
+                                        }
+                                        key={message?._id}
+                                        className={`flex ${message?.sender?._id === userContext._id ? 'justify-end' : ''} ${index === messages.length - 1
+                                            ? 'nwwwwwwwwwwwwwwwwwwww'
+                                            : ''}`}
+                                        onMouseEnter={() => {
+                                            if (message?.sender?._id === userContext._id) {
+                                                setHoveredMessageId(message._id);
+                                            }
+                                        }} // Set the hovered message
+                                        onMouseLeave={() => setHoveredMessageId(null)} // Clear the hovered message
+                                    >
+                                        {
+                                            hoveredMessageId === message?._id && message?.sender?._id === userContext._id ?
+                                                <div>
+                                                    <div className='h-full justify-center flex p-2 items-center'>
+                                                        <button onClick={() => handleRevokedClick(message._id)}>
+                                                            <ArrowUturnLeftIcon className="h-6 w-7 text-gray-500 bg-gray-100 rounded-sm " />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                : ''
+                                        }
+                                        {
+                                            message?.sender?._id !== userContext._id ?
+                                                <div className='h-full pt-2'>
+                                                    <button onClick={() => window.location.href = `/user/${message?.sender?._id}`}>
+                                                        <img
+                                                            className="w-10 h-10 rounded-full mr-2"
+                                                            src={message?.sender?.avatar || imgUser}
+                                                            alt="User Avatar"
+                                                        />
+                                                    </button>
+                                                </div>
+                                                : ''
+                                        }
+
+
+                                        <div
+
+                                            className={clsx(
+                                                'rounded-lg shadow-md p-2 my-2 min-w-28',
+                                                message?.sender?._id === userContext._id ? 'bg-blue-100' : 'bg-white'
+                                            )}
+                                        >
+
+                                            {message?.sender?._id !== userContext._id ?
+                                                <p className="text-xs text-gray-400">
+                                                    {message?.sender?.lastName}
+                                                    {message?.sender?.firstName}
+                                                </p>
+                                                : ''}
+                                            {message?.mediaURL?.length > 0 && message.mediaURL.map((url, idx) => {
+                                                const isVideo = url.endsWith(".mp4"); // Check if the URL ends with '.mp4'
+                                                return isVideo ? (
+                                                    <video
+                                                        key={idx}
+                                                        controls
+                                                        className="max-w-full max-h-72 rounded-t-lg"
+                                                    >
+                                                        <source src={url} type="video/mp4" />
+                                                        Your browser does not support the video tag.
+                                                    </video>
+                                                ) : (
+                                                    <img
+                                                        key={idx}
+                                                        src={url}
+                                                        alt="Media"
+                                                        className="max-w-full max-h-72 object-cover rounded-t-lg"
+                                                        onClick={() => handleOpenModal(url)}
+                                                    />
+                                                );
+                                            })}
+
+                                            <p className="text-black py-2">{message?.content}</p>
+                                            <p className="text-xs text-gray-400">
+                                                {format(new Date(message?.createdAt), 'hh:mm a')}
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
-                        ))}
-                    </div>
-                ))}
+
+                        ))
+                }
             </div>
+
 
 
 

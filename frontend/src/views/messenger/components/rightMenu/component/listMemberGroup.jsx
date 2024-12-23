@@ -14,6 +14,7 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { ToastContainer, toast } from 'react-toastify';
 import NotificationCss from '../../../../../module/cssNotification/NotificationCss';
+import { Link } from 'react-router-dom';
 
 const ListMemberGroup = () => {
     const { inboxData } = useContext(MessengerContext);
@@ -77,7 +78,7 @@ const ListMemberGroup = () => {
         try {
             const res = await group.addMemberGroup(idgr, listMember[0])
             if (res.success) {
-               toast.success('Thêm thành viên vào nhóm thành công.', NotificationCss.Success);
+                toast.success('Thêm thành viên vào nhóm thành công.', NotificationCss.Success);
             }
         } catch (error) {
             toast.error('Thêm thành viên vào nhóm thất bại, vui lòng thử lại!', NotificationCss.Fail);
@@ -161,9 +162,12 @@ const ListMemberGroup = () => {
                         showListMember && <div className="px-4 mt-1 mb-2 max-h-96 overflow-y-auto custom-scroll">
                             {
                                 listMember?.map((member, index) => (
-                                    <button className="flex flex-row w-full items-center hover:bg-gray-300 rounded-md p-2">
-                                        <CardFriendAddGroup key={member?._id} iduser={member?._id} />
-                                    </button>
+                                    <a href={`/user/${member._id}`}>
+                                        <button className="flex flex-row w-full items-center hover:bg-gray-300 rounded-md p-2">
+                                            <CardFriendAddGroup key={member?._id} iduser={member?._id} />
+                                        </button>
+                                    </a>
+
                                 ))
 
                             }
@@ -288,7 +292,7 @@ const ListMemberGroup = () => {
                     </Box>
                 </Modal>
             </div>
-          
+
         </>
     );
 };
