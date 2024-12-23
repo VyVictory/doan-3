@@ -154,3 +154,16 @@ export async function updatePost(postId, content) {
 
     }
 }
+//delete post
+export async function deletePost(postId) {
+    try {
+        const request = await axios.delete(`${url}/post/deletePost/${postId}`, {
+            headers: {
+                Authorization: `Bearer ${authToken.getToken()}`,
+            }
+        })
+        return request
+    } catch (error) {
+
+    }
+}

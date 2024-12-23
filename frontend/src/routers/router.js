@@ -25,6 +25,7 @@ import MessengerGroup from "../views/messenger/components/content/messGroup.jsx"
 import Test from "./test.jsx";
 import DetailPost from "../views/post/components/DetailPost.jsx";
 import ChangePassPage from "../auth/ChangePassPage.jsx";
+import UpdatePost from "../views/post/components/UpdatePost.jsx";
 
 function routers() {
     return (
@@ -33,7 +34,7 @@ function routers() {
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Home />} />
                     <Route path="/changepass" element={<ChangePassPage />} />
-
+                    <Route path="/updatepost/:id" element={<UpdatePost />} />
                     <Route path="friends" element={<Myfriend />} >
                         <Route path="" element={<Friendinvitation />} />
                         <Route path="list" element={<MyAllFriend />} />
