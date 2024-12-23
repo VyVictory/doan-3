@@ -5,17 +5,18 @@ const url = Apiuri();
 
 export async function changepass(currentPassword, newPassword) {
     try {
-        const request = await axios.put(`${url}/user/change-password`, { currentPassword, newPassword }, {
-            headers: {
-                Authorization: `Bearer ${authToken.getToken()}`
+        const request = await axios.put(
+            `${url}/user/change-password`, 
+            { currentPassword, newPassword },
+            {
+                headers: {
+                    Authorization: `Bearer ${authToken.getToken()}`
+                }
             }
-        });
-        return request;
+        );
+        return { success: true, messenger: request.data.message, status: request.status };
     } catch (error) {
-        if (error.response && error.response.data) {
-            return error.response.data;
-        } else {
-            return { error: "An unknown error occurred" };
-        }
+        const errorMessage = error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại.";
+        return { success: false, messenger: errorMessage, status: error.response?.status || 500 };
     }
 }
