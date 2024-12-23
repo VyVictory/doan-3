@@ -52,7 +52,7 @@ const ListMemberGroup = () => {
             }
         };
         fetchMessengerData();
-    }, [inboxData]);
+    }, [inboxData, listMember]);
 
     // Hàm đóng modal
     const handleCloseModal = () => {
@@ -76,9 +76,14 @@ const ListMemberGroup = () => {
     };
     const handAddMemberGroup = async (idgr, listMember) => {
         try {
-            const res = await group.addMemberGroup(idgr, listMember[0])
+            const res = await group.addMemberGroup(idgr, listMember)
             if (res.success) {
                 toast.success('Thêm thành viên vào nhóm thành công.', NotificationCss.Success);
+                // Update the listMember state with the new members
+                setListMember(prevMembers => [...prevMembers, ...listMember]);
+
+                // You can also reset selected friends here if needed
+                setSelectedFriends([]);
             }
         } catch (error) {
             toast.error('Thêm thành viên vào nhóm thất bại, vui lòng thử lại!', NotificationCss.Fail);
@@ -240,25 +245,26 @@ const ListMemberGroup = () => {
                                 {loading ? (
                                     <Loading />
                                 ) : (
-                                    filteredFriends.map((friend, index) => (
-                                        <div key={index} className="flex items-center mb-2 justify-center">
-                                            <div className="hover:bg-gray-200 px-2 rounded-md shadow-sm w-full">
-                                                <button className="flex items-center py-2 w-full">
-                                                    <Checkbox
-                                                        checked={selectedFriends.includes(friend.receiver?._id || friend.sender?._id)}
-                                                        onChange={() =>
-                                                            toggleFriendSelection(friend.receiver?._id || friend.sender?._id)
-                                                        }
-                                                    />
-                                                    {friend.receiver && friend.receiver._id ? (
-                                                        <CardFriendAddGroup iduser={friend.receiver._id} />
-                                                    ) : friend.sender && friend.sender._id ? (
-                                                        <CardFriendAddGroup iduser={friend.sender._id} />
-                                                    ) : null}
-                                                </button>
+                                    filteredFriends.length > 0 ?
+                                        filteredFriends.map((friend, index) => (
+                                            <div key={index} className="flex items-center mb-2 justify-center">
+                                                <div className="hover:bg-gray-200 px-2 rounded-md shadow-sm w-full">
+                                                    <button className="flex items-center py-2 w-full">
+                                                        <Checkbox
+                                                            checked={selectedFriends.includes(friend.receiver?._id || friend.sender?._id)}
+                                                            onChange={() =>
+                                                                toggleFriendSelection(friend.receiver?._id || friend.sender?._id)
+                                                            }
+                                                        />
+                                                        {friend.receiver && friend.receiver._id ? (
+                                                            <CardFriendAddGroup iduser={friend.receiver._id} />
+                                                        ) : friend.sender && friend.sender._id ? (
+                                                            <CardFriendAddGroup iduser={friend.sender._id} />
+                                                        ) : null}
+                                                    </button>
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))
+                                        )) : 'Không có bạn bè nào'
                                 )}
                             </div>
 
