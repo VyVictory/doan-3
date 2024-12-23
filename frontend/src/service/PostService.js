@@ -139,3 +139,18 @@ export async function getDetailPost(postId) {
 
     }
 }
+
+//update post
+export async function updatePost(postId, content) {
+    try {
+        const request = await axios.put(`${url}/post/updatePost/${postId}`, { content }, {
+            headers: {
+                Authorization: `Bearer ${authToken.getToken()}`,
+                'Content-Type': 'multipart/form-data',
+            }
+        })
+        return request
+    } catch (error) {
+
+    }
+}
