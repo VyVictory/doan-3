@@ -278,7 +278,7 @@ const MessengerInbox = () => {
         return acc;
     }, {});
 
-    // console.log(dataGroup)
+    console.log(dataGroup)
     return (
         <div className="flex flex-col h-full ">
             <div className="p-2 flex border-b h-14 bg-white shadow-sm">
@@ -401,8 +401,19 @@ const MessengerInbox = () => {
                                                     />
                                                 );
                                             })}
+                                            {
+                                                message?.mediaURL === null ? (
+                                                    <p className={`py-2 ${message?.content ? 'text-black' : 'text-gray-400'}`}>
+                                                        {message?.content ? message.content : 'Tin nhắn đã được thu hồi'}
+                                                    </p>
+                                                ) : (
+                                                    <p className="py-2 text-black"> 
+                                                        {message?.content || ''}
+                                                    </p>
+                                                )
+                                            }
 
-                                            <p className="text-black py-2">{message?.content}</p>
+
                                             <p className="text-xs text-gray-400">
                                                 {format(new Date(message?.createdAt), 'hh:mm a')}
                                             </p>
