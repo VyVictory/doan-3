@@ -16,6 +16,7 @@ export default function HomePost() {
     const [loading, setLoading] = useState(true);
     const [postsToShow, setPostsToShow] = useState(10); // Controls the number of posts to display
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [copied, setCopied] = useState(false);
     const [currentIndexes, setCurrentIndexes] = useState({});
 
     useEffect(() => {
@@ -119,6 +120,19 @@ export default function HomePost() {
             return format(postDate, 'dd/MM/yyyy HH:mm');
         }
     };
+    //share
+    const handleCopyLink = (postId) => {
+        const link = `${window.location.href}post/${postId}`; // Lấy URL hiện tại
+        navigator.clipboard
+            .writeText(link)
+            .then(() => {
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000); // Reset trạng thái sau 2 giây
+            })
+            .catch((err) => {
+                console.error("Không thể sao chép liên kết: ", err);
+            });
+    };
 
     const formatPrivacy = (privacy) => {
         switch (privacy) {
@@ -211,8 +225,11 @@ export default function HomePost() {
                                         <ChatBubbleLeftIcon className="size-5" />
                                         <span>{post.comments.length}</span>
                                     </Link>
-                                    <button className={"flex items-end gap-1"}>
+                                    <button
+                                        onClick={() => handleCopyLink(post._id)}
+                                        className={"flex items-end gap-1"}>
                                         <ShareIcon className="size-5" />
+
                                     </button>
                                 </div>
                             </div>
