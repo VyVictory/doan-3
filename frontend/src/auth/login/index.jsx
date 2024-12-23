@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import authToken from '../../components/authToken';
 import NotificationCss from '../../module/cssNotification/NotificationCss';
 import Apiuri from '../../service/apiuri';
-
+import bg from '../background_auth.jpg'
 const uri = Apiuri();
 
 export default function Login() {
@@ -59,7 +59,15 @@ export default function Login() {
     };
 
     return (
-        <div className="bg-gradient-to-br from-blue-500 to-purple-600 h-screen flex items-center justify-center">
+        <div
+            className="h-screen flex items-center justify-center"
+            style={{
+                backgroundImage: `url(${bg})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+            }}
+        >
             <form
                 onSubmit={handleSubmit}
                 className="bg-white shadow-lg rounded-3xl p-10 w-full max-w-sm"
@@ -138,11 +146,8 @@ export default function Login() {
                         </button>
                     </div>
                 </div>
-
-
-
             </form>
             <ToastContainer position="top-center" autoClose={3000} />
-        </div>
+         </div >
     );
 }

@@ -5,6 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Ensure CSS is imported
 import NotificationCss from '../../module/cssNotification/NotificationCss';
 import Apiuri from '../../service/apiuri';
+import bg from '../background_auth.jpg'
 
 const uri = Apiuri();
 
@@ -85,7 +86,15 @@ export default function Register() {
     };
 
     return (
-        <div className="bg-gradient-to-br from-blue-500 to-purple-600 min-h-screen flex items-center justify-center">
+        <div
+            className="h-screen flex items-center justify-center"
+            style={{
+                backgroundImage: `url(${bg})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+            }}
+        >
             <form
                 method="POST"
                 onSubmit={handleSubmit}
