@@ -25,7 +25,7 @@ export default function AllPostOther({ user }) {
         }
         fetchdata()
     }, [id]);
-    console.log(posts)
+    // console.log(posts)
 
     if (!posts.length) {
         return <span className='text-xl mt-3 text-gray-500'>Chưa đăng bài viết nào!</span>;

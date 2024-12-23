@@ -2,8 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import userImg from '../../../img/user.png';
 import friend from '../../../service/friend';
 import { ToastContainer, toast } from 'react-toastify';
-import NotificationCss from '../../../module/cssNotification/NotificationCss';
-import useWebSocket from '../../../service/webSocket/usewebsocket';
+import NotificationCss from '../../../module/cssNotification/NotificationCss'
 import { useContext } from 'react';
 import { useUser } from '../../../service/UserContext';
 const CardUserList = ({ userdata: initialUserData }) => {
@@ -28,18 +27,6 @@ const CardUserList = ({ userdata: initialUserData }) => {
             console.error(error);
         }
     }, []); // Add empty array to ensure it's only created once
-    const onMessageReceived = useCallback(
-        (newMessage) => {
-            if (!newMessage.receiver) {
-                newMessage.receiver = userContext._id;
-            }
-            if (!newMessage.createdAt) {
-                newMessage.createdAt = new Date().toISOString();
-            }
-        },
-        [userContext._id]
-    );
-    useWebSocket(onMessageReceived);
     const handCloseFriend = async (id) => {
         try {
             const rs = await friend.cancelFriend(id);
@@ -126,7 +113,7 @@ const CardUserList = ({ userdata: initialUserData }) => {
                     </button>
                 </div>
             </button>
-           
+
         </>
     );
 };

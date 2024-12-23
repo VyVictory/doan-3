@@ -12,7 +12,9 @@ export async function profileUserCurrent() {
         })
         return request
     } catch (error) {
+        
         console.log(error)
+        authToken.deleteToken();
     }
 }
 

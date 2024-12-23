@@ -16,6 +16,7 @@ import { ChevronRightIcon, ChevronLeftIcon, ArrowUturnLeftIcon } from "@heroicon
 import { useContext } from "react";
 import { MessengerContext } from '../../layoutMessenger';
 import { toast, ToastContainer } from 'react-toastify';
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
 import NotificationCss from '../../../../module/cssNotification/NotificationCss';
 import group from '../../../../service/group';
 const MessengerInbox = () => {
@@ -35,12 +36,16 @@ const MessengerInbox = () => {
     const [error, setError] = useState(null);
     const messagesEndRef = useRef(null);
 
+
+
     //file
     const [file, setFile] = useState(null);
     const [preview, setPreview] = useState(null);
     const [openModal, setOpenModal] = useState(false); // Trạng thái modal
     const [modalImage, setModalImage] = useState(null); // Ảnh phóng to
 
+    const [openDialog, setOpenDialog] = useState(false); // For controlling the confirmation dialog
+    const [messageToRevoke, setMessageToRevoke] = useState(null); // Store message to be revoked
 
     const [hoveredMessageId, setHoveredMessageId] = useState(null);
     useEffect(() => {
@@ -50,25 +55,35 @@ const MessengerInbox = () => {
 
     }, [location]);
     const handleRevokedClick = async (messageId) => {
+        setMessageToRevoke(messageId); // Store the message ID to revoke
+        setOpenDialog(true); // Open the confirmation dialog
+    };
+
+    const confirmRevokeMessage = async () => {
+        if (!messageToRevoke) return; // Ensure there's a valid message to revoke
         try {
-            const res = await messenger.revokedMesage(messageId); // API call to revoke the message
+            const res = await messenger.revokedMesage(messageToRevoke); // API call to revoke the message
             if (res.success) {
-                // On success, remove the revoked message from the current displayed list
                 setMessengerdata((prevMessages) =>
-                    prevMessages.filter((message) => message._id !== messageId)
+                    prevMessages.filter((message) => message._id !== messageToRevoke)
                 );
                 toast.success(res?.message || 'Bạn vừa thu hồi tin nhắn thành công', NotificationCss.Success);
             } else {
-                // Optionally handle failure case
                 console.error("Failed to revoke message:", res);
                 toast.error(res?.message || 'Lỗi khi thu hồi tin nhắn', NotificationCss.Fail);
             }
         } catch (error) {
             console.error("Error revoking message:", error);
+        } finally {
+            setOpenDialog(false); // Close the dialog
+            setMessageToRevoke(null); // Clear the message ID
         }
     };
 
-
+    const cancelRevokeMessage = () => {
+        setOpenDialog(false); // Close the dialog
+        setMessageToRevoke(null); // Clear the message ID
+    };
     const scrollToBottom = useCallback(() => {
         if (messagesEndRef.current) {
             messagesEndRef.current.scrollIntoView(); // Cuộn đến tin nhắn cuối
@@ -262,7 +277,7 @@ const MessengerInbox = () => {
         }
         return acc;
     }, {});
-    
+
     // console.log(dataGroup)
     return (
         <div className="flex flex-col h-full ">
@@ -526,6 +541,23 @@ const MessengerInbox = () => {
 
                     </Box>
                 </Modal>
+                {/* Confirmation Dialog */}
+                <Dialog open={openDialog} onClose={cancelRevokeMessage}>
+                    <DialogTitle>Xác nhận thu hồi tin nhắn</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            Bạn có chắc chắn muốn thu hồi tin nhắn này? Thao tác này không thể hoàn tác.
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={cancelRevokeMessage} color="secondary">
+                            Hủy
+                        </Button>
+                        <Button onClick={confirmRevokeMessage} color="primary">
+                            Thu hồi
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </div>
         </div >
     );

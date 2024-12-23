@@ -4,7 +4,6 @@ import LeftListMenu from "./menu/LeftMenuList";
 import authToken from "../components/authToken";
 import { useEffect } from "react";
 import { UserProvider } from "../service/UserContext";
-import socket from "../service/webSocket/socket";
 
 export default function Layout() {
     const navigate = useNavigate();
@@ -17,31 +16,31 @@ export default function Layout() {
         }
 
         // WebSocket setup
-        const handleOpen = () => {
-            console.log("WebSocket connection establishedsssssssssssssssss");
-            socket.send("Connection establishedssssssssssssssssssssssssssss");
-        };
+        // const handleOpen = () => {
+        //     console.log("WebSocket connection establishedsssssssssssssssss");
+        //     socket.send("Connection establishedssssssssssssssssssssssssssss");
+        // };
 
-        const handleMessage = (event) => {
-            console.log("Message from server socket:", event);
-        };
+        // const handleMessage = (event) => {
+        //     console.log("Message from server socket:", event);
+        // };
 
-        const handleError = (error) => {
-            console.error("WebSocket error:", error);
-        };
+        // const handleError = (error) => {
+        //     console.error("WebSocket error:", error);
+        // };
 
-        socket.addEventListener("open", handleOpen);
-        socket.addEventListener("newmessage", handleMessage);
-        socket.addEventListener("friendrequest", handleMessage);
-        socket.addEventListener("error", handleError);
+        // socket.addEventListener("open", handleOpen);
+        // socket.addEventListener("newmessage", handleMessage);
+        // socket.addEventListener("friendrequest", handleMessage);
+        // socket.addEventListener("error", handleError);
 
-        // Cleanup WebSocket listeners on component unmount
-        return () => {
-            socket.removeEventListener("open", handleOpen);
-            socket.removeEventListener("newmessage", handleMessage);
-            socket.removeEventListener("friendrequest", handleMessage);
-            socket.removeEventListener("error", handleError);
-        };
+        // // Cleanup WebSocket listeners on component unmount
+        // return () => {
+        //     socket.removeEventListener("open", handleOpen);
+        //     socket.removeEventListener("newmessage", handleMessage);
+        //     socket.removeEventListener("friendrequest", handleMessage);
+        //     socket.removeEventListener("error", handleError);
+        // };
     }, [navigate]);
 
     return (

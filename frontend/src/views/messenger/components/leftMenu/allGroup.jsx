@@ -11,7 +11,6 @@ const AllGroup = () => {
     const [groups, setGroups] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
-    const [groupd, setGroupd] = useState([]);
     const [filteredFriends, setFilteredFriends] = useState([]);
     const [filteredGroups, setFilteredGroups] = useState([]);
     const navigate = useNavigate();
@@ -50,19 +49,16 @@ const AllGroup = () => {
         if (searchTerm.trim() === "") {
             setFilteredGroups(groups);
         } else {
-            const filtered = groups.filter((friend) => {
-                const friendName = friend.receiver
-                    ? `${friend.receiver.firstName} ${friend.receiver.lastName}`
-                    : friend.sender
-                        ? `${friend.sender.firstName} ${friend.sender.lastName}`
-                        : '';
-                return friendName.toLowerCase().includes(searchTerm.toLowerCase());
+            const filtered = groups.filter((group) => {
+                // Assuming the name of the group is stored in 'name'
+                return group.name.toLowerCase().includes(searchTerm.toLowerCase());
             });
             setFilteredGroups(filtered);
         }
     }, [searchTerm, groups]);
+
     // console.log(filteredGroups)
-    // console.log(groupd)
+    console.log(groups)
     return (
         <>
             {loading ? (
