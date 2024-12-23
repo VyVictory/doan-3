@@ -7,7 +7,7 @@ import NotificationCss from '../../module/cssNotification/NotificationCss';
 import Apiuri from '../../service/apiuri';
 import bg from '../background_auth.jpg'
 
-const uri = Apiuri();
+const uri = Apiuri.Apiuri()
 
 export default function Register() {
     const [formData, setFormData] = useState({

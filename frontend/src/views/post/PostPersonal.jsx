@@ -9,7 +9,8 @@ import 'animate.css';
 import DropdownPostPersonal from './components/DropdownPostPersonal';
 import { format, differenceInMinutes, differenceInHours, differenceInDays } from 'date-fns';
 import Loading from '../../components/Loading';
-
+import Apiuri from '../../service/apiuri';
+const uri = Apiuri.Apiuri()
 export default function PostPersonal({ user }) {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -17,7 +18,7 @@ export default function PostPersonal({ user }) {
     useEffect(() => {
         const fetchdata = async () => {
             setLoading(true);
-            axios.get('http://localhost:3001/post/crpost', {
+            axios.get(`${uri}/post/crpost`, {
                 headers: {
                     Authorization: `Bearer ${authToken.getToken()}`, // Use your auth token provider
                     'Content-Type': 'application/json'

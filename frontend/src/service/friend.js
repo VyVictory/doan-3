@@ -4,7 +4,7 @@ import Apiuri from './apiuri';
 import { useCallback } from 'react';
 import socket from './webSocket/socket';
 import useWebSocket from './webSocket/usewebsocket';
-const url = Apiuri()
+const url = Apiuri.Apiuri()
 
 const AddFriend = async (id) => {
 

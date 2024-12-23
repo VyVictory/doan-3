@@ -1,7 +1,8 @@
 import axios from 'axios';
 import authToken from '../components/authToken';
 import Apiuri from './apiuri';
-const url = Apiuri()
+const url = Apiuri.Apiuri()
+
 const getListMessenger = async (iduser, message) => {
     try {
         const response = await axios.get(`${url}/chat/getMylistChat`,

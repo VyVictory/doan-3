@@ -1,6 +1,7 @@
 import { io } from "socket.io-client";
 import authToken from "../../components/authToken";
-const URL = process.env.REACT_APP_API_URL;
+import apiuri from "../apiuri";
+const URL = apiuri.Socketuri()
 const socket = io(URL, {
   extraHeaders: {
     Authorization: `Bearer ${authToken.getToken()}`,

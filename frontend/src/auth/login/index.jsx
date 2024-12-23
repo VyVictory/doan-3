@@ -7,7 +7,7 @@ import authToken from '../../components/authToken';
 import NotificationCss from '../../module/cssNotification/NotificationCss';
 import Apiuri from '../../service/apiuri';
 import bg from '../background_auth.jpg'
-const uri = Apiuri();
+const uri = Apiuri.Apiuri()
 
 export default function Login() {
     const [formData, setFormData] = useState({

@@ -1,6 +1,6 @@
 import axios from "axios";
 import Apiuri from './apiuri';
-const url = Apiuri();
+const url = Apiuri.Apiuri()
 
 export async function forgotPassword(email) {
     try {
