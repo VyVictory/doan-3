@@ -134,7 +134,7 @@ export default function PostPersonal({ user }) {
                                         </div>
                                         <p>{post.content}</p>
                                     </article>
-                                    <DropdownPostPersonal />
+                                    <DropdownPostPersonal postId={post._id} />
                                 </div>
                                 {post.img.length > 0 && (
                                     <img className='rounded-xl max-h-[300px]' src={post.img[0]} alt="Post visual" />

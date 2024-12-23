@@ -65,11 +65,13 @@ export default function CommentReply({ open, postId, user, cmtId }) {
         }
     }
 
-    console.log(comment[0]?.replyTo.length)
+    console.log(comment)
     return (
         <>
             {open === true && (
-                <div className=' mt-5  border-2'>
+                <div className=' mt-5 p-2  border-2'>
+
+                    các phản hồi của bình luận này
                     {loading ? (
                         <Loading />
                     ) : (
