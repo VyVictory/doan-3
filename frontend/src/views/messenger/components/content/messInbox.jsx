@@ -243,7 +243,7 @@ const MessengerInbox = () => {
         return <Loading />;
     }
     if (!iduser) {
-        return <div className="text-red-500 text-center mt-4">{error}</div>;
+        return <div className="text-red-500 text-center mt-4"></div>;//{error}
     }
 
     const groupedMessages = messengerdata.reduce((acc, message) => {
@@ -258,7 +258,7 @@ const MessengerInbox = () => {
         acc[date].push(message);
         return acc;
     }, {});
-    console.log(groupedMessages)
+    // console.log(groupedMessages)
     return (
         <div className="flex flex-col h-full ">
             <div className="p-2 flex border-b h-14 bg-white shadow-sm">

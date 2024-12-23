@@ -58,7 +58,7 @@ const CardUserList = ({ userdata: initialUserData }) => {
     const handDetailUser = (id) => {
         window.location.href = `/user/${id}`;
     };
-
+    
     return (
         <>
             <button

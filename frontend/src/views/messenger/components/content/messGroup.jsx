@@ -257,7 +257,7 @@ const MessengerInbox = () => {
         return <Loading />;
     }
     if (!iduser) {
-        return <div className="text-red-500 text-center mt-4">{error}</div>;
+        return <div className="text-red-500 text-center mt-4"></div>;//{error}
     }
 
     const groupedMessages = messengerdata.reduce((acc, message) => {

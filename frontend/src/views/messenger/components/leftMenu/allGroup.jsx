@@ -63,7 +63,7 @@ const AllGroup = () => {
         setOpenModal(!openModal); // Open modal
     };
     // console.log(filteredGroups)
-    console.log(groups)
+    // console.log(groups)
     return (
         <>
             {loading ? (

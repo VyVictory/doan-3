@@ -28,7 +28,7 @@ const ListMemberGroup = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [friends, setFriends] = useState([]); // Friends data
     const [loading, setLoading] = useState(false);
-
+    const [tinHieu, seTinHieu] = useState(false);
     const chaneShowListMember = () => {
         setShowListMember(!showListMember)
     };
@@ -52,7 +52,7 @@ const ListMemberGroup = () => {
             }
         };
         fetchMessengerData();
-    }, [inboxData, listMember]);
+    }, [inboxData, tinHieu]);
 
     // Hàm đóng modal
     const handleCloseModal = () => {
@@ -81,7 +81,7 @@ const ListMemberGroup = () => {
                 toast.success('Thêm thành viên vào nhóm thành công.', NotificationCss.Success);
                 // Update the listMember state with the new members
                 setListMember(prevMembers => [...prevMembers, ...listMember]);
-
+                seTinHieu(!tinHieu)
                 // You can also reset selected friends here if needed
                 setSelectedFriends([]);
             }
@@ -136,7 +136,7 @@ const ListMemberGroup = () => {
                 : '';
         return friendName.toLowerCase().includes(searchTerm.toLowerCase());
     });
-    console.log(listMember)
+    // console.log(listMember)
     return (
         <>
             <div className="flex flex-col">
