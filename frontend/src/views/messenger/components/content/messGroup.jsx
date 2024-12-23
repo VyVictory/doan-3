@@ -375,7 +375,7 @@ const MessengerInbox = () => {
                                         >
 
                                             {message?.sender?._id !== userContext._id ?
-                                                <p className="text-xs text-gray-400">
+                                                <p className="text-xs text-gray-400 mb-2">
                                                     {message?.sender?.lastName}
                                                     {message?.sender?.firstName}
                                                 </p>
@@ -403,11 +403,11 @@ const MessengerInbox = () => {
                                             })}
                                             {
                                                 message?.mediaURL === null ? (
-                                                    <p className={`py-2 ${message?.content ? 'text-black' : 'text-gray-400'}`}>
+                                                    <p className={`pb-2 ${message?.content ? 'text-black' : 'text-gray-400'}`}>
                                                         {message?.content ? message.content : 'Tin nhắn đã được thu hồi'}
                                                     </p>
                                                 ) : (
-                                                    <p className="py-2 text-black"> 
+                                                    <p className="pb-2 text-black">
                                                         {message?.content || ''}
                                                     </p>
                                                 )
