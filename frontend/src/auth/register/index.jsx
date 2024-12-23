@@ -98,7 +98,7 @@ export default function Register() {
             <form
                 method="POST"
                 onSubmit={handleSubmit}
-                className="bg-white rounded-3xl shadow-lg p-8 w-full max-w-lg"
+                className="bg-white rounded-3xl shadow-lg shadow-gray-500 p-8 w-full max-w-lg"
             >
                 <h1 className="text-4xl font-extrabold text-center mb-6 text-gray-800">Đăng ký</h1>
                 <div className="grid grid-cols-2 gap-4 mb-4">
@@ -134,11 +134,12 @@ export default function Register() {
                     <input
                         type="date"
                         name="birthday"
-                        className="bg-gray-100 shadow-inner rounded-lg p-3 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none mb-4"
+                        className={`bg-gray-100 shadow-inner rounded-lg p-3 ${!formData.birthday ? 'text-gray-400' : 'text-gray-700'} focus:ring-2 focus:ring-blue-500 focus:outline-none mb-4`}
                         value={formData.birthday}
                         onChange={handleChange}
                         required
                     />
+
                     <input
                         type="text"
                         name="address"
@@ -150,17 +151,18 @@ export default function Register() {
                     />
                     <select
                         name="gender"
-                        className="bg-gray-100 shadow-inner rounded-lg p-3 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none mb-4"
+                        className={`bg-gray-100 shadow-inner rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none mb-4 ${!formData.gender ? 'text-gray-400' : 'text-black'}`}
                         value={formData.gender}
                         onChange={handleChange}
                         required
                     >
-                        <option disabled value="">
+                        <option disabled value="" className="text-gray-400">
                             Giới tính
                         </option>
-                        <option value="true">Nam</option>
-                        <option value="false">Nữ</option>
+                        <option value="true" className="text-black">Nam</option>
+                        <option value="false" className="text-black">Nữ</option>
                     </select>
+
                     <input
                         type="password"
                         name="password"
@@ -186,16 +188,23 @@ export default function Register() {
                     )}
                 </div>
                 <button
-                    type="submit"
-                    className="w-full  py-3 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 transition duration-200"
+                    onClick={handleSubmit}
+                    className="w-full py-3 text-white font-semibold bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg shadow-lg hover:from-blue-600 hover:to-purple-600 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300"
                 >
                     Đăng ký
                 </button>
-                <div className="flex items-center justify-between mt-6">
-                    <span className="text-sm text-gray-600">Bạn đã có tài khoản?</span>
-                    <Link to="/login" className="text-sm text-blue-500 hover:underline">
-                        Đăng nhập ngay
-                    </Link>
+                <div className="flex items-center justify-between mt-4 mb-4 text-nowrap ">
+                    <label className="block text-gray-600 text-sm font-medium mr-1">
+                        <Link className="text-sm text-gray-400 hover:underline">
+                            Bạn đã có tài khoản?
+                        </Link>
+                    </label>
+                    <label className="block text-gray-600 text-sm font-medium">
+                        <Link to="/login" className="text-sm text-blue-500 hover:underline">
+                            Đăng nhập ngay
+                        </Link>
+                    </label>
+
                 </div>
             </form>
             <ToastContainer position="top-right" autoClose={3000} />

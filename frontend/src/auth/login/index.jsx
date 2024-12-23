@@ -70,7 +70,7 @@ export default function Login() {
         >
             <form
                 onSubmit={handleSubmit}
-                className="bg-white shadow-lg rounded-3xl p-10 w-full max-w-sm"
+                className="bg-white shadow-lg shadow-gray-500 rounded-3xl p-10 w-full max-w-sm"
             >
                 <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">Đăng nhập</h1>
 
@@ -108,13 +108,13 @@ export default function Login() {
                 </div>
 
                 <button
-                    type="submit"
-                    className="w-full py-3 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 transition duration-200"
+                    onClick={handleSubmit}
+                    className="w-full py-3 text-white font-semibold bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg shadow-lg hover:from-blue-600 hover:to-purple-600 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300"
                 >
                     Đăng nhập
                 </button>
-                <div className="flex items-center justify-between mt-3 mb-4 text-nowrap">
-                    <label htmlFor="password" className="block text-gray-600 text-sm font-medium">
+                <div className="flex items-center justify-between mt-3 mb-4 text-nowrap ">
+                    <label htmlFor="password" className="block text-gray-600 text-sm font-medium mr-1">
                         <Link className="text-sm text-gray-400 hover:underline">
                             Chưa có tài khoản?
                         </Link>
@@ -148,6 +148,6 @@ export default function Login() {
                 </div>
             </form>
             <ToastContainer position="top-center" autoClose={3000} />
-         </div >
+        </div >
     );
 }
