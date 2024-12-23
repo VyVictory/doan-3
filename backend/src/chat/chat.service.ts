@@ -266,23 +266,23 @@ export class ChatService {
       let message = await this.MessageModel.findById(messageId);
       let messageSource = 'MessageModel';
     
-      // Nếu không tìm thấy, tìm trong GroupMessageModel
+
       if (!message) {
         message = await this.GroupMessageModel.findById(messageId);
         messageSource = 'GroupMessageModel';
       }
     
-      // Nếu không tìm thấy tin nhắn trong cả hai model
+
       if (!message) {
         throw new HttpException('Message not found', HttpStatus.NOT_FOUND);
       }
     
-      // Kiểm tra quyền thu hồi tin nhắn
+
       if (message.sender.toString() !== userId.toString()) {
         throw new HttpException('You are not authorized to revoke this message', HttpStatus.FORBIDDEN);
       }
     
-      // Thu hồi tin nhắn (cập nhật trạng thái và xóa nội dung nhạy cảm)
+      
       const updateFields = {
         isLive: false,
         content: null,
@@ -295,7 +295,7 @@ export class ChatService {
         message = await this.GroupMessageModel.findByIdAndUpdate(messageId, updateFields, { new: true });
       }
     
-      // Trả về tin nhắn đã được thu hồi
+
       return message;
     }
     
@@ -314,7 +314,7 @@ export class ChatService {
         throw new HttpException('Group not found', HttpStatus.NOT_FOUND);
       }
     
-      // Lấy danh sách participants hiện tại trong group
+
       const existingParticipantIds = group.participants.map((id) => id.toString());
     
  

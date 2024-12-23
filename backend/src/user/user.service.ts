@@ -550,9 +550,11 @@ export class UserService {
       throw new BadRequestException('User not found');
     }
 
-    const hashedPassword = await bcrypt.hash(resetPasswordDto.newPassword, 10);
+    const hashedPassword = await bcrypt.hash(resetPasswordDto.newPassword, 10); 
     user.password = hashedPassword;
     await user.save();
+    // Xóa OTP sau khi xác thực thành công để tránh sử dụng lại
+    await this.UserModel.updateOne({ email }, { otp: null, otpExpirationTime: null });
 
     return 'Password reset successfully';
   }

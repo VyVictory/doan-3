@@ -1,4 +1,4 @@
-import { Put, Body, Controller, Get, HttpException, HttpStatus, Param, Post, Req, UploadedFiles, UseGuards, UseInterceptors, } from '@nestjs/common';
+import { Put, Body, Controller, Get, HttpException, HttpStatus, Param, Post, Req, UploadedFiles, UseGuards, UseInterceptors, Delete, } from '@nestjs/common';
 import { PostService } from './post.service';
 import { AuthGuardD } from '../user/guard/auth.guard';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
@@ -42,7 +42,33 @@ export class PostController {
         return currentUser;
     }
 
+    @Put('updatePost/:postid')
+    @UseGuards(AuthGuardD)
+    @UseInterceptors(FileFieldsInterceptor([{ name: 'files', maxCount: 10 }]))
+    async updatePost(
+        @CurrentUser() currentUser: User,
+        @Param('postid') postid: string,
+        @Body() updatePostDto: CreatePostDto,
+        @UploadedFiles() files: { files: Express.Multer.File[] }
+    ) {
+        if (!currentUser) {
+            throw new HttpException('User not found or not authenticated', HttpStatus.UNAUTHORIZED);
+        }
+        return await this.postService.updatePost(postid, updatePostDto, currentUser._id.toString(), files?.files);
+    }
+    
 
+    @Delete('deletePost/:postid')
+    @UseGuards(AuthGuardD)
+    async deletePost(
+        @CurrentUser() currentUser: User,
+        @Param('postid') postid: string,
+    ) {
+        if (!currentUser) {
+            throw new HttpException('User not found or not authenticated', HttpStatus.UNAUTHORIZED);
+        }
+        return await this.postService.deletePost(postid, currentUser._id.toString());
+    }
 
 
     @Put(':id/like')
@@ -72,6 +98,7 @@ export class PostController {
         }
         
     }
+
     @Put(':id/unlike')
     @UseGuards(AuthGuardD)
     async unlikePost(@Param('id') id: string, @CurrentUser() currentUser: User) {
@@ -81,6 +108,7 @@ export class PostController {
 
         return await this.postService.unlikePost(id, currentUser._id.toString());
     }
+
     @Put(':id/dislike')
     @UseGuards(AuthGuardD)
     async dislikePost(@Param('id') id: string, @CurrentUser() currentUser: User) {
@@ -90,6 +118,7 @@ export class PostController {
 
         return await this.postService.dislikePost(id, currentUser._id.toString());
     }
+
     @Put(':id/undislike')
     @UseGuards(AuthGuardD)
     async undislikePost(@Param('id') id: string, @CurrentUser() currentUser: User) {
@@ -109,8 +138,6 @@ export class PostController {
         return this.postService.findPostCurrentUser(currentUser._id.toString())
     }
  
-
-
     @Get(':postId/privacy')
     @UseGuards(AuthGuardD)
     async findPostPrivacy(
@@ -126,7 +153,6 @@ export class PostController {
       const currentUserId = currentUser ? currentUser._id.toString() : undefined;
       return this.postService.getHomeFeed(currentUserId);
     }
-
 
     @Get('friend/:userId')
     @UseGuards(AuthGuardD)
