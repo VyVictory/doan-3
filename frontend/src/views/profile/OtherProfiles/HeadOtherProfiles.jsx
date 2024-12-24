@@ -89,20 +89,25 @@ export default function HeadOtherProfiles({ dataProfile }) {
                             })`,
                         backgroundPosition: '10%',
                     }}
-                ></div>
-                <div className="grid justify-items-center relative z-0 bottom-20 overflow-hidden gap-4">
-                    <img
-                        className="rounded-full h-40 w-40 items-center"
-                        alt=""
-                        src={`${dataProfile && dataProfile.avatar
-                            ? dataProfile.avatar
-                            : 'https://th.bing.com/th/id/OIP.PKlD9uuBX0m4S8cViqXZHAHaHa?rs=1&pid=ImgDetMain'
-                            }`}
-                    />
-                    <h1 className="font-bold text-2xl text-center">
+                >
+
+                </div>
+                <div className="">
+                    <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
+                        <img
+                            className="rounded-full h-40 w-40 items-center border-4"
+                            alt=""
+                            src={`${dataProfile && dataProfile.avatar
+                                ? dataProfile.avatar
+                                : 'https://th.bing.com/th/id/OIP.PKlD9uuBX0m4S8cViqXZHAHaHa?rs=1&pid=ImgDetMain'
+                                }`}
+                        />
+                    </div>
+                    <div className='h-24'></div>
+                    <h1 className="font-bold text-2xl text-center mb-4">
                         {dataProfile?.lastName} {dataProfile?.firstName}
                     </h1>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 justify-center mb-5">
                         {friendStatus === "friend" ? (
                             <button
                                 onClick={() => dataProfile ? handRemoveFriend(dataProfile._id) : ''}
