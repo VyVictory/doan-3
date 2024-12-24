@@ -44,7 +44,7 @@ const CardUserList = ({ userdata: initialUserData }) => {
     const handCancelRequest = async (id) => {
         try {
             const rs = await friend.cancelFriendRequest(id);
-            if (rs.success) {
+            if (rs) {
                 setUserdata((prev) => ({ ...prev, status: 'no friend' }));
                 toast.success(rs?.message || 'Đã hủy yêu cầu kết bạn', NotificationCss.Success);
             } else {
@@ -58,7 +58,7 @@ const CardUserList = ({ userdata: initialUserData }) => {
     const handDetailUser = (id) => {
         window.location.href = `/user/${id}`;
     };
-    
+
     return (
         <>
             <button
@@ -70,6 +70,7 @@ const CardUserList = ({ userdata: initialUserData }) => {
                         <img
                             className="w-14 h-14 rounded-full"
                             src={userdata.avatar || userImg}
+                            alt=''
                         />
                     </div>
                     <div className="flex flex-col pl-2">
