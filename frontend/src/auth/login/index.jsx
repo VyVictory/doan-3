@@ -20,7 +20,15 @@ export default function Login() {
 
     const validateForm = () => {
         const validationErrors = {};
-        if (!formData.numberPhone) validationErrors.numberPhone = 'Vui lòng nhập số điện thoại.';
+        const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.identifier);
+        const isPhoneNumber = /^[0-9]{10,15}$/.test(formData.identifier);
+
+        if (!formData.identifier) {
+            validationErrors.identifier = 'Vui lòng nhập email hoặc số điện thoại.';
+        } else if (!isEmail && !isPhoneNumber) {
+            validationErrors.identifier = 'Định dạng không hợp lệ. Vui lòng nhập email hoặc số điện thoại.';
+        }
+
         if (!formData.password) validationErrors.password = 'Vui lòng nhập mật khẩu.';
         return validationErrors;
     };
@@ -30,7 +38,12 @@ export default function Login() {
         const validationErrors = validateForm();
         if (Object.keys(validationErrors).length === 0) {
             try {
-                const response = await axios.post(`${uri}/user/login`, formData);
+                const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.identifier);
+                const requestData = isEmail
+                    ? { email: formData.identifier, password: formData.password }
+                    : { numberPhone: formData.identifier, password: formData.password };
+
+                const response = await axios.post(`${uri}/user/login`, requestData);
                 if (response.status === 201) {
                     authToken.setToken(response.data.accessToken); // Save token
                     toast.success('Đăng nhập thành công! Chào mừng bạn trở lại.', NotificationCss.Success);
@@ -75,26 +88,24 @@ export default function Login() {
                 <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">Đăng nhập</h1>
 
                 <div className="mb-5">
-                    <label htmlFor="numberPhone" className="block text-gray-600 text-sm font-medium">
-                        Số điện thoại
+                    <label htmlFor="identifier" className="block text-gray-600 text-sm font-medium">
+                        Email hoặc Số điện thoại
                     </label>
                     <input
-                        type="number"
-                        name="numberPhone"
-                        value={formData.numberPhone}
+                        type="text"
+                        name="identifier"
+                        value={formData.identifier}
                         onChange={handleChange}
                         className="mt-2 block w-full px-4 py-3 text-gray-700 bg-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                        placeholder="Nhập số điện thoại"
+                        placeholder="Nhập email hoặc số điện thoại"
                     />
-                    {errors.numberPhone && <p className="text-red-500 text-sm mt-2">{errors.numberPhone}</p>}
+                    {errors.identifier && <p className="text-red-500 text-sm mt-2">{errors.identifier}</p>}
                 </div>
 
                 <div className="mb-5">
                     <label htmlFor="password" className="block text-gray-600 text-sm font-medium">
                         Mật khẩu
-                        <Link to="/forgotpass" className="float-right text-sm text-blue-500 hover:underline">
-                            Quên mật khẩu?
-                        </Link>
+
                     </label>
                     <input
                         type="password"
@@ -106,7 +117,9 @@ export default function Login() {
                     />
                     {errors.password && <p className="text-red-500 text-sm mt-2">{errors.password}</p>}
                 </div>
-
+                <Link to="/forgotpass" className="float-right text-sm text-blue-500 hover:underline mb-2">
+                    Quên mật khẩu?
+                </Link>
                 <button
                     onClick={handleSubmit}
                     className="w-full py-3 text-white font-semibold bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg shadow-lg hover:from-blue-600 hover:to-purple-600 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300"

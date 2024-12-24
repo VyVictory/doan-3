@@ -123,7 +123,7 @@ export default function Register() {
                 </div>
                 <div className="grid mb-4">
                     <input
-                        type="number"
+                        type="text"
                         name="numberPhone"
                         className="bg-gray-100 shadow-inner rounded-lg p-3 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none mb-4"
                         placeholder="Số điện thoại"
