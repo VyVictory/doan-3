@@ -1,7 +1,8 @@
 import axios from "axios";
 import authToken from "../components/authToken";
 import Apiuri from './apiuri';
-const url = Apiuri()
+const url = Apiuri.Apiuri()
+
 export async function profileUserCurrent() {
     try {
         var request = await axios.get(`${url}/user/current`, {
@@ -11,7 +12,9 @@ export async function profileUserCurrent() {
         })
         return request
     } catch (error) {
+        
         console.log(error)
+        authToken.deleteToken();
     }
 }
 

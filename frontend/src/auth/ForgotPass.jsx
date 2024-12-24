@@ -1,6 +1,7 @@
-import React from 'react'
-import { forgotPassword, resetPassword, verifyOTP } from '../service/ForgotPassword'
-import { useState } from 'react'
+import React, { useState } from 'react';
+import bg from './background_auth.jpg';
+import { forgotPassword, resetPassword, verifyOTP } from '../service/ForgotPassword';
+
 export default function ForgotPass() {
     const [email, setEmail] = useState('');
     const [otp, setOtp] = useState('');
@@ -9,115 +10,138 @@ export default function ForgotPass() {
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [verifyButtonVisible, setVerifyButtonVisible] = useState(true);
 
-
-    const handleChange = (e) => {
-        setEmail(e.target.value);
-    }
-    const handleOtpChange = (e) => {
-        setOtp(e.target.value);
-    }
-    const handlePasswordChange = (e) => {
-        setNewPassword(e.target.value);
-    }
+    const handleChange = (e) => setEmail(e.target.value);
+    const handleOtpChange = (e) => setOtp(e.target.value);
+    const handlePasswordChange = (e) => setNewPassword(e.target.value);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const response = await forgotPassword(email);
         if (response) {
-            alert("OTP đã được gửi đến email của bạn");
+            alert('OTP đã được gửi đến email của bạn');
             setOtpVisible(true);
         } else {
-            alert("Email không tồn tại");
+            alert('Email không tồn tại');
         }
-    }
+    };
+
     const handleVerify = async (e) => {
         e.preventDefault();
         const response = await verifyOTP(email, otp);
         if (response) {
-            alert("OTP đã được xác thực");
+            alert('OTP đã được xác thực');
             setPasswordVisible(true);
             setVerifyButtonVisible(false);
         } else {
-            alert("Mã OTP không đúng")
+            alert('Mã OTP không đúng');
         }
-    }
+    };
+
     const handleReset = async (e) => {
         e.preventDefault();
         const response = await resetPassword(email, otp, newPassword);
         if (response) {
-            alert("Mật khẩu đã được thay đổi");
+            alert('Mật khẩu đã được thay đổi');
             window.location.href = '/login';
         } else {
-            alert("Có lỗi xảy ra, vui lòng thử lại sau");
+            alert('Có lỗi xảy ra, vui lòng thử lại sau');
         }
-    }
-
+    };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-[#24C6DC] to-[#514A9D]">
-            <div className="max-w-md w-full p-6 bg-card bg-white rounded-lg shadow-lg">
-                <h2 className="text-2xl text-primary text-center mb-4">Bạn quên mật khẩu?</h2>
-                <p className="text-secondary text-center mb-6">Hãy điền email để lấy lại mật khẩu.</p>
-                <form className="space-y-4">
+        <div
+            className="h-screen flex items-center justify-center"
+            style={{
+                backgroundImage: `url(${bg})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+            }}
+        >
+            <div className="max-w-md w-full bg-white bg-opacity-90 rounded-xl shadow-2xl backdrop-blur-md p-8 transform transition-transform duration-300">
+                <h2 className="text-4xl font-extrabold text-center text-gray-800 mb-6">Quên mật khẩu?</h2>
+                <p className="text-center text-gray-600 mb-8">
+                    Nhập email của bạn để nhận mã OTP và đặt lại mật khẩu.
+                </p>
+                <form className="space-y-6">
+                    {/* Email Input */}
                     <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-primary">Email</label>
+                        <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                            Email
+                        </label>
                         <input
-                            name="email"
+                            id="email"
+                            type="email"
                             value={email}
                             onChange={handleChange}
-                            type="email"
                             required
-                            className="w-full px-3 py-2 placeholder-input text-primary bg-input border border-primary rounded-md focus:outline-none focus:ring focus:ring-primary"
-                            placeholder="john.doe@example.com" />
+                            className="w-full px-4 py-3 text-gray-900 placeholder-gray-400 bg-gray-100 rounded-lg shadow-inner focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                            placeholder="example@example.com"
+                        />
                     </div>
+
+                    {/* OTP Input */}
                     {otpVisible && (
                         <div>
-                            <label htmlFor="otp" className="block text-sm font-medium text-primary">OTP</label>
+                            <label htmlFor="otp" className="block text-sm font-semibold text-gray-700 mb-2">
+                                Mã OTP
+                            </label>
                             <input
-                                type="text"
                                 id="otp"
+                                type="text"
                                 value={otp}
                                 onChange={handleOtpChange}
-                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                                className="w-full px-4 py-3 text-gray-900 placeholder-gray-400 bg-gray-100 rounded-lg shadow-inner focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                placeholder="Nhập mã OTP"
                             />
                             {verifyButtonVisible && (
                                 <button
                                     onClick={handleVerify}
-                                    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary mt-4"
+                                    className="w-full py-3 mt-4 text-white font-semibold bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg shadow-lg hover:from-purple-600 hover:to-blue-600 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300"
                                 >
-                                    Verify OTP
+                                    Xác thực OTP
                                 </button>
                             )}
                         </div>
                     )}
+
+                    {/* New Password Input */}
                     {passwordVisible && (
                         <div>
-                            <label htmlFor="newPassword" className="block text-sm font-medium text-primary">New Password</label>
+                            <label
+                                htmlFor="newPassword"
+                                className="block text-sm font-semibold text-gray-700 mb-2"
+                            >
+                                Mật khẩu mới
+                            </label>
                             <input
+                                id="newPassword"
                                 type="password"
-                                name="newPassword"
                                 value={newPassword}
                                 onChange={handlePasswordChange}
-                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                                className="w-full px-4 py-3 text-gray-900 placeholder-gray-400 bg-gray-100 rounded-lg shadow-inner focus:ring-2 focus:ring-green-500 focus:outline-none"
+                                placeholder="Nhập mật khẩu mới"
                             />
                             <button
                                 onClick={handleReset}
-                                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary mt-4"
+                                className="w-full py-3 mt-4 text-white font-semibold bg-gradient-to-r from-green-500 to-teal-500 rounded-lg shadow-lg hover:from-green-600 hover:to-teal-600 focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-300"
                             >
-                                Reset Password
+                                Đặt lại mật khẩu
                             </button>
                         </div>
                     )}
+
+                    {/* Send OTP Button */}
                     {!otpVisible && !passwordVisible && (
                         <button
                             onClick={handleSubmit}
-                            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                            className="w-full py-3 text-white font-semibold bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg shadow-lg hover:from-blue-600 hover:to-purple-600 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300"
                         >
-                            Gửi OTP
+                            Gửi mã OTP
                         </button>
                     )}
                 </form>
             </div>
         </div>
-    )
+    );
 }

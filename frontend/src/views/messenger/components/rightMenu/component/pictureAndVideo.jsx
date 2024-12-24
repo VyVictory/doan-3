@@ -74,7 +74,7 @@ const PictureAndVideo = () => {
 
                         </div>
                     ) : (
-                        <p>Không có ảnh hoặc video.</p>
+                        <p className="text-gray-400 text-center w-full">Không có ảnh hoặc video.</p>
                     )}
                 </div>
 

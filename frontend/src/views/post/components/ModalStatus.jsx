@@ -1,6 +1,7 @@
 import { redirect } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import Apiuri from '../../../service/apiuri';
 
 import PublicIcon from '@mui/icons-material/Public'; // MUI's "Public" icon
 import GroupIcon from '@mui/icons-material/Group'; // MUI's "Group" icon for Friends
@@ -11,6 +12,8 @@ import clsx from 'clsx';
 import authToken from '../../../components/authToken';
 import { PhotoIcon } from '@heroicons/react/24/solid'
 import { Link, useNavigate } from 'react-router-dom'
+const uri = Apiuri.Apiuri()
+
 export default function ModalStatus({ user }) {
     const navigate = useNavigate();
     const [open, setOpen] = useState(true);
@@ -95,7 +98,7 @@ export default function ModalStatus({ user }) {
         data.append('privacy', formData.privacy);
         try {
             setLoading(true);
-            const response = await axios.post('http://localhost:3001/post/createPost', data,
+            const response = await axios.post(`${uri}/post/createPost`, data,
                 {
                     headers: {
                         Authorization: `Bearer ${authToken.getToken()}`,

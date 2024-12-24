@@ -4,23 +4,32 @@ import Apiuri from './apiuri';
 import { useCallback } from 'react';
 import socket from './webSocket/socket';
 import useWebSocket from './webSocket/usewebsocket';
-const url = Apiuri()
+const url = Apiuri.Apiuri()
 
 const AddFriend = async (id) => {
 
     try {
-
-        const response = await axios.post(`${url}/user/friendrequest/${id}`, {},
+        const result = await axios.get(`${url}/friend/status/${id}`,
             {
                 headers: { Authorization: `Bearer ${authToken.getToken()}` },
             }
         );
-        if (response.data) {
-            // Phát tín hiệu WebSocket sau khi yêu cầu thành công
-            socket.emit("addFriend", response.data);
-            return { success: true, data: response.data, message: 'đã gửi yêu cầu kết bạn thành công' };
+        console.log(result.data.status)
+        if (result.data.status == 'no_request') {
+            const response = await axios.post(`${url}/user/friendrequest/${id}`, {},
+                {
+                    headers: { Authorization: `Bearer ${authToken.getToken()}` },
+                }
+            );
+            if (response.data) {
+                // Phát tín hiệu WebSocket sau khi yêu cầu thành công
+                socket.emit("addFriend", response.data);
+                return { success: true, data: response.data, message: 'đã gửi yêu cầu kết bạn thành công' };
+            } else {
+                return { success: false, message: 'ôi không có lỗi gì đó' };
+            }
         } else {
-            return { success: false, message: 'ôi không có lỗi gì đó' };
+            return { success: false, message: 'ôi không có lỗi gì đó chắc chắn là bị trùng request' };
         }
     } catch (error) {
         return {
@@ -83,21 +92,14 @@ const declineRequestAddFriend = async (id) => {
 };
 const checkFriend = async (id) => {
     try {
-        const response = await axios.get(`${url}/user/getAllUser`, {
-            headers: { Authorization: `Bearer ${authToken.getToken()}` },
-        });
-
-        // Find the user with the matching id
-        const user = response.data.find((user) => user._id === id);
-
-        if (user) {
-            return { success: true, status: user.status }; // Return the status if the user is found
-        } else {
-            return { success: false, message: "User not found" }; // Handle case where user is not found
-        }
-    } catch (error) {
-        console.error("Error checking friend status:", error.message);
-        return { success: false, message: error?.response?.data?.message || "An error occurred" };
+        const response = await axios.get(`${url}/friend/status/${id}`,
+            {
+                headers: { Authorization: `Bearer ${authToken.getToken()}` },
+            }
+        );
+        return { success: true, data: response.data };
+    } catch (response) {
+        return { success: false, data: response.response.data.message };
     }
 };
 
@@ -115,7 +117,31 @@ const cancelFriend = async (id) => {
     }
 };
 const cancelFriendRequest = async (id) => {
+    const remove = async (idrq) => {
+        console.log(idrq); // For debugging, ensure this ID is valid
+
+        try {
+            // Make the DELETE request
+            const response = await axios.delete(`${url}/user/removeFriendRequest/${idrq}`, {
+                headers: { Authorization: `Bearer ${authToken.getToken()}` },
+            });
+
+            // Check if the response indicates success (statusCode 200)
+            if (response.data.statusCode === 200) {
+                return { success: true, data: response.data.message };
+            } else {
+                // If the statusCode is not 200, it's still an error
+                return { success: false, data: response.data.message };
+            }
+        } catch (error) {
+            // Catching any error that occurs during the request
+            console.error("Error removing friend request:", error.response?.data?.message || error.message);
+            return { success: false, data: error.response?.data?.message || error.message };
+        }
+    };
+
     try {
+        //statusCode
         const userrequest = await axios.get(`${url}/user/getMyFriendRequest`,
             {
                 headers: { Authorization: `Bearer ${authToken.getToken()}` },
@@ -124,13 +150,34 @@ const cancelFriendRequest = async (id) => {
         const idRequest = userrequest.data
             .filter((item) => item.receiver !== id && item.sender !== id)
             .map((item) => item._id);
+        console.log('id tren:')
         console.log(idRequest)
-        const response = await axios.post(`${url}/user/rejectFriendRequest/${idRequest}`, {},
-            {
-                headers: { Authorization: `Bearer ${authToken.getToken()}` },
-            }
-        );
-        return { success: true, data: response.data };
+        let idrq = [];
+        if (idRequest.length == 0) {
+            const userrequest = await axios.get(`${url}/friend/status/${id}`,
+                {
+                    headers: { Authorization: `Bearer ${authToken.getToken()}` },
+                }
+            );
+            console.log('id duoi:')
+            console.log(userrequest?.data?.idRequest)
+            idrq = userrequest?.data?.idRequest
+        } else {
+            idrq = idRequest
+        }
+        const rmv = await remove(idrq);
+        console.log(rmv)
+        console.log('da thuc thi')
+        if (rmv.success == false) {
+            const response = await axios.post(`${url}/user/rejectFriendRequest/${idrq}`, {},
+                {
+                    headers: { Authorization: `Bearer ${authToken.getToken()}` },
+                }
+            );
+            return { success: true, data: response.data };
+        } else {
+            return { success: true, data: rmv };
+        }
     } catch (response) {
         return { success: false, data: response.response.data.message };
     }
@@ -156,5 +203,4 @@ export default {
     getListFriendAnother,
     checkFriend,
     cancelFriendRequest,
-
 }

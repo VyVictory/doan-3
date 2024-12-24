@@ -6,15 +6,17 @@ import { useNavigate } from "react-router-dom";
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import group from "../../../../service/group";
 import GroupCard from "../groupCard";
+import { UserGroupIcon, PlusIcon } from '@heroicons/react/24/solid';
+import ModalAddGroup from "./modalAddGroup";
 
 const AllGroup = () => {
     const [groups, setGroups] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
-    const [groupd, setGroupd] = useState([]);
     const [filteredFriends, setFilteredFriends] = useState([]);
     const [filteredGroups, setFilteredGroups] = useState([]);
     const navigate = useNavigate();
+    const [openModal, setOpenModal] = useState(false); // Modal state
 
     const handleInputChange = (e) => {
         setSearchTerm(e.target.value);
@@ -50,19 +52,18 @@ const AllGroup = () => {
         if (searchTerm.trim() === "") {
             setFilteredGroups(groups);
         } else {
-            const filtered = groups.filter((friend) => {
-                const friendName = friend.receiver
-                    ? `${friend.receiver.firstName} ${friend.receiver.lastName}`
-                    : friend.sender
-                        ? `${friend.sender.firstName} ${friend.sender.lastName}`
-                        : '';
-                return friendName.toLowerCase().includes(searchTerm.toLowerCase());
+            const filtered = groups.filter((group) => {
+                // Assuming the name of the group is stored in 'name'
+                return group.name.toLowerCase().includes(searchTerm.toLowerCase());
             });
             setFilteredGroups(filtered);
         }
     }, [searchTerm, groups]);
+    const handleOpenModal = () => {
+        setOpenModal(!openModal); // Open modal
+    };
     // console.log(filteredGroups)
-    // console.log(groupd)
+    // console.log(groups)
     return (
         <>
             {loading ? (
@@ -71,18 +72,30 @@ const AllGroup = () => {
                 <>
                     {/* Search Input */}
 
-                    <div className=" border-b flex justify-between items-center h-[56px]">
-                        <input
-                            type="text"
-                            value={searchTerm}
-                            onChange={handleInputChange}
-                            className="w-full rounded-3xl border border-gray-300 pr-8 pl-9 py-2 text-black bg-white focus:outline-none"
-                            placeholder="Tìm kiếm..."
-                        />
-                        <a className="absolute ml-2 text-gray-400">
-                            <MagnifyingGlassIcon className="h-4 w-4 fill-black" />
-                        </a>
+                    <div className="flex justify-between items-center h-[56px] border-b pl-2">
+                        {/* Search Input */}
+                        <div className="relative w-full">
+                            <input
+                                type="text"
+                                value={searchTerm}
+                                onChange={handleInputChange}
+                                className="w-full rounded-3xl border border-gray-300 pr-8 pl-10 py-2 text-black bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                placeholder="Tìm kiếm..."
+                            />
+                            <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                        </div>
+
+                        {/* Add Friend Button */}
+                        <button
+                            className=" flex flex-col justify-center items-center aspect-square h-full pb-2 pt-1">
+                            <PlusIcon className="h-8 w-8 text-green-500 ml-7" style={{ marginBottom: '-10px' }} />
+                            <UserGroupIcon
+                                onClick={handleOpenModal}
+                                className="h-full w-full text-gray-700 hover:text-green-400" />
+                        </button>
                     </div>
+
+
 
                     {/* Scrollable Friends List */}
                     <div className="overflow-y-scroll flex-1 custom-scroll">
@@ -109,6 +122,9 @@ const AllGroup = () => {
                     </div>
                 </>
             )}
+            {
+                <ModalAddGroup openModal={openModal} setOpenModal={handleOpenModal} />
+            }
         </>
     );
 };

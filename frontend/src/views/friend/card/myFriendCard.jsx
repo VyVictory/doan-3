@@ -28,7 +28,7 @@ export default function FriendCard({ iduser, idrequest }) {
                 const res = await user.getProfileUser(iduser);
                 if (res.success) {
                     setUserdata(res.data)
-                    console.log(res.data)
+                    // console.log(res.data)
                 }
             } catch (error) {
                 console.error('Error fetching user data:', error);

@@ -182,20 +182,46 @@ export default function HomePost() {
                                 {post.img.length > 0 && (
                                     <div className="carousel rounded-box w-96 h-64 relative">
                                         {post.img.length > 1 && (
-                                            <button onClick={() => handlePrev(post)} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">‹</button>
+                                            <button
+                                                onClick={() => handlePrev(post)}
+                                                className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full"
+                                            >
+                                                ‹
+                                            </button>
                                         )}
                                         <div className="carousel-item w-full">
-                                            <img
-                                                src={post.img[currentIndexes[post._id] || 0]}
-                                                className="w-full"
-                                                alt="Post visual"
-                                            />
+                                            {post.img[currentIndexes[post._id] || 0]?.endsWith('.mp4') ||
+                                                post.img[currentIndexes[post._id] || 0]?.endsWith('.webm') ||
+                                                post.img[currentIndexes[post._id] || 0]?.endsWith('.ogg') ? (
+                                                <video
+                                                    className="w-full h-full object-cover"
+                                                    controls
+                                                >
+                                                    <source
+                                                        src={post.img[currentIndexes[post._id] || 0]}
+                                                        type="video/mp4"
+                                                    />
+                                                    Your browser does not support the video tag.
+                                                </video>
+                                            ) : (
+                                                <img
+                                                    src={post.img[currentIndexes[post._id] || 0]}
+                                                    className="w-full h-full object-cover"
+                                                    alt="Post visual"
+                                                />
+                                            )}
                                         </div>
                                         {post.img.length > 1 && (
-                                            <button onClick={() => handleNext(post)} className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">›</button>
+                                            <button
+                                                onClick={() => handleNext(post)}
+                                                className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full"
+                                            >
+                                                ›
+                                            </button>
                                         )}
                                     </div>
                                 )}
+
                                 <div className="flex justify-between">
                                     <div className="flex gap-2">
                                         <button

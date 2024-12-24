@@ -8,7 +8,6 @@ import {
 import friend from '../../../service/friend';
 import { ToastContainer, toast } from 'react-toastify';
 import NotificationCss from '../../../module/cssNotification/NotificationCss';
-
 export default function HeadOtherProfiles({ dataProfile }) {
     const [friendStatus, setFriendStatus] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -18,15 +17,14 @@ export default function HeadOtherProfiles({ dataProfile }) {
             if (dataProfile?._id) {
                 setLoading(true);
                 const result = await friend.checkFriend(dataProfile._id);
-                if (result.success) {
-                    setFriendStatus(result.status);
+                if (result?.success) {
+                    setFriendStatus(result.data.status);
                 } else {
-                    setFriendStatus(null);
+                    setFriendStatus("no friend");
                 }
                 setLoading(false);
             }
         };
-
         fetchFriendStatus();
     }, [dataProfile]);
 
@@ -58,7 +56,19 @@ export default function HeadOtherProfiles({ dataProfile }) {
             console.error(error);
         }
     };
-
+    const handCancelRequest = async (id) => {
+        try {
+            const rs = await friend.cancelFriendRequest(id);
+            if (rs.success) {
+                setFriendStatus("no friend");
+                toast.success(rs?.message || 'Đã hủy yêu cầu kết bạn', NotificationCss.Success);
+            } else {
+                toast.error(rs?.message || 'Lỗi khi hủy yêu cầu kết bạn', NotificationCss.Fail);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
     if (loading) {
         return (
             <div className="flex justify-center items-center h-screen">
@@ -101,7 +111,16 @@ export default function HeadOtherProfiles({ dataProfile }) {
                                 <UserMinusIcon className="size-5 fill-white" />
                                 Xóa bạn bè
                             </button>
+                        ) : friendStatus === "waiting" ? (
+                            <button
+                                onClick={() => dataProfile ? handCancelRequest(dataProfile._id) : ''}
+                                className="bg-red-600 text-white p-2 rounded-full flex items-center gap-1"
+                            >
+                                <UserMinusIcon className="size-5 fill-white" />
+                                Hủy yêu cầu kết bạn
+                            </button>
                         ) : (
+
                             <button
                                 onClick={() => dataProfile ? handAddFriend(dataProfile._id) : ''}
                                 className="bg-sky-600 text-white p-2 rounded-full flex items-center gap-1"
@@ -110,7 +129,12 @@ export default function HeadOtherProfiles({ dataProfile }) {
                                 Kết bạn
                             </button>
                         )}
-                        <button className="bg-green-600 text-white p-2 rounded-full flex items-center gap-1">
+                        <button
+                            onClick={() => {
+                                window.location.href = `/messenger/inbox/?iduser=${dataProfile._id}`;
+                            }}
+
+                            className="bg-green-600 text-white p-2 rounded-full flex items-center gap-1">
                             <ChatBubbleLeftRightIcon className="size-5" />
                             Nhắn tin
                         </button>

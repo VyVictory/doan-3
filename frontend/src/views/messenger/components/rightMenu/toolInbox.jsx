@@ -13,8 +13,8 @@ const ToolInbox = () => {
             <div className="overflow-y-scroll flex-1 custom-scroll">
                 <PictureAndVideo />
                 <Files />
-                <Files />
-                <Files />
+                {/* <Files />
+                <Files /> */}
             </div>
             
             {/* <div className="p-4 border-t-2 bg-white shadow-sm">

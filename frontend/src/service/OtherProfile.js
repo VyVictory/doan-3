@@ -1,7 +1,8 @@
 import axios from "axios";
 import authToken from "../components/authToken";
 import Apiuri from './apiuri';
-const url = Apiuri()
+const url = Apiuri.Apiuri()
+
 export async function OtherProfile(id) {
     try {
         const request = axios.get(`${url}/user/getDetailUser/${id}`,
