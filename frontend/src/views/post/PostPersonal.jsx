@@ -127,7 +127,7 @@ export default function PostPersonal({ user }) {
                                 <div className='flex justify-between'>
                                     <article className='text-wrap grid gap-5'>
                                         <div className='grid'>
-                                            <Link className='font-bold text-lg hover:link ' to="#">{user.lastName} {user.firstName}</Link>
+                                            <Link className='font-bold text-lg hover:link break-words w-screen max-w-xl' to="#">{user.lastName} {user.firstName}</Link>
                                             <div className='flex gap-2'>
                                                 <span className='text-xs'>{formatDate(post.createdAt)}</span>
                                                 <span className='text-xs'>{formatPrivacy(post.privacy)}</span>
