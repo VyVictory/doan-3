@@ -249,14 +249,6 @@ export default function ModalStatus({ user }) {
                                     </div>
                                 </label>
                             </div>
-                            <button>
-                                <EmojiEmotionsIcon className="" fontSize="large"
-                                // style={{
-                                //     animation: 'colorWave 1s linear infinite',
-                                //     fontWeight: 'bold',
-                                // }}
-                                />
-                            </button>
                         </div>
                     </div>
                 </div>
