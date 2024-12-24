@@ -17,6 +17,7 @@ import useWebSocket from '../../../../service/webSocket/usewebsocket';
 import Loading from '../../../../components/Loading';
 import { MessengerContext } from '../../layoutMessenger';
 import NotificationCss from '../../../../module/cssNotification/NotificationCss';
+import FilePreview from '../../../../components/FilePreview';
 
 const MessengerInbox = () => {
     const { userContext } = useUser();
@@ -257,7 +258,10 @@ const MessengerInbox = () => {
                             alt="User Avatar"
                         />
                     </button>
-                    <h3 className="font-semibold text-nowrap">{`${userdata.lastName || ''} ${userdata.firstName || ''}`.trim()}</h3>
+                    <h3 className="font-semibold text-nowrap max-w-sm overflow-hidden text-ellipsis">
+                        {`${userdata.lastName || ''} ${userdata.firstName || ''}`.trim()}
+                    </h3>
+
                 </div>
                 <div className=" flex justify-end">
                     <button onClick={handleHiddenRight} >
@@ -371,7 +375,21 @@ const MessengerInbox = () => {
                     {
                         preview &&
                         <Box sx={{ position: 'relative', display: 'inline-block' }}>
-                            <img
+                            <div
+                                alt="Preview"
+                                style={{
+                                    maxWidth: '200px',
+                                    maxHeight: '60px',
+                                    borderRadius: '8px',
+                                    border: '1px solid #ddd',
+                                }}
+                                onClick={() => {
+                                    openModal(preview)
+                                }}
+                            >
+                                <FilePreview preview={preview} />
+                            </div>
+                            {/* <img
                                 src={preview}
                                 alt="Preview"
                                 style={{
@@ -383,7 +401,7 @@ const MessengerInbox = () => {
                                 onClick={() => {
                                     openModal(preview)
                                 }}
-                            />
+                            /> */}
                             {/* Nút xóa file */}
                             <IconButton
                                 onClick={handleRemoveFile}
