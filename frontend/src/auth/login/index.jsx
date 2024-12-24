@@ -79,7 +79,7 @@ export default function Login() {
                         Số điện thoại
                     </label>
                     <input
-                        type="number"
+                        type="text"
                         name="numberPhone"
                         value={formData.numberPhone}
                         onChange={handleChange}
