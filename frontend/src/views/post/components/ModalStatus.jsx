@@ -232,7 +232,7 @@ export default function ModalStatus({ user }) {
                         />
                         {filePreview && (
                             <div className="mt-4">
-                                <img src={filePreview} alt="Preview" className="max-w-full h-auto rounded-lg" />
+                                <img src={filePreview} alt="Preview" className="max-w-full h-32 rounded-lg" />
                             </div>
                         )}
                         <div className="flex justify-end w-full gap-2">
