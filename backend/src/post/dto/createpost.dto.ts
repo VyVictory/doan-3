@@ -3,24 +3,24 @@ import { Types } from "mongoose";
 
 
 
-export class CreatePostDto {
+export class CreatePostDto{
 
-    @ValidateIf((o) => !o.content)
+    @ValidateIf((o) => !o.content) 
     @IsOptional()
     @IsString()
     readonly content: string
 
-    @ValidateIf((o) => !o.img)
+     @ValidateIf((o) => !o.img) 
     @IsOptional()
     @IsString()
-    readonly img?: string[]
+    readonly img?:string[]
 
     @IsOptional()
     @IsEnum(['public', 'friends', 'private', 'specific'])
     readonly privacy: string;
-
+  
     @IsOptional()
     @IsArray()
     readonly allowedUsers?: Types.ObjectId[];
-
+    
 }
