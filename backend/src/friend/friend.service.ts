@@ -112,6 +112,7 @@ export class FriendService {
     }
     // Check friendship status and return detailed information
     async getFriendStatus(currentUserId: string, otherUserId: string): Promise<any> {
+        //thêm kiểm tra trong bảng friends , có sender===currentUserId && receiver===otherUserId || receiver===currentUserId && sender===otherUserId thì status = friend
         if (currentUserId === otherUserId) {
             return {
                 idUser: otherUserId,
