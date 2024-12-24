@@ -52,42 +52,39 @@ export class ChatController {
 
     const message = await this.chatService.sendMessageToGroup(sendMessageDto, currentUserID, groupId, files?.files);
 
-
-    const currentAuthor = {
-      _id: currentUser._id,
-      firstName: currentUser.firstName,
-      lastName: currentUser.lastName,
-      avatar: currentUser.avatar,
-    };
+    // const currentAuthor = {
+    //   _id: currentUser._id,
+    //   firstName: currentUser.firstName,
+    //   lastName: currentUser.lastName,
+    //   avatar: currentUser.avatar,
+    // }; 
 
     const messageSee = {
       ...sendMessageDto,
       mediaURL: message.mediaURL,
-      author: currentAuthor,
       _id: message._id,
+      forGroup: groupId,
       sender: {
         _id: currentUser._id,
         firstName: currentUser.firstName,
         lastName: currentUser.lastName,
         avatar: currentUser.avatar
-      }
-    };
+      },
 
+    };
 
     const groupParticipants = await this.chatService.getMemberGroup(groupId);
 
     if (!Array.isArray(groupParticipants)) {
       throw new HttpException('Invalid group participants data', HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    console.log('groupParticipants:', groupParticipants);
-
-
+  
     groupParticipants.forEach((participant) => {
 
-      this.eventService.notificationToUser(participant._id.toString(), 'newmessage', messageSee);
+      this.eventService.notificationToUser(participant._id.toString(), 'new message to group', messageSee);
 
     });
-    console.log('Saved message:', message);
+
     return message;
   }
 
@@ -118,7 +115,7 @@ export class ChatController {
     @CurrentUser() currentUser: User,
   ) {
     const currentUserOBJ = new Types.ObjectId(currentUser._id.toString());
-    return await this.chatService.getMylishChat(currentUserOBJ);
+    return await this.chatService.getMylistChat(currentUserOBJ);
   }
 
   @Put('removeMemBerInGroup/:groupId')
@@ -146,9 +143,9 @@ export class ChatController {
     try {
       const checkTypeReceiver = userId;
       if (Types.ObjectId.isValid(userId)) {
-        console.log('receiverId is a valid ObjectId');
+
       } else {
-        console.log('receiverId is not a valid ObjectId');
+
       }
 
       const currentUserOBJ = new Types.ObjectId(currentUser._id.toString());
@@ -232,6 +229,8 @@ export class ChatController {
       throw error;
     }
   }
+
+  
   
 
 
