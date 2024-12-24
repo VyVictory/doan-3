@@ -92,9 +92,7 @@ export default function Login() {
                 <div className="mb-5">
                     <label htmlFor="password" className="block text-gray-600 text-sm font-medium">
                         Mật khẩu
-                        <Link to="/forgotpass" className="float-right text-sm text-blue-500 hover:underline">
-                            Quên mật khẩu?
-                        </Link>
+
                     </label>
                     <input
                         type="password"
@@ -106,7 +104,9 @@ export default function Login() {
                     />
                     {errors.password && <p className="text-red-500 text-sm mt-2">{errors.password}</p>}
                 </div>
-
+                <Link to="/forgotpass" className="float-right text-sm text-blue-500 hover:underline mb-2">
+                    Quên mật khẩu?
+                </Link>
                 <button
                     onClick={handleSubmit}
                     className="w-full py-3 text-white font-semibold bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg shadow-lg hover:from-blue-600 hover:to-purple-600 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300"
