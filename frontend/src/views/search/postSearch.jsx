@@ -1,4 +1,8 @@
+import { useState, useEffect } from "react";
+
 const PostSearch = () => {
+    const [posts, setPosts] = useState([]);
+
     return (
         <div className="mt-5">
             <span className="mb-1">Kết quả tìm kiếm</span>
