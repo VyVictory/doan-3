@@ -119,10 +119,10 @@ export default function HeadOtherProfiles({ dataProfile }) {
                         ) : friendStatus === "waiting" ? (
                             <button
                                 onClick={() => dataProfile ? handCancelRequest(dataProfile._id) : ''}
-                                className="bg-red-600 text-white p-2 rounded-full flex items-center gap-1"
+                                className="bg-sky-600 text-white p-2 rounded-full flex items-center gap-1"
                             >
                                 <UserMinusIcon className="size-5 fill-white" />
-                                Hủy yêu cầu kết bạn
+                                hủy lời mời
                             </button>
                         ) : (
 
