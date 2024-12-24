@@ -36,12 +36,13 @@ const MessengerInbox = () => {
     //file
     const [file, setFile] = useState(null);
     const [preview, setPreview] = useState(null);
-    const [openModal, setOpenModal] = useState(false); // Trạng thái modal
-    const [modalImage, setModalImage] = useState(null); // Ảnh phóng to
     const [hoveredMessageId, setHoveredMessageId] = useState(null);
     const [openDialog, setOpenDialog] = useState(false); // For controlling the confirmation dialog
     const [messageToRevoke, setMessageToRevoke] = useState(null); // Store message to be revoked
-
+    const { setShowZom } = useUser();
+    const openModal = (file) => {
+        setShowZom({ file: file, show: true });
+    };
     const handleRevokedClick = async (messageId) => {
         setMessageToRevoke(messageId); // Store the message ID to revoke
         setOpenDialog(true); // Open the confirmation dialog
@@ -125,19 +126,6 @@ const MessengerInbox = () => {
         setFile(null);
         setPreview(null);
     };
-    const handleOpenModal = (img) => {
-        if (!img) {
-            setModalImage(preview); // Đặt ảnh vào modal
-        } else {
-            setModalImage(img);
-        }
-        setOpenModal(true); // Mở modal
-    };
-
-    const handleCloseModal = () => {
-        setOpenModal(false); // Đóng modal
-    };
-
     useEffect(() => {
         if (iduser === '' || !iduser) return;
         const fetchMessengerData = async () => {
@@ -346,7 +334,10 @@ const MessengerInbox = () => {
                                                                     </video>
                                                                 ) : (
                                                                     <img
-                                                                        onClick={() => handleOpenModal(url)}
+                                                                        onClick={() => {
+                                                                            openModal(url)
+                                                                        }}
+
                                                                         src={url}
                                                                         alt={`Message Media ${index}`}
                                                                         className="max-w-full max-h-72 object-cover rounded-t-lg"
@@ -391,7 +382,9 @@ const MessengerInbox = () => {
                                     borderRadius: '8px',
                                     border: '1px solid #ddd',
                                 }}
-                                onClick={() => handleOpenModal('')} // Mở modal khi click vào ảnh
+                                onClick={() => {
+                                    openModal(preview)
+                                }}
                             />
                             {/* Nút xóa file */}
                             <IconButton
@@ -446,59 +439,6 @@ const MessengerInbox = () => {
 
                     </>
                 }
-                {/* Modal phóng to ảnh */}
-                <Modal
-                    open={openModal}
-                    onClose={handleCloseModal}
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                    }}
-                >
-                    <Box sx={{ position: 'relative', backgroundColor: 'black', padding: 0.4, borderRadius: 2 }}>
-                        <IconButton
-                            onClick={handleCloseModal}
-                            sx={{
-                                position: 'absolute',
-                                top: 4,
-                                right: 4,
-                                backgroundColor: 'rgba(255, 255, 255, 0.4)',
-                                '&:hover': { backgroundColor: 'rgba(255, 255, 255, 1)' },
-                            }}
-                        >
-                            <CloseIcon color="error" />
-                        </IconButton>
-                        {modalImage && (
-                            modalImage.endsWith(".mp4") ? (
-                                <video
-                                    controls
-                                    className="w-full h-full object-contain rounded"
-                                    style={{
-                                        maxWidth: '90vw',
-                                        maxHeight: '90vh',
-                                    }}
-                                >
-                                    <source src={modalImage} type="video/mp4" />
-                                    Your browser does not support the video tag.
-                                </video>
-                            ) : (
-                                <img
-                                    className=""
-                                    src={modalImage}
-                                    alt="Modal Preview"
-                                    style={{
-                                        maxWidth: '90vw',
-                                        maxHeight: '90vh',
-                                        borderRadius: '8px',
-                                    }}
-                                />
-                            )
-                        )}
-
-                    </Box>
-                </Modal>
                 {/* Confirmation Dialog */}
                 <Dialog open={openDialog} onClose={cancelRevokeMessage}>
                     <DialogTitle>Xác nhận thu hồi tin nhắn</DialogTitle>
