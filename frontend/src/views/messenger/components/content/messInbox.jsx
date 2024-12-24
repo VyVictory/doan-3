@@ -1,25 +1,23 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useContext } from 'react';
+import { toast } from 'react-toastify';
+import clsx from 'clsx';
+import { format } from 'date-fns';
+
 import { PaperAirplaneIcon } from '@heroicons/react/16/solid';
 import { useLocation } from 'react-router-dom';
-import clsx from 'clsx';
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Box, IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import { ChevronRightIcon, ChevronLeftIcon, ArrowUturnLeftIcon, PhotoIcon } from "@heroicons/react/24/solid";
+
 import imgUser from '../../../../img/user.png';
 import user from '../../../../service/user';
 import messenger from '../../../../service/messenger';
 import { useUser } from '../../../../service/UserContext';
-import { format } from 'date-fns';
 import useWebSocket from '../../../../service/webSocket/usewebsocket';
 import Loading from '../../../../components/Loading';
-import { Box, IconButton, Modal } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import { PhotoIcon } from '@heroicons/react/24/solid';
-import { ChevronRightIcon, ChevronLeftIcon, ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
-import { useContext } from "react";
 import { MessengerContext } from '../../layoutMessenger';
-import { toast } from 'react-toastify';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
-
-
 import NotificationCss from '../../../../module/cssNotification/NotificationCss';
+
 const MessengerInbox = () => {
     const { userContext } = useUser();
     const { RightShow, handleHiddenRight, setContent, setInboxData } = useContext(MessengerContext);
