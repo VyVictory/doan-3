@@ -153,7 +153,7 @@ export default function HomePost() {
     const openModal = (file) => {
         setShowZom({ file: file, show: true });
     };
-    
+
     return (
         <>
             {loading ? (
@@ -170,7 +170,7 @@ export default function HomePost() {
                                 <div className="flex justify-between">
                                     <article className="text-wrap grid gap-5">
                                         <div className="grid">
-                                            <Link className="font-bold text-lg hover:link" to={`/user/${post.author._id}`}>
+                                            <Link className=" break-words w-screen max-w-xl font-bold text-lg hover:link" to={`/user/${post.author._id}`}>
                                                 {post.author.lastName} {post.author.firstName}
                                             </Link>
                                             <div className="flex gap-2">
@@ -178,7 +178,7 @@ export default function HomePost() {
                                                 <span className="text-xs">{formatPrivacy(post.privacy)}</span>
                                             </div>
                                         </div>
-                                        <p>{post.content}</p>
+                                        <p className='break-words w-screen max-w-xl'>{post.content}</p>
                                     </article>
                                     {userLogin._id === post.author._id ? (
                                         <DropdownPostPersonal postId={post._id} />

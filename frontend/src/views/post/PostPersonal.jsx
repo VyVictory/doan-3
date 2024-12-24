@@ -133,7 +133,7 @@ export default function PostPersonal({ user }) {
                                                 <span className='text-xs'>{formatPrivacy(post.privacy)}</span>
                                             </div>
                                         </div>
-                                        <p>{post.content}</p>
+                                        <p className='break-words w-screen max-w-xl'>{post.content}</p>
                                     </article>
                                     <DropdownPostPersonal postId={post._id} />
                                 </div>
