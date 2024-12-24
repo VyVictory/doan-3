@@ -9,6 +9,9 @@ import DropdownOtherPost from './components/DropdownOtherPost';
 import DropdownPostPersonal from './components/DropdownPostPersonal';
 import Loading from '../../components/Loading';
 import { profileUserCurrent } from '../../service/ProfilePersonal';
+
+import { useUser } from '../../service/UserContext';
+
 export default function HomePost() {
     const [posts, setPosts] = useState([]);
     const [displayedPosts, setDisplayedPosts] = useState([]); // Tracks the posts currently displayed
@@ -146,7 +149,11 @@ export default function HomePost() {
                 return <span>{privacy}</span>;
         }
     };
-
+    const { setShowZom } = useUser();
+    const openModal = (file) => {
+        setShowZom({ file: file, show: true });
+    };
+    
     return (
         <>
             {loading ? (
@@ -208,6 +215,9 @@ export default function HomePost() {
                                                     src={post.img[currentIndexes[post._id] || 0]}
                                                     className="w-full h-full object-cover"
                                                     alt="Post visual"
+                                                    onClick={() => {
+                                                        openModal(post.img[currentIndexes[post._id] || 0])
+                                                    }}
                                                 />
                                             )}
                                         </div>
