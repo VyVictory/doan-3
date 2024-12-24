@@ -38,8 +38,6 @@ const MessengerInbox = () => {
     const [preview, setPreview] = useState(null);
     const [openModal, setOpenModal] = useState(false); // Trạng thái modal
     const [modalImage, setModalImage] = useState(null); // Ảnh phóng to
-
-
     const [hoveredMessageId, setHoveredMessageId] = useState(null);
     const [openDialog, setOpenDialog] = useState(false); // For controlling the confirmation dialog
     const [messageToRevoke, setMessageToRevoke] = useState(null); // Store message to be revoked
@@ -73,10 +71,13 @@ const MessengerInbox = () => {
         setMessageToRevoke(null); // Clear the message ID
     };
     const scrollToBottom = () => {
+
         if (messagesEndRef.current) {
             messagesEndRef.current.scrollIntoView({ behavior: 'auto' });
         }
+
     };
+
 
     useEffect(() => {
         scrollToBottom();
@@ -365,7 +366,7 @@ const MessengerInbox = () => {
                                             {/* Show "Recall" button when the message is hovered */}
                                         </div>
                                         {/* Scroll to the bottom */}
-                                        {groupedMessages[date].length === index + 1 ? <div ref={messagesEndRef} /> : ''}
+                                        {/* {groupedMessages[date].length === index + 1 ? <div ref={messagesEndRef} /> : ''} */}
                                     </React.Fragment>
                                 ))
 
@@ -373,8 +374,8 @@ const MessengerInbox = () => {
                         </div>
                     </div>
                 ))}
+                <div ref={messagesEndRef}></div>
             </div>
-
             <div className="w-full flex p-2 border-t-2 border-gray-200 bottom-0 flex-col">
 
                 <div className='w-full'>

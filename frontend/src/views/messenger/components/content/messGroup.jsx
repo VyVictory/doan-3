@@ -86,7 +86,7 @@ const MessengerInbox = () => {
     };
     const scrollToBottom = useCallback(() => {
         if (messagesEndRef.current) {
-            messagesEndRef.current.scrollIntoView(); // Cuộn đến tin nhắn cuối
+            messagesEndRef.current.scrollIntoView({ behavior: 'auto' }); // Cuộn đến tin nhắn cuối
         }
     }, []);
 
@@ -324,15 +324,14 @@ const MessengerInbox = () => {
                                 </div>
                                 {messages.map((message, index) => (
                                     <div
-                                        ref={
-                                            index === messages.length - 1
-                                                ? messagesEndRef
-                                                : null
-                                        }
+                                        // ref={
+                                        //     index === messages.length - 1
+                                        //         ? messagesEndRef
+                                        //         : null
+                                        // }
                                         key={message?._id}
-                                        className={`flex ${message?.sender?._id === userContext._id ? 'justify-end' : ''} ${index === messages.length - 1
-                                            ? 'nwwwwwwwwwwwwwwwwwwww'
-                                            : ''}`}
+                                        className={`flex ${message?.sender?._id === userContext._id ? 'justify-end' : ''} `}
+
                                         onMouseEnter={() => {
                                             if (message?.sender?._id === userContext._id) {
                                                 setHoveredMessageId(message._id);
@@ -412,8 +411,6 @@ const MessengerInbox = () => {
                                                     </p>
                                                 )
                                             }
-
-
                                             <p className="text-xs text-gray-400">
                                                 {format(new Date(message?.createdAt), 'hh:mm a')}
                                             </p>
@@ -424,6 +421,7 @@ const MessengerInbox = () => {
 
                         ))
                 }
+                <div ref={messagesEndRef}></div>
             </div>
 
 

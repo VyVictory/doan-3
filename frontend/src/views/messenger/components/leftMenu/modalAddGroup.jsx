@@ -22,6 +22,7 @@ const ModalAddGroup = ({ openModal, setOpenModal }) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [friends, setFriends] = useState([]); // Friends data
     const [loading, setLoading] = useState(true);
+    const [sendingAddGroup, setSendingAddGroup] = useState(true);
     const navigate = useNavigate();
     const toggleFriendSelection = (friendId) => {
         setSelectedFriends((prevSelected) =>
@@ -225,14 +226,23 @@ const ModalAddGroup = ({ openModal, setOpenModal }) => {
                     </div>
 
                     {/* Footer */}
-                    <div className="w-full border-t-2 p-2 flex justify-end">
-                        <button
-                            onClick={handleCloseModal}
-                            className="bg-gray-300 mr-2 w-24 p-2 rounded-lg text-black">Hủy</button>
-                        <button
-                            onClick={() => handCreateGroup()}
-                            className="bg-blue-500 w-24 p-2 rounded-lg text-white">Tạo nhóm</button>
-                    </div>
+                    {
+                        sendingAddGroup == true ?
+                            <div className="w-full border-t-2 p-2 flex justify-end">
+                                <button
+                                    onClick={handleCloseModal}
+                                    className="bg-gray-300 mr-2 w-24 p-2 rounded-lg text-black">Hủy</button>
+                                <button
+                                    onClick={() => { setSendingAddGroup(false); handCreateGroup() }}
+                                    className="bg-blue-500 w-24 p-2 rounded-lg text-white">Tạo nhóm</button>
+                            </div>
+                            :
+                            <div className="w-full border-t-2 p-2 flex justify-end">
+                                <button
+                                    className="bg-blue-500 w-24 p-2 rounded-lg text-white">Đang tạo nhóm ...</button>
+                            </div>
+                    }
+
                 </Box>
             </Modal>
         </>
