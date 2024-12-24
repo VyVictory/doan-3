@@ -18,7 +18,7 @@ export default function HeadOtherProfiles({ dataProfile }) {
                 setLoading(true);
                 const result = await friend.checkFriend(dataProfile._id);
                 if (result?.success) {
-                    setFriendStatus(result.status);
+                    setFriendStatus(result.data.status);
                 } else {
                     setFriendStatus("no friend");
                 }
@@ -76,7 +76,7 @@ export default function HeadOtherProfiles({ dataProfile }) {
             </div>
         );
     }
-    console.log(friendStatus)
+
     return (
         <>
             <div className="">

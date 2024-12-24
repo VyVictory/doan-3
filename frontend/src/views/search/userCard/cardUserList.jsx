@@ -73,7 +73,7 @@ const CardUserList = ({ userdata: initialUserData }) => {
                         />
                     </div>
                     <div className="flex flex-col pl-2">
-                        <div className="text-start">
+                        <div className="text-start font-semibold text-nowrap overflow-hidden text-ellipsis max-w-52">
                             {userdata.firstName || ''} {userdata.lastName || ''}
                         </div>
                         <div>number post</div>
