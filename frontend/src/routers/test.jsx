@@ -1,41 +1,47 @@
-import { io } from 'socket.io-client';
-import apiuri from '../service/apiuri';
+import React, { useEffect } from "react";
+import socket from "../service/webSocket/socket";
 
-import authToken from '../components/authToken';
-
-const URL = apiuri.Socketuri();
-
-const Test = () => {
-    // Kết nối đến WebSocket server
-    const socket = io(URL, {
-        extraHeaders: {
-            Authorization: `Bearer ${authToken.getToken()}`,
-        },
+const EventGetewayIo = () => {
+  useEffect(() => {
+    // Kết nối WebSocket
+    socket.on("connect", () => {
+      console.log("Connected to WebSocket server with ID test socket:", socket.id);
     });
 
-    // Lắng nghe sự kiện kết nối thành công
-    socket.on('connect', () => {
-        console.log('Connected to WebSocket server with ID:', socket.id);
-
-        // Gửi thông điệp "abc" đến server
-        socket.emit('messageEvent', { message: 'abc' });
+    // Lắng nghe sự kiện 'events'
+    socket.on("events", (data) => {
+      console.log("Received event test socket:", data);
     });
 
-    // Lắng nghe phản hồi từ server
-    socket.on('responseEvent', (data) => {
-        console.log('Response from server:', data); // Dự kiến nhận "abcd"
+    // Lắng nghe sự kiện 'newmessage'
+    socket.on("newmessage", (data) => {
+      console.log("Received new message test socket:", data);
     });
 
-    // Xử lý sự kiện ngắt kết nối
-    socket.on('disconnect', () => {
-        console.log('Disconnected from WebSocket server');
+    // Xử lý khi ngắt kết nối
+    socket.on("disconnect test socket", () => {
+      console.log("Disconnected from server");
     });
 
-    return (
-        <div>
-            WebSocket Test Component
-        </div>
-    );
+    // Cleanup function khi component bị hủy
+    return () => {
+      socket.off("connect");
+      socket.off("events");
+      socket.off("newmessage");
+      socket.off("disconnect");
+    };
+  }, []);
+
+  const sendMessage = () => {
+    socket.emit("sendMessage", { content: "Hello, Server!" });
+  };
+
+  return (
+    <div>
+      <h2>Group Chat</h2>
+      <button onClick={sendMessage}>Send Message</button>
+    </div>
+  );
 };
 
-export default Test;
+export default EventGetewayIo;
