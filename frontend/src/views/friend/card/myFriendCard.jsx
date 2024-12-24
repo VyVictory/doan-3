@@ -83,9 +83,10 @@ export default function FriendCard({ iduser, idrequest }) {
             <div className="p-2 text-center">
                 <strong>
                     {userdata
-                        ? `${userdata.lastName || ''} ${userdata.firstName || ''}`.trim()
+                        ? `${(userdata.lastName || '').slice(0, 10)} ${(userdata.firstName || '').slice(0, 10)}`
                         : "No Name"}
                 </strong>
+
             </div>
 
             <div className="flex flex-row gap-2 px-2 mb-2 items-center">

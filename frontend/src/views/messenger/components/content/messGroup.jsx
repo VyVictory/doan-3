@@ -365,7 +365,7 @@ const MessengerInbox = () => {
                                         >
 
                                             {message?.sender?._id !== userContext._id ?
-                                                <p className="text-xs text-gray-400 mb-2">
+                                                <p className="text-xs text-gray-400 mb-2 font-semibold text-nowrap overflow-hidden text-ellipsis max-w-52">
                                                     {message?.sender?.lastName}
                                                     {message?.sender?.firstName}
                                                 </p>
