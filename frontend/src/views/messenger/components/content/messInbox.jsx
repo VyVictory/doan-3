@@ -189,7 +189,7 @@ const MessengerInbox = () => {
     const handleSendMessenger = useCallback(async () => {
 
         if (!message.trim() && !file || sending) return; // Prevent sending if already in progress
-        console.log('aaa')
+        // console.log('aaa')
         setSending(true); // Set sending state
         try {
             const res = await messenger.sendMess(iduser, message.trim(), file);
