@@ -76,7 +76,7 @@ const Files = () => {
 
                         </div>
                     ) : (
-                        <p>Không có ảnh hoặc video.</p>
+                        <p className="text-gray-400 text-center w-full">Không có tệp tin.</p>
                     )}
                 </div>
 
