@@ -224,7 +224,7 @@ export default function HomePost() {
                                         {post.img.length > 1 && (
                                             <button
                                                 onClick={() => handleNext(post)}
-                                                className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full"
+                                                className="absolute object-cover w-full  h-full right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full"
                                             >
                                                 ›
                                             </button>
