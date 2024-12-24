@@ -4,8 +4,8 @@ import clsx from 'clsx';
 import { toast } from 'react-toastify';
 
 import { PaperAirplaneIcon } from '@heroicons/react/16/solid';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button,  Box, IconButton } from '@mui/material';
-import { ChevronRightIcon, ChevronLeftIcon, ArrowUturnLeftIcon,PhotoIcon } from "@heroicons/react/24/solid";
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Box, IconButton } from '@mui/material';
+import { ChevronRightIcon, ChevronLeftIcon, ArrowUturnLeftIcon, PhotoIcon } from "@heroicons/react/24/solid";
 import CloseIcon from '@mui/icons-material/Close';
 
 import imgUser from '../../../../img/user.png';
@@ -285,7 +285,9 @@ const MessengerInbox = () => {
                                     alt="User Avatar"
                                 />
                             </button>
-                            <h3 className="font-semibold text-nowrap">{`${dataGroup?.group?.name ? dataGroup.group.name : 'Group No Name'}`}</h3>
+                            <h3 className="font-semibold text-nowrap max-w-sm overflow-hidden text-ellipsis">
+                                {`${dataGroup?.group?.name ? dataGroup.group.name : 'Group No Name'}`}
+                            </h3>
                         </div>
 
                 }
