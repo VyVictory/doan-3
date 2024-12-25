@@ -43,8 +43,8 @@ function routers() {
                         <Route path="requests" element={<Friendinvitation />} />
                     </Route>
                     <Route path="post/:id" element={<DetailPost />} />
-                    <Route path="search" element={<Searchpage />} />
                     <Route path="myprofile" element={<Personal />}>
+
                         <Route index element={<MyPosts />} />
                         <Route path="about" element={<AboutProfile />} />
                         <Route path="friends" element={<FriendProfile />} />
