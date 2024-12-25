@@ -1,6 +1,9 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
 import { getSearchResult } from '../../service/SearchService';
+import AVTUser from '../post/AVTUser';
+import { Link } from 'react-router-dom';
+import Loading from '../../components/Loading';
 
 export default function CardPostResult({ query }) {
 
@@ -9,11 +12,9 @@ export default function CardPostResult({ query }) {
 
     useEffect(() => {
         if (query === '') {
-            setAlbums([]);
             setLoading(false);
             return;
         }
-
         async function fetchData() {
             setLoading(true);
             try {
@@ -31,28 +32,30 @@ export default function CardPostResult({ query }) {
     }, [query]);
 
     if (loading) {
-        return <p>Loading...</p>;
+        return <p className='text-center mt-5'><Loading /></p>;
     }
 
     if (albums.length === 0) {
-        return <p>No matches for <i>"{query}"</i></p>;
+        return <p className='mt-5'>không tìm thấy dữ liệu</p>;
     }
 
     return (
-        <ul className='mt-5'>
+        <ul className='mt-5 grid gap-1'>
             {albums.map(album => (
                 <li key={album._id}>
                     <div className="card card-side bg-base-100 shadow-xl">
-                        <figure>
-                            <img
-                                src="https://img.daisyui.com/images/stock/photo-1635805737707-575885ab0820.webp"
-                                alt="Movie" />
-                        </figure>
                         <div className="card-body">
-                            <h2 className="card-title">{album.author.lastName} {album.author.firstName}</h2>
-                            <p>{album.content}</p>
+                            <div className='grid gap-3'>
+                                <div>
+                                    <div className='grid justify-center'>
+                                        <AVTUser user={album.author} />
+                                    </div>
+                                    <h2 className="card-title justify-center">{album.author.lastName} {album.author.firstName}</h2>
+                                </div>
+                                <p className='text-center'>{album.content}</p>
+                            </div>
                             <div className="card-actions justify-end">
-                                <button className="btn btn-primary">Watch</button>
+                                <Link to={`/post/${album._id}`} className="btn btn-info w-full">Xem bài viết</Link>
                             </div>
                         </div>
                     </div>
