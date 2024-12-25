@@ -1,8 +1,21 @@
 import { useState, useEffect } from "react";
+import { getSearchResult } from "../../service/SearchService";
 
 const PostSearch = () => {
-    const [posts, setPosts] = useState([]);
+    const [search, setSearch] = useState([]);
 
+
+    useEffect(() => {
+        const fetchPosts = async () => {
+            try {
+                const response = await getSearchResult("");
+                setSearch(response);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchPosts();
+    }, []);
     return (
         <div className="mt-5">
             <span className="mb-1">Kết quả tìm kiếm</span>

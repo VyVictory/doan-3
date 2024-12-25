@@ -45,6 +45,8 @@ export default function Register() {
             return updatedErrors;
         });
     };
+    // Create a copy of formData without the confirmPassword field
+    const { confirmPassword, ...dataToSend } = formData;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -59,7 +61,7 @@ export default function Register() {
         }
 
         try {
-            const response = await axios.post(`${uri}/user/register`, formData);
+            const response = await axios.post(`${uri}/user/register`, dataToSend);
             if (response.status === 201) {
                 toast.success('Đăng ký thành công!', NotificationCss.Success);
                 setTimeout(() => navigate('/login'), 2000);
