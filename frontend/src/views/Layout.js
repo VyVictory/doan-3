@@ -42,15 +42,21 @@ export default function Layout() {
         //     socket.removeEventListener("error", handleError);
         // };
     }, [navigate]);
+    // <UserProvider>
+    //     <Navbar />
+    //     <div className="pt-[64px] " style={{ minWidth: '1100px' }} >
 
+    //         <Outlet />
+    //     </div>
+    // </UserProvider>
     return (
-        <UserProvider>
-            <div className="grid gap-[64px] " style={{ minWidth: '1100px' }} >
-                <div>
-                    <Navbar />
+        <div className=" max-w-screen h-full">
+            <UserProvider>
+                <Navbar />
+                <div className='navbar max-w-screen'>
                 </div>
                 <Outlet />
-            </div>
-        </UserProvider>
+            </UserProvider>
+        </div>
     );
 }

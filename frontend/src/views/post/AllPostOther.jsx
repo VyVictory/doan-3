@@ -127,7 +127,7 @@ export default function AllPostOther({ user }) {
             [post._id]: (prevIndexes[post._id] + 1) % post.img.length
         }));
     };
-
+    console.log(posts)
     return (
         <>
             {
@@ -157,7 +157,7 @@ export default function AllPostOther({ user }) {
                                         <button onClick={() => handlePrev(post)} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">‹</button>
                                     )}
                                     <div className="carousel-item w-full">
-                                        <FilePreview file={posts.img} />
+                                        <FilePreview file={Array.isArray(posts.img) ? posts.img[0] : posts.img} />
                                     </div>
 
                                     {post.img.length > 1 && (

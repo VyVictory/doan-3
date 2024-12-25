@@ -198,7 +198,7 @@ export default function HomePost() {
                                             </button>
                                         )}
                                         <div className="carousel-item w-full">
-                                            <FileViewer file={post.img} />
+                                            <FileViewer file={post.img[0]} />
                                         </div>
                                         {post.img.length > 1 && (
                                             <button

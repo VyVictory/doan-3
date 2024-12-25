@@ -4,11 +4,74 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useUser } from '../service/UserContext';
 
 const ModuleZomImgVideo = () => {
-    const { showZom, setShowZom } = useUser() // Get values from context
-    const { file, show } = showZom; // Destructure showZom object
+    const { showZom, setShowZom } = useUser(); // Get values from context
+    let { file, show } = showZom; // Destructure showZom object
+
+    console.log('File:', file);
 
     const handleCloseModal = () => {
         setShowZom({ ...showZom, show: false }); // Close the modal
+    };
+
+    // Handle cases where `file` is an array or other type
+    if (Array.isArray(file) && file.length > 0) {
+        file = file[0]; // Use the first element in the array
+    } else if (typeof file !== 'string') {
+        file = ''; // Fallback to an empty string for unsupported data types
+    }
+
+    // Utility to check file type
+    const isVideo = (url) => url && url.toLowerCase().endsWith('.mp4');
+    const isImage = (url) => {
+        const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.svg', '.webp'];
+        return url && imageExtensions.some((ext) => url.toLowerCase().endsWith(ext));
+    };
+
+    const renderContent = () => {
+        if (!file) {
+            return (
+                <Box sx={{ color: 'white', padding: 2, textAlign: 'center' }}>
+                    <p>No file available</p>
+                </Box>
+            );
+        }
+
+        if (isVideo(file)) {
+            return (
+                <video
+                    controls
+                    className="w-full h-full object-contain rounded"
+                    style={{
+                        maxWidth: '90vw',
+                        maxHeight: '90vh',
+                    }}
+                >
+                    <source src={file} type="video/mp4" />
+                    Your browser does not support the video tag.
+                </video>
+            );
+        }
+
+        if (isImage(file)) {
+            return (
+                <img
+                    className="w-full h-full object-contain rounded"
+                    src={file}
+                    alt="Modal Preview"
+                    style={{
+                        maxWidth: '90vw',
+                        maxHeight: '90vh',
+                        borderRadius: '8px',
+                    }}
+                />
+            );
+        }
+
+        return (
+            <Box sx={{ color: 'white', padding: 2, textAlign: 'center' }}>
+                <p>Unsupported File Format</p>
+            </Box>
+        );
     };
 
     return (
@@ -22,7 +85,14 @@ const ModuleZomImgVideo = () => {
                 backgroundColor: 'rgba(0, 0, 0, 0.5)',
             }}
         >
-            <Box sx={{ position: 'relative', backgroundColor: 'black', padding: 0.4, borderRadius: 2 }}>
+            <Box
+                sx={{
+                    position: 'relative',
+                    backgroundColor: 'black',
+                    padding: 0.4,
+                    borderRadius: 2,
+                }}
+            >
                 <IconButton
                     onClick={handleCloseModal}
                     sx={{
@@ -35,32 +105,7 @@ const ModuleZomImgVideo = () => {
                 >
                     <CloseIcon color="error" />
                 </IconButton>
-                {file && (
-                    file.endsWith(".mp4") ? (
-                        <video
-                            controls
-                            className="w-full h-full object-contain rounded"
-                            style={{
-                                maxWidth: '90vw',
-                                maxHeight: '90vh',
-                            }}
-                        >
-                            <source src={file} type="video/mp4" />
-                            Your browser does not support the video tag.
-                        </video>
-                    ) : (
-                        <img
-                            className=""
-                            src={file}
-                            alt="Modal Preview"
-                            style={{
-                                maxWidth: '90vw',
-                                maxHeight: '90vh',
-                                borderRadius: '8px',
-                            }}
-                        />
-                    )
-                )}
+                {renderContent()}
             </Box>
         </Modal>
     );
