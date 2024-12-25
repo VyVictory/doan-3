@@ -11,6 +11,7 @@ import Loading from '../../components/Loading';
 import { profileUserCurrent } from '../../service/ProfilePersonal';
 
 import { useUser } from '../../service/UserContext';
+import FileViewer from '../../components/fileViewer';
 
 export default function HomePost() {
     const [posts, setPosts] = useState([]);
@@ -197,29 +198,7 @@ export default function HomePost() {
                                             </button>
                                         )}
                                         <div className="carousel-item w-full">
-                                            {post.img[currentIndexes[post._id] || 0]?.endsWith('.mp4') ||
-                                                post.img[currentIndexes[post._id] || 0]?.endsWith('.webm') ||
-                                                post.img[currentIndexes[post._id] || 0]?.endsWith('.ogg') ? (
-                                                <video
-                                                    className="w-full h-full object-cover"
-                                                    controls
-                                                >
-                                                    <source
-                                                        src={post.img[currentIndexes[post._id] || 0]}
-                                                        type="video/mp4"
-                                                    />
-                                                    Your browser does not support the video tag.
-                                                </video>
-                                            ) : (
-                                                <img
-                                                    src={post.img[currentIndexes[post._id] || 0]}
-                                                    className="w-full h-full object-cover"
-                                                    alt="Post visual"
-                                                    onClick={() => {
-                                                        openModal(post.img[currentIndexes[post._id] || 0])
-                                                    }}
-                                                />
-                                            )}
+                                            <FileViewer file={post.img} />
                                         </div>
                                         {post.img.length > 1 && (
                                             <button
