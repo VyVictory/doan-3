@@ -25,12 +25,21 @@ export default function HeadProfile() {
                 }}>
 
             </div>
-            <div className='flex justify-center relative z-0 bottom-20 overflow-hidden items-baseline gap-1'>
-                <div>
-                    <img className='rounded-full h-40 w-40 ' alt=''
-                        src={`${dataProfile && dataProfile.avatar ? dataProfile.avatar : "https://th.bing.com/th/id/OIP.PKlD9uuBX0m4S8cViqXZHAHaHa?rs=1&pid=ImgDetMain"}`} />
-                    <h1 className='font-bold text-2xl mt-3 '>{dataProfile && dataProfile.lastName} {dataProfile && dataProfile.firstName}</h1>
+            <div>
+                <div className='absolute justify-start top-[22rem] -translate-x-1/2 -translate-y-1/2 left-1/2 transform'>
+                    <img
+                        className="rounded-full h-40 w-40 items-center border-4"
+                        alt=""
+                        src={`${dataProfile && dataProfile.avatar
+                            ? dataProfile.avatar
+                            : 'https://th.bing.com/th/id/OIP.PKlD9uuBX0m4S8cViqXZHAHaHa?rs=1&pid=ImgDetMain'
+                            }`}
+                    />
                 </div>
+                <div className='h-20'></div>
+                <h1 className="font-bold text-2xl text-center mb-4">
+                    {dataProfile?.lastName} {dataProfile?.firstName}
+                </h1>
                 <button className="" onClick={() => document.getElementById('my_modal_2').showModal()}><PencilIcon className='size-4 fill-sky-800' /></button>
                 <ModalUpdateAVT user={dataProfile} />
             </div>
