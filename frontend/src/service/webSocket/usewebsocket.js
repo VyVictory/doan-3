@@ -1,40 +1,48 @@
-import { useEffect } from 'react';
-import socket from './socket';
+// useWebSocket.js
+import { useEffect } from "react";
+import socket from "./socket"; // Import từ file socket.js
 
 const useWebSocket = (onMessageReceived) => {
-
   useEffect(() => {
-    // Listen for successful connection
-    socket.on('connect', () => {
-      console.log('WebSocket connected successfully');
+    // Kết nối WebSocket
+    socket.on("connect", () => {
+      console.log("Connected to WebSocket server with ID:", socket.id);
+    });
+    
+
+    // Lắng nghe sự kiện 'events'
+    socket.on("events", (data) => {
+      console.log("Received event:", data);
     });
 
-    // Listen for connection error
-    socket.on('connect_error', (error) => {
-      console.error('WebSocket connection failed:', error);
+    // Lắng nghe sự kiện 'newmessage'
+    socket.on("newmessage", (data) => {
+      console.log("Received new message:", data);
+      if (onMessageReceived) {
+        onMessageReceived(data); // Gọi callback khi có tin nhắn mới
+      }
+    });
+    
+
+    // Xử lý khi ngắt kết nối
+    socket.on("disconnect", () => {
+      console.log("Disconnected from server");
     });
 
-    // Listen for disconnection
-    socket.on('disconnect', () => {
-      console.warn('WebSocket disconnected');
-    });
-
-    // Listen for 'newmessage' from the WebSocket server
-    socket.on('newmessage', (data) => {
-      console.log('Received new message:', data);
-      onMessageReceived(data); // Call the callback with the new message data
-    });
-
-    // Cleanup on component unmount
+    // Cleanup function khi component bị hủy
     return () => {
-      socket.off('connect');
-      socket.off('connect_error');
-      socket.off('disconnect');
-      socket.off('newmessage');
+      socket.off("connect");
+      socket.off("events");
+      socket.off("newmessage");
+      socket.off("disconnect");
     };
   }, [onMessageReceived]);
 
-  return { socket }; // You can use the socket instance for other operations if needed
+  const sendMessage = (message) => {
+    socket.emit("sendMessage", { content: message });
+  };
+
+  return { sendMessage };
 };
 
 export default useWebSocket;

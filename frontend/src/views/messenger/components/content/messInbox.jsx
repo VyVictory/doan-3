@@ -18,6 +18,7 @@ import Loading from '../../../../components/Loading';
 import { MessengerContext } from '../../layoutMessenger';
 import NotificationCss from '../../../../module/cssNotification/NotificationCss';
 import FilePreview from '../../../../components/FilePreview';
+import socket from '../../../../service/webSocket/socket';
 
 const MessengerInbox = () => {
     const { userContext } = useUser();
@@ -39,6 +40,8 @@ const MessengerInbox = () => {
     const [openDialog, setOpenDialog] = useState(false); // For controlling the confirmation dialog
     const [messageToRevoke, setMessageToRevoke] = useState(null); // Store message to be revoked
     const { setShowZom } = useUser();
+    const [socket, setSocket] = useState(null); // Trạng thái kết nối socket
+
     const openModal = (file) => {
         setShowZom({ file: file, show: true });
     };
@@ -155,9 +158,12 @@ const MessengerInbox = () => {
                 setMessengerdata((prevMessages) => [...prevMessages, newMessage]);
             }
         },
-        [userContext._id]
+        [userContext._id, socket]
     );
     useWebSocket(onMessageReceived);
+
+
+
     useEffect(() => {
         // Kiểm tra và xử lý điều kiện bên trong hook
         if (!messengerdata || Object.keys(messengerdata).length === 0) {
@@ -193,7 +199,6 @@ const MessengerInbox = () => {
         setSending(true); // Set sending state
         try {
             const res = await messenger.sendMess(iduser, message.trim(), file);
-
             if (res.success) {
                 setMessage('');
                 setFile(null);

@@ -45,6 +45,13 @@ export default function Register() {
             return updatedErrors;
         });
     };
+    // Create a copy of formData without the confirmPassword field
+    const { confirmPassword, ...dataToSend } = formData;
+
+    const updatedFormData = {
+        ...dataToSend,
+        gender: formData.gender === 'male' ? true : false
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -59,7 +66,7 @@ export default function Register() {
         }
 
         try {
-            const response = await axios.post(`${uri}/user/register`, formData);
+            const response = await axios.post(`${uri}/user/register`, updatedFormData);
             if (response.status === 201) {
                 toast.success('Đăng ký thành công!', NotificationCss.Success);
                 setTimeout(() => navigate('/login'), 2000);
@@ -134,6 +141,7 @@ export default function Register() {
                         required
                     />
                     <input
+
                         type="date"
                         name="birthday"
                         className={`bg-gray-100 shadow-inner rounded-lg p-3 ${!formData.birthday ? 'text-gray-400' : 'text-gray-700'} focus:ring-2 focus:ring-blue-500 focus:outline-none mb-4`}
@@ -159,11 +167,11 @@ export default function Register() {
                         onChange={handleChange}
                         required
                     >
-                        <option disabled value="" className="text-gray-400">
+                        <option value='' disabled className="text-gray-400">
                             Giới tính
                         </option>
-                        <option value="true" className="text-black">Nam</option>
-                        <option value="false" className="text-black">Nữ</option>
+                        <option value='male'>Nam</option>
+                        <option value='female'>Nữ</option>
                     </select>
 
                     <input

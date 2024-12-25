@@ -1,9 +1,9 @@
 import { io } from "socket.io-client";
 
-const URL = "http://localhost:3002"; // Địa chỉ WebSocket server của bạn
+const URL = "http://localhost:3001"; // Địa chỉ WebSocket server của bạn
 const socket = io(URL, {
   extraHeaders: {
-    Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJiMjIyOTkxZWYxYzE5NGZhYmE2NGQiLCJpYXQiOjE3MzM5MTc5NjAsImV4cCI6MTczMzkyMTU2MH0.iOv82KlzLhmo03o9OOB-h0bgl4zp0H6KU77VJnvUNig`,
+    Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzZhMmNmYTA1NTdlZTcxYWEzZTYwNDciLCJpYXQiOjE3MzUwOTExNzQsImV4cCI6MTczNTE3NzU3NH0.sF69Oi0QH5pk82FKQPwOuH6PYqr6UPn_EoHew-_e0z8`,
   },
 });
 

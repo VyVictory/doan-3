@@ -85,7 +85,7 @@ const ModalAddGroup = ({ openModal, setOpenModal }) => {
             if (!groupName.trim()) {
                 return toast.error("Group name cannot be empty", NotificationCss.Fail);
             }
-
+            setSendingAddGroup(false)
             const response = await group.createGroup(groupName, selectedFriends);
             if (response.success) {
                 console.log(response.data._id)
@@ -94,13 +94,17 @@ const ModalAddGroup = ({ openModal, setOpenModal }) => {
                 setOpenModal();
                 setSelectedFriends([]); // Clear selection
                 navigate(`/messenger/group/?idgroup=${response.data._id}`);
+                setSendingAddGroup(true)
             } else {
+                setSendingAddGroup(true)
                 toast.error(response.data || "Failed to create group", NotificationCss.Fail);
             }
         } catch (error) {
+            setSendingAddGroup(true)
             console.error("Group creation error:", error);
             toast.error("An unexpected error occurred", NotificationCss.Fail);
         }
+        setSendingAddGroup(true)
     };
 
     return (
@@ -233,7 +237,7 @@ const ModalAddGroup = ({ openModal, setOpenModal }) => {
                                     onClick={handleCloseModal}
                                     className="bg-gray-300 mr-2 w-24 p-2 rounded-lg text-black">Hủy</button>
                                 <button
-                                    onClick={() => { setSendingAddGroup(false); handCreateGroup() }}
+                                    onClick={() => {  handCreateGroup() }}
                                     className="bg-blue-500 w-24 p-2 rounded-lg text-white">Tạo nhóm</button>
                             </div>
                             :

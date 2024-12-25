@@ -3,6 +3,7 @@ import React from 'react';
 import { useState } from 'react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import { XMarkIcon } from '@heroicons/react/24/outline';
+import { Link } from 'react-router-dom';
 export default function SearchBar({ query }) {
     const [searchTerm, setSearchTerm] = useState("");
     //Search underfi
@@ -26,8 +27,8 @@ export default function SearchBar({ query }) {
         setSearchTerm("/search");
     };
     return (
-        <form action="" className="relative w-full justify-center">
-            <input
+        <Link to={`/search/all?search=${searchTerm}`} action="" className="relative w-full justify-center">
+            <button
                 type="text"
                 value={searchTerm}
                 onChange={handleInputChange}
@@ -43,6 +44,6 @@ export default function SearchBar({ query }) {
             </a>
             {/* onChange={(e) => debounceSearch(e.target.value)}
              defaultValue={searchParams.get("query")?.toString()} */}
-        </form >
+        </Link>
     )
 }

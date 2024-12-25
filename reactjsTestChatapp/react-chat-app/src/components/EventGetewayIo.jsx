@@ -14,7 +14,7 @@ const EventGetewayIo = () => {
     });
 
     // Lắng nghe sự kiện 'newmessage'
-    socket.on("newmessage", (data) => {
+    socket.on("newmessagetogroup", (data) => {
       console.log("Received new message test socket:", data);
     });
 
