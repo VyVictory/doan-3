@@ -13,6 +13,7 @@ import authToken from '../../../components/authToken';
 import { PhotoIcon } from '@heroicons/react/24/solid'
 import { Link, useNavigate } from 'react-router-dom'
 import Loading from '../../../components/Loading';
+import FileViewChane from '../../../components/fileViewChane';
 const uri = Apiuri.Apiuri()
 
 export default function ModalStatus({ user }) {
@@ -237,7 +238,8 @@ export default function ModalStatus({ user }) {
                         {nodata && (<div className="text-red-500">Vui lòng nhập nội dung hoặc chọn ảnh</div>)}
                         {filePreview && (
                             <div className="mt-4">
-                                <img src={filePreview} alt="Preview" className="max-w-full h-32 rounded-lg" />
+                                <FileViewChane  file={formData?.files}/>
+                                {/* <img src={filePreview} alt="Preview" className="max-w-full h-32 rounded-lg" /> */}
                             </div>
                         )}
                         <div className="flex justify-end w-full gap-2">
