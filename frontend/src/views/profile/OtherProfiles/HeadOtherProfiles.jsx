@@ -93,22 +93,20 @@ export default function HeadOtherProfiles({ dataProfile }) {
                 >
 
                 </div>
-                <div className="">
-                    <div className='absolute justify-start top-[22rem] -translate-x-1/2 -translate-y-1/2 left-1/2 transform'>
-                        <img
-                            className="rounded-full h-40 w-40 items-center border-4"
-                            alt=""
-                            src={`${dataProfile && dataProfile.avatar
-                                ? dataProfile.avatar
-                                : 'https://th.bing.com/th/id/OIP.PKlD9uuBX0m4S8cViqXZHAHaHa?rs=1&pid=ImgDetMain'
-                                }`}
-                        />
-                    </div>
-                    <div className='h-20'></div>
-                    <h1 className="font-bold text-2xl text-center mb-4">
+
+                <div className="flex flex-col items-center justify-center relative bottom-20">
+                    <img
+                        className="rounded-full h-40 w-40 border-4 mb-2"
+                        alt=""
+                        src={`${dataProfile && dataProfile.avatar
+                            ? dataProfile.avatar
+                            : 'https://th.bing.com/th/id/OIP.PKlD9uuBX0m4S8cViqXZHAHaHa?rs=1&pid=ImgDetMain'
+                            }`}
+                    />
+                    <h1 className="font-bold text-2xl text-center mb-2">
                         {dataProfile?.lastName} {dataProfile?.firstName}
                     </h1>
-                    <div className="flex gap-2 justify-center mb-5">
+                    <div className="flex gap-2 justify-center">
                         {friendStatus === "friend" ? (
                             <button
                                 onClick={() => dataProfile ? handRemoveFriend(dataProfile._id) : ''}
