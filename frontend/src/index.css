@@ -52,7 +52,6 @@
   overflow-wrap: break-word;
   white-space: normal;
 }
-
 /* Apply custom styles to all scrollable areas */
 ::-webkit-scrollbar {
   width: 8px;

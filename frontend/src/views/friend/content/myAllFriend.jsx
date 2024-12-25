@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import friend from '../../service/friend';
-import FriendCard from './card/friendCard';
-import MyFriendCard from './card/myFriendCard';
-import Loading from '../../components/Loading';
+import friend from '../../../service/friend';
+import FriendCard from '../card/friendCard';
+import MyFriendCard from '../card/myFriendCard';
+import Loading from '../../../components/Loading';
 
 
 export default function MyAllFriend() {
@@ -32,8 +32,8 @@ export default function MyAllFriend() {
 
 
     return (
-        <div className="w-full p-5 flex flex-col">
-            <strong className="text-xl ml-2 mb-2">Danh sách bạn bè</strong>
+        <div className="w-full h-full px-5 flex flex-col overflow-x-hidden custom-scroll">
+            <strong className="text-xl ml-2 mb-2 w-full text-center pt-3">Danh sách bạn bè</strong>
             {loading ? (
                 <Loading />
             ) : requests.length === 0 ? (
@@ -42,8 +42,8 @@ export default function MyAllFriend() {
                     Chưa có bạn bè nào
                 </div>
             ) : (
-                // Render Friend Cards
-                <div className="w-full grid  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                // Render Friend Cards in a responsive grid
+                <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 custom ">
                     {requests.map((request, index) => (
                         <MyFriendCard
                             iduser={request?.receiver?._id || request?.sender?._id}

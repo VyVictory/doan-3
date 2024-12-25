@@ -197,13 +197,13 @@ export default function HomePost() {
                                                 ‹
                                             </button>
                                         )}
-                                        <div className="carousel-item w-full">
-                                            <FileViewer file={post.img} />
+                                        <div className="carousel-item w-full items-center">
+                                            <FileViewer file={post.img[0]} />
                                         </div>
                                         {post.img.length > 1 && (
                                             <button
                                                 onClick={() => handleNext(post)}
-                                                className="absolute object-cover w-full  h-full right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full"
+                                                className="absolute  right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full"
                                             >
                                                 ›
                                             </button>
