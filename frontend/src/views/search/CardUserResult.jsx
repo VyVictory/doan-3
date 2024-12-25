@@ -8,6 +8,8 @@ import NotificationCss from '../../module/cssNotification/NotificationCss';
 import userImg from '../../img/user.png';
 import user from '../../service/user';
 import { debounce } from 'lodash';
+import ButtonStatus from './buttonStatus';
+
 export default function CardUserResult({ query }) {
 
     const [userdatas, setUserdatas] = useState([]);
@@ -61,59 +63,7 @@ export default function CardUserResult({ query }) {
 
 
 
-    const [seding, setSending] = useState(true)
-    // WebSocket message handler
 
-
-    // Add friend functionality
-    const handAddFriend = useCallback(async (id) => {
-        setSending(false)
-        try {
-            const rs = await friend.AddFriend(id);
-            console.log(rs.message);
-            //friendrequest
-            if (rs.success) {
-                setUserdatas((prev) => ({ ...prev, status: 'waiting' }));
-                toast.success(rs?.message || 'Đã gửi yêu cầu kết bạn', NotificationCss.Success);
-            } else {
-                toast.error(rs?.message || 'Gửi yêu cầu kết bạn thất bại', NotificationCss.Fail);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-        setSending(true)
-    }, []); // Add empty array to ensure it's only created once
-    const handCloseFriend = async (id) => {
-        setSending(false)
-        try {
-            const rs = await friend.cancelFriend(id);
-            if (rs.success) {
-                setUserdatas((prev) => ({ ...prev, status: 'no friend' }));
-                toast.success(rs?.message || 'Đã hủy kết bạn', NotificationCss.Success);
-            } else {
-                toast.error(rs?.message || 'Lỗi khi hủy kết bạn', NotificationCss.Fail);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-        setSending(true)
-    };
-
-    const handCancelRequest = async (id) => {
-        setSending(false)
-        try {
-            const rs = await friend.cancelFriendRequest(id);
-            if (rs) {
-                setUserdatas((prev) => ({ ...prev, status: 'no friend' }));
-                toast.success(rs?.message || 'Đã hủy yêu cầu kết bạn', NotificationCss.Success);
-            } else {
-                toast.error(rs?.message || 'Lỗi khi hủy yêu cầu kết bạn', NotificationCss.Fail);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-        setSending(true)
-    };
 
     const handDetailUser = (id) => {
         window.location.href = `/user/${id}`;
@@ -150,46 +100,8 @@ export default function CardUserResult({ query }) {
                         </div>
                     </div>
 
-                    <div className="py-5">
-                        {
-                            seding === true ?
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        if (userdata._id && userdata.status) {
-                                            switch (userdata.status) {
-                                                case 'no friend':
-                                                    handAddFriend(userdata._id);
-                                                    break;
-                                                case 'friend':
-                                                    handCloseFriend(userdata._id);
-                                                    break;
-                                                default:
-                                                    handCancelRequest(userdata._id);
-                                                    break;
-                                            }
-                                        }
-                                    }}
-                                    className={`rounded-xl p-2 min-w-24 shadow-sm shadow-gray-300 ${userdata.status === 'friend'
-                                        ? 'hover:text-red-600 text-red-500 hover:bg-red-200 bg-red-100'
-                                        : 'hover:text-blue-600 text-blue-500 hover:bg-blue-200 bg-blue-100'
-                                        }`}
-                                >
-                                    <strong className="text-sm">
-                                        {userdata.status === 'no friend'
-                                            ? 'Add Friend'
-                                            : userdata.status === 'friend'
-                                                ? 'Cancel Friend'
-                                                : 'Cancel Request'}
-                                    </strong>
-                                </button>
+                 <ButtonStatus _id="userId123" status="no friend" />
 
-                                :
-                                <Loading />
-
-                        }
-
-                    </div>
                 </button>
             ))}
         </>

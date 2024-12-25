@@ -100,13 +100,13 @@ const checkFriend = async (id) => {
 
         // Check if the friend's ID exists as a sender or receiver
         const isFriend = lisfr.some((friend) => {
-            console.log('sender:'+friend.sender?._id+'receiver:'+friend.receiver?._id)
+            console.log('sender:' + friend.sender?._id + 'receiver:' + friend.receiver?._id)
             console.log(id)
             const senderId = friend.sender?._id;
             const receiverId = friend.receiver?._id;
-            if(senderId == id || receiverId == id){
+            if (senderId == id || receiverId == id) {
                 return true
-            } 
+            }
         });
 
         console.log(isFriend);
@@ -156,30 +156,16 @@ const cancelFriend = async (id) => {
 };
 const cancelFriendRequest = async (id) => {
     const remove = async (idrq) => {
-        console.log(idrq); // For debugging, ensure this ID is valid
-
         try {
-            // Make the DELETE request
             const response = await axios.delete(`${url}/user/removeFriendRequest/${idrq}`, {
                 headers: { Authorization: `Bearer ${authToken.getToken()}` },
             });
-
-            // Check if the response indicates success (statusCode 200)
-            if (response.data.statusCode === 200) {
-                return { success: true, data: response.data.message };
-            } else {
-                // If the statusCode is not 200, it's still an error
-                return { success: false, data: response.data.message };
-            }
+            return { success: true, data: response.data.message };
         } catch (error) {
-            // Catching any error that occurs during the request
-            console.error("Error removing friend request:", error.response?.data?.message || error.message);
-            return { success: false, data: error.response?.data?.message || error.message };
+            return { success: false, data: error };
         }
     };
-
     try {
-        //statusCode
         const userrequest = await axios.get(`${url}/user/getMyFriendRequest`,
             {
                 headers: { Authorization: `Bearer ${authToken.getToken()}` },
@@ -188,8 +174,6 @@ const cancelFriendRequest = async (id) => {
         const idRequest = userrequest.data
             .filter((item) => item.receiver !== id && item.sender !== id)
             .map((item) => item._id);
-        console.log('id tren:')
-        console.log(idRequest)
         let idrq = [];
         if (idRequest.length == 0) {
             const userrequest = await axios.get(`${url}/friend/status/${id}`,
@@ -197,15 +181,12 @@ const cancelFriendRequest = async (id) => {
                     headers: { Authorization: `Bearer ${authToken.getToken()}` },
                 }
             );
-            console.log('id duoi:')
             console.log(userrequest?.data?.idRequest)
             idrq = userrequest?.data?.idRequest
         } else {
             idrq = idRequest
         }
         const rmv = await remove(idrq);
-        console.log(rmv)
-        console.log('da thuc thi')
         if (rmv.success == false) {
             const response = await axios.post(`${url}/user/rejectFriendRequest/${idrq}`, {},
                 {

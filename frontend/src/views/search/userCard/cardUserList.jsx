@@ -51,7 +51,8 @@ const CardUserList = ({ userdata: initialUserData }) => {
         setSending(false)
         try {
             const rs = await friend.cancelFriendRequest(id);
-            if (rs) {
+            console.log(rs)
+            if (rs.success) {
                 setUserdata((prev) => ({ ...prev, status: 'no friend' }));
                 toast.success(rs?.message || 'Đã hủy yêu cầu kết bạn', NotificationCss.Success);
             } else {
@@ -116,10 +117,10 @@ const CardUserList = ({ userdata: initialUserData }) => {
                             >
                                 <strong className="text-sm">
                                     {userdata.status === 'no friend'
-                                        ? 'Add Friend'
+                                        ? 'Thêm bạn'
                                         : userdata.status === 'friend'
-                                            ? 'Cancel Friend'
-                                            : 'Cancel Request'}
+                                            ? 'Xóa bạn'
+                                            : 'Hủy yêu cầu kết bạn'}
                                 </strong>
                             </button>
 

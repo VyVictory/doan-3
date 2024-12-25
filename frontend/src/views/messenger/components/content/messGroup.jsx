@@ -73,7 +73,9 @@ const MessengerInbox = () => {
             const res = await messenger.revokedMesage(messageToRevoke); // API call to revoke the message
             if (res.success) {
                 setMessengerdata((prevMessages) =>
-                    prevMessages.filter((message) => message._id !== messageToRevoke)
+                    prevMessages.map((message) =>
+                        message._id === messageToRevoke ? { ...message, content: null, mediaURL:null } : message
+                    )
                 );
                 toast.success(res?.message || 'Bạn vừa thu hồi tin nhắn thành công', NotificationCss.Success);
             } else {
@@ -196,9 +198,9 @@ const MessengerInbox = () => {
     const onMessageReceived = useCallback(
         (newMessage) => {
             console.log(newMessage.forGroup)
-            console.log(idGroup )
+            console.log(idGroup)
             if (newMessage.forGroup == idGroup) {
-              
+
                 if (
                     newMessage
                 )
@@ -305,7 +307,7 @@ const MessengerInbox = () => {
         return acc;
     }, {});
 
-    // console.log(dataGroup)
+    console.log(groupedMessages)
     return (
         <div className="flex flex-col h-full ">
             <div className="p-2 flex border-b h-14 bg-white shadow-sm">

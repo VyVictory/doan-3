@@ -243,7 +243,6 @@ const MessengerInbox = () => {
         acc[date].push(message);
         return acc;
     }, {});
-    // console.log(groupedMessages)
     return (
         <div className="flex flex-col h-full ">
             <div className="p-2 flex border-b h-14 bg-white shadow-sm">
