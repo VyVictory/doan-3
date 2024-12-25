@@ -255,7 +255,7 @@ export default function HomePost() {
                             onClick={loadMorePosts}
                             className="mt-5 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
                         >
-                            Load More
+                            Tải thêm bài viết
                         </button>
                     )}
                 </>
