@@ -9,6 +9,7 @@ import { getAllOtherPosts } from '../../service/OtherProfile';
 import { profileUserCurrent } from '../../service/ProfilePersonal';
 import DropdownOtherPost from './components/DropdownOtherPost';
 import { useUser } from '../../service/UserContext';
+import FilePreview from '../../components/fileViewer';
 export default function AllPostOther({ user }) {
     const [posts, setPosts] = useState([]);
     const [userLogin, setUserLogin] = useState({})
@@ -156,29 +157,7 @@ export default function AllPostOther({ user }) {
                                         <button onClick={() => handlePrev(post)} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">‹</button>
                                     )}
                                     <div className="carousel-item w-full">
-                                        {post.img[currentIndexes[post._id] || 0].endsWith('.mp4') ? (
-                                            <video
-                                                controls
-                                                className="w-full"
-                                                alt="Post visual"
-                                                style={{ maxWidth: '100%', maxHeight: 'auto' }}
-                                            >
-                                                <source
-                                                    src={post.img[currentIndexes[post._id] || 0]}
-                                                    type="video/mp4"
-                                                />
-                                                Your browser does not support the video tag.
-                                            </video>
-                                        ) : (
-                                            <img
-                                                src={post.img[currentIndexes[post._id] || 0]}
-                                                onClick={() => {
-                                                    openModal(post.img[currentIndexes[post._id] || 0])
-                                                }}
-                                                className="w-full"
-                                                alt="Post visual"
-                                            />
-                                        )}
+                                        <FilePreview file={posts.img} />
                                     </div>
 
                                     {post.img.length > 1 && (
