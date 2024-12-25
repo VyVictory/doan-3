@@ -8,20 +8,27 @@ const createGroup = async (groupName, members) => {
         return { success: false, data: 'Tên dài quá nhập lại đi' };
     } else {
         try {
-            const response = await axios.post(`${url}/chat/creategroup`, {
-                name: groupName,
-                participants: members
-            },
+            // Convert members array to an object as expected by the API
+            const participants = { members };
+
+            const response = await axios.post(
+                `${url}/chat/creategroup`,
+                {
+                    name: groupName,
+                    participants, // Pass the object instead of an array
+                },
                 {
                     headers: { Authorization: `Bearer ${authToken.getToken()}` },
                 }
             );
+
             return { success: true, data: response.data };
         } catch (response) {
             return { success: false, data: response.response.data.message };
         }
     }
 };
+
 const addMemberGroup = async (idgr, listmember) => {
     try {
         const response = await axios.put(`${url}/chat/addMembersTogroup/${idgr}`, {

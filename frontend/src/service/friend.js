@@ -96,14 +96,18 @@ const checkFriend = async (id) => {
         const listResponse = await axios.get(`${url}/user/getMyFriend`, {
             headers: { Authorization: `Bearer ${authToken.getToken()}` },
         });
-        const lisfr = listResponse.data
+        const lisfr = listResponse.data;
+
         // Check if the friend's ID exists as a sender or receiver
-        const isFriend = lisfr.some(
-            (friend) =>
-                (friend.sender?._id === id || friend.receiver?._id === id) &&
-                friend.status === "friend" // Ensure status is 'friend'
-        );
-        console.log(isFriend)
+        const isFriend = lisfr.some((friend) => {
+            const senderId = friend.sender?._id;
+            const receiverId = friend.receiver?._id;
+
+            return (senderId === id || receiverId === id) && friend.status === "friend";
+        });
+
+        console.log(isFriend);
+
 
         if (isFriend == true) {
             // Return early if the friend is already in the list
