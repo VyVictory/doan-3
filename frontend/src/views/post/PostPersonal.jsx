@@ -138,6 +138,7 @@ export default function PostPersonal({ user }) {
                                     </article>
                                     <DropdownPostPersonal postId={post._id} />
                                 </div>
+                                {/* {post.img[0]} */}
                                 {post.img.length > 0 && (
                                     <FilePreview file={post.img} />
                                 )}
