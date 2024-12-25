@@ -172,7 +172,7 @@ export default function DetailPost() {
                 {posts?.img?.length > 1 && (
                   <button onClick={() => handlePrev(posts)} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">‹</button>
                 )}
-                <div className="carousel-item">
+               <div className="carousel-item w-full items-center">
                   <FilePreview file={posts.img} />
                 </div>
                 {posts?.img?.length > 1 && (

@@ -157,7 +157,7 @@ export default function AllPostOther({ user }) {
                                         <button onClick={() => handlePrev(post)} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">‹</button>
                                     )}
                                     {post.img.map((image, index) => (
-                                        <div key={index} className="carousel-item ">
+                                 <div className="carousel-item w-full items-center">
                                             <FilePreview file={image} />
                                         </div>
                                     ))}
