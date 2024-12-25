@@ -330,7 +330,7 @@ const MessengerInbox = () => {
                                                                         className="max-w-full max-h-72 object-cover rounded-t-lg"
                                                                     >
                                                                         <source src={url} type="video/mp4" />
-                                                                        Your browser does not support the video tag.
+                                                                        Trình duyệt của bạn không hỗ trợ video.
                                                                     </video>
                                                                 ) : (
                                                                     <img

@@ -34,11 +34,11 @@ export default function FriendInvitation() {
         <div className="w-full p-5 flex flex-col">
             <strong className="text-xl ml-2 mb-2">Lời mời kết bạn</strong>
             {loading ? (
-               <Loading/>
+                <Loading />
             ) : requests.length === 0 ? (
                 // Show "No Requests" message
                 <div className="w-full h-full flex justify-center items-center text-center">
-                    No Friend Requests
+                    Chưa có lời mời kết bạn nào
                 </div>
             ) : (
                 // Render Friend Cards

@@ -8,6 +8,8 @@ export default function FormReply({ open, keycmt }) {
         content: '',
         img: ''
     })
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const handleChange = (e) => {
         setFormdata({
             ...formdata,
@@ -16,6 +18,7 @@ export default function FormReply({ open, keycmt }) {
     }
     const handleSubmit = async (e) => {
         e.preventDefault()
+        setIsSubmitting(true);
         try {
             await createReplyComment(keycmt._id, formdata.content);
 
@@ -37,7 +40,7 @@ export default function FormReply({ open, keycmt }) {
                         className="textarea focus:outline-none textarea-bordered rounded-b-none h-24 resize-none"
                         placeholder={`Phản hồi @${keycmt?.author?.lastName} ${keycmt?.author?.firstName}`}>
                     </textarea>
-                    <button className="btn btn-outline rounded-t-none btn-info ">Gửi</button>
+                    <button className="btn btn-outline rounded-t-none btn-info" disabled={isSubmitting}>Gửi</button>
                 </form>
             )}
         </>

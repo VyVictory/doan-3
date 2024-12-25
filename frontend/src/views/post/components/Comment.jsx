@@ -12,21 +12,23 @@ export default function Comment({ postId, user }) {
   const [comment, setComment] = useState([])
   const [openReplyId, setOpenReplyId] = useState(null);
   const [isReplyOpen, setIsReplyOpen] = useState(false);
-  useEffect(() => {
-    const fetchdata = async () => {
-      try {
-        const response = await getComment(postId)
-        if (response) {
-          const sortedComments = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-          setComment(sortedComments)
-        }
-      } catch (error) {
-        console.error("Error liking the post:", error);
+
+  const fetchComments = async () => {
+    try {
+      const response = await getComment(postId)
+      if (response) {
+        const sortedComments = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        setComment(sortedComments)
       }
+    } catch (error) {
+      console.error("Error fetching comments:", error);
     }
-    fetchdata()
   }
-    , [postId]);
+
+  useEffect(() => {
+    fetchComments();
+  }, [postId]);
+
   //format Time CreateAt Comment
   const formatDate = (date) => {
     const postDate = new Date(date);

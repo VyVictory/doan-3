@@ -12,6 +12,7 @@ import DropdownOtherPost from './DropdownOtherPost';
 import FormComment from './FormComment';
 import Comment from './Comment';
 import 'animate.css';
+import FilePreview from '../../../components/fileViewer';
 
 export default function DetailPost() {
 
@@ -22,6 +23,20 @@ export default function DetailPost() {
   const [currentIndexes, setCurrentIndexes] = useState({});
   const { id } = useParams();
 
+  const fetchComments = async () => {
+    try {
+      const response = await getDetailPost(id)
+      if (response) {
+        setPosts(response.data)
+        const responseUser = await OtherProfile(response.data.author)
+        setUser(responseUser.data)
+        const responseUserPersonal = await profileUserCurrent()
+        setUserLogin(responseUserPersonal.data)
+      }
+    } catch (error) {
+      console.error("Error fetching post details:", error);
+    }
+  }
 
   useEffect(() => {
     const fetchdata = async () => {
@@ -158,11 +173,7 @@ export default function DetailPost() {
                   <button onClick={() => handlePrev(posts)} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">‹</button>
                 )}
                 <div className="carousel-item w-full">
-                  <img
-                    src={posts?.img[currentIndexes[posts._id] || 0]}
-                    className="w-full"
-                    alt="Post visual"
-                  />
+                  <FilePreview file={posts.img} />
                 </div>
                 {posts?.img?.length > 1 && (
                   <button onClick={() => handleNext(posts)} className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">›</button>
@@ -196,7 +207,7 @@ export default function DetailPost() {
             </div>
           </div>
         </div>
-        <FormComment postId={posts._id} />
+        <FormComment postId={posts._id} onCommentAdded={fetchComments} />
         <Comment postId={posts._id} user={userLogin} />
       </div>
     </div>

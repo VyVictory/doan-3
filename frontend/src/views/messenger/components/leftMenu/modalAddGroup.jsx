@@ -77,32 +77,32 @@ const ModalAddGroup = ({ openModal, setOpenModal }) => {
     });
     const handCreateGroup = async () => {
         if (!selectedFriends.length) {
-            return toast.error("Please select members for the group", NotificationCss.Fail);
+            return toast.error("Vui lòng chọn thành viên cho nhóm", NotificationCss.Fail);
         }
 
         try {
             const groupName = document.querySelector("input[placeholder='Nhập tên nhóm']").value;
             if (!groupName.trim()) {
-                return toast.error("Group name cannot be empty", NotificationCss.Fail);
+                return toast.error("Tên nhóm không được để trống", NotificationCss.Fail);
             }
             setSendingAddGroup(false)
             const response = await group.createGroup(groupName, selectedFriends);
             if (response.success) {
                 console.log(response.data._id)
                 const res = await group.sendMessGroup(response.data._id, 'Chào mừng', '');
-                toast.success(response.data.message || "Group created successfully", NotificationCss.Success);
+                toast.success(response.data.message || "Nhóm được tạo thành công", NotificationCss.Success);
                 setOpenModal();
                 setSelectedFriends([]); // Clear selection
                 navigate(`/messenger/group/?idgroup=${response.data._id}`);
                 setSendingAddGroup(true)
             } else {
                 setSendingAddGroup(true)
-                toast.error(response.data || "Failed to create group", NotificationCss.Fail);
+                toast.error(response.data || "Không tạo được nhóm", NotificationCss.Fail);
             }
         } catch (error) {
             setSendingAddGroup(true)
             console.error("Group creation error:", error);
-            toast.error("An unexpected error occurred", NotificationCss.Fail);
+            toast.error("Đã xảy ra lỗi không mong muốn", NotificationCss.Fail);
         }
         setSendingAddGroup(true)
     };
