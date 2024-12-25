@@ -50,7 +50,7 @@ export default function Layout() {
     useEffect(() => {
         socket.on("newmessage", (newMessage) => {
             if ((String(newMessage.sender._id) !== String(userCurrent._id)) && newMessage.sender._id && userCurrent._id) {
-                toast.info(
+                toast.success(
                     <a href={`/messenger/inbox/?iduser=${newMessage.sender._id}`}>
                         <div className="w-full flex flex-row">
                             <div className="w-full flex items-center space-x-3">
@@ -85,9 +85,12 @@ export default function Layout() {
 
         socket.on("newmessagetogroup", (newMessage) => {
             if ((String(newMessage.sender._id) !== String(userCurrent._id)) && newMessage.sender._id && userCurrent._id) {
-               
-                toast.info(
+
+                toast.success(
                     <a href={`/messenger/group/?idgroup=${String(newMessage.forGroup)}`}>
+                        <p className="text-xs text-gray-400 mb-2 font-semibold text-nowrap overflow-hidden text-ellipsis max-w-20">
+                            Tin Nhóm
+                        </p>
                         <div className="w-full flex flex-row">
                             <div className="w-full flex items-center space-x-3">
                                 <a>
@@ -108,10 +111,10 @@ export default function Layout() {
                             </div>
                         </div>
                         <div
-                            className="line-clamp-2 overflow-hidden text-ellipsis"
+                            className="line-clamp-2 text-xs text-gray-400 overflow-hidden text-ellipsis"
                             title={newMessage?.content}
                         >
-                            {newMessage ? newMessage.content : ''}
+                            Nhắn:{newMessage ? newMessage.content : ''}
                         </div>
                     </a>,
                     NotificationCss.Mess
