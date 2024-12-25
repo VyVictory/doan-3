@@ -197,7 +197,6 @@ const MessengerInbox = () => {
         setSending(true); // Set sending state
         try {
             const res = await messenger.sendMess(iduser, message.trim(), file);
-
             if (res.success) {
                 setMessage('');
                 setFile(null);

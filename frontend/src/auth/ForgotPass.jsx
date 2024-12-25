@@ -47,7 +47,7 @@ export default function ForgotPass() {
             alert('Có lỗi xảy ra, vui lòng thử lại sau');
         }
     };
-
+    console.log(email, otp, newPassword)
     return (
         <div
             className="h-screen flex items-center justify-center"
