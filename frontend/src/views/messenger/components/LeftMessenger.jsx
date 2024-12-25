@@ -46,7 +46,7 @@ const LeftMessenger = () => {
                                 onClick={() => handleChange('inbox')}
                                 value="inbox" className="flex-1 font-medium transition-all hover:bg-blue-50">
                                 <InboxIcon className="h-6 w-6 text-orange-300" />
-                                <span className="ml-2 text-nowrap">Inbox</span>
+                                <span className="ml-2 text-nowrap">Tin nhắn</span>
                             </ToggleButton>
                             <ToggleButton
                                 onClick={() => handleChange('group')}
