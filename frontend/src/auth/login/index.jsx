@@ -59,7 +59,7 @@ export default function Login() {
             } catch (error) {
                 console.error('Lỗi:', error.response?.data || error.message);
                 toast.error(
-                    error.response?.data?.message || 'Đã xảy ra lỗi. Vui lòng thử lại.',
+                    'Đăng nhập thất bại, vui lòng thử lại',
                     NotificationCss.Fail
                 );
             }
