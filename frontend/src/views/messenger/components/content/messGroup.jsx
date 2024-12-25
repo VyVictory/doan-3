@@ -3,11 +3,11 @@ import { useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 import { toast } from 'react-toastify';
 
-import { PaperAirplaneIcon } from '@heroicons/react/16/solid';
+import { PaperAirplaneIcon, ArrowDownIcon } from '@heroicons/react/16/solid';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Box, IconButton } from '@mui/material';
 import { ChevronRightIcon, ChevronLeftIcon, ArrowUturnLeftIcon, PhotoIcon } from "@heroicons/react/24/solid";
 import CloseIcon from '@mui/icons-material/Close';
-import fetchAuthor from './fetchAuthor';
+
 
 import imgUser from '../../../../img/user.png';
 import messenger from '../../../../service/messenger';
@@ -192,7 +192,7 @@ const MessengerInbox = () => {
         [userContext._id, socket, idGroup]
     );
     const scrollToBottom = () => {
-        if (messagesEndRef.current ) {
+        if (messagesEndRef.current) {
             messagesEndRef.current.scrollIntoView({ behavior: 'auto' }); // Cuộn đến tin nhắn cuối
         }
     }
@@ -200,11 +200,11 @@ const MessengerInbox = () => {
     useEffect(() => {
         const timeout = setTimeout(() => {
             scrollToBottom(); // Tự động cuộn mỗi khi dữ liệu tin nhắn thay đổi
-        },500); // Delay of 1 second (1000ms)
-    
+        }, 500); // Delay of 1 second (1000ms)
+
         return () => clearTimeout(timeout); // Cleanup the timeout on unmount or before the next invocation
     }, [messengerdata]);
-    
+
     useWebSocket(onMessageReceived);
 
     const handleSendMessenger = useCallback(async () => {
@@ -331,7 +331,9 @@ const MessengerInbox = () => {
                     </button>
                 </div>
             </div>
+
             <div className="overflow-y-scroll h-full p-4 pt-1 bg-gray-100">
+
                 {
                     loadingMess == false ?
                         <span className="loading loading-spinner loading-lg">Đang tải tin nhắn</span>
@@ -438,11 +440,28 @@ const MessengerInbox = () => {
                                         </div>
                                     </div>
                                 ))}
+
                             </div>
                         ))
+
                 }
                 <div ref={messagesEndRef}></div>
+
             </div>
+            {
+                messagesEndRef.current ? <div className=' w-full flex justify-end'
+                >
+                    <button
+                        onClick={scrollToBottom}
+                        className="relative pr-28">
+                        <ArrowDownIcon
+                            style={{ marginBottom: '20px' }}
+                            className="w-12 h-12 rounded-full opacity-20 text-gray-300 hover:bg-gray-200 hover:text-gray-400 hover:opacity-100 absolute bottom-0 left-1/2 transform -translate-x-1/2" />
+
+                    </button>
+                </div> : ''
+            }
+
             <div className="w-full flex p-2 border-t-2 border-gray-200 bottom-0 flex-col">
 
                 <div className='w-full'>
@@ -487,6 +506,7 @@ const MessengerInbox = () => {
                     </div>
                 ) :
                     <>
+
                         <div className='flex items-center w-full'>
                             <label htmlFor="file-input" className='mr-1'>
                                 <IconButton component="span">

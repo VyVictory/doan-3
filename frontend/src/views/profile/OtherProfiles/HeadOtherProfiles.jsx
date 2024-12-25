@@ -17,15 +17,16 @@ export default function HeadOtherProfiles({ dataProfile }) {
     const { userContext } = useUser();
     const [friendStatus, setFriendStatus] = useState(null);
     const [loading, setLoading] = useState(true);
-    if (userContext?._id === dataProfile?._id) {
-        navigate('/myprofile');
-    } else {
-        // Your alternate logic here
-    }
+
+    console.log(userContext._id)
+    console.log(dataProfile._id)
     useEffect(() => {
         const fetchFriendStatus = async () => {
             if (dataProfile?._id) {
                 setLoading(true);
+                if (userContext._id === dataProfile._id) {
+                    navigate('/myprofile');
+                }
                 const result = await friend.checkFriend(dataProfile._id);
                 if (result.success) {
                     console.log(result.status)

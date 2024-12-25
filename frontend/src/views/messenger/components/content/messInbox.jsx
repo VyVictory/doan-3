@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import clsx from 'clsx';
 import { format } from 'date-fns';
 
-import { PaperAirplaneIcon } from '@heroicons/react/16/solid';
+import { PaperAirplaneIcon, ArrowDownIcon } from '@heroicons/react/16/solid';
 import { useLocation } from 'react-router-dom';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Box, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
@@ -91,8 +91,8 @@ const MessengerInbox = () => {
     useEffect(() => {
         const timeout = setTimeout(() => {
             scrollToBottom(); // Tự động cuộn mỗi khi dữ liệu tin nhắn thay đổi
-        },500); // Delay of 1 second (1000ms)
-    
+        }, 1000); // Delay of 1 second (1000ms)
+
         return () => clearTimeout(timeout); // Cleanup the timeout on unmount or before the next invocation
     }, [messengerdata]);
 
@@ -381,6 +381,19 @@ const MessengerInbox = () => {
                 ))}
                 <div ref={messagesEndRef}></div>
             </div>
+            {
+                messagesEndRef.current ? <div className=' w-full flex justify-end'
+                >
+                    <button
+                        onClick={scrollToBottom}
+                        className="relative pr-28">
+                        <ArrowDownIcon
+                            style={{ marginBottom: '20px' }}
+                            className="w-12 h-12 rounded-full opacity-20 text-gray-300 hover:bg-gray-200 hover:text-gray-400 hover:opacity-100 absolute bottom-0 left-1/2 transform -translate-x-1/2" />
+
+                    </button>
+                </div> : ''
+            }
             <div className="w-full flex p-2 border-t-2 border-gray-200 bottom-0 flex-col">
 
                 <div className='w-full'>
