@@ -261,14 +261,12 @@ const MessengerInbox = () => {
         },
         [handleSendMessenger]
     );
-
+    if (!idGroup || idGroup.length < 1) {
+        return <div className="text-red-500 text-center mt-4"></div>;//{error}
+    }
     if (loading) {
         return <Loading />;
     }
-    if (!idGroup) {
-        return <div className="text-red-500 text-center mt-4"></div>;//{error}
-    }
-
     const groupedMessages = messengerdata.reduce((acc, message) => {
         try {
             const createdAtDate = new Date(message.createdAt);

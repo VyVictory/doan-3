@@ -59,6 +59,7 @@ const ModuleZomImgVideo = () => {
                     src={file}
                     alt="Modal Preview"
                     style={{
+                        minHeight:'90vh',
                         maxWidth: '90vw',
                         maxHeight: '90vh',
                         borderRadius: '8px',
@@ -88,7 +89,7 @@ const ModuleZomImgVideo = () => {
             <Box
                 sx={{
                     position: 'relative',
-                    backgroundColor: 'black',
+                    backgroundColor: 'white',
                     padding: 0.4,
                     borderRadius: 2,
                 }}

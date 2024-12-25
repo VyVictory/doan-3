@@ -14,8 +14,9 @@ const AllGroup = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredGroups, setFilteredGroups] = useState([]);
+    const [visibleCount, setVisibleCount] = useState(6); // Items currently visible
     const navigate = useNavigate();
-    const [openModal, setOpenModal] = useState(false); // Modal state
+    const [openModal, setOpenModal] = useState(false);
 
     const handleInputChange = (e) => {
         setSearchTerm(e.target.value);
@@ -28,11 +29,6 @@ const AllGroup = () => {
                 if (res.success) {
                     setGroups(res.data.Group);
                     setFilteredGroups(res.data.Group);
-                    // const members = await group.getMemberIngroup(res.data.Group[0]._id);
-                    // if (members.success) {
-                    //     console.log(members)
-                    //     setGroupd(members.data);
-                    // }
                 } else {
                     setGroups([]);
                     setFilteredGroups([]);
@@ -47,32 +43,33 @@ const AllGroup = () => {
         };
         fetchData();
     }, []);
+
     useEffect(() => {
         if (searchTerm.trim() === "") {
             setFilteredGroups(groups);
         } else {
             const filtered = groups.filter((group) => {
-                // Assuming the name of the group is stored in 'name'
                 return group.name.toLowerCase().includes(searchTerm.toLowerCase());
             });
             setFilteredGroups(filtered);
         }
     }, [searchTerm, groups]);
+
     const handleOpenModal = () => {
-        setOpenModal(!openModal); // Open modal
+        setOpenModal(!openModal);
     };
-    // console.log(filteredGroups)
-    // console.log(groups)
+
+    const handleSeeMore = () => {
+        setVisibleCount((prevCount) => prevCount + 6);
+    };
+
     return (
         <>
             {loading ? (
                 <Loading />
             ) : (
                 <>
-                    {/* Search Input */}
-
                     <div className="flex justify-between items-center h-[56px] border-b pl-2">
-                        {/* Search Input */}
                         <div className="relative w-full">
                             <input
                                 type="text"
@@ -83,52 +80,44 @@ const AllGroup = () => {
                             />
                             <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                         </div>
-
-                        {/* Add Friend Button */}
-                        <button
-                            className=" flex flex-col justify-center items-center aspect-square h-full pb-2 pt-1">
+                        <button className="flex flex-col justify-center items-center aspect-square h-full pb-2 pt-1">
                             <PlusIcon className="h-8 w-8 text-green-500 ml-7" style={{ marginBottom: '-10px' }} />
                             <UserGroupIcon
                                 onClick={handleOpenModal}
-                                className="h-full w-full text-gray-700 hover:text-green-400" />
+                                className="h-full w-full text-gray-700 hover:text-green-400"
+                            />
                         </button>
                     </div>
 
-
-
-                    {/* Scrollable Friends List */}
                     <div className="overflow-y-scroll flex-1 custom-scroll">
-                        <ul className="flex flex-col ">
+                        <ul className="flex flex-col">
                             {filteredGroups.length === 0 ? (
-                                <li className="px-2 py-4 text-center text-gray-400">Không có bạn bè nào.</li>
+                                <li className="px-2 py-4 text-center text-gray-400">Không có nhóm nào.</li>
                             ) : (
-                                filteredGroups.map((group, index) => (
+                                filteredGroups.slice(0, visibleCount).map((group, index) => (
                                     <li key={index} className="hover:bg-blue-300 px-2 py-3 rounded-md shadow-sm">
-                                        <button
-                                            onClick={() =>
-                                                navigate(`group/?idgroup=${group?._id}`)
-                                            }
-                                            // href={`/messenger/group/?idgroup=${group?._id}`}
-                                        >
-                                            <button
-                                                className="flex items-center w-full"
-                                            >
+                                        <button onClick={() => navigate(`group/?idgroup=${group?._id}`)}>
+                                            <div className="flex items-center w-full">
                                                 <GroupCard group={group} />
-                                            </button>
+                                            </div>
                                         </button>
-
                                     </li>
-
                                 ))
                             )}
-
                         </ul>
+
+                        {visibleCount < filteredGroups.length && (
+                            <button
+                                onClick={handleSeeMore}
+                                className="w-full py-2 text-center text-blue-500 hover:underline"
+                            >
+                                Xem thêm
+                            </button>
+                        )}
                     </div>
                 </>
             )}
-            {
-                <ModalAddGroup openModal={openModal} setOpenModal={handleOpenModal} />
-            }
+            <ModalAddGroup openModal={openModal} setOpenModal={handleOpenModal} />
         </>
     );
 };

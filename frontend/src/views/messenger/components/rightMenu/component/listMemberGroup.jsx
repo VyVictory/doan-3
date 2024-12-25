@@ -22,7 +22,7 @@ const ListMemberGroup = () => {
     const [modalImage, setModalImage] = useState(null);
     const [preview, setPreview] = useState(null);
     const [openModal, setOpenModal] = useState(false); // Trạng thái modal
-    const [visibleImagesCount, setVisibleImagesCount] = useState(6); // Số lượng ảnh hiển thị ban đầu là 6
+    const [visibleFriendCount, setVisibleFriendCount] = useState(6); // Số lượng ảnh hiển thị ban đầu là 6
     const [listMember, setListMember] = useState(null);
     const [showListMember, setShowListMember] = useState(false);
     const [selectedFriends, setSelectedFriends] = useState([]); // Selected friends list
@@ -31,12 +31,19 @@ const ListMemberGroup = () => {
     const [loading, setLoading] = useState(false);
     const [tinHieu, seTinHieu] = useState(false);
     const [searchTermMember, setSearchTermMember] = useState("");
+    const [visibleMemberCount, setVisibleMemberCount] = useState(6);
 
     const chaneShowListMember = () => {
         setShowListMember(!showListMember)
     };
     const handleOpenModal = () => {
         setOpenModal(true); // Mở modal
+    };
+    const handleSeeMoreMembers = () => {
+        setVisibleMemberCount((prevCount) => prevCount + 6);
+    };
+    const handleSeeMoreFriend = () => {
+        setVisibleFriendCount((prevCount) => prevCount + 6);
     };
     useEffect(() => {
         const fetchMessengerData = async () => {
@@ -57,15 +64,10 @@ const ListMemberGroup = () => {
         fetchMessengerData();
     }, [inboxData, tinHieu]);
 
-    // Hàm đóng modal
     const handleCloseModal = () => {
         setOpenModal(false); // Đóng modal
     };
 
-    // Hàm xử lý xem thêm ảnh
-    const handleSeeMore = () => {
-        setVisibleImagesCount(prevCount => prevCount + 3); // Tăng số lượng ảnh hiển thị lên 3
-    };
     const toggleFriendSelection = (friendId) => {
         setSelectedFriends((prevSelected) =>
             prevSelected.includes(friendId)
@@ -193,6 +195,7 @@ const ListMemberGroup = () => {
                                 <div className="px-4 mt-1 mb-2 max-h-96 overflow-y-auto custom-scroll">
                                     {
                                         filteredMembers
+                                            ?.slice(0, visibleMemberCount)
                                             ?.sort((a, b) => {
                                                 // Check if a or b is the owner, move the owner to the top
                                                 if (a._id === inboxData?.data?.group?.owner._id) return -1; // Owner comes first
@@ -204,6 +207,15 @@ const ListMemberGroup = () => {
                                                     <CardFriendGroup iduser={member?._id} datagroup={inboxData?.data?.group} />
                                                 </button>
                                             ))
+                                    }
+                                    {
+                                        visibleMemberCount < filteredMembers?.length && (
+                                            <button
+                                                onClick={handleSeeMoreMembers}
+                                                className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 w-full">
+                                                Xem thêm
+                                            </button>
+                                        )
                                     }
                                 </div>
                             </>
@@ -277,26 +289,38 @@ const ListMemberGroup = () => {
                                     <Loading />
                                 ) : (
                                     filteredFriends.length > 0 ?
-                                        filteredFriends.map((friend, index) => (
-                                            <div key={index} className="flex items-center mb-2 justify-center">
-                                                <div className="hover:bg-gray-200 px-2 rounded-md shadow-sm w-full">
-                                                    <button className="flex items-center py-2 w-full">
-                                                        <Checkbox
-                                                            checked={selectedFriends.includes(friend.receiver?._id || friend.sender?._id)}
-                                                            onChange={() =>
-                                                                toggleFriendSelection(friend.receiver?._id || friend.sender?._id)
-                                                            }
-                                                        />
-                                                        {friend.receiver && friend.receiver._id ? (
-                                                            <CardFriendAddGroup iduser={friend.receiver._id} />
-                                                        ) : friend.sender && friend.sender._id ? (
-                                                            <CardFriendAddGroup iduser={friend.sender._id} />
-                                                        ) : null}
-                                                    </button>
+                                        filteredFriends
+                                            ?.slice(0, visibleFriendCount)
+                                            .map((friend, index) => (
+                                                <div key={index} className="flex items-center mb-2 justify-center">
+                                                    <div className="hover:bg-gray-200 px-2 rounded-md shadow-sm w-full">
+                                                        <button className="flex items-center py-2 w-full">
+                                                            <Checkbox
+                                                                checked={selectedFriends.includes(friend.receiver?._id || friend.sender?._id)}
+                                                                onChange={() =>
+                                                                    toggleFriendSelection(friend.receiver?._id || friend.sender?._id)
+                                                                }
+                                                            />
+                                                            {friend.receiver && friend.receiver._id ? (
+                                                                <CardFriendAddGroup iduser={friend.receiver._id} />
+                                                            ) : friend.sender && friend.sender._id ? (
+                                                                <CardFriendAddGroup iduser={friend.sender._id} />
+                                                            ) : null}
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        )) : 'Không có bạn bè nào'
+                                            )) : 'Không có bạn bè nào'
                                 )}
+                                {
+                                    visibleFriendCount < filteredFriends?.length && (
+                                        <button
+                                            onClick={handleSeeMoreFriend}
+                                            className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 w-full">
+                                            Xem thêm
+                                        </button>
+                                    )
+
+                                }
                             </div>
 
                             {/* Selected Friends List */}

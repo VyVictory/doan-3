@@ -5,13 +5,23 @@ import {
     ChatBubbleLeftRightIcon,
     UserMinusIcon
 } from '@heroicons/react/24/outline';
+import { useNavigate } from "react-router-dom";
+
 import friend from '../../../service/friend';
 import { ToastContainer, toast } from 'react-toastify';
 import NotificationCss from '../../../module/cssNotification/NotificationCss';
+import { useUser } from '../../../service/UserContext';
+
 export default function HeadOtherProfiles({ dataProfile }) {
+    const navigate = useNavigate();
+    const { userContext } = useUser();
     const [friendStatus, setFriendStatus] = useState(null);
     const [loading, setLoading] = useState(true);
-
+    if (userContext?._id === dataProfile?._id) {
+        navigate('/myprofile');
+    } else {
+        // Your alternate logic here
+    }
     useEffect(() => {
         const fetchFriendStatus = async () => {
             if (dataProfile?._id) {
@@ -157,6 +167,8 @@ export default function HeadOtherProfiles({ dataProfile }) {
                             Chặn
                         </button>
                     </div>
+
+
                 </div>
             </div>
         </>
