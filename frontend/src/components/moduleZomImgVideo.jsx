@@ -7,7 +7,7 @@ const ModuleZomImgVideo = () => {
     const { showZom, setShowZom } = useUser(); // Get values from context
     let { file, show } = showZom; // Destructure showZom object
 
-    console.log('File:', file);
+    // console.log('File:', file);
 
     const handleCloseModal = () => {
         setShowZom({ ...showZom, show: false }); // Close the modal

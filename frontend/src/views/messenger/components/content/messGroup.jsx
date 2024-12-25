@@ -13,7 +13,6 @@ import imgUser from '../../../../img/user.png';
 import messenger from '../../../../service/messenger';
 import { useUser } from '../../../../service/UserContext';
 import { format } from 'date-fns';
-import useWebSocket from '../../../../service/webSocket/usewebsocket';
 import Loading from '../../../../components/Loading';
 import { MessengerContext } from '../../layoutMessenger';
 import NotificationCss from '../../../../module/cssNotification/NotificationCss';
@@ -82,11 +81,11 @@ const MessengerInbox = () => {
                 );
                 toast.success(res?.message || 'Bạn vừa thu hồi tin nhắn thành công', NotificationCss.Success);
             } else {
-                console.error("Failed to revoke message:", res);
+                console.log("Failed to revoke message:", res);
                 toast.error(res?.message || 'Lỗi khi thu hồi tin nhắn', NotificationCss.Fail);
             }
         } catch (error) {
-            console.error("Error revoking message:", error);
+            console.log("Error revoking message:", error);
         } finally {
             setOpenDialog(false); // Close the dialog
             setMessageToRevoke(null); // Clear the message ID
@@ -125,7 +124,7 @@ const MessengerInbox = () => {
                     // console.log(res.data.messages)
                 }
             } catch (error) {
-                console.error('Error fetching messenger data:', error);
+                console.log('Error fetching messenger data:', error);
             }
         };
         fetchMessengerData();
@@ -205,7 +204,7 @@ const MessengerInbox = () => {
         return () => clearTimeout(timeout); // Cleanup the timeout on unmount or before the next invocation
     }, [messengerdata]);
 
-    useWebSocket(onMessageReceived);
+    // useWebSocket(onMessageReceived);
 
     const handleSendMessenger = useCallback(async () => {
         if ((!message.trim() && !file) || sending) return;
@@ -221,9 +220,9 @@ const MessengerInbox = () => {
             } else {
                 alert(res.data.message);
             }
-            socket.emit("sendMessage", { idGroup, content: message.trim() });
+            // socket.emit("sendMessage", { idGroup, content: message.trim() });
         } catch (error) {
-            console.error("Error sending message:", error);
+            console.log("Error sending message:", error);
         } finally {
             setSending(false);
         }
@@ -238,19 +237,16 @@ const MessengerInbox = () => {
                     Authorization: `Bearer ${authToken.getToken()}`,
                 },
             });
-
-            socketConnection.on("connect", () => {
-                console.log("Connected to WebSocket with ID:", socketConnection.id);
-                socketConnection.emit("joinGroup", idGroup);
-                console.log("Connected to WebSocket Group with ID:", idGroup);
-            });
+            // socketConnection.on("connect", () => {
+            // console.log("Connected to WebSocket with ID:", socketConnection.id);
+            socketConnection.emit("joinGroup", idGroup);
+            // console.log("Connected to WebSocket Group with ID:", idGroup);
+            // });
 
             socketConnection.on("newmessagetogroup", (data) => {
                 onMessageReceived(data);
             });
-
-            setSocket(socketConnection);
-
+            // setSocket(socketConnection);
             return () => {
                 socketConnection.off("newmessagetogroup");
                 socketConnection.disconnect();
@@ -278,7 +274,7 @@ const MessengerInbox = () => {
         try {
             const createdAtDate = new Date(message.createdAt);
             if (isNaN(createdAtDate)) {
-                console.warn('Invalid date:', message.createdAt);
+                // console.warn('Invalid date:', message.createdAt);
 
                 return acc; // Skip invalid dates
             }
@@ -287,7 +283,7 @@ const MessengerInbox = () => {
             if (!acc[dateKey]) acc[dateKey] = [];
             acc[dateKey].push(message);
         } catch (error) {
-            console.error('Error grouping message:', error);
+            console.log('Error grouping message:', error);
         }
         return acc;
     }, {});
@@ -429,7 +425,7 @@ const MessengerInbox = () => {
                                                         {message?.content ? message.content : 'Tin nhắn đã được thu hồi'}
                                                     </p>
                                                 ) : (
-                                                    <p className="pb-2 text-black">
+                                                    <p className="pb-2 text-black break-words max-w-prose">
                                                         {message?.content || ''}
                                                     </p>
                                                 )

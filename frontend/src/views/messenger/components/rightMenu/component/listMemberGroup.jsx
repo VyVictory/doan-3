@@ -19,8 +19,6 @@ import CardFriendGroup from './cardFriendGroup';
 
 const ListMemberGroup = () => {
     const { inboxData } = useContext(MessengerContext);
-    const [modalImage, setModalImage] = useState(null);
-    const [preview, setPreview] = useState(null);
     const [openModal, setOpenModal] = useState(false); // Trạng thái modal
     const [visibleFriendCount, setVisibleFriendCount] = useState(6); // Số lượng ảnh hiển thị ban đầu là 6
     const [listMember, setListMember] = useState(null);

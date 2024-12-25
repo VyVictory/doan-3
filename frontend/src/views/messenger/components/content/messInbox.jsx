@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback, useContext } from 'rea
 import { toast } from 'react-toastify';
 import clsx from 'clsx';
 import { format } from 'date-fns';
+import { io } from 'socket.io-client';
 
 import { PaperAirplaneIcon, ArrowDownIcon } from '@heroicons/react/16/solid';
 import { useLocation } from 'react-router-dom';
@@ -13,7 +14,9 @@ import imgUser from '../../../../img/user.png';
 import user from '../../../../service/user';
 import messenger from '../../../../service/messenger';
 import { useUser } from '../../../../service/UserContext';
-import useWebSocket from '../../../../service/webSocket/usewebsocket';
+import authToken from '../../../../components/authToken';
+
+import apiuri from '../../../../service/apiuri';
 import Loading from '../../../../components/Loading';
 import { MessengerContext } from '../../layoutMessenger';
 import NotificationCss from '../../../../module/cssNotification/NotificationCss';
@@ -67,11 +70,11 @@ const MessengerInbox = () => {
                 );
                 toast.success(res?.message || 'Bạn vừa thu hồi tin nhắn thành công', NotificationCss.Success);
             } else {
-                console.error("Failed to revoke message:", res);
+                console.log("Failed to revoke message:", res);
                 toast.error(res?.message || 'Lỗi khi thu hồi tin nhắn', NotificationCss.Fail);
             }
         } catch (error) {
-            console.error("Error revoking message:", error);
+            console.log("Error revoking message:", error);
         } finally {
             setOpenDialog(false); // Close the dialog
             setMessageToRevoke(null); // Clear the message ID
@@ -108,11 +111,13 @@ const MessengerInbox = () => {
                     setMessengerdata(res.data);
                 }
             } catch (error) {
-                console.error('Error fetching messenger data:', error);
+                console.log('Error fetching messenger data:', error);
             }
         };
         fetchMessengerData();
+
     }, [iduser]);
+
     useEffect(() => {
         if (!iduser || iduser === '') {
             setError('User ID is missing or invalid.');
@@ -128,7 +133,7 @@ const MessengerInbox = () => {
                     setError('User does not exist.');
                 }
             } catch (error) {
-                console.error('Error fetching user data:', error);
+                console.log('Error fetching user data:', error);
                 setError('An error occurred while fetching user data.');
             } finally {
                 setLoading(false);
@@ -157,6 +162,8 @@ const MessengerInbox = () => {
 
     const onMessageReceived = useCallback(
         (newMessage) => {
+            console.log('sau nay')
+            console.log(newMessage)
             if (!newMessage.receiver) {
                 newMessage.receiver = userContext._id;
             }
@@ -170,8 +177,31 @@ const MessengerInbox = () => {
         },
         [userContext._id, socket]
     );
-    useWebSocket(onMessageReceived);
+    // useWebSocket(onMessageReceived);
+    useEffect(() => {
+        if (iduser) {
+            const URL = apiuri.Socketuri();
+            const socketConnection = io(URL, {
+                extraHeaders: {
+                    Authorization: `Bearer ${authToken.getToken()}`,
+                },
+            });
+            // socketConnection.on("connect", () => {
+            // console.log("Connected to WebSocket with ID:", socketConnection.id);
+            // socket.emit("joinGroup", idGroup);
+            // console.log("Connected to WebSocket Group with ID:", idGroup);
+            // });
 
+            socketConnection.on("newmessage", (data) => {
+                onMessageReceived(data);
+            });
+            // setSocket(socketConnection);
+            return () => {
+                socketConnection.off("newmessage");
+                socketConnection.disconnect();
+            };
+        }
+    }, [iduser]);
 
 
     useEffect(() => {
