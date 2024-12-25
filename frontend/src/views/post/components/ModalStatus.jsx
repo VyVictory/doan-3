@@ -99,7 +99,9 @@ export default function ModalStatus({ user }) {
         }
         const data = new FormData();
         data.append('content', formData.content || '');
-        data.append('files', formData.files || '');
+        if (!formData.files === null) {
+            data.append('files', formData.files);
+        }
         data.append('privacy', formData.privacy);
         try {
             setLoading(true);
@@ -231,6 +233,7 @@ export default function ModalStatus({ user }) {
                             name="content"
                             value={formData.content}
                             rows={rows}
+                            maxLength={4000}
                             placeholder="Viết nội dung của bạn..."
                             onChange={handleInputChange}
                             style={{ lineHeight: '1.5rem' }}
