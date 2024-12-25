@@ -81,7 +81,7 @@ export default function HeadOtherProfiles({ dataProfile }) {
         <>
             <div className="">
                 <div
-                    className="h-[300px] rounded-2xl z-0 grid bg-cover bg-no-repeat"
+                    className="h-[300px] rounded-2xl z-0 grid bg-cover bg-no-repeat border-4"
                     style={{
                         backgroundImage: `url(${dataProfile && dataProfile.coverImage
                             ? dataProfile.coverImage
@@ -93,9 +93,11 @@ export default function HeadOtherProfiles({ dataProfile }) {
 
                 </div>
 
-                <div className="flex flex-col items-center justify-center relative bottom-20">
+                <div className="flex flex-col items-center justify-center relative"
+                    style={{ marginTop: "-80px", }}>
                     <img
-                        className="rounded-full h-40 w-40 border-4 mb-2"
+                        className="rounded-full h-40 w-40  mb-2 "
+
                         alt=""
                         src={`${dataProfile && dataProfile.avatar
                             ? dataProfile.avatar
