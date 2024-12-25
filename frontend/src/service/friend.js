@@ -93,44 +93,15 @@ const declineRequestAddFriend = async (id) => {
 const checkFriend = async (id) => {
     try {
         // Fetch user's friend list
-        const listResponse = await axios.get(`${url}/user/getMyFriend`, {
+        const listResponse = await axios.get(`${url}/user/getalluser`, {
             headers: { Authorization: `Bearer ${authToken.getToken()}` },
         });
         const lisfr = listResponse.data;
 
-        // Check if the friend's ID exists as a sender or receiver
-        const isFriend = lisfr.some((friend) => {
-            console.log('sender:' + friend.sender?._id + 'receiver:' + friend.receiver?._id)
-            console.log(id)
-            const senderId = friend.sender?._id;
-            const receiverId = friend.receiver?._id;
-            if (senderId == id || receiverId == id) {
-                return true
-            }
-        });
-
-        console.log(isFriend);
-
-
-        if (isFriend == true) {
-            // Return early if the friend is already in the list
-            return {
-                success: true,
-                data: "Friend already exists in the list.",
-                status: "friend", // Custom status indicating friendship
-            };
-        }
-
-        // If not found in the list, fetch friend status
-        const response = await axios.get(`${url}/friend/status/${id}`, {
-            headers: { Authorization: `Bearer ${authToken.getToken()}` },
-        });
-
-        return {
-            success: true,
-            data: response.data,
-            status: response.data.status,
-        };
+        // Find the friend with the matching ID
+        const friend = lisfr.find((friend) => friend._id == id);
+        // console.log(friend.status)
+        return { success: true, data: "dât loc tu getall.", status: friend.status };
     } catch (error) {
         return {
             success: false,

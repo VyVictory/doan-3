@@ -67,7 +67,7 @@ const CardUserList = ({ userdata: initialUserData }) => {
     const handDetailUser = (id) => {
         window.location.href = `/user/${id}`;
     };
-
+    console.log(userdata)
     return (
         <>
             <button
@@ -110,7 +110,7 @@ const CardUserList = ({ userdata: initialUserData }) => {
                                         }
                                     }
                                 }}
-                                className={`rounded-xl p-2 min-w-24 shadow-sm shadow-gray-300 ${userdata.status === 'friend'
+                                className={`rounded-xl p-2 min-w-24 shadow-sm shadow-gray-300 ${userdata.status === 'friend'||userdata.status === 'waiting'||userdata.status === 'pending'
                                     ? 'hover:text-red-600 text-red-500 hover:bg-red-200 bg-red-100'
                                     : 'hover:text-blue-600 text-blue-500 hover:bg-blue-200 bg-blue-100'
                                     }`}
@@ -120,7 +120,9 @@ const CardUserList = ({ userdata: initialUserData }) => {
                                         ? 'Thêm bạn'
                                         : userdata.status === 'friend'
                                             ? 'Xóa bạn'
-                                            : 'Hủy yêu cầu kết bạn'}
+                                            : userdata.status === 'pending'
+                                                ? 'Từ chối'
+                                                : 'Hủy yêu cầu kết bạn'}
                                 </strong>
                             </button>
 

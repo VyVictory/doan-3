@@ -1,6 +1,6 @@
 import React from 'react';
 
-const FilePreview = ({ file }) => {
+const FileViewer = ({ file }) => {
     // Determine the file type (image, video, or file)
     const checkFileType = (file) => {
         if (!file || typeof file !== 'string') {
@@ -60,4 +60,4 @@ const FilePreview = ({ file }) => {
     return <>{renderFilePreview()}</>;
 };
 
-export default FilePreview;
+export default FileViewer;
