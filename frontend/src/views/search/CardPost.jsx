@@ -14,8 +14,8 @@ export default function CardPost({ post }) {
                             alt=''
                         />
                         <div className='grid gap-3'>
-                            <h2 className="font-semibold break-words w-screen max-w-xl">{post.author.firstName} {post.author.lastName}</h2>
-                            <p className='text-ellipsis break-words w-screen max-w-xl'>{post.content}</p>
+                            <h2 className="font-semibold break-words">{post.author.firstName} {post.author.lastName}</h2>
+                            <p className='text-ellipsis break-words'>{post.content}</p>
                         </div>
                     </div>
 
