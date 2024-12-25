@@ -34,6 +34,7 @@ const MessengerInbox = () => {
     const [loading, setLoading] = useState(true);
     const [loadingHeader, setLoadingHeader] = useState(true);
     const [loadingMess, setLoadingMess] = useState(true);
+    const [noRoll, setNoRoll] = useState(false);
     const [sending, setSending] = useState(false); // Added sending state
     const [message, setMessage] = useState('');
     const [messengerdata, setMessengerdata] = useState([]);
@@ -98,15 +99,7 @@ const MessengerInbox = () => {
         setOpenDialog(false); // Close the dialog
         setMessageToRevoke(null); // Clear the message ID
     };
-    const scrollToBottom = useCallback(() => {
-        if (messagesEndRef.current) {
-            messagesEndRef.current.scrollIntoView({ behavior: 'auto' }); // Cuộn đến tin nhắn cuối
-        }
-    }, []);
 
-    useEffect(() => {
-        scrollToBottom(); // Tự động cuộn mỗi khi dữ liệu tin nhắn thay đổi
-    }, [messengerdata, scrollToBottom]);
     const handleFileChange = (event) => {
         const selectedFile = event.target.files[0];
         if (selectedFile) {
@@ -198,6 +191,20 @@ const MessengerInbox = () => {
         },
         [userContext._id, socket, idGroup]
     );
+    const scrollToBottom = () => {
+        if (messagesEndRef.current ) {
+            messagesEndRef.current.scrollIntoView({ behavior: 'auto' }); // Cuộn đến tin nhắn cuối
+        }
+    }
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            scrollToBottom(); // Tự động cuộn mỗi khi dữ liệu tin nhắn thay đổi
+        },500); // Delay of 1 second (1000ms)
+    
+        return () => clearTimeout(timeout); // Cleanup the timeout on unmount or before the next invocation
+    }, [messengerdata]);
+    
     useWebSocket(onMessageReceived);
 
     const handleSendMessenger = useCallback(async () => {
@@ -432,15 +439,10 @@ const MessengerInbox = () => {
                                     </div>
                                 ))}
                             </div>
-
                         ))
                 }
                 <div ref={messagesEndRef}></div>
             </div>
-
-
-
-
             <div className="w-full flex p-2 border-t-2 border-gray-200 bottom-0 flex-col">
 
                 <div className='w-full'>
@@ -510,9 +512,7 @@ const MessengerInbox = () => {
                             <button onClick={handleSendMessenger} className="ml-2" disabled={sending}>
                                 <PaperAirplaneIcon className="h-8 w-8 fill-sky-500" />
                             </button>
-
                         </div>
-
                     </>
                 }
                 {/* Confirmation Dialog */}

@@ -88,10 +88,12 @@ const MessengerInbox = () => {
         }
 
     };
-
-
     useEffect(() => {
-        scrollToBottom();
+        const timeout = setTimeout(() => {
+            scrollToBottom(); // Tự động cuộn mỗi khi dữ liệu tin nhắn thay đổi
+        },500); // Delay of 1 second (1000ms)
+    
+        return () => clearTimeout(timeout); // Cleanup the timeout on unmount or before the next invocation
     }, [messengerdata]);
 
 
