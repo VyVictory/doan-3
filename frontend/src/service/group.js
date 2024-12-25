@@ -9,7 +9,7 @@ const createGroup = async (groupName, members) => {
     } else {
         try {
             // Convert members array to an object as expected by the API
-            const participants = { members };
+            const participants = members;
 
             const response = await axios.post(
                 `${url}/chat/creategroup`,

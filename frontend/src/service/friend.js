@@ -100,10 +100,13 @@ const checkFriend = async (id) => {
 
         // Check if the friend's ID exists as a sender or receiver
         const isFriend = lisfr.some((friend) => {
+            console.log('sender:'+friend.sender?._id+'receiver:'+friend.receiver?._id)
+            console.log(id)
             const senderId = friend.sender?._id;
             const receiverId = friend.receiver?._id;
-
-            return (senderId === id || receiverId === id) && friend.status === "friend";
+            if(senderId == id || receiverId == id){
+                return true
+            } 
         });
 
         console.log(isFriend);
