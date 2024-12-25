@@ -152,12 +152,12 @@ export default function AllPostOther({ user }) {
                                 <DropdownOtherPost postId={post._id} />
                             </div>
                             {post.img.length > 0 && (
-                                <div className="carousel rounded-box w-full h-64 relative">
+                                <div className="carousel rounded-box w-96 h-64 relative">
                                     {post.img.length > 1 && (
                                         <button onClick={() => handlePrev(post)} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">‹</button>
                                     )}
                                     {post.img.map((image, index) => (
-                                        <div key={index} className="carousel-item w-full justify-center">
+                                        <div key={index} className="carousel-item ">
                                             <FilePreview file={image} />
                                         </div>
                                     ))}

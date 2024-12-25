@@ -39,7 +39,7 @@ export default function CardPost({ post }) {
                             {post?.img?.length > 1 && (
                                 <button onClick={() => handlePrev(post)} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">‹</button>
                             )}
-                            <div className="carousel-item w-full">
+                            <div className="carousel-item ">
                                 <img
                                     src={post?.img[currentIndexes[post._id] || 0]}
                                     className="w-full"

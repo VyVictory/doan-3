@@ -188,7 +188,7 @@ export default function HomePost() {
                                     )}
                                 </div>
                                 {post.img.length > 0 && (
-                                    <div className="carousel rounded-box w-full h-64 relative">
+                                    <div className="carousel rounded-box w-96 h-64 relative">
                                         {post.img.length > 1 && (
                                             <button
                                                 onClick={() => handlePrev(post)}
@@ -197,7 +197,7 @@ export default function HomePost() {
                                                 ‹
                                             </button>
                                         )}
-                                        <div className="carousel-item w-full flex justify-center">
+                                        <div className="carousel-item ">
                                             <FileViewer file={post.img[0]} />
                                         </div>
                                         {post.img.length > 1 && (
