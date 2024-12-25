@@ -15,6 +15,7 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 import { ToastContainer, toast } from 'react-toastify';
 import NotificationCss from '../../../../../module/cssNotification/NotificationCss';
 import { Link } from 'react-router-dom';
+import CardFriendGroup from './cardFriendGroup';
 
 const ListMemberGroup = () => {
     const { inboxData } = useContext(MessengerContext);
@@ -29,6 +30,8 @@ const ListMemberGroup = () => {
     const [friends, setFriends] = useState([]); // Friends data
     const [loading, setLoading] = useState(false);
     const [tinHieu, seTinHieu] = useState(false);
+    const [searchTermMember, setSearchTermMember] = useState("");
+
     const chaneShowListMember = () => {
         setShowListMember(!showListMember)
     };
@@ -73,6 +76,9 @@ const ListMemberGroup = () => {
 
     const handleInputChange = (e) => {
         setSearchTerm(e.target.value); // Update search term
+    };
+    const handleInputChangeMember = (e) => {
+        setSearchTermMember(e.target.value);
     };
     const handAddMemberGroup = async (idgr, listMember) => {
         try {
@@ -137,6 +143,10 @@ const ListMemberGroup = () => {
         return friendName.toLowerCase().includes(searchTerm.toLowerCase());
     });
     // console.log(listMember)
+    const filteredMembers = listMember?.filter((member) => {
+        const memberName = member?.firstName + ' ' + member?.lastName;
+        return memberName.toLowerCase().includes(searchTermMember.toLowerCase());
+    });
     return (
         <>
             <div className="flex flex-col">
@@ -163,21 +173,42 @@ const ListMemberGroup = () => {
                         }
 
                     </button>
+
                     {
-                        showListMember && <div className="px-4 mt-1 mb-2 max-h-96 overflow-y-auto custom-scroll">
-                            {
-                                listMember?.map((member, index) => (
-                                    <a href={`/user/${member._id}`}>
-                                        <button className="flex flex-row w-full items-center hover:bg-gray-300 rounded-md p-2">
-                                            <CardFriendAddGroup key={member?._id} iduser={member?._id} />
-                                        </button>
+                        showListMember && (
+                            <>
+                                <div className=" border-b flex justify-between items-center h-[56px] px-3">
+                                    <a className=" text-gray-400 z-10 pl-2" style={{ marginRight: '-26px' }}>
+                                        <MagnifyingGlassIcon className="h-4 w-4 fill-black" />
                                     </a>
+                                    <input
+                                        type="text"
+                                        className="w-full rounded-3xl border border-gray-300 pr-8 pl-9 py-2 text-black bg-white focus:outline-none"
+                                        placeholder="Tìm kiếm..."
+                                        value={searchTermMember}
+                                        onChange={handleInputChangeMember}
+                                    />
 
-                                ))
-                            }
-                        </div>
+                                </div>
+                                <div className="px-4 mt-1 mb-2 max-h-96 overflow-y-auto custom-scroll">
+                                    {
+                                        filteredMembers
+                                            ?.sort((a, b) => {
+                                                // Check if a or b is the owner, move the owner to the top
+                                                if (a._id === inboxData?.data?.group?.owner._id) return -1; // Owner comes first
+                                                if (b._id === inboxData?.data?.group?.owner._id) return 1;  // Owner comes first
+                                                return 0; // If neither is the owner, keep their original order
+                                            })
+                                            .map((member, index) => (
+                                                <button key={member?._id} className="flex flex-row w-full items-center hover:bg-gray-300 rounded-md p-2">
+                                                    <CardFriendGroup iduser={member?._id} datagroup={inboxData?.data?.group} />
+                                                </button>
+                                            ))
+                                    }
+                                </div>
+                            </>
+                        )
                     }
-
                 </div>
                 <Modal
                     open={openModal}

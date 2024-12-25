@@ -7,7 +7,7 @@ import { useContext } from 'react';
 import { useUser } from '../../../service/UserContext';
 import Loading from '../../../components/Loading';
 const CardUserList = ({ userdata: initialUserData }) => {
-    const { userContext } = useUser();
+
     const [userdata, setUserdata] = useState(initialUserData);
     const [seding, setSending] = useState(true)
     // WebSocket message handler

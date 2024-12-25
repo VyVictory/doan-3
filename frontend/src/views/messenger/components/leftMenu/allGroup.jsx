@@ -13,7 +13,6 @@ const AllGroup = () => {
     const [groups, setGroups] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
-    const [filteredFriends, setFilteredFriends] = useState([]);
     const [filteredGroups, setFilteredGroups] = useState([]);
     const navigate = useNavigate();
     const [openModal, setOpenModal] = useState(false); // Modal state
@@ -101,17 +100,22 @@ const AllGroup = () => {
                     <div className="overflow-y-scroll flex-1 custom-scroll">
                         <ul className="flex flex-col ">
                             {filteredGroups.length === 0 ? (
-                               <li className="px-2 py-4 text-center text-gray-400">Không có bạn bè nào.</li>
+                                <li className="px-2 py-4 text-center text-gray-400">Không có bạn bè nào.</li>
                             ) : (
                                 filteredGroups.map((group, index) => (
                                     <li key={index} className="hover:bg-blue-300 px-2 py-3 rounded-md shadow-sm">
-                                        <a href={`/messenger/group/?idgroup=${group?._id}`}>
+                                        <button
+                                            onClick={() =>
+                                                navigate(`group/?idgroup=${group?._id}`)
+                                            }
+                                            // href={`/messenger/group/?idgroup=${group?._id}`}
+                                        >
                                             <button
                                                 className="flex items-center w-full"
                                             >
                                                 <GroupCard group={group} />
                                             </button>
-                                        </a>
+                                        </button>
 
                                     </li>
 

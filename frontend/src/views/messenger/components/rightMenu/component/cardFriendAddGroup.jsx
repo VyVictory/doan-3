@@ -2,9 +2,15 @@ import { useState, useEffect } from "react";
 import user from "../../../../../service/user"; // Ensure you import the correct service or API client
 import imgUser from '../../../../../img/user.png'
 import Loading from "../../../../../components/Loading";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for routing
+
 const CardFriendAddGroup = ({ iduser }) => {
     const [userdata, setUserdata] = useState({});
     const [loading, setLoading] = useState(true);
+    const [anchorEl, setAnchorEl] = useState(null);
+
+    // Initialize the navigate function
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchdata = async () => {
@@ -25,34 +31,41 @@ const CardFriendAddGroup = ({ iduser }) => {
 
         fetchdata();
     }, [iduser]); // Run effect when iduser changes
-    // console.log(userdata)
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleMessageClick = () => {
+        // Navigate to the messenger inbox with the user ID in the query params
+        navigate(`/messenger/inbox/?iduser=${userdata._id}`);
+        handleClose(); // Close the menu after clicking
+    };
+
     if (loading) {
-        return (
-            <Loading />
-        );
+        return <Loading />;
     }
 
     return (
-        <>
-            <img
-                src={
-                    userdata?.avatar
-                        ? userdata.avatar
-                        : imgUser
-                }
-                alt="user" className="w-12 h-12 rounded-full mr-2 border-white border-2" />
-            <div className="text-start line-clamp-3 ">
-                <h3
-                    className="font-semibold truncate w-[110px] overflow-hidden whitespace-nowrap"
-                    title={userdata ? `${userdata.lastName || ''} ${userdata.firstName || ''}`.trim() : "No Name"}
-                >
-                    {userdata
-                        ? `${userdata.lastName || ''} ${userdata.firstName || ''}`.trim()
-                        : "No Name"}
-                </h3>
-
+        <div className="w-full flex flex-row">
+            <div className="w-full flex items-center space-x-3">
+                <a href={`/user/${userdata._id}`}>
+                    <img
+                        src={userdata?.avatar ? userdata.avatar : imgUser}
+                        alt="user"
+                        className="w-12 h-12 rounded-full mr-2 border-white border-2"
+                    />
+                </a>
+                <div className="text-start line-clamp-3">
+                    <h3
+                        className="font-semibold truncate w-[110px] overflow-hidden whitespace-nowrap"
+                        title={userdata ? `${userdata.lastName || ''} ${userdata.firstName || ''}`.trim() : "No Name"}
+                    >
+                        {userdata ? `${userdata.lastName || ''} ${userdata.firstName || ''}`.trim() : "No Name"}
+                    </h3>
+                </div>
             </div>
-        </>
+        </div>
     );
 };
 

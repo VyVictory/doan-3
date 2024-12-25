@@ -21,8 +21,6 @@ import group from '../../../../service/group';
 import { io } from 'socket.io-client';
 import authToken from '../../../../components/authToken';
 import apiuri from '../../../../service/apiuri';
-import FilePreview from '../../../../components/FilePreview';
-import FileViewer from '../../../../components/fileViewer';
 import FileViewChane from '../../../../components/fileViewChane';
 
 
@@ -40,10 +38,8 @@ const MessengerInbox = () => {
     const [message, setMessage] = useState('');
     const [messengerdata, setMessengerdata] = useState([]);
     const [dataGroup, setDataGroup] = useState([]);
-    const [error, setError] = useState(null);
     const messagesEndRef = useRef(null);
-    const [socket, setSocket] = useState(null); // Trạng thái kết nối socket
-    const userCache = {}; // Cache thông tin người dùng
+    const [socket, setSocket] = useState(null);
 
 
 
@@ -53,6 +49,12 @@ const MessengerInbox = () => {
     const [previewFull, setPreviewFull] = useState(null);
     const [token, setToken] = useState(null);
     const { setShowZom } = useUser();
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        setIdgroup(queryParams.get('idgroup'));
+        setDataGroup([])
+        setLoadingMess(false)
+    }, [location]);
     const openModal = (file) => {
         setShowZom({ file: file, show: true });
     };
@@ -60,12 +62,8 @@ const MessengerInbox = () => {
     const [messageToRevoke, setMessageToRevoke] = useState(null); // Store message to be revoked
 
     const [hoveredMessageId, setHoveredMessageId] = useState(null);
-    useEffect(() => {
-        const queryParams = new URLSearchParams(location.search);
 
-        setIdgroup(queryParams.get('idgroup'));
 
-    }, [location]);
     const handleRevokedClick = async (messageId) => {
         setMessageToRevoke(messageId); // Store the message ID to revoke
         setOpenDialog(true); // Open the confirmation dialog
@@ -109,34 +107,6 @@ const MessengerInbox = () => {
     useEffect(() => {
         scrollToBottom(); // Tự động cuộn mỗi khi dữ liệu tin nhắn thay đổi
     }, [messengerdata, scrollToBottom]);
-
-
-
-    // useEffect(() => {
-    //     if (!iduser || iduser === '') {
-    //         setError('User ID is missing or invalid.');
-    //         setLoading(false);
-    //         return;
-    //     }
-    //     const fetchUserData = async () => {
-    //         try {
-    //             const res = await user.getProfileUser(iduser);
-    //             if (res.success) {
-    //                 setUserdata(res.data);
-    //             } else {
-    //                 setError('User does not exist.');
-    //             }
-    //         } catch (error) {
-    //             console.error('Error fetching user data:', error);
-    //             setError('An error occurred while fetching user data.');
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-    //     fetchUserData();
-
-    // }, [iduser]);
-    //file
     const handleFileChange = (event) => {
         const selectedFile = event.target.files[0];
         if (selectedFile) {
@@ -168,7 +138,11 @@ const MessengerInbox = () => {
         fetchMessengerData();
         setContent('group');
         setLoading(false);
-        setLoadingMess(false)
+
+        setTimeout(() => {
+            setLoadingHeader(false)
+            setLoadingMess(true);
+        }, 1000);
     }, [idGroup]);
 
 
@@ -184,7 +158,7 @@ const MessengerInbox = () => {
             data: dataGroup,
             messenger: messengerdata,
         };
-        setLoadingHeader(false)
+
         setInboxData(inboxUpdate);
     }, [messengerdata, dataGroup, setInboxData]);
 
@@ -313,15 +287,15 @@ const MessengerInbox = () => {
         return acc;
     }, {});
 
-    console.log(groupedMessages)
     return (
         <div className="flex flex-col h-full ">
             <div className="p-2 flex border-b h-14 bg-white shadow-sm">
                 {
-                    loadingHeader ?
+                    loadingHeader === true ? (
                         <div className='w-full flex flex-row items-center'>
                             <Loading />
-                        </div> :
+                        </div>
+                    ) : (
                         <div className='w-full flex flex-row items-center'>
                             <button >
                                 {/* onClick={() => window.location.href = `/user/${userdata?._id}`} */}
@@ -331,10 +305,14 @@ const MessengerInbox = () => {
                                     alt="User Avatar"
                                 />
                             </button>
-                            <h3 className="font-semibold text-nowrap max-w-sm overflow-hidden text-ellipsis">
-                                {`${dataGroup?.group?.name ? dataGroup.group.name : 'Group No Name'}`}
+                            <h3 className="font-semibold text-nowrap max-w-sm overflow-hidden text-ellipsis flex items-center justify-center">
+                                {dataGroup?.group?.name ? dataGroup?.group?.name : <Loading />}
                             </h3>
                         </div>
+                    )
+
+
+
 
                 }
 
@@ -348,10 +326,9 @@ const MessengerInbox = () => {
                     </button>
                 </div>
             </div>
-
             <div className="overflow-y-scroll h-full p-4 pt-1 bg-gray-100">
                 {
-                    loadingMess == true ?
+                    loadingMess == false ?
                         <span className="loading loading-spinner loading-lg">Đang tải tin nhắn</span>
                         :
                         Object.entries(groupedMessages).map(([date, messages]) => (

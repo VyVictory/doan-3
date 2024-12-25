@@ -18,6 +18,7 @@ import Loading from '../../../../components/Loading';
 import { MessengerContext } from '../../layoutMessenger';
 import NotificationCss from '../../../../module/cssNotification/NotificationCss';
 import FileViewChane from '../../../../components/fileViewChane';
+
 const MessengerInbox = () => {
     const { userContext } = useUser();
     const { RightShow, handleHiddenRight, setContent, setInboxData } = useContext(MessengerContext);
@@ -26,6 +27,7 @@ const MessengerInbox = () => {
     const [iduser, setIdUser] = useState(null);
     const [userdata, setUserdata] = useState({});
     const [loading, setLoading] = useState(true);
+    const [loadingHeaer, setLoadingHeader] = useState(true);
     const [sending, setSending] = useState(false); // Added sending state
     const [message, setMessage] = useState('');
     const [messengerdata, setMessengerdata] = useState([]);
@@ -41,6 +43,12 @@ const MessengerInbox = () => {
     const [messageToRevoke, setMessageToRevoke] = useState(null); // Store message to be revoked
     const { setShowZom } = useUser();
     const [socket, setSocket] = useState(null); // Trạng thái kết nối socket
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const userId = queryParams.get('iduser');
+        setIdUser(userId);
+        setMessengerdata([])
+    }, [location.search]);
 
     const openModal = (file) => {
         setShowZom({ file: file, show: true });
@@ -86,12 +94,23 @@ const MessengerInbox = () => {
         scrollToBottom();
     }, [messengerdata]);
 
-    useEffect(() => {
-        const queryParams = new URLSearchParams(location.search);
-        const userId = queryParams.get('iduser');
-        setIdUser(userId);
-    }, [location.search]);
 
+    useEffect(() => {
+        if (iduser === '' || !iduser) return;
+        const fetchMessengerData = async () => {
+            try {
+                const res = await messenger.getListMessengerByUser(iduser);
+                if (res.success) {
+                    // console.log('next')
+                    // console.log(res.data)
+                    setMessengerdata(res.data);
+                }
+            } catch (error) {
+                console.error('Error fetching messenger data:', error);
+            }
+        };
+        fetchMessengerData();
+    }, [iduser]);
     useEffect(() => {
         if (!iduser || iduser === '') {
             setError('User ID is missing or invalid.');
@@ -113,8 +132,10 @@ const MessengerInbox = () => {
                 setLoading(false);
             }
         };
+
         fetchUserData();
-        setContent('inbox')
+        setContent('inbox');
+        setLoadingHeader(false)
     }, [iduser]);
     //file
     const handleFileChange = (event) => {
@@ -130,22 +151,7 @@ const MessengerInbox = () => {
         setPreview(null);
         setPreviewFull(null)
     };
-    useEffect(() => {
-        if (iduser === '' || !iduser) return;
-        const fetchMessengerData = async () => {
-            try {
-                const res = await messenger.getListMessengerByUser(iduser);
-                if (res.success) {
-                    // console.log('next')
-                    // console.log(res.data)
-                    setMessengerdata(res.data);
-                }
-            } catch (error) {
-                console.error('Error fetching messenger data:', error);
-            }
-        };
-        fetchMessengerData();
-    }, [iduser]);
+
 
     const onMessageReceived = useCallback(
         (newMessage) => {
@@ -249,16 +255,22 @@ const MessengerInbox = () => {
         <div className="flex flex-col h-full ">
             <div className="p-2 flex border-b h-14 bg-white shadow-sm">
                 <div className='w-full flex flex-row items-center'>
-                    <button onClick={() => window.location.href = `/user/${userdata?._id}`}>
-                        <img
-                            className="w-10 h-10 rounded-full mr-2"
-                            src={userdata?.avatar || imgUser}
-                            alt="User Avatar"
-                        />
-                    </button>
-                    <h3 className="font-semibold text-nowrap max-w-sm overflow-hidden text-ellipsis">
-                        {`${userdata.lastName || ''} ${userdata.firstName || ''}`.trim()}
-                    </h3>
+                    {
+                        loadingHeaer ? <Loading /> :
+                            <>
+                                <button onClick={() => window.location.href = `/user/${userdata?._id}`}>
+                                    <img
+                                        className="w-10 h-10 rounded-full mr-2"
+                                        src={userdata?.avatar || imgUser}
+                                        alt="User Avatar"
+                                    />
+                                </button>
+                                <h3 className="font-semibold text-nowrap max-w-sm overflow-hidden text-ellipsis">
+                                    {`${userdata.lastName || ''} ${userdata.firstName || ''}`.trim()}
+                                </h3>
+                            </>
+                    }
+
 
                 </div>
                 <div className=" flex justify-end">
