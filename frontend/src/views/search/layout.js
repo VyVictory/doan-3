@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 
 export default function LayoutSearch() {
     const handChaneSearch = () => {
@@ -11,15 +11,15 @@ export default function LayoutSearch() {
                 </div>
                 <div className="flex flex-col w-full pt-3">
                     <strong className="pb-2">Bộc lọc</strong>
-                    <button className="w-full p-3 pl-5 rounded-2xl text-start hover:bg-blue-100 ">
+                    <Link to={`/search/all`} className="w-full p-3 pl-5 rounded-2xl text-start hover:bg-blue-100 ">
                         <strong>Tất cả</strong>
-                    </button>
-                    <button className="w-full p-3 pl-5 rounded-2xl text-start hover:bg-blue-100">
+                    </Link>
+                    <Link to={`/search/content`} className="w-full p-3 pl-5 rounded-2xl text-start hover:bg-blue-100">
                         <strong>Bài viết</strong>
-                    </button>
-                    <button className="w-full p-3 pl-5 rounded-2xl text-start hover:bg-blue-100">
+                    </Link>
+                    <Link to={`/search/user`} className="w-full p-3 pl-5 rounded-2xl text-start hover:bg-blue-100">
                         <strong>Mọi người</strong>
-                    </button>
+                    </Link>
                 </div>
             </div>
             <div className="ml-[20%] w-[80%] sm:px-20 md:px-40 lg:px-60">

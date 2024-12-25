@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import user from '../../service/user';
 import { useUser } from '../../service/UserContext';
 import { getHomeFeed } from '../../service/PostService';
+import CardPost from './CardPost';
 export default function Searchpage() {
 
     const { userContext, setUserContext } = useUser();
@@ -13,21 +14,14 @@ export default function Searchpage() {
         const fetchdata = async () => {
             const res = await user.getAllUser();
             const resPost = await getHomeFeed();
-            if (res.success == true) {
-                setUsers(res.data)
-                console.log(res)
-            } else {
-
-            }
-            if (resPost.success == true) {
-                setPost(resPost.data)
-            }
+            setUsers(res.data);
+            setPost(resPost.data);
         }
         fetchdata()
     }, []);
-    // console.log(users)
+    console.log(post)
     return (
-        <div className="flex justify-center pt-3 items-center w-full">
+        <div className=" justify-center pt-3 items-center w-full">
             <div className='px-4 py-3 shadow-md shadow-gray-300 w-full mt-5'>
                 <strong className='text-lg'>Mọi người</strong>
                 {
@@ -39,9 +33,8 @@ export default function Searchpage() {
             </div>
             <div className='px-4 py-3 shadow-md shadow-gray-300 w-full mt-5'>
                 <strong className='text-lg'>Bài đăng</strong>
-                {post.map((post) => (
-                    <div>
-                    </div>
+                {post.map((e) => (
+                    <CardPost post={e} />
                 ))}
             </div>
         </div>
