@@ -10,7 +10,8 @@ export default function ForgotPass() {
     const [newPassword, setNewPassword] = useState('');
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [verifyButtonVisible, setVerifyButtonVisible] = useState(true);
-
+    const [confirmNewPassword, setConfirmNewPassword] = useState('');
+    const [errors, setErrors] = useState({});
     const handleChange = (e) => setEmail(e.target.value);
     const handleOtpChange = (e) => setOtp(e.target.value);
     const handlePasswordChange = (e) => setNewPassword(e.target.value);
@@ -25,6 +26,39 @@ export default function ForgotPass() {
             toast.error('Email chưa tồn tại', NotificationCss.Fail);
         }
     };
+    //validate
+    const validateField = (name, value) => {
+        let newErrors = { ...errors };
+        switch (name) {
+            case "currentPassword":
+                if (value.length < 3) {
+                    newErrors.currentPassword = "Mật khẩu hiện tại phải dài ít nhất 3 ký tự.";
+                } else {
+                    delete newErrors.currentPassword;
+                }
+                break;
+            case "newPassword":
+                const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+                if (!passwordRegex.test(value)) {
+                    newErrors.newPassword =
+                        "Mật khẩu phải dài ít nhất 8 ký tự và bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt.";
+                } else {
+                    delete newErrors.newPassword;
+                }
+                break;
+            case "confirmNewPassword":
+                if (value !== newPassword) {
+                    newErrors.confirmNewPassword = "Mật khẩu xác nhận không khớp.";
+                } else {
+                    delete newErrors.confirmNewPassword;
+                }
+                break;
+            default:
+                break;
+        }
+
+        setErrors(newErrors);
+    };
 
     const handleVerify = async (e) => {
         e.preventDefault();
@@ -38,12 +72,23 @@ export default function ForgotPass() {
         }
     };
 
+
+    const handleConfirmPasswordChange = (e) => {
+        setConfirmNewPassword(e.target.value);
+    };
+
     const handleReset = async (e) => {
         e.preventDefault();
+        if (confirmNewPassword !== newPassword) {
+            setErrors({ confirmNewPassword: "Mật khẩu xác nhận không khớp." });
+            return;
+        }
         const response = await resetPassword(email, otp, newPassword);
         if (response) {
             toast.success('Mật khẩu đã được thay đổi', NotificationCss.Success);
-            window.location.href = '/login';
+            setTimeout(() => {
+                window.location.href = '/login';
+            }, 2000);
         } else {
             toast.error('Có lỗi vui lòng thử lại', NotificationCss.Fail);
         }
@@ -122,9 +167,23 @@ export default function ForgotPass() {
                                 type="password"
                                 value={newPassword}
                                 onChange={handlePasswordChange}
-                                className="w-full px-4 py-3 text-gray-900 placeholder-gray-400 bg-gray-100 rounded-lg shadow-inner focus:ring-2 focus:ring-green-500 focus:outline-none"
+                                className="w-full mb-2 px-4 py-3 text-gray-900 placeholder-gray-400 bg-gray-100 rounded-lg shadow-inner focus:ring-2 focus:ring-green-500 focus:outline-none"
                                 placeholder="Nhập mật khẩu mới"
                             />
+                            <label htmlFor="confirmNewPassword" className="block text-sm font-semibold text-gray-700 mb-2">
+                                Xác nhận mật khẩu mới</label>
+                            <input
+                                type="password"
+                                name="confirmNewPassword"
+                                value={confirmNewPassword}
+                                onChange={handleConfirmPasswordChange}
+                                required
+                                placeholder="Nhập lại mật khẩu mới"
+                                className="w-full px-4 py-3 text-gray-900 placeholder-gray-400 bg-gray-100 rounded-lg shadow-inner focus:ring-2 focus:ring-green-500 focus:outline-none"
+                            />
+                            {errors.confirmNewPassword && (
+                                <p className="mt-1 text-sm text-red-500">{errors.confirmNewPassword}</p>
+                            )}
                             <button
                                 onClick={handleReset}
                                 className="w-full py-3 mt-4 text-white font-semibold bg-gradient-to-r from-green-500 to-teal-500 rounded-lg shadow-lg hover:from-green-600 hover:to-teal-600 focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-300"
