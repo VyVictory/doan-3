@@ -5,20 +5,29 @@ import user from '../../service/user';
 import { useUser } from '../../service/UserContext';
 import { getHomeFeed } from '../../service/PostService';
 import CardPost from './CardPost';
+import Loading from '../../components/Loading';
 export default function Searchpage() {
 
     const { userContext, setUserContext } = useUser();
     const [users, setUsers] = useState([]);
     const [post, setPost] = useState([]);
+    const [loading, setLoading] = useState(true);
+
     useEffect(() => {
         const fetchdata = async () => {
+            setLoading(true);
             const res = await user.getAllUser();
             const resPost = await getHomeFeed();
             setUsers(res.data);
             setPost(resPost.data);
+            setLoading(false);
         }
         fetchdata()
     }, []);
+
+    if (loading) {
+        return <p className='text-center mt-5'><Loading /></p>;
+    }
     console.log(post)
     return (
         <div className=" justify-center pt-3 items-center w-full">

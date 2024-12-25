@@ -15,3 +15,16 @@ export async function getSearchResult(search) {
         console.log(error)
     }
 }
+
+export async function getSearchUser(search) {
+    try {
+        const request = await axios.get(`${url}/user/getUserByName/${search}`, {
+            headers: {
+                Authorization: `Bearer ${authToken.getToken()}`
+            }
+        })
+        return request
+    } catch (error) {
+        console.log(error)
+    }
+}

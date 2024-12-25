@@ -28,6 +28,7 @@ import ChangePassPage from "../auth/ChangePassPage.jsx";
 import UpdatePost from "../views/post/components/UpdatePost.jsx";
 import ForgotPass from "../auth/ForgotPass.jsx";
 import PostSearch from "../views/search/postSearch.jsx";
+import PeopleSearch from "../views/search/peopleSearch.jsx";
 
 function routers() {
     return (
@@ -65,6 +66,7 @@ function routers() {
                     <Route path="/search" element={<LayoutSearch />}>
                         <Route path="all" element={<Searchpage />} />
                         <Route path="content" element={<PostSearch />} />
+                        <Route path="user" element={<PeopleSearch />} />
                     </Route>
                 </Route>
                 {/* Redirect to login if not authenticated */}
