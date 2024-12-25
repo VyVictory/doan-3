@@ -29,6 +29,7 @@ import UpdatePost from "../views/post/components/UpdatePost.jsx";
 import ForgotPass from "../auth/ForgotPass.jsx";
 import PostSearch from "../views/search/postSearch.jsx";
 import PeopleSearch from "../views/search/peopleSearch.jsx";
+import Fixconnectsocket from "./fixconnectsocket.jsx";
 
 function routers() {
     return (
@@ -37,6 +38,7 @@ function routers() {
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Home />} />
                     <Route path="/changepass" element={<ChangePassPage />} />
+                    <Route path="/fixconnectsocket" element={<Fixconnectsocket />} />
                     <Route path="/updatepost/:id" element={<UpdatePost />} />
                     <Route path="friends" element={<Myfriend />} >
                         <Route path="" element={<FriendInvitation />} />

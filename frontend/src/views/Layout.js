@@ -51,7 +51,7 @@ export default function Layout() {
         socket.on("newmessage", (newMessage) => {
             if ((String(newMessage.sender._id) !== String(userCurrent._id)) && newMessage.sender._id && userCurrent._id) {
                 toast.info(
-                    <div>
+                    <a href={`/messenger/inbox/?iduser=${newMessage.sender._id}`}>
                         <div className="w-full flex flex-row">
                             <div className="w-full flex items-center space-x-3">
                                 <a>
@@ -77,7 +77,7 @@ export default function Layout() {
                         >
                             {newMessage ? newMessage.content : ''}
                         </div>
-                    </div>,
+                    </a>,
                     NotificationCss.Mess
                 );
             }
@@ -85,8 +85,9 @@ export default function Layout() {
 
         socket.on("newmessagetogroup", (newMessage) => {
             if ((String(newMessage.sender._id) !== String(userCurrent._id)) && newMessage.sender._id && userCurrent._id) {
+               
                 toast.info(
-                    <div>
+                    <a href={`/messenger/group/?idgroup=${String(newMessage.forGroup)}`}>
                         <div className="w-full flex flex-row">
                             <div className="w-full flex items-center space-x-3">
                                 <a>
@@ -112,7 +113,7 @@ export default function Layout() {
                         >
                             {newMessage ? newMessage.content : ''}
                         </div>
-                    </div>,
+                    </a>,
                     NotificationCss.Mess
                 );
             }

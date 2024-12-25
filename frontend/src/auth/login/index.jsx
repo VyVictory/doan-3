@@ -52,7 +52,7 @@ export default function Login() {
                 if (response.status === 201) {
                     authToken.setToken(response.data.accessToken); // Save the token
                     toast.success('Đăng nhập thành công! Chào mừng bạn trở lại.', NotificationCss.Success);
-                    setTimeout(() => navigate('/'), 2000); // Redirect after 2 seconds
+                    setTimeout(() => navigate('/fixconnectsocket'), 1000); // Redirect after 2 seconds
                 } else {
                     toast.error('Đăng nhập thất bại, vui lòng thử lại.', NotificationCss.Fail);
                 }
