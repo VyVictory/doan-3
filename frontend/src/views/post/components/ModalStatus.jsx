@@ -12,6 +12,7 @@ import clsx from 'clsx';
 import authToken from '../../../components/authToken';
 import { PhotoIcon } from '@heroicons/react/24/solid'
 import { Link, useNavigate } from 'react-router-dom'
+import Loading from '../../../components/Loading';
 const uri = Apiuri.Apiuri()
 
 export default function ModalStatus({ user }) {
@@ -63,7 +64,7 @@ export default function ModalStatus({ user }) {
             // setFormData((prevData) => ({ ...prevData, files: file }));
             setFilePreview(URL.createObjectURL(file));
         }
-        setFormData({ ...formData, img: file });
+        setFormData({ ...formData, files: file });
     };
     const handleVisibilityChange = (newVisibility, valuePrivacy) => {
         setVisibility(newVisibility); // Update the visibility state
@@ -99,9 +100,7 @@ export default function ModalStatus({ user }) {
         }
         const data = new FormData();
         data.append('content', formData.content || '');
-        if (!formData.files === null) {
-            data.append('files', formData.files);
-        }
+        data.append('files', formData.files || '');
         data.append('privacy', formData.privacy);
         try {
             setLoading(true);
@@ -127,12 +126,9 @@ export default function ModalStatus({ user }) {
             // Xử lý thành công (ví dụ: chuyển hướng sang trang khác)
         } catch (error) {
             console.error('Lỗi:', error.response ? error.response.data : error.message);
-        } finally {
-            setLoading(false);
         }
-
     }
-
+    console.log(formData)
     return (
         <dialog id="my_modal_1" className="modal">
 
@@ -268,7 +264,7 @@ export default function ModalStatus({ user }) {
 
                 </div>
                 <div className="modal-action">
-                    {loading ? <p>Loading...</p> :
+                    {loading ? <p><Loading /></p> :
                         <div className='flex gap-3'>
                             <form method="dialog">
                                 <button className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-150">Hủy đăng bài</button>
