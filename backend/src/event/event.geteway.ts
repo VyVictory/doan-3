@@ -14,16 +14,26 @@ import { CurrentUser } from 'src/user/decorator/currentUser.decorator';
 import { Types } from 'mongoose';
 
 @WebSocketGateway({
+
   cors: {
-    origin: ['http://localhost:3000', 'https://zafacook.netlify.app'],
+    origin: (origin, callback) => {
+      const allowedOrigins = ["http://localhost:3000", "https://zafacook.netlify.app"];
+
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST"],
     allowedHeaders: ["Authorization"],
   },
+  
 })
 export class EventGeteWay implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
 
-  private activeUsers = new Map<string, Set <string>>(); // clientId -> userId
+  private activeUsers = new Map<string, Set <string>>(); 
 
   constructor(
     private readonly authenticationSoket: AuththenticationSoket,
@@ -41,10 +51,10 @@ export class EventGeteWay implements OnGatewayInit, OnGatewayConnection, OnGatew
       if (!user) {
         throw new WsException('Unauthorized');
       }
-  
+      console.log('Connection Origin:', client.handshake.headers.origin);
       const userId = user._id.toString();
   
-      // Nếu userId chưa tồn tại trong activeUsers, khởi tạo Set mới
+
       if (!this.activeUsers.has(userId)) {
         this.activeUsers.set(userId, new Set());
       }
@@ -52,8 +62,8 @@ export class EventGeteWay implements OnGatewayInit, OnGatewayConnection, OnGatew
       // Thêm clientId vào Set của userId
       this.activeUsers.get(userId).add(client.id);
   
-      // Thêm client vào phòng dựa trên userId
-      client.join(userId);
+      // Ensure client joins a room matching notification format (e.g., user:userId)
+      client.join(`user:${userId}`);
   
       console.log(`User ${user.firstName} ${user.lastName} connected with client ID ${client.id}`);
       console.log(

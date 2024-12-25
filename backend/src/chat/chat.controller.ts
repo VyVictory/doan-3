@@ -52,13 +52,6 @@ export class ChatController {
 
     const message = await this.chatService.sendMessageToGroup(sendMessageDto, currentUserID, groupId, files?.files);
 
-    // const currentAuthor = {
-    //   _id: currentUser._id,
-    //   firstName: currentUser.firstName,
-    //   lastName: currentUser.lastName,
-    //   avatar: currentUser.avatar,
-    // }; 
-
     const messageSee = {
       ...sendMessageDto,
       mediaURL: message.mediaURL,
@@ -81,7 +74,7 @@ export class ChatController {
   
     groupParticipants.forEach((participant) => {
 
-      this.eventService.notificationToUser(participant._id.toString(), 'new message to group', messageSee);
+      this.eventService.notificationToUser(participant._id.toString(), 'newmessagetogroup', messageSee);
 
     });
 
@@ -142,6 +135,12 @@ export class ChatController {
 
     try {
       const checkTypeReceiver = userId;
+      if (Types.ObjectId.isValid(userId)) {
+
+      } else {
+
+      }
+
       const currentUserOBJ = new Types.ObjectId(currentUser._id.toString());
       const UserOBJ = new Types.ObjectId(userId.toString());
       const message = await this.chatService.sendMesageToUser(currentUserOBJ, UserOBJ, sendMessageDto, files?.files);
@@ -163,6 +162,12 @@ export class ChatController {
         mediaURL: message.mediaURL,
         author: currentAuthor,
         _id: message._id,
+        sender: {
+          _id: currentUser._id,
+          firstName: currentUser.firstName,
+          lastName: currentUser.lastName,
+          avatar: currentUser.avatar
+        },
       };
 
       notificationUsers.map(async (notif) => {
