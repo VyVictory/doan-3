@@ -18,10 +18,10 @@ export default function HeadOtherProfiles({ dataProfile }) {
                 setLoading(true);
                 const result = await friend.checkFriend(dataProfile._id);
                 if (result.success) {
+                    console.log(result.status)
                     setFriendStatus(result.status);
-                    console.log(result.data)
                 } else {
-                    setFriendStatus("no friend");
+
                 }
                 setLoading(false);
             }
@@ -34,7 +34,7 @@ export default function HeadOtherProfiles({ dataProfile }) {
             const rs = await friend.AddFriend(id);
             if (rs.success) {
                 toast.success(rs?.message ? rs.message : 'Đã gửi yêu cầu kết bạn', NotificationCss.Success);
-                setFriendStatus("pending");
+                setFriendStatus("waiting");
             } else {
                 toast.error(rs?.message ? rs.message : 'gửi yêu cầu kết bạn thất bại', NotificationCss.Fail);
             }
@@ -48,7 +48,7 @@ export default function HeadOtherProfiles({ dataProfile }) {
             const rs = await friend.cancelFriend(id);
             if (rs.success) {
                 toast.success(rs?.message ? rs.message : 'Đã hủy kết bạn', NotificationCss.Success);
-                setFriendStatus("pending");
+                setFriendStatus("no friend");
             } else {
                 toast.error(rs?.message ? rs.message : 'hủy kết bạn thất bại', NotificationCss.Fail);
             }
@@ -77,7 +77,6 @@ export default function HeadOtherProfiles({ dataProfile }) {
             </div>
         );
     }
-    console.log(friendStatus)
     return (
         <>
             <div className="">
@@ -106,7 +105,8 @@ export default function HeadOtherProfiles({ dataProfile }) {
                     <h1 className="font-bold text-2xl text-center mb-2">
                         {dataProfile?.lastName} {dataProfile?.firstName}
                     </h1>
-                    <div className="flex gap-2 justify-center">
+                    <div className="flex gap-2 justify-center mb-5">
+                        {/* {friendStatus} */}
                         {friendStatus === "friend" ? (
                             <button
                                 onClick={() => dataProfile ? handRemoveFriend(dataProfile._id) : ''}
@@ -115,13 +115,21 @@ export default function HeadOtherProfiles({ dataProfile }) {
                                 <UserMinusIcon className="size-5 fill-white" />
                                 Xóa bạn bè
                             </button>
+                        ) : friendStatus === "pending" ? (
+                            <button
+                                onClick={() => dataProfile ? handCancelRequest(dataProfile._id) : ''}
+                                className="bg-red-600 text-white p-2 rounded-full flex items-center gap-1"
+                            >
+                                <UserMinusIcon className="size-5 fill-white" />
+                                từ chối
+                            </button>
                         ) : friendStatus === "waiting" ? (
                             <button
                                 onClick={() => dataProfile ? handCancelRequest(dataProfile._id) : ''}
-                                className="bg-sky-600 text-white p-2 rounded-full flex items-center gap-1"
+                                className="bg-blue-600 text-white p-2 rounded-full flex items-center gap-1"
                             >
                                 <UserMinusIcon className="size-5 fill-white" />
-                                hủy lời mời
+                                Hủy yêu cầu
                             </button>
                         ) : (
 

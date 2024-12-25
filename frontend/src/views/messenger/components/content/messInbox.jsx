@@ -17,9 +17,7 @@ import useWebSocket from '../../../../service/webSocket/usewebsocket';
 import Loading from '../../../../components/Loading';
 import { MessengerContext } from '../../layoutMessenger';
 import NotificationCss from '../../../../module/cssNotification/NotificationCss';
-import FilePreview from '../../../../components/FilePreview';
-import socket from '../../../../service/webSocket/socket';
-
+import FileViewChane from '../../../../components/fileViewChane';
 const MessengerInbox = () => {
     const { userContext } = useUser();
     const { RightShow, handleHiddenRight, setContent, setInboxData } = useContext(MessengerContext);
@@ -36,6 +34,8 @@ const MessengerInbox = () => {
     //file
     const [file, setFile] = useState(null);
     const [preview, setPreview] = useState(null);
+    const [previewFull, setPreviewFull] = useState(null);
+
     const [hoveredMessageId, setHoveredMessageId] = useState(null);
     const [openDialog, setOpenDialog] = useState(false); // For controlling the confirmation dialog
     const [messageToRevoke, setMessageToRevoke] = useState(null); // Store message to be revoked
@@ -121,12 +121,14 @@ const MessengerInbox = () => {
         const selectedFile = event.target.files[0];
         if (selectedFile) {
             setFile(selectedFile);
+            setPreviewFull(selectedFile); // Tạo URL preview cho ảnh
             setPreview(URL.createObjectURL(selectedFile)); // Tạo URL preview cho ảnh
         }
     };
     const handleRemoveFile = () => {
         setFile(null);
         setPreview(null);
+        setPreviewFull(null)
     };
     useEffect(() => {
         if (iduser === '' || !iduser) return;
@@ -372,18 +374,18 @@ const MessengerInbox = () => {
                         preview &&
                         <Box sx={{ position: 'relative', display: 'inline-block' }}>
                             <div
-                                alt="Preview"
-                                style={{
-                                    maxWidth: '200px',
-                                    maxHeight: '60px',
-                                    borderRadius: '8px',
-                                    border: '1px solid #ddd',
-                                }}
                                 onClick={() => {
                                     openModal(preview)
                                 }}
+                                style={{
+                                    maxWidth: '200px',
+                                    maxHeight: '1100px',
+                                    borderRadius: '8px',
+                                    border: '1px solid #ddd',
+
+                                }}
                             >
-                                <FilePreview preview={preview} />
+                                <FileViewChane file={previewFull} />
                             </div>
                             {/* <img
                                 src={preview}

@@ -21,6 +21,9 @@ import group from '../../../../service/group';
 import { io } from 'socket.io-client';
 import authToken from '../../../../components/authToken';
 import apiuri from '../../../../service/apiuri';
+import FilePreview from '../../../../components/FilePreview';
+import FileViewer from '../../../../components/fileViewer';
+import FileViewChane from '../../../../components/fileViewChane';
 
 
 const MessengerInbox = () => {
@@ -47,6 +50,7 @@ const MessengerInbox = () => {
     //file
     const [file, setFile] = useState(null);
     const [preview, setPreview] = useState(null);
+    const [previewFull, setPreviewFull] = useState(null);
     const [token, setToken] = useState(null);
     const { setShowZom } = useUser();
     const openModal = (file) => {
@@ -74,7 +78,7 @@ const MessengerInbox = () => {
             if (res.success) {
                 setMessengerdata((prevMessages) =>
                     prevMessages.map((message) =>
-                        message._id === messageToRevoke ? { ...message, content: null, mediaURL:null } : message
+                        message._id === messageToRevoke ? { ...message, content: null, mediaURL: null } : message
                     )
                 );
                 toast.success(res?.message || 'Bạn vừa thu hồi tin nhắn thành công', NotificationCss.Success);
@@ -137,12 +141,14 @@ const MessengerInbox = () => {
         const selectedFile = event.target.files[0];
         if (selectedFile) {
             setFile(selectedFile);
+            setPreviewFull(selectedFile); // Tạo URL preview cho ảnh
             setPreview(URL.createObjectURL(selectedFile)); // Tạo URL preview cho ảnh
         }
     };
     const handleRemoveFile = () => {
         setFile(null);
         setPreview(null);
+        setPreviewFull(null)
     };
 
     useEffect(() => {
@@ -466,19 +472,21 @@ const MessengerInbox = () => {
                     {
                         preview &&
                         <Box sx={{ position: 'relative', display: 'inline-block' }}>
-                            <img
-                                src={preview}
-                                alt="Preview"
-                                style={{
-                                    maxWidth: '200px',
-                                    maxHeight: '60px',
-                                    borderRadius: '8px',
-                                    border: '1px solid #ddd',
-                                }}
+
+                            <div
                                 onClick={() => {
                                     openModal(preview)
                                 }}
-                            />
+                                style={{
+                                    maxWidth: '200px',
+                                    maxHeight: '1100px',
+                                    borderRadius: '8px',
+                                    border: '1px solid #ddd',
+
+                                }}
+                            >
+                                <FileViewChane file={previewFull} />
+                            </div>
                             {/* Nút xóa file */}
                             <IconButton
                                 onClick={handleRemoveFile}
