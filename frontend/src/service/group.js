@@ -4,7 +4,7 @@ import Apiuri from './apiuri';
 const url = Apiuri.Apiuri()
 
 const createGroup = async (groupName, members) => {
-    if (groupName.length > 20) {
+    if (groupName.length > 50) {
         return { success: false, data: 'Tên dài quá nhập lại đi' };
     } else {
         try {
