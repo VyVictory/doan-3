@@ -162,6 +162,7 @@ export class ChatController {
         mediaURL: message.mediaURL,
         author: currentAuthor,
         _id: message._id,
+        
         sender: {
           _id: currentUser._id,
           firstName: currentUser.firstName,

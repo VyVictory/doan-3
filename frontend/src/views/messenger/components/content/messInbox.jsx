@@ -213,14 +213,6 @@ const MessengerInbox = () => {
             setSending(false); // Reset sending state
         }
     }, [iduser, message, sending, file]);
-    const handleRevokedMessenger = async (id) => {
-        try {
-            const res = await messenger.revokedMesage(id);
-
-        } catch (error) {
-            console.error('Error sending message:', error);
-        }
-    }
     // revokedMesage
     const handleKeyDown = useCallback(
         (e) => {

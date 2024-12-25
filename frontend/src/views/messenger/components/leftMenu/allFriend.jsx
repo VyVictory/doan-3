@@ -61,7 +61,6 @@ const AllFriend = () => {
             ) : (
                 <>
                     {/* Search Input */}
-
                     <div className=" border-b flex justify-between items-center h-[56px]">
                         <input
                             type="text"
@@ -79,7 +78,7 @@ const AllFriend = () => {
                     <div className="overflow-y-scroll flex-1 custom-scroll">
                         <ul className="flex flex-col ">
                             {filteredFriends.length === 0 ? (
-                                <li className="px-2 py-4 text-center text-white">Không có bạn bè nào phù hợp với tìm kiếm.</li>
+                                <li className="px-2 py-4 text-center text-gray-400">Không có bạn bè nào.</li>
                             ) : (
                                 filteredFriends.map((friend, index) => (
                                     <li key={index} className="hover:bg-blue-300 px-2 py-3 rounded-md shadow-sm">

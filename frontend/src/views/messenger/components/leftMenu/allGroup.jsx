@@ -101,7 +101,7 @@ const AllGroup = () => {
                     <div className="overflow-y-scroll flex-1 custom-scroll">
                         <ul className="flex flex-col ">
                             {filteredGroups.length === 0 ? (
-                                <li className="px-2 py-4 text-center text-white">Không có bạn bè nào phù hợp với tìm kiếm.</li>
+                               <li className="px-2 py-4 text-center text-gray-400">Không có bạn bè nào.</li>
                             ) : (
                                 filteredGroups.map((group, index) => (
                                     <li key={index} className="hover:bg-blue-300 px-2 py-3 rounded-md shadow-sm">

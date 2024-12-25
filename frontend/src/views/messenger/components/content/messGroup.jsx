@@ -28,7 +28,7 @@ const MessengerInbox = () => {
     const { RightShow, handleHiddenRight, setContent, setInboxData } = useContext(MessengerContext);
     const location = useLocation();
     const [textareaHeight, setTextareaHeight] = useState(40);
-    const [idGroup, setIdUser] = useState(null);
+    const [idGroup, setIdgroup] = useState(null);
     // const [userdata, setUserdata] = useState({});
     const [loading, setLoading] = useState(true);
     const [loadingHeader, setLoadingHeader] = useState(true);
@@ -59,7 +59,7 @@ const MessengerInbox = () => {
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
 
-        setIdUser(queryParams.get('idgroup'));
+        setIdgroup(queryParams.get('idgroup'));
 
     }, [location]);
     const handleRevokedClick = async (messageId) => {
@@ -193,18 +193,34 @@ const MessengerInbox = () => {
         textarea.style.height = `${textarea.scrollHeight}px`;
         setTextareaHeight(textarea.scrollHeight);
     }, []);
-    const onMessageReceived = async (newMessage) => {
-        console.log("Processing new message:", newMessage);
-        if (!newMessage.author && newMessage.authorId) {
-            newMessage.author = await fetchAuthor(newMessage.authorId);
-        }
-        setMessengerdata((prevMessages) => [...prevMessages, newMessage]);
-    };
-    
+    const onMessageReceived = useCallback(
+        (newMessage) => {
+            console.log(newMessage.forGroup)
+            console.log(idGroup )
+            if (newMessage.forGroup == idGroup) {
+              
+                if (
+                    newMessage
+                )
+                    if (!newMessage.receiver) {
+                        newMessage.receiver = userContext._id;
+                    }
+                if (!newMessage.createdAt) {
+                    newMessage.createdAt = new Date().toISOString();
+                }
+
+                if (newMessage.receiver === userContext._id && newMessage.sender !== userContext._id) {
+                    setMessengerdata((prevMessages) => [...prevMessages, newMessage]);
+                }
+            }
+        },
+        [userContext._id, socket, idGroup]
+    );
+    useWebSocket(onMessageReceived);
 
     const handleSendMessenger = useCallback(async () => {
         if ((!message.trim() && !file) || sending) return;
-    
+
         setSending(true);
         try {
             const res = await group.sendMessGroup(idGroup, message.trim(), file);
@@ -223,7 +239,7 @@ const MessengerInbox = () => {
             setSending(false);
         }
     }, [idGroup, message, sending, file]);
-    
+
 
     useEffect(() => {
         if (idGroup && token) {
@@ -233,26 +249,26 @@ const MessengerInbox = () => {
                     Authorization: `Bearer ${authToken.getToken()}`,
                 },
             });
-    
+
             socketConnection.on("connect", () => {
                 console.log("Connected to WebSocket with ID:", socketConnection.id);
                 socketConnection.emit("joinGroup", idGroup);
                 console.log("Connected to WebSocket Group with ID:", idGroup);
             });
-    
-            socketConnection.on("newmessage", (data) => {
+
+            socketConnection.on("newmessagetogroup", (data) => {
                 onMessageReceived(data);
             });
-    
+
             setSocket(socketConnection);
-    
+
             return () => {
-                socketConnection.off("newmessage");
+                socketConnection.off("newmessagetogroup");
                 socketConnection.disconnect();
             };
         }
     }, [idGroup, token]);
-    
+
 
     const handleKeyDown = useCallback(
         (e) => {
@@ -289,7 +305,7 @@ const MessengerInbox = () => {
         return acc;
     }, {});
 
-    console.log(dataGroup)
+    // console.log(dataGroup)
     return (
         <div className="flex flex-col h-full ">
             <div className="p-2 flex border-b h-14 bg-white shadow-sm">
