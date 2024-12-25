@@ -39,8 +39,9 @@ export default function HeadProfile() {
                 <div className='h-20'></div>
                 <h1 className="font-bold text-2xl text-center mb-4">
                     {dataProfile?.lastName} {dataProfile?.firstName}
+                    <button className="" onClick={() => document.getElementById('my_modal_2').showModal()}><PencilIcon className='size-4 fill-sky-800' /></button>
                 </h1>
-                <button className="" onClick={() => document.getElementById('my_modal_2').showModal()}><PencilIcon className='size-4 fill-sky-800' /></button>
+
                 <ModalUpdateAVT user={dataProfile} />
             </div>
         </div >

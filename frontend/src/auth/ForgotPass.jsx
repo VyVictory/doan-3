@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import bg from './background_auth.jpg';
 import { forgotPassword, resetPassword, verifyOTP } from '../service/ForgotPassword';
-
+import { toast, ToastContainer } from 'react-toastify';
+import NotificationCss from '../module/cssNotification/NotificationCss';
 export default function ForgotPass() {
     const [email, setEmail] = useState('');
     const [otp, setOtp] = useState('');
@@ -18,10 +19,10 @@ export default function ForgotPass() {
         e.preventDefault();
         const response = await forgotPassword(email);
         if (response) {
-            alert('OTP đã được gửi đến email của bạn');
+            toast.success('OTP đã được gửi đến email của bạn, vui lòng nhập OTP!', NotificationCss.Success);
             setOtpVisible(true);
         } else {
-            alert('Email không tồn tại');
+            toast.error('Email chưa tồn tại', NotificationCss.Fail);
         }
     };
 
@@ -29,11 +30,11 @@ export default function ForgotPass() {
         e.preventDefault();
         const response = await verifyOTP(email, otp);
         if (response) {
-            alert('OTP đã được xác thực');
+            toast.success('OTP đã xác thực, vui lòng nhập mật khẩu mới!', NotificationCss.Success);
             setPasswordVisible(true);
             setVerifyButtonVisible(false);
         } else {
-            alert('Mã OTP không đúng');
+            toast.error('OTP không đúng, vui lòng nhập lại', NotificationCss.Fail);
         }
     };
 
@@ -41,10 +42,10 @@ export default function ForgotPass() {
         e.preventDefault();
         const response = await resetPassword(email, otp, newPassword);
         if (response) {
-            alert('Mật khẩu đã được thay đổi');
+            toast.success('Mật khẩu đã được thay đổi', NotificationCss.Success);
             window.location.href = '/login';
         } else {
-            alert('Có lỗi xảy ra, vui lòng thử lại sau');
+            toast.error('Có lỗi vui lòng thử lại', NotificationCss.Fail);
         }
     };
     console.log(email, otp, newPassword)
@@ -75,6 +76,7 @@ export default function ForgotPass() {
                             value={email}
                             onChange={handleChange}
                             required
+                            disabled={otpVisible || passwordVisible}
                             className="w-full px-4 py-3 text-gray-900 placeholder-gray-400 bg-gray-100 rounded-lg shadow-inner focus:ring-2 focus:ring-blue-500 focus:outline-none"
                             placeholder="example@example.com"
                         />
@@ -90,6 +92,7 @@ export default function ForgotPass() {
                                 id="otp"
                                 type="text"
                                 value={otp}
+                                disabled={passwordVisible}
                                 onChange={handleOtpChange}
                                 className="w-full px-4 py-3 text-gray-900 placeholder-gray-400 bg-gray-100 rounded-lg shadow-inner focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                 placeholder="Nhập mã OTP"
@@ -142,6 +145,8 @@ export default function ForgotPass() {
                     )}
                 </form>
             </div>
+            <ToastContainer position="top-right" autoClose={3000} />
         </div>
+
     );
 }
