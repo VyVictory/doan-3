@@ -6,30 +6,61 @@ import friend from '../../service/friend';
 import { toast } from 'react-toastify';
 import NotificationCss from '../../module/cssNotification/NotificationCss';
 import userImg from '../../img/user.png';
+import user from '../../service/user';
+import { debounce } from 'lodash';
 export default function CardUserResult({ query }) {
+
     const [userdatas, setUserdatas] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    const [allUsers, setAllUsers] = useState([]); // State to store all users
     useEffect(() => {
-        if (query === '') {
-            setLoading(false);
-            return;
-        }
-        async function fetchData() {
+        async function fetchAllPosts() {
             setLoading(true);
             try {
-                const response = await getSearchUser(query);
-                setUserdatas(response.data);
+                const response = await user.getAllUser(); // Fetch all posts
+                const sortedPosts = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                setAllUsers(sortedPosts);
+                setUserdatas(sortedPosts); // Initially display all posts
             } catch (error) {
                 console.error(error);
+                setAllUsers([]);
                 setUserdatas([]);
             } finally {
                 setLoading(false);
             }
         }
 
-        fetchData();
-    }, [query]);
+        fetchAllPosts();
+    }, []);
+
+    useEffect(() => {
+        const debouncedFetchData = debounce(async () => {
+            if (query === '') {
+                setUserdatas(allUsers); // Display all posts if no query
+                return;
+            }
+            setLoading(true);
+            try {
+                const response = await getSearchUser(query);
+                const sortedPosts = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                setUserdatas(sortedPosts);
+            } catch (error) {
+                console.error(error);
+                setUserdatas([]);
+            } finally {
+                setLoading(false);
+            }
+        }, 500); // 300ms debounce delay
+
+        debouncedFetchData();
+
+        return () => {
+            debouncedFetchData.cancel();
+        };
+    }, [query, allUsers]);
+
+
+
     const [seding, setSending] = useState(true)
     // WebSocket message handler
 
@@ -95,6 +126,7 @@ export default function CardUserResult({ query }) {
         return <p className='mt-5'>không tìm thấy dữ liệu, vui lòng nhập tên người dùng</p>;
     }
 
+    console.log(userdatas)
     return (
         <>
             {userdatas.map(userdata => (
@@ -112,11 +144,12 @@ export default function CardUserResult({ query }) {
                         </div>
                         <div className="flex flex-col pl-2">
                             <div className="text-start font-semibold text-nowrap overflow-hidden text-ellipsis max-w-52">
-                                {userdata.firstName || ''} {userdata.lastName || ''}
+                                {userdata.firstName || ''} {userdata.lastName || ''}  {userdata.status}
                             </div>
                             {/* Bạn chung */}
                         </div>
                     </div>
+
                     <div className="py-5">
                         {
                             seding === true ?
