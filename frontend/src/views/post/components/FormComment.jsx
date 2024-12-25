@@ -7,6 +7,7 @@ export default function FormComment({ postId }) {
         content: '',
         img: ''
     })
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleChange = (e) => {
         setFormdata({
@@ -17,6 +18,7 @@ export default function FormComment({ postId }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        setIsSubmitting(true);
         try {
             await createComment(postId, formdata.content);
 
@@ -42,7 +44,7 @@ export default function FormComment({ postId }) {
                 placeholder="Viết bình luận...">
 
             </textarea>
-            <button className="btn btn-outline rounded-t-none btn-info ">Gửi</button>
+            <button className="btn btn-outline rounded-t-none btn-info" disabled={isSubmitting}>Gửi</button>
         </form >
     )
 }

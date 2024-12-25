@@ -22,6 +22,20 @@ export default function DetailPost() {
   const [currentIndexes, setCurrentIndexes] = useState({});
   const { id } = useParams();
 
+  const fetchComments = async () => {
+    try {
+      const response = await getDetailPost(id)
+      if (response) {
+        setPosts(response.data)
+        const responseUser = await OtherProfile(response.data.author)
+        setUser(responseUser.data)
+        const responseUserPersonal = await profileUserCurrent()
+        setUserLogin(responseUserPersonal.data)
+      }
+    } catch (error) {
+      console.error("Error fetching post details:", error);
+    }
+  }
 
   useEffect(() => {
     const fetchdata = async () => {
@@ -196,7 +210,7 @@ export default function DetailPost() {
             </div>
           </div>
         </div>
-        <FormComment postId={posts._id} />
+        <FormComment postId={posts._id} onCommentAdded={fetchComments} />
         <Comment postId={posts._id} user={userLogin} />
       </div>
     </div>
