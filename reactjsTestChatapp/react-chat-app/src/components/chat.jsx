@@ -68,22 +68,23 @@ const GroupChat = ({ groupId, token }) => {
   // Kết nối WebSocket khi cả groupId và token đều có giá trị
   useEffect(() => {
     if (groupId && token) {
-      const URL = "http://localhost:3002"; // Địa chỉ WebSocket server
+      const URL = "http://localhost:3001"; // Địa chỉ WebSocket server
       const socketConnection = io(URL, {
         extraHeaders: {
           Authorization: `Bearer ${token}`,
         },
       });
-
+   
       socketConnection.on("connect", () => {
         console.log("Connected to WebSocket with ID:", socketConnection.id);
-
+        console.log(groupId)
         // Tham gia nhóm khi kết nối
         socketConnection.emit("joinGroup", groupId);
+        
       });
 
       // Lắng nghe sự kiện nhận tin nhắn mới
-      socketConnection.on("newmessage", (data) => {
+      socketConnection.on("newmessagetogroup", (data) => {
         console.log("New message received:", data);
         onMessageReceived(data); // Cập nhật giao diện
       });

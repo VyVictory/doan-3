@@ -15,7 +15,7 @@ const useWebSocket = (onMessageReceived) => {
     });
 
     // Lắng nghe sự kiện 'newmessage'
-    socket.on("newmessage", (data) => {
+    socket.on("newmenewmessagetogroupssage", (data) => {
       console.log("Received new message:", data);
       if (onMessageReceived) {
         onMessageReceived(data); // Gọi callback khi có tin nhắn mới

@@ -81,7 +81,7 @@ export class ChatController {
 
     groupParticipants.forEach((participant) => {
 
-      this.eventService.notificationToUser(participant._id.toString(), 'new message to group', messageSee);
+      this.eventService.notificationToUser(participant._id.toString(), 'newmessagetogroup', messageSee);
 
     });
 

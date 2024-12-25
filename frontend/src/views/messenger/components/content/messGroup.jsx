@@ -7,6 +7,7 @@ import { PaperAirplaneIcon } from '@heroicons/react/16/solid';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Box, IconButton } from '@mui/material';
 import { ChevronRightIcon, ChevronLeftIcon, ArrowUturnLeftIcon, PhotoIcon } from "@heroicons/react/24/solid";
 import CloseIcon from '@mui/icons-material/Close';
+import fetchAuthor from './fetchAuthor';
 
 import imgUser from '../../../../img/user.png';
 import messenger from '../../../../service/messenger';
@@ -17,6 +18,9 @@ import Loading from '../../../../components/Loading';
 import { MessengerContext } from '../../layoutMessenger';
 import NotificationCss from '../../../../module/cssNotification/NotificationCss';
 import group from '../../../../service/group';
+import { io } from 'socket.io-client';
+import authToken from '../../../../components/authToken';
+import apiuri from '../../../../service/apiuri';
 
 
 const MessengerInbox = () => {
@@ -24,7 +28,7 @@ const MessengerInbox = () => {
     const { RightShow, handleHiddenRight, setContent, setInboxData } = useContext(MessengerContext);
     const location = useLocation();
     const [textareaHeight, setTextareaHeight] = useState(40);
-    const [iduser, setIdUser] = useState(null);
+    const [idGroup, setIdUser] = useState(null);
     // const [userdata, setUserdata] = useState({});
     const [loading, setLoading] = useState(true);
     const [loadingHeader, setLoadingHeader] = useState(true);
@@ -35,12 +39,15 @@ const MessengerInbox = () => {
     const [dataGroup, setDataGroup] = useState([]);
     const [error, setError] = useState(null);
     const messagesEndRef = useRef(null);
+    const [socket, setSocket] = useState(null); // Trạng thái kết nối socket
+    const userCache = {}; // Cache thông tin người dùng
 
 
 
     //file
     const [file, setFile] = useState(null);
     const [preview, setPreview] = useState(null);
+    const [token, setToken] = useState(null);
     const { setShowZom } = useUser();
     const openModal = (file) => {
         setShowZom({ file: file, show: true });
@@ -80,7 +87,9 @@ const MessengerInbox = () => {
             setMessageToRevoke(null); // Clear the message ID
         }
     };
-
+    useEffect(() => {
+        setToken(authToken.getToken())
+    }, [authToken.getToken()]);
     const cancelRevokeMessage = () => {
         setOpenDialog(false); // Close the dialog
         setMessageToRevoke(null); // Clear the message ID
@@ -135,10 +144,10 @@ const MessengerInbox = () => {
     };
 
     useEffect(() => {
-        if (iduser === '' || !iduser) return;
+        if (idGroup === '' || !idGroup) return;
         const fetchMessengerData = async () => {
             try {
-                const res = await group.getMessengerGroup(iduser);
+                const res = await group.getMessengerGroup(idGroup);
                 if (res.success) {
                     setMessengerdata(res.data.messages);
                     setDataGroup(res.data)
@@ -152,25 +161,8 @@ const MessengerInbox = () => {
         setContent('group');
         setLoading(false);
         setLoadingMess(false)
-    }, [iduser]);
+    }, [idGroup]);
 
-    const onMessageReceived = useCallback(
-        (newMessage) => {
-            console.log("Received message:", newMessage);
-            if (!newMessage.receiver) {
-                newMessage.receiver = userContext._id;
-            }
-            if (!newMessage.createdAt) {
-                newMessage.createdAt = new Date().toISOString();
-            }
-
-            if (newMessage.receiver === userContext._id && newMessage.sender !== userContext._id) {
-                setMessengerdata((prevMessages) => [...prevMessages, newMessage]);
-            }
-        },
-        [userContext._id]
-    );
-    useWebSocket(onMessageReceived);
 
     useEffect(() => {
 
@@ -190,6 +182,7 @@ const MessengerInbox = () => {
 
 
 
+
     const handleInputChange = useCallback((e) => {
         const textarea = e.target;
         const currentValue = textarea.value;
@@ -200,38 +193,67 @@ const MessengerInbox = () => {
         textarea.style.height = `${textarea.scrollHeight}px`;
         setTextareaHeight(textarea.scrollHeight);
     }, []);
+    const onMessageReceived = async (newMessage) => {
+        console.log("Processing new message:", newMessage);
+        if (!newMessage.author && newMessage.authorId) {
+            newMessage.author = await fetchAuthor(newMessage.authorId);
+        }
+        setMessengerdata((prevMessages) => [...prevMessages, newMessage]);
+    };
+    
 
     const handleSendMessenger = useCallback(async () => {
-
-        if (!message.trim() && !file || sending) return; // Prevent sending if already in progress
-        console.log('aaa')
-        setSending(true); // Set sending state
+        if ((!message.trim() && !file) || sending) return;
+    
+        setSending(true);
         try {
-            const res = await group.sendMessGroup(iduser, message.trim(), file);
-
+            const res = await group.sendMessGroup(idGroup, message.trim(), file);
             if (res.success) {
-                setMessage('');
+                setMessage("");
                 setFile(null);
                 setPreview(null);
                 setTextareaHeight(40);
             } else {
                 alert(res.data.message);
             }
+            socket.emit("sendMessage", { idGroup, content: message.trim() });
         } catch (error) {
-            console.error('Error sending message:', error);
+            console.error("Error sending message:", error);
         } finally {
-            setSending(false); // Reset sending state
+            setSending(false);
         }
-    }, [iduser, message, sending, file]);
-    const handleRevokedMessenger = async (id) => {
-        try {
-            const res = await messenger.revokedMesage(id);
+    }, [idGroup, message, sending, file]);
+    
 
-        } catch (error) {
-            console.error('Error sending message:', error);
+    useEffect(() => {
+        if (idGroup && token) {
+            const URL = apiuri.Socketuri();
+            const socketConnection = io(URL, {
+                extraHeaders: {
+                    Authorization: `Bearer ${authToken.getToken()}`,
+                },
+            });
+    
+            socketConnection.on("connect", () => {
+                console.log("Connected to WebSocket with ID:", socketConnection.id);
+                socketConnection.emit("joinGroup", idGroup);
+                console.log("Connected to WebSocket Group with ID:", idGroup);
+            });
+    
+            socketConnection.on("newmessage", (data) => {
+                onMessageReceived(data);
+            });
+    
+            setSocket(socketConnection);
+    
+            return () => {
+                socketConnection.off("newmessage");
+                socketConnection.disconnect();
+            };
         }
-    }
-    // revokedMesage
+    }, [idGroup, token]);
+    
+
     const handleKeyDown = useCallback(
         (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
@@ -245,7 +267,7 @@ const MessengerInbox = () => {
     if (loading) {
         return <Loading />;
     }
-    if (!iduser) {
+    if (!idGroup) {
         return <div className="text-red-500 text-center mt-4"></div>;//{error}
     }
 

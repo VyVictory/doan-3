@@ -40,6 +40,8 @@ const MessengerInbox = () => {
     const [openDialog, setOpenDialog] = useState(false); // For controlling the confirmation dialog
     const [messageToRevoke, setMessageToRevoke] = useState(null); // Store message to be revoked
     const { setShowZom } = useUser();
+    const [socket, setSocket] = useState(null); // Trạng thái kết nối socket
+
     const openModal = (file) => {
         setShowZom({ file: file, show: true });
     };
@@ -156,7 +158,7 @@ const MessengerInbox = () => {
                 setMessengerdata((prevMessages) => [...prevMessages, newMessage]);
             }
         },
-        [userContext._id,socket]
+        [userContext._id, socket]
     );
     useWebSocket(onMessageReceived);
 
