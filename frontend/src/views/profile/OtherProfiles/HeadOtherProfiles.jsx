@@ -11,13 +11,12 @@ import friend from '../../../service/friend';
 import { ToastContainer, toast } from 'react-toastify';
 import NotificationCss from '../../../module/cssNotification/NotificationCss';
 import { useUser } from '../../../service/UserContext';
-
 export default function HeadOtherProfiles({ dataProfile }) {
     const navigate = useNavigate();
     const { userContext } = useUser();
     const [friendStatus, setFriendStatus] = useState(null);
     const [loading, setLoading] = useState(true);
-
+    const [loadingRequest, setLoadingRequest] = useState(true);
     console.log(userContext._id)
     console.log(dataProfile._id)
     useEffect(() => {
@@ -41,6 +40,7 @@ export default function HeadOtherProfiles({ dataProfile }) {
     }, [dataProfile]);
 
     const handAddFriend = async (id) => {
+        setLoadingRequest(false)
         try {
             const rs = await friend.AddFriend(id);
             if (rs.success) {
@@ -53,8 +53,10 @@ export default function HeadOtherProfiles({ dataProfile }) {
         } catch (error) {
             console.error(error);
         }
+        setLoadingRequest(true);
     };
     const handRemoveFriend = async (id) => {
+        setLoadingRequest(false)
         try {
             const rs = await friend.cancelFriend(id);
             if (rs.success) {
@@ -67,8 +69,10 @@ export default function HeadOtherProfiles({ dataProfile }) {
         } catch (error) {
             console.error(error);
         }
+        setLoadingRequest(true);
     };
     const handCancelRequest = async (id) => {
+        setLoadingRequest(false)
         try {
             const rs = await friend.cancelFriendRequest(id);
             if (rs.success) {
@@ -80,6 +84,7 @@ export default function HeadOtherProfiles({ dataProfile }) {
         } catch (error) {
             console.error(error);
         }
+        setLoadingRequest(true);
     };
     if (loading) {
         return (
@@ -120,40 +125,47 @@ export default function HeadOtherProfiles({ dataProfile }) {
                     </h1>
                     <div className="flex gap-2 justify-center mb-5">
                         {/* {friendStatus} */}
-                        {friendStatus === "friend" ? (
-                            <button
-                                onClick={() => dataProfile ? handRemoveFriend(dataProfile._id) : ''}
-                                className="bg-red-600 text-white p-2 rounded-full flex items-center gap-1"
-                            >
-                                <UserMinusIcon className="size-5 fill-white" />
-                                Xóa bạn bè
-                            </button>
-                        ) : friendStatus === "pending" ? (
-                            <button
-                                onClick={() => dataProfile ? handCancelRequest(dataProfile._id) : ''}
-                                className="bg-red-600 text-white p-2 rounded-full flex items-center gap-1"
-                            >
-                                <UserMinusIcon className="size-5 fill-white" />
-                                từ chối
-                            </button>
-                        ) : friendStatus === "waiting" ? (
-                            <button
-                                onClick={() => dataProfile ? handCancelRequest(dataProfile._id) : ''}
-                                className="bg-blue-600 text-white p-2 rounded-full flex items-center gap-1"
-                            >
-                                <UserMinusIcon className="size-5 fill-white" />
-                                Hủy yêu cầu
-                            </button>
-                        ) : (
+                        {
+                            loadingRequest == true ? friendStatus === "friend" ? (
+                                <button
+                                    onClick={() => dataProfile ? handRemoveFriend(dataProfile._id) : ''}
+                                    className="bg-red-600 text-white p-2 rounded-full flex items-center gap-1"
+                                >
+                                    <UserMinusIcon className="size-5 fill-white" />
+                                    Xóa bạn bè
+                                </button>
+                            ) : friendStatus === "pending" ? (
+                                <button
+                                    onClick={() => dataProfile ? handCancelRequest(dataProfile._id) : ''}
+                                    className="bg-red-600 text-white p-2 rounded-full flex items-center gap-1"
+                                >
+                                    <UserMinusIcon className="size-5 fill-white" />
+                                    từ chối
+                                </button>
+                            ) : friendStatus === "waiting" ? (
+                                <button
+                                    onClick={() => dataProfile ? handCancelRequest(dataProfile._id) : ''}
+                                    className="bg-blue-600 text-white p-2 rounded-full flex items-center gap-1"
+                                >
+                                    <UserMinusIcon className="size-5 fill-white" />
+                                    Hủy yêu cầu
+                                </button>
+                            ) : (
 
-                            <button
-                                onClick={() => dataProfile ? handAddFriend(dataProfile._id) : ''}
-                                className="bg-sky-600 text-white p-2 rounded-full flex items-center gap-1"
-                            >
-                                <UserPlusIcon className="size-5 fill-white" />
-                                Kết bạn
-                            </button>
-                        )}
+                                <button
+                                    onClick={() => dataProfile ? handAddFriend(dataProfile._id) : ''}
+                                    className="bg-sky-600 text-white p-2 rounded-full flex items-center gap-1"
+                                >
+                                    <UserPlusIcon className="size-5 fill-white" />
+                                    Kết bạn
+                                </button>
+                            ) :
+                                <div className='flex flex-row justify-center items-center pr-2'>
+                                    <div className="spinner-border animate-spin inline-block w-4 h-4 border-4 border-sky-600 rounded-full mr-2"></div>đang xử lý...
+                                </div>
+
+
+                        }
                         <button
                             onClick={() => {
                                 window.location.href = `/messenger/inbox/?iduser=${dataProfile._id}`;
