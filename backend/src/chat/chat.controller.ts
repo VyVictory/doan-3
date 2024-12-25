@@ -78,7 +78,7 @@ export class ChatController {
     if (!Array.isArray(groupParticipants)) {
       throw new HttpException('Invalid group participants data', HttpStatus.INTERNAL_SERVER_ERROR);
     }
-  
+
     groupParticipants.forEach((participant) => {
 
       this.eventService.notificationToUser(participant._id.toString(), 'new message to group', messageSee);
@@ -142,6 +142,12 @@ export class ChatController {
 
     try {
       const checkTypeReceiver = userId;
+      if (Types.ObjectId.isValid(userId)) {
+
+      } else {
+
+      }
+
       const currentUserOBJ = new Types.ObjectId(currentUser._id.toString());
       const UserOBJ = new Types.ObjectId(userId.toString());
       const message = await this.chatService.sendMesageToUser(currentUserOBJ, UserOBJ, sendMessageDto, files?.files);
@@ -164,7 +170,10 @@ export class ChatController {
         author: currentAuthor,
         _id: message._id,
       };
-
+      
+      notificationUsers.map(async (notif) => {
+        console.log(`Emitting newmessage to user ${notif.user}`);
+      });
       notificationUsers.map(async (notif) => {
         this.eventService.notificationToUser(notif.user, 'newmessage', messageSee);
       });
@@ -212,11 +221,11 @@ export class ChatController {
       if (!currentUser) {
         throw new HttpException('User not found or not authenticated', HttpStatus.UNAUTHORIZED);
       }
-  
+
       if (!addMembersToGroupDto || !Array.isArray(addMembersToGroupDto.participants)) {
         throw new HttpException('Invalid participants data', HttpStatus.BAD_REQUEST);
       }
-  
+
       return await this.chatService.addMembersToGroup(addMembersToGroupDto, groupId);
     } catch (error) {
       console.error('error in chatcontroller /addMembersTogroup', error);
@@ -224,8 +233,8 @@ export class ChatController {
     }
   }
 
-  
-  
+
+
 
 
 

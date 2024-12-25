@@ -156,9 +156,10 @@ const MessengerInbox = () => {
                 setMessengerdata((prevMessages) => [...prevMessages, newMessage]);
             }
         },
-        [userContext._id]
+        [userContext._id,socket]
     );
     useWebSocket(onMessageReceived);
+
 
 
     useEffect(() => {
@@ -196,7 +197,6 @@ const MessengerInbox = () => {
         setSending(true); // Set sending state
         try {
             const res = await messenger.sendMess(iduser, message.trim(), file);
-            socket.emit('newmessage', message)
             if (res.success) {
                 setMessage('');
                 setFile(null);
