@@ -71,7 +71,7 @@ export class ChatController {
     if (!Array.isArray(groupParticipants)) {
       throw new HttpException('Invalid group participants data', HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
+  
     groupParticipants.forEach((participant) => {
 
       this.eventService.notificationToUser(participant._id.toString(), 'newmessagetogroup', messageSee);
@@ -162,7 +162,6 @@ export class ChatController {
         mediaURL: message.mediaURL,
         author: currentAuthor,
         _id: message._id,
-        
         sender: {
           _id: currentUser._id,
           firstName: currentUser.firstName,
@@ -170,10 +169,7 @@ export class ChatController {
           avatar: currentUser.avatar
         },
       };
-      
-      notificationUsers.map(async (notif) => {
-        console.log(`Emitting newmessage to user ${notif.user}`);
-      });
+
       notificationUsers.map(async (notif) => {
         this.eventService.notificationToUser(notif.user, 'newmessage', messageSee);
       });
@@ -221,11 +217,11 @@ export class ChatController {
       if (!currentUser) {
         throw new HttpException('User not found or not authenticated', HttpStatus.UNAUTHORIZED);
       }
-
+  
       if (!addMembersToGroupDto || !Array.isArray(addMembersToGroupDto.participants)) {
         throw new HttpException('Invalid participants data', HttpStatus.BAD_REQUEST);
       }
-
+  
       return await this.chatService.addMembersToGroup(addMembersToGroupDto, groupId);
     } catch (error) {
       console.error('error in chatcontroller /addMembersTogroup', error);
@@ -233,8 +229,24 @@ export class ChatController {
     }
   }
 
-
-
+  
+  @Delete('deleteGroup/:groupId')
+  @UseGuards(AuthGuardD)
+  async deleteGroup(
+    @CurrentUser() currentUser: User,
+    @Param('groupId') groupId: Types.ObjectId,
+  ) {
+    try {
+      if (!currentUser) {
+        throw new HttpException('User not found or not authenticated', HttpStatus.UNAUTHORIZED);
+      }
+      const swageUserId = new Types.ObjectId(currentUser._id.toString());
+      return await this.chatService.deleteGroup(groupId,swageUserId);
+    } catch (error) {
+      console.error('error in chatcontroller /deleteGroup', error);
+      throw error;
+    }
+  }
 
 
 

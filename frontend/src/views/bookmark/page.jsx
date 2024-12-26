@@ -4,7 +4,7 @@ import { getAllBookmark, getHomeFeed, handleRemoveBookmark } from '../../service
 import { profileUserCurrent } from '../../service/ProfilePersonal'
 import Loading from '../../components/Loading'
 import { Link } from 'react-router-dom'
-import { toast } from 'react-toastify'
+import { toast, ToastContainer } from 'react-toastify'
 import NotificationCss from '../../module/cssNotification/NotificationCss'
 export default function Bookmark() {
     const [data, setData] = useState([])
@@ -81,6 +81,7 @@ export default function Bookmark() {
                         ))
                     ) : (<span>Chưa lưu bài viết nào!</span>))}
             </div>
+            <ToastContainer position="top-right" autoClose={3000} />
         </div>
     )
 }

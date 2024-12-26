@@ -607,58 +607,63 @@ export class UserService {
     return this.UserModel.findById(userId).populate('bookmarks');
   }
 
-  async getuserByName(name: string, userId: string): Promise<any> { 
-    const users = await this.UserModel.find(
-      {
+  async getuserByName(name: string, userId: string): Promise<any[]> {
+    try {
+ 
+      const users = await this.UserModel.find({
         $or: [
           { firstName: { $regex: name, $options: 'i' } },
-          { lastName: { $regex: name, $options: 'i' } },
-
+          { lastName: { $regex: name, $options: 'i' } }
         ]
       })
       .select('-password -isActive -refreshToken -createdAt -updatedAt -role -otp -otpExpirationTime -bookmarks -friends -coverImage')
       .lean()
       .exec();
-    // Fetch friend requests related to the current user
-    const friendRequests = await this.FriendRequestModel.find({
-      $or: [
-        { sender: userId, },
-        { receiver: userId, },
-      ],
-    }).exec();
+  
 
-    // Fetch actual friends (accepted requests)
-    const friends = await this.FriendModel.find({
-      $or: [{ sender: userId }, { receiver: userId }],
-    }).exec();
+      const friendRequests = await this.FriendRequestModel.find({
+        $or: [
+          { sender: userId }, 
+          { receiver: userId }, 
+        ],
+      }).exec();
 
-    // Process user data and assign friend statuses
-    const updatedUsers = users.map((user) => {
-      let status = 'no friend';
 
-      // Check for accepted friend relationship (highest priority)
-      if (friends.some((friend) => friend.sender.toString() === userId.toString() && friend.receiver.toString() === user._id.toString() || friend.sender.toString() === user._id.toString() && friend.receiver.toString() === userId.toString())) {
-        status = 'friend';
-      } else {
-        // Check for pending requests (sent or received)
-        const pendingRequest = friendRequests.find(
-          (request) =>
-            (request.sender.toString() === userId.toString() && request.receiver.toString() === user._id.toString() && request.status === 'waiting') ||
-            (request.receiver.toString() === userId.toString() && request.sender.toString() === user._id.toString() && request.status === 'waiting')
-        );
+      const friends = await this.FriendModel.find({
+        $or: [{ sender: userId }, { receiver: userId }],
+      }).exec();
+  
+      // Process user data and assign friend statuses
+      const updatedUsers = users.map((user) => {
+        let status = 'no friend';
+  
 
-        if (pendingRequest) {
-          status = pendingRequest.sender.toString() === userId.toString() ? 'waiting' : 'pending'; // Differentiate sent/received
+        if (friends.some((friend) => 
+          (friend.sender.toString() === userId && friend.receiver.toString() === user._id.toString()) || 
+          (friend.sender.toString() === user._id.toString() && friend.receiver.toString() === userId)
+        )) {
+          status = 'friend';
+        } else {
+          // Check for pending requests (sent or received)
+          const pendingRequest = friendRequests.find(
+            (request) =>
+              (request.sender.toString() === userId && request.receiver.toString() === user._id.toString() && request.status === 'waiting') ||
+              (request.receiver.toString() === userId && request.sender.toString() === user._id.toString() && request.status === 'waiting')
+          );
+  
+          if (pendingRequest) {
+            status = pendingRequest.sender.toString() === userId ? 'waiting' : 'pending'; // Differentiate sent/received
+          }
         }
-      }
-
-      return {  ...user , status};
-    });
-    return updatedUsers;
+  
+        return { ...user, status };
+      });
+  
+      return updatedUsers;
     } catch (error) {
-      console.error('Error fetching users:', error);
+      console.error('Error fetching users by name:', error);
       throw new HttpException('Could not retrieve users', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-  
 
+}

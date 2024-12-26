@@ -11,8 +11,8 @@ const uri = Apiuri.Apiuri()
 
 export default function Login() {
     const [formData, setFormData] = useState({
-        numberPhone: '0372830048',
-        password: 'Adsads1234@#',
+        // numberPhone: '0372830048',
+        // password: 'Adsads1234@#',
     });
 
     const [errors, setErrors] = useState({});
