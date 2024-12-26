@@ -60,36 +60,36 @@ export class PostService {
 
     async updatePost(postId: string, updatePostDto: UpdatePostDto, userId: string, files?: Express.Multer.File[]): Promise<Post> {
         const post = await this.PostModel.findById(postId);
-
+    
         if (!post) {
             throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
         }
-
+    
         // Kiểm tra quyền của người dùng
         if (post.author.toString() !== userId) {
             throw new HttpException('You are not authorized to update this post', HttpStatus.UNAUTHORIZED);
         }
-
+    
         // Cập nhật nội dung bài viết
         post.content = updatePostDto.content || post.content;
-
+    
         // Nếu có ảnh mới, xử lý việc tải lên và thay thế ảnh cũ
         if (files && files.length > 0) {
-
+   
             try {
                 const uploadedImages = await Promise.all(
                     files.map(file => this.cloudinaryService.uploadFile(file))
                 );
-                post.img = uploadedImages;
+                post.img = uploadedImages; 
             } catch (error) {
                 console.error('Error uploading images to Cloudinary:', error);
                 throw new HttpException('Failed to upload images', HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
-
+    
         const updatedPost = await post.save();
 
-
+    
         return updatedPost;
     }
 
@@ -119,18 +119,18 @@ export class PostService {
             },
             { new: true }
         );
-
+    
         // Nếu không tìm thấy bài viết, ném lỗi NotFound
         if (!post) {
             throw new NotFoundException(`Bài viết có ID "${postId}" không tồn tại`);
         }
-
+    
         // Lấy authorId từ bài viết
         const authorId = post.author.toString(); // Giả sử 'author' là ObjectId
-
+    
         return { post, authorId };
     }
-
+    
 
     async unlikePost(postId: string, userId: string): Promise<Post> {
         const post = await this.PostModel.findByIdAndUpdate(
@@ -226,16 +226,16 @@ export class PostService {
         try {
             // Truy vấn bài đăng
             const post = await this.PostModel.findById(postId);
-
+    
             if (!post) {
                 throw new HttpException('The post does not exist', HttpStatus.NOT_FOUND);
             }
-
+    
             // Kiểm tra quyền truy cập của bài đăng
             if (post.privacy === 'public') {
                 return post;  // Bài viết công khai có thể xem
             }
-
+    
             if (post.privacy === 'private') {
                 if (post.author.toString() === userId) {
                     return post;  // Chỉ người tạo bài viết có thể xem
@@ -243,7 +243,7 @@ export class PostService {
                     throw new HttpException('You are not authorized to view this post', HttpStatus.UNAUTHORIZED);
                 }
             }
-
+    
             if (post.privacy === 'friends') {
                 // Kiểm tra người dùng có phải là bạn của tác giả bài viết không
                 const isFriend = await this.FriendModel.exists({
@@ -252,30 +252,30 @@ export class PostService {
                         { sender: post.author.toString(), receiver: userId }
                     ],
                 });
-
+    
                 if (isFriend) {
                     return post;  // Nếu là bạn, trả về bài viết
                 } else {
                     throw new HttpException('You are not friends with the author', HttpStatus.UNAUTHORIZED);
                 }
             }
-
+            
             // Nếu bài viết có privacy không hợp lệ
             throw new HttpException('Invalid post privacy setting', HttpStatus.BAD_REQUEST);
         } catch (error) {
             throw error;
         }
     }
-
+    
 
     async getPostsByUser(userId: string, currentUserId?: string): Promise<Post[]> {
         try {
 
             const posts = await this.PostModel.find({ author: userId });
-
+    
             const filteredPosts = await Promise.all(
                 posts.map(async (post) => {
-
+    
                     switch (post.privacy) {
                         case 'public':
                             return post;  // Bài viết công khai có thể xem
@@ -307,7 +307,7 @@ export class PostService {
                     }
                 })
             );
-
+    
             // Lọc bỏ những bài viết null (không có quyền truy cập)
             return filteredPosts.filter((post) => post !== null);
         } catch (error) {
@@ -315,7 +315,7 @@ export class PostService {
             throw new HttpException('An error occurred while fetching posts async getpostbyuser', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    
 
     async getHomeFeed(userId: string): Promise<PostF[]> {
         try {
@@ -333,7 +333,7 @@ export class PostService {
             if (!user) {
                 throw new NotFoundException('User not found');
             }
-
+    
             // Lấy danh sách bạn bè từ bảng Friend
             const friends = await this.FriendModel.find({
                 $or: [
@@ -341,18 +341,18 @@ export class PostService {
                     { receiver: userId }, // Bạn bè nhận kết bạn
                 ],
             }).exec();
-
+    
             const friendIds = friends.map(friend => {
                 return friend.sender.toString() === userId ? friend.receiver : friend.sender;
             });
-
+    
             // Điều kiện lọc bài viết
             const conditions: Array<any> = [
                 { privacy: 'public' },
                 { privacy: 'specific', allowedUsers: userId },
                 { author: { $in: friendIds } }, // Bài viết của bạn bè (nếu không phải private)
             ];
-
+    
             // Lấy tất cả bài viết dựa trên điều kiện
             const posts = await this.PostModel.find({
                 $and: [
@@ -365,7 +365,7 @@ export class PostService {
                 .populate('comments', '_id')
                 .lean() // Trả về đối tượng JavaScript thay vì Mongoose document
                 .exec();
-
+    
             // Tính điểm xếp hạng cho các bài viết
             const scoredPosts = posts.map((post) => {
                 const postObj = typeof post.toObject === 'function' ? post.toObject() : post;
@@ -374,15 +374,15 @@ export class PostService {
                 const engagement = postObj.likes.length * 3 + postObj.comments.length * 5; // Điểm tương tác
                 const timeDecay = 1 / (1 + timeSincePosted); // Giảm dần theo thời gian
                 const contentQuality = postObj.privacy === 'public' ? 1 : 0.8; // Điểm chất lượng nội dung
-
+    
                 // Tính điểm tổng thể của bài viết
                 const rankingScore = userInterest * (engagement + contentQuality) * timeDecay;
                 return { ...postObj, rankingScore };
             });
-
+    
             // Sắp xếp bài viết theo điểm xếp hạng từ cao đến thấp
             scoredPosts.sort((a, b) => b.rankingScore - a.rankingScore);
-
+    
             return scoredPosts;
         } catch (error) {
             console.error('Error in getHomeFeed:', error);
