@@ -156,7 +156,7 @@ export default function Navbar() {
                 </div>
             </div>
 
-            <ToastContainer style={{ marginTop: '55px' }} />
+            <ToastContainer style={{ marginTop: '55px' }}  limit={3}/>
         </>
     );
 }
