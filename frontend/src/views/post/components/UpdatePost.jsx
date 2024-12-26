@@ -135,6 +135,11 @@ export default function UpdatePost() {
             }, 1000)
         }
     }
+    const visibilityText = formData.privacy === 'public'
+        ? 'Tất cả mọi người'
+        : formData.privacy === 'friends'
+            ? 'bạn bè'
+            : 'Riêng tư';
     console.log(formData.privacy)
 
     return (
@@ -165,7 +170,7 @@ export default function UpdatePost() {
 
                                     {renderVisibilityIcon(visibility)} {/* Dynamically render icon */}
                                     <span className="ml-1 text-sm">
-                                        <span className="ml-1 text-sm">{visibility}</span>
+                                        <span className="ml-1 text-sm">{visibilityText}</span>
                                     </span>
                                     <ArrowDropDownIcon fontSize="small" />
                                 </button>
