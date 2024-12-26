@@ -10,12 +10,13 @@ import user from '../../service/user';
 import { debounce } from 'lodash';
 import ButtonStatus from './buttonStatus';
 import CardUserList from './userCard/cardUserList';
-
+import { useUser } from '../../service/UserContext';
 export default function CardUserResult({ query }) {
-
+    const { userContext } = useUser();
     const [userdatas, setUserdatas] = useState([]);
     const [loading, setLoading] = useState(true);
     const [allUsers, setAllUsers] = useState([]); // State to store all users
+    const [userLimit, setUserLimit] = useState(8); // Initial limit for users
     useEffect(() => {
         async function fetchAllPosts() {
             setLoading(true);
@@ -35,7 +36,10 @@ export default function CardUserResult({ query }) {
 
         fetchAllPosts();
     }, []);
-
+    const handleLoadMoreUsers = () => {
+        setUserLimit((prev) => prev + 8); // Increment user limit by 8
+    };
+    
     useEffect(() => {
         const debouncedFetchData = debounce(async () => {
             if (query === '') {
@@ -80,9 +84,23 @@ export default function CardUserResult({ query }) {
     console.log(userdatas)
     return (
         <>
-            {userdatas.map(userdata => (
-                <CardUserList userdata={userdata} />
-            ))}
+            {
+                userdatas.slice(0, userLimit).map((user, index) => (
+                    userContext._id === user._id ? null : (
+                        <CardUserList userdata={user} key={index} />
+                    )
+                ))
+            }
+            {userLimit < userdatas.length && (
+                <div className='w-full flex justify-center'>
+                    <button
+                        onClick={handleLoadMoreUsers}
+                        className="mt-3 text-blue-500 hover:text-blue-700"
+                    >
+                        Xem thêm
+                    </button>
+                </div>
+            )}
         </>
     )
 }
