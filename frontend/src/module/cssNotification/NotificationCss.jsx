@@ -1,6 +1,6 @@
 function Fail() {
     return {
-        position: "top-right",
+        position: "top-left",
         autoClose: 1500,
         hideProgressBar: false,
         closeOnClick: false,
@@ -13,7 +13,7 @@ function Fail() {
 
 function Success() {
     return {
-        position: "top-right",
+        position: "top-left",
         autoClose: 1500,
         hideProgressBar: false,
         closeOnClick: false,
@@ -25,7 +25,7 @@ function Success() {
 }
 function Mess() {
     return {
-        position: "top-right",
+        position: "top-left",
         autoClose: 500,
         hideProgressBar: false,
         closeOnClick: false,

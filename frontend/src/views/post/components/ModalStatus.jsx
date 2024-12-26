@@ -7,7 +7,6 @@ import PublicIcon from '@mui/icons-material/Public'; // MUI's "Public" icon
 import GroupIcon from '@mui/icons-material/Group'; // MUI's "Group" icon for Friends
 import LockIcon from '@mui/icons-material/Lock'; // MUI's "Lock" icon for Only Me
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'; // MUI's dropdown arrow icon
-import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import clsx from 'clsx';
 import authToken from '../../../components/authToken';
 import { PhotoIcon } from '@heroicons/react/24/solid'
@@ -17,7 +16,6 @@ import FileViewChane from '../../../components/fileViewChane';
 const uri = Apiuri.Apiuri()
 
 export default function ModalStatus({ user }) {
-    const navigate = useNavigate();
     const [open, setOpen] = useState(true);
     const [rows, setRows] = useState(3);
     const [visibility, setVisibility] = useState('Tất cả mọi người'); // State for visibility option

@@ -9,12 +9,14 @@ import userImg from '../../img/user.png';
 import user from '../../service/user';
 import { debounce } from 'lodash';
 import ButtonStatus from './buttonStatus';
-
+import CardUserList from './userCard/cardUserList';
+import { useUser } from '../../service/UserContext';
 export default function CardUserResult({ query }) {
-
+    const { userContext } = useUser();
     const [userdatas, setUserdatas] = useState([]);
     const [loading, setLoading] = useState(true);
     const [allUsers, setAllUsers] = useState([]); // State to store all users
+    const [userLimit, setUserLimit] = useState(8); // Initial limit for users
     useEffect(() => {
         async function fetchAllPosts() {
             setLoading(true);
@@ -34,7 +36,10 @@ export default function CardUserResult({ query }) {
 
         fetchAllPosts();
     }, []);
-
+    const handleLoadMoreUsers = () => {
+        setUserLimit((prev) => prev + 8); // Increment user limit by 8
+    };
+    
     useEffect(() => {
         const debouncedFetchData = debounce(async () => {
             if (query === '') {
@@ -79,31 +84,23 @@ export default function CardUserResult({ query }) {
     console.log(userdatas)
     return (
         <>
-            {userdatas.map(userdata => (
-                <button
-                    onClick={() => handDetailUser(userdata._id)}
-                    className="w-full flex flex-row rounded-lg hover:bg-gray-100 justify-between items-center p-2 max-h-[80px] sm:max-h-[60px] md:max-h-[70px] lg:max-h-[80px]"
-                >
-                    <div className="flex flex-row items-center">
-                        <div>
-                            <img
-                                className="w-14 h-14 rounded-full"
-                                src={userdata.avatar || userImg}
-                                alt=''
-                            />
-                        </div>
-                        <div className="flex flex-col pl-2">
-                            <div className="text-start font-semibold text-nowrap overflow-hidden text-ellipsis max-w-52">
-                                {userdata.firstName || ''} {userdata.lastName || ''}  {userdata.status}
-                            </div>
-                            {/* Bạn chung */}
-                        </div>
-                    </div>
-
-                 <ButtonStatus _id="userId123" status="no friend" />
-
-                </button>
-            ))}
+            {
+                userdatas.slice(0, userLimit).map((user, index) => (
+                    userContext._id === user._id ? null : (
+                        <CardUserList userdata={user} key={index} />
+                    )
+                ))
+            }
+            {userLimit < userdatas.length && (
+                <div className='w-full flex justify-center'>
+                    <button
+                        onClick={handleLoadMoreUsers}
+                        className="mt-3 text-blue-500 hover:text-blue-700"
+                    >
+                        Xem thêm
+                    </button>
+                </div>
+            )}
         </>
     )
 }

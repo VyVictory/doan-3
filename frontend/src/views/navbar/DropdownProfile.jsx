@@ -14,11 +14,17 @@ export default function DropdownProfile({ user }) {
 
     return (
         <div className="dropdown dropdown-end ">
-            <div tabIndex={0} role="button" className="m-3">
+            <div tabIndex={0} role="button" className="ml-3 flex flex-row items-center">
                 <img
                     className='rounded-full aspect-square w-10'
                     alt="Profile"
                     src={`${user && user.avatar ? user.avatar : "https://th.bing.com/th/id/OIP.PKlD9uuBX0m4S8cViqXZHAHaHa?rs=1&pid=ImgDetMain"}`} />
+                <h3
+                    className="font-semibold truncate w-[110px] overflow-hidden whitespace-nowrap ml-3"
+                    title={user ? `${user.lastName || ''} ${user.firstName || ''}`.trim() : "No Name"}
+                >
+                    {user ? `${user.lastName || ''} ${user.firstName || ''}`.trim() : "No Name"}
+                </h3>
             </div>
             <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow gap-2">
 

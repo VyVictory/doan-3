@@ -6,6 +6,7 @@ import { profileUserCurrent, updateInformation } from "../../../service/ProfileP
 const ModalUpdateProfile = () => {
     const [dataProfile, setDataProfile] = useState({})
     const [errors, setErrors] = useState({});
+    const [alertVisible, setAlertVisible] = useState(false);
     const [formData, setFormData] = useState({
         birthday: "",
         gender: "",
@@ -37,6 +38,19 @@ const ModalUpdateProfile = () => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
         validateField(name, value);
+    };
+    //validate birthday
+    const validateBirthday = (birthday) => {
+        const today = new Date();
+        const birthDate = new Date(birthday);
+        const age = today.getFullYear() - birthDate.getFullYear();
+        const monthDifference = today.getMonth() - birthDate.getMonth();
+
+        if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+
+        return age >= 16;
     };
 
     //validate
@@ -82,18 +96,32 @@ const ModalUpdateProfile = () => {
         setErrors(newErrors);
     };
 
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const newErrors = { ...errors };
+
+        if (!validateBirthday(formData.birthday)) {
+            newErrors.birthday = 'Tuổi phải lớn hơn hoặc bằng 16.';
+            setErrors(newErrors);
+            return;
+        } else {
+            delete newErrors.birthday;
+        }
         try {
+
             setIsLoading(true)
             await updateInformation(formData.birthday, formData.gender, formData.address, formData.email);
-            setIsLoading(false);
-            alert('Cập nhật thành công');
+            setAlertVisible(true)
+
         } catch (error) {
             console.log(error);
-            setIsLoading(false);
+
         } finally {
-            window.location.reload();
+            setTimeout(() => {
+                window.location.reload()
+            }, 3000);
         }
     };
     console.log(dataProfile)
@@ -157,6 +185,7 @@ const ModalUpdateProfile = () => {
                                             className="block w-full rounded-md border-0 py-3 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                         />
                                     </div>
+                                    {errors.birthday && <div className="text-red-500">{errors.birthday}</div>}
                                 </div>
 
                                 <div className="col-span-full">
@@ -209,14 +238,24 @@ const ModalUpdateProfile = () => {
 
 
                     </div>
-
+                    {alertVisible && (
+                        <div role="alert" className="alert alert-success">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>Cập nhật thành công!</span>
+                        </div>
+                    )}
                     <div className="modal-action mt-6 flex items-center justify-end gap-4">
-                        <form method="dialog">
-                            <button type="btn" className="btn text-sm font-semibold rounded-md bg-red-600 px-3 py-2 text-white hover:bg-red-500">
-                                Hủy
-                            </button>
-                        </form>
-                        <button type='submit' className="btn bg-sky-600 text-white hover:bg-sky-500">Cập nhật</button>
+                        {isLoading ? <p>Loading...</p> :
+                            <div className='flex gap-4'>
+                                <form method="dialog">
+                                    {/* if there is a button in form, it will close the modal */}
+                                    <button className="btn bg-red-600 text-white hover:bg-red-500">Hủy</button>
+                                </form>
+                                <button type='submit' className="btn bg-sky-600 text-white hover:bg-sky-500">Cập nhật</button>
+                            </div>
+                        }
                     </div>
                 </form >
 

@@ -9,7 +9,7 @@ const PeopleSearch = () => {
     const [query, setQuery] = useState('');
 
     return (
-        <div className="mt-5">
+        <div className="mt-5 pb-5">
             <label className="input input-bordered flex items-center gap-2">
                 <input
                     type="text"
