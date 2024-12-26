@@ -40,6 +40,20 @@ export class PostController {
         return currentUser;
     }
 
+    @Put('settingprivacy/:postId')
+    @UseGuards(AuthGuardD)
+    async settingPrivacy(
+        @CurrentUser() currentUser: User,
+        @Param('postId') postId: string,
+        @Body() settingPrivacyDto: settingPrivacyDto
+    ) {
+        if(!currentUser){
+            throw new HttpException('User not found or not authenticated', HttpStatus.UNAUTHORIZED);
+        }
+        
+        return this.postService.settingPrivacy(postId, settingPrivacyDto, currentUser._id.toString());
+    }
+
     @Put('updatePost/:postid')
     @UseGuards(AuthGuardD)
     @UseInterceptors(FileFieldsInterceptor([{ name: 'files', maxCount: 10 }]))

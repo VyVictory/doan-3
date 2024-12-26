@@ -25,7 +25,7 @@ export default function CardPost({ post }) {
                 <div className="card-body">
                     <div className='flex gap-3'>
                         <img
-                            className="w-14 h-14 aspect-square rounded-full"
+                            className="w-14 h-14 aspect-square rounded-full border-[1px] border-black cursor-pointer"
                             src={post.author.avatar || 'https://th.bing.com/th/id/OIP.PKlD9uuBX0m4S8cViqXZHAHaHa?rs=1&pid=ImgDetMain'}
                             alt=''
                         />
