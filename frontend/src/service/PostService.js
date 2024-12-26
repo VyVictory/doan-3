@@ -155,6 +155,19 @@ export async function updatePost(postId, content) {
 
     }
 }
+
+export async function updatePrivacyPost(postId, privacy) {
+    try {
+        const request = await axios.put(`${url}/post/settingprivacy/${postId}`, { privacy }, {
+            headers: {
+                Authorization: `Bearer ${authToken.getToken()}`,
+            }
+        })
+        return request
+    } catch (error) {
+
+    }
+}
 //delete post
 export async function deletePost(postId) {
     try {

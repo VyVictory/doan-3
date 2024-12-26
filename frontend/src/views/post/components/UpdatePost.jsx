@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { getDetailPost, updatePost } from '../../../service/PostService';
+import { getDetailPost, updatePost, updatePrivacyPost } from '../../../service/PostService';
 import { profileUserCurrent } from '../../../service/ProfilePersonal';
 import PublicIcon from '@mui/icons-material/Public'; // MUI's "Public" icon
 import GroupIcon from '@mui/icons-material/Group'; // MUI's "Group" icon for Friends
@@ -10,6 +10,8 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'; // MUI's drop
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import clsx from 'clsx';
 import { PhotoIcon } from '@heroicons/react/24/solid'
+import { toast } from 'react-toastify';
+import NotificationCss from '../../../module/cssNotification/NotificationCss';
 
 export default function UpdatePost() {
     const [posts, setPosts] = useState([]);
@@ -105,7 +107,7 @@ export default function UpdatePost() {
             setFormData({
                 content: posts.content || "",
                 files: posts.files || null,
-                privacy: posts.privacy || "",
+                privacy: posts.privacy
             });
         }
     }, [posts]);
@@ -114,16 +116,20 @@ export default function UpdatePost() {
         e.preventDefault();
         try {
             const response = await updatePost(id, formData.content);
-            if (response) {
-                alert('Chỉnh sửa bài viết thành công');
-                window.location.href = `/post/${id}`;
+            const responsePrivacy = await updatePrivacyPost(id, formData.privacy);
+            if (response || responsePrivacy) {
+                toast.success('Chỉnh sửa thành công.', NotificationCss.Success);
+                // window.location.href = `/post/${id}`;
             }
-
         } catch (error) {
             console.error('Error updating post:', error);
+        } finally {
+            setTimeout(() => {
+                window.location.href = `/post/${id}`;
+            }, 1000)
         }
     }
-    console.log(formData.content)
+    console.log(formData.privacy)
 
     return (
         <div className="bg-background text-primary-foreground min-h-screen flex items-center justify-center">
@@ -146,7 +152,7 @@ export default function UpdatePost() {
                                 <button
                                     type='button'
                                     className="flex items-center p-2 rounded-full border border-gray-200 text-gray-700 hover:bg-gray-200"
-                                    // onClick={() => setShowDropdown(!showDropdown)} // Toggle dropdown on click
+                                    onClick={() => setShowDropdown(!showDropdown)} // Toggle dropdown on click
 
                                     aria-label="Edit privacy. Sharing with Public."
                                 >
