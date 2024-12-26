@@ -57,6 +57,18 @@ const removeMemberGroup = async (idgr, listmember) => {
         return { success: false, data: response.response.data };
     }
 };
+const removeGroup = async (idgr) => {
+    try {
+        const response = await axios.put(`${url}/chat/removeMemBerInGroup/${idgr}`, 
+            {
+                headers: { Authorization: `Bearer ${authToken.getToken()}` },
+            }
+        );
+        return { success: true, data: response.data };
+    } catch (response) {
+        return { success: false, data: response.response.data };
+    }
+};
 const getMyListChat = async () => {
     // if(!iduser){
     //     return { success: false};
@@ -140,4 +152,5 @@ export default {
     sendMessGroup,
     addMemberGroup,
     removeMemberGroup,
+    removeGroup,
 }

@@ -9,6 +9,7 @@ import GroupCard from "./groupCard";
 import { UserGroupIcon, PlusIcon } from '@heroicons/react/24/solid';
 import ModalAddGroup from "./modalAddGroup";
 
+
 const AllGroup = () => {
     const [groups, setGroups] = useState([]);
     const [loading, setLoading] = useState(true);
