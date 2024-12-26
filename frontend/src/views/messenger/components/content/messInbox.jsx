@@ -283,6 +283,7 @@ const MessengerInbox = () => {
         acc[date].push(message);
         return acc;
     }, {});
+    console.log(groupedMessages)
     return (
         <div className="flex flex-col h-full ">
             <div className="p-2 flex border-b h-14 bg-white shadow-sm">
@@ -326,19 +327,20 @@ const MessengerInbox = () => {
                                 groupedMessages[date].map((mess, index) => (
                                     <React.Fragment key={`${mess._id}-${index}`}>
                                         <div
-                                            className={`flex ${mess?.author?._id === mess?.receiver
-                                                ? 'justify-end'
-                                                : mess.receiver === userContext._id
-                                                    ? ''
-                                                    : 'justify-end'}
-                                                     ${mess?.author?._id === mess?.receiver
-                                                    ? 'pl-16 '
-                                                    : mess.receiver === userContext._id
-                                                        ? 'pr-16 '
-                                                        : 'pl-16 '}`}
+                                            className={`flex 
+
+                                                ${mess?.author?._id ? (
+                                                    mess?.author?._id == userContext._id ?
+                                                        'justify-end pl-16' : 'pr-16'
+                                                ) : (
+                                                    mess?.sender == userContext._id ?
+                                                        'justify-end pl-16' : 'pr-16'
+                                                )
+                                                }
+                                              `}
 
                                             onMouseEnter={() => {
-                                                if ((mess?.author?._id !== mess?.receiver && mess.receiver !== userContext._id) || (mess?.author?._id == mess.receiver)) {
+                                                if (( mess?.author?._id == userContext._id) || (mess?.sender == userContext._id)) {
                                                     setHoveredMessageId(mess._id);
                                                 }
                                             }} // Set the hovered message
@@ -356,11 +358,22 @@ const MessengerInbox = () => {
                                                 <div
                                                     className={clsx(
                                                         ' rounded-lg shadow-md shadow-slate-300 pb-2 border min-w-28 min-h-11 my-2 ',
-                                                        mess?.author?._id === mess?.receiver
-                                                            ? 'bg-blue-100 '
-                                                            : mess.receiver === userContext._id
-                                                                ? 'bg-white '
-                                                                : 'bg-blue-100 '
+
+                                                        // mess?.sender == userContext._id && mess?.receiver != userContext._id && !mess?.author ?
+                                                        //     'bg-blue-100 1' :
+                                                        //     mess?.sender != userContext._id && mess?.receiver == userContext._id && !mess?.author ?
+                                                        //         'bg-white 2' :
+                                                        //         mess?.author?._id == mess?.sender && mess?.sender == userContext._id ?
+                                                        //             'bg-blue-100 3' :
+                                                        //             mess?.author?._id == mess?.sender && mess?.sender != userContext._id &&
+                                                        //             'bg-white 4'
+                                                        mess?.author?._id ? (
+                                                            mess?.author?._id == userContext._id ?
+                                                                'bg-blue-100' : 'bg-white'
+                                                        ) : (
+                                                            mess?.sender == userContext._id ?
+                                                                'bg-blue-100' : 'bg-white'
+                                                        )
                                                     )}
                                                 >
                                                     {/* <div>Recall</div> */}
