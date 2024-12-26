@@ -59,7 +59,7 @@ const removeMemberGroup = async (idgr, listmember) => {
 };
 const removeGroup = async (idgr) => {
     try {
-        const response = await axios.put(`${url}/chat/removeMemBerInGroup/${idgr}`, 
+        const response = await axios.delete(`${url}/chat/deleteGroup/${idgr}`, 
             {
                 headers: { Authorization: `Bearer ${authToken.getToken()}` },
             }
