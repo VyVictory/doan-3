@@ -39,6 +39,19 @@ const ModalUpdateProfile = () => {
         setFormData({ ...formData, [name]: value });
         validateField(name, value);
     };
+    //validate birthday
+    const validateBirthday = (birthday) => {
+        const today = new Date();
+        const birthDate = new Date(birthday);
+        const age = today.getFullYear() - birthDate.getFullYear();
+        const monthDifference = today.getMonth() - birthDate.getMonth();
+
+        if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+
+        return age >= 16;
+    };
 
     //validate
     const validateField = (name, value) => {
@@ -83,9 +96,21 @@ const ModalUpdateProfile = () => {
         setErrors(newErrors);
     };
 
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const newErrors = { ...errors };
+
+        if (!validateBirthday(formData.birthday)) {
+            newErrors.birthday = 'Tuổi phải lớn hơn hoặc bằng 16.';
+            setErrors(newErrors);
+            return;
+        } else {
+            delete newErrors.birthday;
+        }
         try {
+
             setIsLoading(true)
             await updateInformation(formData.birthday, formData.gender, formData.address, formData.email);
             setAlertVisible(true)
@@ -160,6 +185,7 @@ const ModalUpdateProfile = () => {
                                             className="block w-full rounded-md border-0 py-3 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                         />
                                     </div>
+                                    {errors.birthday && <div className="text-red-500">{errors.birthday}</div>}
                                 </div>
 
                                 <div className="col-span-full">
