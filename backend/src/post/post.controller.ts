@@ -41,6 +41,20 @@ export class PostController {
         return currentUser;
     }
 
+    @Put('settingprivacy/:postId')
+    @UseGuards(AuthGuardD)
+    async settingPrivacy(
+        @CurrentUser() currentUser: User,
+        @Param('postId') postId: string,
+        @Body() settingPrivacyDto: settingPrivacyDto
+    ) {
+        if(!currentUser){
+            throw new HttpException('User not found or not authenticated', HttpStatus.UNAUTHORIZED);
+        }
+        
+        return this.postService.settingPrivacy(postId, settingPrivacyDto, currentUser._id.toString());
+    }
+
     @Put('updatePost/:postid')
     @UseGuards(AuthGuardD)
     @UseInterceptors(FileFieldsInterceptor([{ name: 'files', maxCount: 10 }]))
@@ -55,7 +69,7 @@ export class PostController {
         }
         return await this.postService.updatePost(postid, updatePostDto, currentUser._id.toString(), files?.files);
     }
-    
+
 
     @Delete('deletePost/:postid')
     @UseGuards(AuthGuardD)
@@ -76,26 +90,26 @@ export class PostController {
         if (!currentUser) {
             throw new HttpException('User not found or not authenticated', HttpStatus.UNAUTHORIZED);
         }
-        
+
         const notification = {
             title: 'new like in post',
             body: `new like from ${currentUser.firstName} ${currentUser.lastName}`,
-            avatart : currentUser.avatar,
+            avatart: currentUser.avatar,
             data: {
-              postId: id,
-              userId: currentUser._id.toString(),
-              type: 'like',
+                postId: id,
+                userId: currentUser._id.toString(),
+                type: 'like',
             },
         }
         try {
-            const {authorId, post} = await this.postService.likePost(id, currentUser._id.toString());
-            this.eventService.notificationToUser(authorId, 'new like in post', notification );
+            const { authorId, post } = await this.postService.likePost(id, currentUser._id.toString());
+            this.eventService.notificationToUser(authorId, 'new like in post', notification);
             return post;
         } catch (error) {
             throw new HttpException('An error occurred while liking post', HttpStatus.INTERNAL_SERVER_ERROR);
-            
+
         }
-        
+
     }
 
     @Put(':id/unlike')
@@ -128,7 +142,7 @@ export class PostController {
         return await this.postService.undislikePost(id, currentUser._id.toString());
     }
 
-   
+
     @Get('crpost')
     @UseGuards(AuthGuardD)
     async getCurrentPost(
@@ -136,7 +150,7 @@ export class PostController {
     ) {
         return this.postService.findPostCurrentUser(currentUser._id.toString())
     }
- 
+
     @Get(':postId/privacy')
     @UseGuards(AuthGuardD)
     async findPostPrivacy(
@@ -146,26 +160,11 @@ export class PostController {
         return this.postService.findPostPrivacy(postId, currentUser._id.toString());
     }
 
-    @Put('settingprivacy/:postId')
-    @UseGuards(AuthGuardD)
-    async settingPrivacy(
-        @CurrentUser() currentUser: User,
-        @Param('postId') postId: string,
-        @Body() settingPrivacyDto: settingPrivacyDto
-    ) {
-        if(!currentUser){
-            throw new HttpException('User not found or not authenticated', HttpStatus.UNAUTHORIZED);
-        }
-        
-        return this.postService.settingPrivacy(postId, settingPrivacyDto, currentUser._id.toString());
-    }
-    
-
     @Get('getHomeFeed')
     @UseGuards(AuthGuardD)
     async getHomeFeed(@CurrentUser() currentUser: User) {
-      const currentUserId = currentUser ? currentUser._id.toString() : undefined;
-      return this.postService.getHomeFeed(currentUserId);
+        const currentUserId = currentUser ? currentUser._id.toString() : undefined;
+        return this.postService.getHomeFeed(currentUserId);
     }
 
     @Get('friend/:userId')
@@ -177,7 +176,7 @@ export class PostController {
         try {
             const posts = await this.postService.getPostsByUser(userId, currentUser._id.toString() || null);
             return posts;
-        }   catch (error) {
+        } catch (error) {
             throw new HttpException('An error occurred while fetching posts  ????', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -187,9 +186,9 @@ export class PostController {
     async getPostByContent(
         @Param('content') content: string,
         @CurrentUser() currentUser: User
-    ){
+    ) {
         try {
-            if(!currentUser){
+            if (!currentUser) {
                 throw new HttpException('User not found or not authenticated', HttpStatus.UNAUTHORIZED);
             }
             return await this.postService.getPostByContent(content);

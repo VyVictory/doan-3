@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { getDetailPost, updatePost } from '../../../service/PostService';
+import { getDetailPost, updatePost, updatePrivacyPost } from '../../../service/PostService';
 import { profileUserCurrent } from '../../../service/ProfilePersonal';
 import PublicIcon from '@mui/icons-material/Public'; // MUI's "Public" icon
 import GroupIcon from '@mui/icons-material/Group'; // MUI's "Group" icon for Friends
@@ -10,6 +10,8 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'; // MUI's drop
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import clsx from 'clsx';
 import { PhotoIcon } from '@heroicons/react/24/solid'
+import { toast } from 'react-toastify';
+import NotificationCss from '../../../module/cssNotification/NotificationCss';
 
 export default function UpdatePost() {
     const [posts, setPosts] = useState([]);
@@ -19,6 +21,7 @@ export default function UpdatePost() {
     const [rows, setRows] = useState(3);
     const [privacy, setPrivacy] = useState('');
     const [filePreview, setFilePreview] = useState(null);
+    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         content: '',
         files: null,
@@ -33,6 +36,7 @@ export default function UpdatePost() {
                 const response = await getDetailPost(id)
                 if (response) {
                     setPosts(response.data)
+                    setVisibility(response.data.privacy);
                     const responseUserPersonal = await profileUserCurrent()
                     setUserLogin(responseUserPersonal.data)
                 }
@@ -61,7 +65,7 @@ export default function UpdatePost() {
                 // setDataPrivacy('private')
                 return <LockIcon className="text-gray-500" />;
             default:
-                return <PublicIcon className="text-blue-500" />;
+                return null;
         }
     };
 
@@ -105,7 +109,7 @@ export default function UpdatePost() {
             setFormData({
                 content: posts.content || "",
                 files: posts.files || null,
-                privacy: posts.privacy || "",
+                privacy: posts.privacy
             });
         }
     }, [posts]);
@@ -113,17 +117,25 @@ export default function UpdatePost() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            setLoading(true);
             const response = await updatePost(id, formData.content);
-            if (response) {
-                alert('Chỉnh sửa bài viết thành công');
-                window.location.href = `/post/${id}`;
+            const responsePrivacy = await updatePrivacyPost(id, formData.privacy);
+            if (response || responsePrivacy) {
+                toast.success('Chỉnh sửa thành công.', NotificationCss.Success);
+                // window.location.href = `/post/${id}`;
             }
-
+            else {
+                toast.error('Chỉnh sửa thất bại.', NotificationCss.Error);
+            }
         } catch (error) {
             console.error('Error updating post:', error);
+        } finally {
+            setTimeout(() => {
+                window.location.href = `/post/${id}`;
+            }, 1000)
         }
     }
-    console.log(formData.content)
+    console.log(formData.privacy)
 
     return (
         <div className="bg-background text-primary-foreground min-h-screen flex items-center justify-center">
@@ -146,13 +158,15 @@ export default function UpdatePost() {
                                 <button
                                     type='button'
                                     className="flex items-center p-2 rounded-full border border-gray-200 text-gray-700 hover:bg-gray-200"
-                                    // onClick={() => setShowDropdown(!showDropdown)} // Toggle dropdown on click
+                                    onClick={() => setShowDropdown(!showDropdown)} // Toggle dropdown on click
 
                                     aria-label="Edit privacy. Sharing with Public."
                                 >
 
                                     {renderVisibilityIcon(visibility)} {/* Dynamically render icon */}
-                                    <span className="ml-1 text-sm">{visibility}</span>
+                                    <span className="ml-1 text-sm">
+                                        <span className="ml-1 text-sm">{visibility}</span>
+                                    </span>
                                     <ArrowDropDownIcon fontSize="small" />
                                 </button>
 
