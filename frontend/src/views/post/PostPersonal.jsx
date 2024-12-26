@@ -15,7 +15,7 @@ const uri = Apiuri.Apiuri()
 export default function PostPersonal({ user }) {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    const [copied, setCopied] = useState(false);
     useEffect(() => {
         const fetchdata = async () => {
             setLoading(true);
@@ -113,6 +113,20 @@ export default function PostPersonal({ user }) {
                 return <span>{privacy}</span>;
         }
     };
+    //share
+    const handleCopyLink = (postId) => {
+        const baseUrl = window.location.origin;
+        const link = `${baseUrl}/post/${postId}`; // Use the base URL
+        navigator.clipboard
+            .writeText(link)
+            .then(() => {
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000); // Reset trạng thái sau 2 giây
+            })
+            .catch((err) => {
+                console.error("Không thể sao chép liên kết: ", err);
+            });
+    };
 
     return (
         <>
@@ -163,7 +177,9 @@ export default function PostPersonal({ user }) {
                                         <ChatBubbleLeftIcon className="size-5" />
                                         <span>{post.comments.length}</span>
                                     </Link>
-                                    <button className={"flex items-end gap-1"}>
+                                    <button
+                                        onClick={() => handleCopyLink(post._id)}
+                                        className={"flex items-end gap-1"}>
                                         <ShareIcon className="size-5" />
                                     </button>
                                 </div>

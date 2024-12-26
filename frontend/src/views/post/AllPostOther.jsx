@@ -13,6 +13,7 @@ import FilePreview from '../../components/fileViewer';
 export default function AllPostOther({ user }) {
     const [posts, setPosts] = useState([]);
     const [userLogin, setUserLogin] = useState({})
+    const [copied, setCopied] = useState(false);
     const [currentIndexes, setCurrentIndexes] = useState({});
     const { id } = useParams();
     const { setShowZom } = useUser()
@@ -127,6 +128,21 @@ export default function AllPostOther({ user }) {
             [post._id]: (prevIndexes[post._id] + 1) % post.img.length
         }));
     };
+
+    //share
+    const handleCopyLink = (postId) => {
+        const baseUrl = window.location.origin;
+        const link = `${baseUrl}/post/${postId}`; // Use the base URL
+        navigator.clipboard
+            .writeText(link)
+            .then(() => {
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000); // Reset trạng thái sau 2 giây
+            })
+            .catch((err) => {
+                console.error("Không thể sao chép liên kết: ", err);
+            });
+    };
     console.log(posts)
     return (
         <>
@@ -147,6 +163,7 @@ export default function AllPostOther({ user }) {
                                             <span className='text-xs'>{formatPrivacy(post.privacy)}</span>
                                         </div>
                                     </div>
+
                                     <p className='break-words w-screen max-w-xl '>{post.content}</p>
                                 </article>
                                 <DropdownOtherPost postId={post._id} />
@@ -157,7 +174,7 @@ export default function AllPostOther({ user }) {
                                         <button onClick={() => handlePrev(post)} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">‹</button>
                                     )}
                                     {post.img.map((image, index) => (
-                                 <div className="carousel-item w-full items-center">
+                                        <div className="carousel-item w-full items-center">
                                             <FilePreview file={image} />
                                         </div>
                                     ))}
@@ -188,7 +205,9 @@ export default function AllPostOther({ user }) {
                                     <ChatBubbleLeftIcon className="size-5" />
                                     <span>{post.comments.length}</span>
                                 </Link>
-                                <button className={"flex items-end gap-1"}>
+                                <button
+                                    onClick={() => handleCopyLink(post._id)}
+                                    className={"flex items-end gap-1"}>
                                     <ShareIcon className="size-5" />
                                 </button>
                             </div>
