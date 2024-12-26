@@ -94,6 +94,7 @@ const ModalAddGroup = ({ openModal, setOpenModal }) => {
                 setOpenModal();
                 setSelectedFriends([]); // Clear selection
                 navigate(`/messenger/group/?idgroup=${response.data._id}`);
+                window.location.reload();
                 setSendingAddGroup(true)
             } else {
                 setSendingAddGroup(true)
@@ -237,13 +238,12 @@ const ModalAddGroup = ({ openModal, setOpenModal }) => {
                                     onClick={handleCloseModal}
                                     className="bg-gray-300 mr-2 w-24 p-2 rounded-lg text-black">Hủy</button>
                                 <button
-                                    onClick={() => {  handCreateGroup() }}
+                                    onClick={() => { handCreateGroup() }}
                                     className="bg-blue-500 w-24 p-2 rounded-lg text-white">Tạo nhóm</button>
                             </div>
                             :
-                            <div className="w-full border-t-2 p-2 flex justify-end">
-                                <button
-                                    className="bg-blue-500 w-24 p-2 rounded-lg text-white">Đang tạo nhóm ...</button>
+                            <div className='flex flex-row justify-center items-center pr-2'>
+                                <div className="spinner-border animate-spin inline-block w-4 h-4 border-4 border-sky-600 rounded-full mr-2"></div>đang xử lý...
                             </div>
                     }
 
