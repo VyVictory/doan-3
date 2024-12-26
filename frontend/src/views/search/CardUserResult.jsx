@@ -94,13 +94,13 @@ export default function CardUserResult({ query }) {
                         </div>
                         <div className="flex flex-col pl-2">
                             <div className="text-start font-semibold text-nowrap overflow-hidden text-ellipsis max-w-52">
-                                {userdata.firstName || ''} {userdata.lastName || ''}  {userdata.status}
+                                {userdata.firstName || ''} {userdata.lastName || ''}
                             </div>
                             {/* Bạn chung */}
                         </div>
                     </div>
 
-                 <ButtonStatus _id="userId123" status="no friend" />
+                    <ButtonStatus _id="userId123" status="no friend" />
 
                 </button>
             ))}

@@ -8,7 +8,7 @@ export default function ModalUpdateAVT() {
     const [dataProfile, setDataProfile] = useState({})
     const [avatar, setAvatar] = useState(null);
     const [upAvatar, setUpAvatar] = useState(null);
-
+    const [alertVisible, setAlertVisible] = useState(false);
     const [loading, setLoading] = useState(false)
     const [bg, setBg] = useState(null);
     const [upBg, setUpBg] = useState(null);
@@ -84,14 +84,14 @@ export default function ModalUpdateAVT() {
             if (upBg) {
                 await uploadBackground(upBg);
             }
-            setLoading(false)
-            alert('Cập nhật thành công');
-
+            setAlertVisible(true)
         } catch (error) {
             console.error('Failed to update name', error);
         }
         finally {
-            window.location.reload()
+            setTimeout(() => {
+                window.location.reload()
+            }, 3000);
         }
     };
 
@@ -165,7 +165,7 @@ export default function ModalUpdateAVT() {
                         />
                     </div>
                 </div>
-                <div className="col-span-full">
+                <div className="col-span-full mb-4">
                     <label htmlFor="photo" className="block text-sm font-medium leading-6 text-gray-900">
                         Ảnh đại diện
                     </label>
@@ -193,6 +193,14 @@ export default function ModalUpdateAVT() {
 
                     </div>
                 </div>
+                {alertVisible && (
+                    <div role="alert" className="alert alert-success">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>Cập nhật thành công!</span>
+                    </div>
+                )}
                 <div className="modal-action">
                     {loading ? <p>Loading...</p> :
                         <div className='flex gap-4'>
