@@ -9,6 +9,7 @@ import userImg from '../../img/user.png';
 import user from '../../service/user';
 import { debounce } from 'lodash';
 import ButtonStatus from './buttonStatus';
+import CardUserList from './userCard/cardUserList';
 
 export default function CardUserResult({ query }) {
 
@@ -80,29 +81,7 @@ export default function CardUserResult({ query }) {
     return (
         <>
             {userdatas.map(userdata => (
-                <button
-                    onClick={() => handDetailUser(userdata._id)}
-                    className="w-full flex flex-row rounded-lg hover:bg-gray-100 justify-between items-center p-2 max-h-[80px] sm:max-h-[60px] md:max-h-[70px] lg:max-h-[80px]"
-                >
-                    <div className="flex flex-row items-center">
-                        <div>
-                            <img
-                                className="w-14 h-14 rounded-full"
-                                src={userdata.avatar || userImg}
-                                alt=''
-                            />
-                        </div>
-                        <div className="flex flex-col pl-2">
-                            <div className="text-start font-semibold text-nowrap overflow-hidden text-ellipsis max-w-52">
-                                {userdata.firstName || ''} {userdata.lastName || ''}
-                            </div>
-                            {/* Bạn chung */}
-                        </div>
-                    </div>
-
-                    <ButtonStatus _id="userId123" status="no friend" />
-
-                </button>
+                <CardUserList userdata={userdata} />
             ))}
         </>
     )

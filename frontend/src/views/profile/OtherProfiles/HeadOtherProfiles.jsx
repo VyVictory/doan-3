@@ -13,12 +13,15 @@ import NotificationCss from '../../../module/cssNotification/NotificationCss';
 import { useUser } from '../../../service/UserContext';
 export default function HeadOtherProfiles({ dataProfile }) {
     const navigate = useNavigate();
-    const { userContext } = useUser();
+    const { userContext, setShowZom } = useUser();
     const [friendStatus, setFriendStatus] = useState(null);
     const [loading, setLoading] = useState(true);
     const [loadingRequest, setLoadingRequest] = useState(true);
     console.log(userContext._id)
     console.log(dataProfile._id)
+    const openModal = (file) => {
+        setShowZom({ file: file, show: true });
+    };
     useEffect(() => {
         const fetchFriendStatus = async () => {
             if (dataProfile?._id) {
@@ -105,6 +108,7 @@ export default function HeadOtherProfiles({ dataProfile }) {
                             })`,
                         backgroundPosition: '10%',
                     }}
+                    onClick={()=>openModal(dataProfile?.coverImage||'https://mcdn.wallpapersafari.com/medium/91/45/MehDBZ.jpg')}
                 >
 
                 </div>
@@ -115,12 +119,13 @@ export default function HeadOtherProfiles({ dataProfile }) {
                         className="rounded-full h-40 w-40  mb-2 "
 
                         alt=""
+                        onClick={()=>openModal(dataProfile?.coverImage||'https://th.bing.com/th/id/OIP.PKlD9uuBX0m4S8cViqXZHAHaHa?rs=1&pid=ImgDetMain')}
                         src={`${dataProfile && dataProfile.avatar
                             ? dataProfile.avatar
-                            : 'https://th.bing.com/th/id/OIP.PKlD9uuBX0m4S8cViqXZHAHaHa?rs=1&pid=ImgDetMain'
+                            : 'https://th.bing.com/th/id/OIP.PKlD9uuBX0m4S8cViqXZHAHaHa?rs=1&pid=ImgDetMain.png'
                             }`}
                     />
-                    <h1 className="font-bold text-2xl text-center mb-2">
+                    <h1 className="font-bold text-2xl text-center mb-2" style={{zIndex:'20px'}}>
                         {dataProfile?.lastName} {dataProfile?.firstName}
                     </h1>
                     <div className="flex gap-2 justify-center mb-5">
