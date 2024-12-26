@@ -67,7 +67,7 @@ export default function Bookmark() {
                                         src={post?.img.length > 0 ? post?.img : "https://th.bing.com/th/id/R.218efd88e8e82a6843e43af00c39f00f?rik=mgiu7r8uAEeNTA&pid=ImgRaw&r=0"}
                                         alt='' />
                                     <div>
-                                        <span>bài viết đã lưu của: {post.img.length}</span>
+                                        <span>bài viết đã lưu của:</span>
                                         <Link onClick={() => handDetailUser(post.author?._id)}
                                             className='font-semibold link-primary'> {post.author.firstName} {post.author.lastName}</Link>
                                     </div>
