@@ -77,7 +77,7 @@ const CardUserList = ({ userdata: initialUserData }) => {
                 <div className="flex flex-row items-center">
                     <div>
                         <img
-                            className="w-14 h-14 rounded-full"
+                            className="w-14 h-14 rounded-full border-[1px] border-black cursor-pointer"
                             src={userdata.avatar || userImg}
                             alt=''
                         />
@@ -110,7 +110,7 @@ const CardUserList = ({ userdata: initialUserData }) => {
                                         }
                                     }
                                 }}
-                                className={`rounded-xl p-2 min-w-24 shadow-sm shadow-gray-300 ${userdata.status === 'friend'||userdata.status === 'waiting'||userdata.status === 'pending'
+                                className={`rounded-xl p-2 min-w-24 shadow-sm shadow-gray-300 ${userdata.status === 'friend' || userdata.status === 'waiting' || userdata.status === 'pending'
                                     ? 'hover:text-red-600 text-red-500 hover:bg-red-200 bg-red-100'
                                     : 'hover:text-blue-600 text-blue-500 hover:bg-blue-200 bg-blue-100'
                                     }`}
