@@ -13,11 +13,19 @@ import { profileUserCurrent } from '../service/ProfilePersonal';
 
 export default function Layout() {
     const navigate = useNavigate();
-    const [userCurrent, setUserCurrent] = useState({}); // Declare state for user data
-
-    socket.on("connect", () => {
-        console.log("Connected to WebSocket server with ID:", socket.id);
-    });
+    const [userCurrent, setUserCurrent] = useState({});
+    const [disconnect, setDisconnect] = useState(true);
+    if (disconnect == true) {
+        socket.on("connect", () => {
+            console.log("Connected to WebSocket server with ID:", socket.id);
+            setDisconnect(false)
+        });
+    } else {
+        socket.on("disconnect", () => {
+            console.log("Disconnected from server");
+            setDisconnect(true)
+        });
+    }
 
     const getDataUser = async () => {
         try {
