@@ -47,6 +47,7 @@ export default function Bookmark() {
     const handDetailPost = async (id) => {
         window.location.href = `/post/${id}`;
     };
+    console.log(data.img);
     return (
         <div className='grid place-items-center mt-5 gap-4'>
             <h1 className='text-2xl font-semibold '>Tất cả bài viết đã lưu</h1>
@@ -59,13 +60,14 @@ export default function Bookmark() {
                             <div key={index} className="card bg-base-100 w-[400px] shadow-xl border-[1px]">
                                 <div className="card-body">
                                     <h2 className="card-title">{post.content ? post.content : "không có nội dung"}</h2>
+
                                     <img
-                                        className='rounded-sm'
+                                        className='rounded-sm object-contain'
                                         style={{ width: '100%', height: '200px', objectFit: 'cover' }}
-                                        src={`${post.img ? post?.img : "https://thumbs.dreamstime.com/b/no-image-available-icon-177641087.jpg"}`}
+                                        src={post?.img.length > 0 ? post?.img : "https://th.bing.com/th/id/R.218efd88e8e82a6843e43af00c39f00f?rik=mgiu7r8uAEeNTA&pid=ImgRaw&r=0"}
                                         alt='' />
                                     <div>
-                                        <span>bài viết đã lưu của:</span>
+                                        <span>bài viết đã lưu của: {post.img.length}</span>
                                         <Link onClick={() => handDetailUser(post.author?._id)}
                                             className='font-semibold link-primary'> {post.author.firstName} {post.author.lastName}</Link>
                                     </div>

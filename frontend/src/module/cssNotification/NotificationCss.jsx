@@ -23,8 +23,21 @@ function Success() {
         theme: "colored",
     };
 }
+function Mess() {
+    return {
+        position: "top-right",
+        autoClose: 500,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+    };
+}
 
 export default { 
     Fail,
     Success,
+    Mess,
 };

@@ -7,7 +7,7 @@ import { useContext } from 'react';
 import { useUser } from '../../../service/UserContext';
 import Loading from '../../../components/Loading';
 const CardUserList = ({ userdata: initialUserData }) => {
-    const { userContext } = useUser();
+
     const [userdata, setUserdata] = useState(initialUserData);
     const [seding, setSending] = useState(true)
     // WebSocket message handler
@@ -51,7 +51,8 @@ const CardUserList = ({ userdata: initialUserData }) => {
         setSending(false)
         try {
             const rs = await friend.cancelFriendRequest(id);
-            if (rs) {
+            console.log(rs)
+            if (rs.success) {
                 setUserdata((prev) => ({ ...prev, status: 'no friend' }));
                 toast.success(rs?.message || 'Đã hủy yêu cầu kết bạn', NotificationCss.Success);
             } else {
@@ -66,7 +67,7 @@ const CardUserList = ({ userdata: initialUserData }) => {
     const handDetailUser = (id) => {
         window.location.href = `/user/${id}`;
     };
-
+    console.log(userdata)
     return (
         <>
             <button
@@ -109,17 +110,19 @@ const CardUserList = ({ userdata: initialUserData }) => {
                                         }
                                     }
                                 }}
-                                className={`rounded-xl p-2 min-w-24 shadow-sm shadow-gray-300 ${userdata.status === 'friend'
+                                className={`rounded-xl p-2 min-w-24 shadow-sm shadow-gray-300 ${userdata.status === 'friend'||userdata.status === 'waiting'||userdata.status === 'pending'
                                     ? 'hover:text-red-600 text-red-500 hover:bg-red-200 bg-red-100'
                                     : 'hover:text-blue-600 text-blue-500 hover:bg-blue-200 bg-blue-100'
                                     }`}
                             >
                                 <strong className="text-sm">
                                     {userdata.status === 'no friend'
-                                        ? 'Add Friend'
+                                        ? 'Thêm bạn'
                                         : userdata.status === 'friend'
-                                            ? 'Cancel Friend'
-                                            : 'Cancel Request'}
+                                            ? 'Xóa bạn'
+                                            : userdata.status === 'pending'
+                                                ? 'Từ chối'
+                                                : 'Hủy yêu cầu kết bạn'}
                                 </strong>
                             </button>
 

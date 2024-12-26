@@ -4,12 +4,12 @@ import Apiuri from './apiuri';
 const url = Apiuri.Apiuri()
 
 const createGroup = async (groupName, members) => {
-    if (groupName.length > 20) {
+    if (groupName.length > 50) {
         return { success: false, data: 'Tên dài quá nhập lại đi' };
     } else {
         try {
             // Convert members array to an object as expected by the API
-            const participants = { members };
+            const participants = members;
 
             const response = await axios.post(
                 `${url}/chat/creategroup`,
@@ -41,6 +41,20 @@ const addMemberGroup = async (idgr, listmember) => {
         return { success: true, data: response.data };
     } catch (response) {
         return { success: false, data: response.response.data.message };
+    }
+};
+const removeMemberGroup = async (idgr, listmember) => {
+    try {
+        const response = await axios.put(`${url}/chat/removeMemBerInGroup/${idgr}`, {
+            participants: listmember
+        },
+            {
+                headers: { Authorization: `Bearer ${authToken.getToken()}` },
+            }
+        );
+        return { success: true, data: response.data };
+    } catch (response) {
+        return { success: false, data: response.response.data };
     }
 };
 const getMyListChat = async () => {
@@ -125,4 +139,5 @@ export default {
     getMessengerGroup,
     sendMessGroup,
     addMemberGroup,
+    removeMemberGroup,
 }

@@ -10,6 +10,7 @@ import DropdownPostPersonal from './components/DropdownPostPersonal';
 import { format, differenceInMinutes, differenceInHours, differenceInDays } from 'date-fns';
 import Loading from '../../components/Loading';
 import Apiuri from '../../service/apiuri';
+import FilePreview from '../../components/fileViewer';
 const uri = Apiuri.Apiuri()
 export default function PostPersonal({ user }) {
     const [posts, setPosts] = useState([]);
@@ -137,8 +138,9 @@ export default function PostPersonal({ user }) {
                                     </article>
                                     <DropdownPostPersonal postId={post._id} />
                                 </div>
+                                {/* {post.img[0]} */}
                                 {post.img.length > 0 && (
-                                    <img className='rounded-xl max-h-[300px]' src={post.img[0]} alt="Post visual" />
+                                    <FilePreview file={post.img} />
                                 )}
                                 <div className='flex justify-between'>
                                     <div className='flex gap-2'>

@@ -9,6 +9,7 @@ import { getAllOtherPosts } from '../../service/OtherProfile';
 import { profileUserCurrent } from '../../service/ProfilePersonal';
 import DropdownOtherPost from './components/DropdownOtherPost';
 import { useUser } from '../../service/UserContext';
+import FilePreview from '../../components/fileViewer';
 export default function AllPostOther({ user }) {
     const [posts, setPosts] = useState([]);
     const [userLogin, setUserLogin] = useState({})
@@ -126,7 +127,7 @@ export default function AllPostOther({ user }) {
             [post._id]: (prevIndexes[post._id] + 1) % post.img.length
         }));
     };
-
+    console.log(posts)
     return (
         <>
             {
@@ -155,37 +156,17 @@ export default function AllPostOther({ user }) {
                                     {post.img.length > 1 && (
                                         <button onClick={() => handlePrev(post)} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">‹</button>
                                     )}
-                                    <div className="carousel-item w-full">
-                                        {post.img[currentIndexes[post._id] || 0].endsWith('.mp4') ? (
-                                            <video
-                                                controls
-                                                className="w-full"
-                                                alt="Post visual"
-                                                style={{ maxWidth: '100%', maxHeight: 'auto' }}
-                                            >
-                                                <source
-                                                    src={post.img[currentIndexes[post._id] || 0]}
-                                                    type="video/mp4"
-                                                />
-                                                Your browser does not support the video tag.
-                                            </video>
-                                        ) : (
-                                            <img
-                                                src={post.img[currentIndexes[post._id] || 0]}
-                                                onClick={() => {
-                                                    openModal(post.img[currentIndexes[post._id] || 0])
-                                                }}
-                                                className="w-full"
-                                                alt="Post visual"
-                                            />
-                                        )}
-                                    </div>
-
+                                    {post.img.map((image, index) => (
+                                 <div className="carousel-item w-full items-center">
+                                            <FilePreview file={image} />
+                                        </div>
+                                    ))}
                                     {post.img.length > 1 && (
                                         <button onClick={() => handleNext(post)} className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">›</button>
                                     )}
                                 </div>
                             )}
+
                             <div className='flex justify-between'>
                                 <div className='flex gap-2'>
                                     <button onClick={() => handleLikeClick(post._id)} className={"flex items-end gap-1"}>

@@ -7,7 +7,7 @@ const Apiuri = () => {
     return url
 }
 const Socketuri = () => {
-    const url ="wss://social-network-jbtx.onrender.com";
+    const url = "wss://social-network-jbtx.onrender.com";
     // const url = "http://localhost:3001";
     return url
 }

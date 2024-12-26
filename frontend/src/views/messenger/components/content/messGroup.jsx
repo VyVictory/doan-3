@@ -3,17 +3,16 @@ import { useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 import { toast } from 'react-toastify';
 
-import { PaperAirplaneIcon } from '@heroicons/react/16/solid';
+import { PaperAirplaneIcon, ArrowDownIcon } from '@heroicons/react/16/solid';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Box, IconButton } from '@mui/material';
 import { ChevronRightIcon, ChevronLeftIcon, ArrowUturnLeftIcon, PhotoIcon } from "@heroicons/react/24/solid";
 import CloseIcon from '@mui/icons-material/Close';
-import fetchAuthor from './fetchAuthor';
+
 
 import imgUser from '../../../../img/user.png';
 import messenger from '../../../../service/messenger';
 import { useUser } from '../../../../service/UserContext';
 import { format } from 'date-fns';
-import useWebSocket from '../../../../service/webSocket/usewebsocket';
 import Loading from '../../../../components/Loading';
 import { MessengerContext } from '../../layoutMessenger';
 import NotificationCss from '../../../../module/cssNotification/NotificationCss';
@@ -21,6 +20,7 @@ import group from '../../../../service/group';
 import { io } from 'socket.io-client';
 import authToken from '../../../../components/authToken';
 import apiuri from '../../../../service/apiuri';
+import FileViewChane from '../../../../components/fileViewChane';
 
 
 const MessengerInbox = () => {
@@ -33,22 +33,28 @@ const MessengerInbox = () => {
     const [loading, setLoading] = useState(true);
     const [loadingHeader, setLoadingHeader] = useState(true);
     const [loadingMess, setLoadingMess] = useState(true);
+    const [noRoll, setNoRoll] = useState(false);
     const [sending, setSending] = useState(false); // Added sending state
     const [message, setMessage] = useState('');
     const [messengerdata, setMessengerdata] = useState([]);
     const [dataGroup, setDataGroup] = useState([]);
-    const [error, setError] = useState(null);
     const messagesEndRef = useRef(null);
-    const [socket, setSocket] = useState(null); // Trạng thái kết nối socket
-    const userCache = {}; // Cache thông tin người dùng
+    const [socket, setSocket] = useState(null);
 
 
 
     //file
     const [file, setFile] = useState(null);
     const [preview, setPreview] = useState(null);
+    const [previewFull, setPreviewFull] = useState(null);
     const [token, setToken] = useState(null);
     const { setShowZom } = useUser();
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        setIdgroup(queryParams.get('idgroup'));
+        setDataGroup([])
+        setLoadingMess(false)
+    }, [location]);
     const openModal = (file) => {
         setShowZom({ file: file, show: true });
     };
@@ -56,12 +62,8 @@ const MessengerInbox = () => {
     const [messageToRevoke, setMessageToRevoke] = useState(null); // Store message to be revoked
 
     const [hoveredMessageId, setHoveredMessageId] = useState(null);
-    useEffect(() => {
-        const queryParams = new URLSearchParams(location.search);
 
-        setIdgroup(queryParams.get('idgroup'));
 
-    }, [location]);
     const handleRevokedClick = async (messageId) => {
         setMessageToRevoke(messageId); // Store the message ID to revoke
         setOpenDialog(true); // Open the confirmation dialog
@@ -73,15 +75,17 @@ const MessengerInbox = () => {
             const res = await messenger.revokedMesage(messageToRevoke); // API call to revoke the message
             if (res.success) {
                 setMessengerdata((prevMessages) =>
-                    prevMessages.filter((message) => message._id !== messageToRevoke)
+                    prevMessages.map((message) =>
+                        message._id === messageToRevoke ? { ...message, content: null, mediaURL: null } : message
+                    )
                 );
                 toast.success(res?.message || 'Bạn vừa thu hồi tin nhắn thành công', NotificationCss.Success);
             } else {
-                console.error("Failed to revoke message:", res);
+                console.log("Failed to revoke message:", res);
                 toast.error(res?.message || 'Lỗi khi thu hồi tin nhắn', NotificationCss.Fail);
             }
         } catch (error) {
-            console.error("Error revoking message:", error);
+            console.log("Error revoking message:", error);
         } finally {
             setOpenDialog(false); // Close the dialog
             setMessageToRevoke(null); // Clear the message ID
@@ -94,53 +98,19 @@ const MessengerInbox = () => {
         setOpenDialog(false); // Close the dialog
         setMessageToRevoke(null); // Clear the message ID
     };
-    const scrollToBottom = useCallback(() => {
-        if (messagesEndRef.current) {
-            messagesEndRef.current.scrollIntoView({ behavior: 'auto' }); // Cuộn đến tin nhắn cuối
-        }
-    }, []);
 
-    useEffect(() => {
-        scrollToBottom(); // Tự động cuộn mỗi khi dữ liệu tin nhắn thay đổi
-    }, [messengerdata, scrollToBottom]);
-
-
-
-    // useEffect(() => {
-    //     if (!iduser || iduser === '') {
-    //         setError('User ID is missing or invalid.');
-    //         setLoading(false);
-    //         return;
-    //     }
-    //     const fetchUserData = async () => {
-    //         try {
-    //             const res = await user.getProfileUser(iduser);
-    //             if (res.success) {
-    //                 setUserdata(res.data);
-    //             } else {
-    //                 setError('User does not exist.');
-    //             }
-    //         } catch (error) {
-    //             console.error('Error fetching user data:', error);
-    //             setError('An error occurred while fetching user data.');
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-    //     fetchUserData();
-
-    // }, [iduser]);
-    //file
     const handleFileChange = (event) => {
         const selectedFile = event.target.files[0];
         if (selectedFile) {
             setFile(selectedFile);
+            setPreviewFull(selectedFile); // Tạo URL preview cho ảnh
             setPreview(URL.createObjectURL(selectedFile)); // Tạo URL preview cho ảnh
         }
     };
     const handleRemoveFile = () => {
         setFile(null);
         setPreview(null);
+        setPreviewFull(null)
     };
 
     useEffect(() => {
@@ -154,13 +124,17 @@ const MessengerInbox = () => {
                     // console.log(res.data.messages)
                 }
             } catch (error) {
-                console.error('Error fetching messenger data:', error);
+                console.log('Error fetching messenger data:', error);
             }
         };
         fetchMessengerData();
         setContent('group');
         setLoading(false);
-        setLoadingMess(false)
+
+        setTimeout(() => {
+            setLoadingHeader(false)
+            setLoadingMess(true);
+        }, 1000);
     }, [idGroup]);
 
 
@@ -176,7 +150,7 @@ const MessengerInbox = () => {
             data: dataGroup,
             messenger: messengerdata,
         };
-        setLoadingHeader(false)
+
         setInboxData(inboxUpdate);
     }, [messengerdata, dataGroup, setInboxData]);
 
@@ -196,9 +170,9 @@ const MessengerInbox = () => {
     const onMessageReceived = useCallback(
         (newMessage) => {
             console.log(newMessage.forGroup)
-            console.log(idGroup )
+            console.log(idGroup)
             if (newMessage.forGroup == idGroup) {
-              
+
                 if (
                     newMessage
                 )
@@ -216,7 +190,21 @@ const MessengerInbox = () => {
         },
         [userContext._id, socket, idGroup]
     );
-    useWebSocket(onMessageReceived);
+    const scrollToBottom = () => {
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: 'auto' }); // Cuộn đến tin nhắn cuối
+        }
+    }
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            scrollToBottom(); // Tự động cuộn mỗi khi dữ liệu tin nhắn thay đổi
+        }, 500); // Delay of 1 second (1000ms)
+
+        return () => clearTimeout(timeout); // Cleanup the timeout on unmount or before the next invocation
+    }, [messengerdata]);
+
+    // useWebSocket(onMessageReceived);
 
     const handleSendMessenger = useCallback(async () => {
         if ((!message.trim() && !file) || sending) return;
@@ -232,9 +220,9 @@ const MessengerInbox = () => {
             } else {
                 alert(res.data.message);
             }
-            socket.emit("sendMessage", { idGroup, content: message.trim() });
+            // socket.emit("sendMessage", { idGroup, content: message.trim() });
         } catch (error) {
-            console.error("Error sending message:", error);
+            console.log("Error sending message:", error);
         } finally {
             setSending(false);
         }
@@ -249,19 +237,16 @@ const MessengerInbox = () => {
                     Authorization: `Bearer ${authToken.getToken()}`,
                 },
             });
-
-            socketConnection.on("connect", () => {
-                console.log("Connected to WebSocket with ID:", socketConnection.id);
-                socketConnection.emit("joinGroup", idGroup);
-                console.log("Connected to WebSocket Group with ID:", idGroup);
-            });
+            // socketConnection.on("connect", () => {
+            // console.log("Connected to WebSocket with ID:", socketConnection.id);
+            socketConnection.emit("joinGroup", idGroup);
+            // console.log("Connected to WebSocket Group with ID:", idGroup);
+            // });
 
             socketConnection.on("newmessagetogroup", (data) => {
                 onMessageReceived(data);
             });
-
-            setSocket(socketConnection);
-
+            // setSocket(socketConnection);
             return () => {
                 socketConnection.off("newmessagetogroup");
                 socketConnection.disconnect();
@@ -279,19 +264,17 @@ const MessengerInbox = () => {
         },
         [handleSendMessenger]
     );
-
+    if (!idGroup || idGroup.length < 1) {
+        return <div className="text-red-500 text-center mt-4"></div>;//{error}
+    }
     if (loading) {
         return <Loading />;
     }
-    if (!idGroup) {
-        return <div className="text-red-500 text-center mt-4"></div>;//{error}
-    }
-
     const groupedMessages = messengerdata.reduce((acc, message) => {
         try {
             const createdAtDate = new Date(message.createdAt);
             if (isNaN(createdAtDate)) {
-                console.warn('Invalid date:', message.createdAt);
+                // console.warn('Invalid date:', message.createdAt);
 
                 return acc; // Skip invalid dates
             }
@@ -300,20 +283,20 @@ const MessengerInbox = () => {
             if (!acc[dateKey]) acc[dateKey] = [];
             acc[dateKey].push(message);
         } catch (error) {
-            console.error('Error grouping message:', error);
+            console.log('Error grouping message:', error);
         }
         return acc;
     }, {});
 
-    // console.log(dataGroup)
     return (
         <div className="flex flex-col h-full ">
             <div className="p-2 flex border-b h-14 bg-white shadow-sm">
                 {
-                    loadingHeader ?
+                    loadingHeader === true ? (
                         <div className='w-full flex flex-row items-center'>
                             <Loading />
-                        </div> :
+                        </div>
+                    ) : (
                         <div className='w-full flex flex-row items-center'>
                             <button >
                                 {/* onClick={() => window.location.href = `/user/${userdata?._id}`} */}
@@ -323,10 +306,14 @@ const MessengerInbox = () => {
                                     alt="User Avatar"
                                 />
                             </button>
-                            <h3 className="font-semibold text-nowrap max-w-sm overflow-hidden text-ellipsis">
-                                {`${dataGroup?.group?.name ? dataGroup.group.name : 'Group No Name'}`}
+                            <h3 className="font-semibold text-nowrap max-w-sm overflow-hidden text-ellipsis flex items-center justify-center">
+                                {dataGroup?.group?.name ? dataGroup?.group?.name : <Loading />}
                             </h3>
                         </div>
+                    )
+
+
+
 
                 }
 
@@ -342,8 +329,9 @@ const MessengerInbox = () => {
             </div>
 
             <div className="overflow-y-scroll h-full p-4 pt-1 bg-gray-100">
+
                 {
-                    loadingMess == true ?
+                    loadingMess == false ?
                         <span className="loading loading-spinner loading-lg">Đang tải tin nhắn</span>
                         :
                         Object.entries(groupedMessages).map(([date, messages]) => (
@@ -437,7 +425,7 @@ const MessengerInbox = () => {
                                                         {message?.content ? message.content : 'Tin nhắn đã được thu hồi'}
                                                     </p>
                                                 ) : (
-                                                    <p className="pb-2 text-black">
+                                                    <p className="pb-2 text-black break-words max-w-prose">
                                                         {message?.content || ''}
                                                     </p>
                                                 )
@@ -448,15 +436,27 @@ const MessengerInbox = () => {
                                         </div>
                                     </div>
                                 ))}
-                            </div>
 
+                            </div>
                         ))
+
                 }
                 <div ref={messagesEndRef}></div>
+
             </div>
+            {
+                messagesEndRef.current ? <div className=' w-full flex justify-end'
+                >
+                    <button
+                        onClick={scrollToBottom}
+                        className="relative pr-28">
+                        <ArrowDownIcon
+                            style={{ marginBottom: '20px' }}
+                            className="w-12 h-12 rounded-full opacity-20 text-gray-300 hover:bg-gray-200 hover:text-gray-400 hover:opacity-100 absolute bottom-0 left-1/2 transform -translate-x-1/2" />
 
-
-
+                    </button>
+                </div> : ''
+            }
 
             <div className="w-full flex p-2 border-t-2 border-gray-200 bottom-0 flex-col">
 
@@ -464,19 +464,21 @@ const MessengerInbox = () => {
                     {
                         preview &&
                         <Box sx={{ position: 'relative', display: 'inline-block' }}>
-                            <img
-                                src={preview}
-                                alt="Preview"
-                                style={{
-                                    maxWidth: '200px',
-                                    maxHeight: '60px',
-                                    borderRadius: '8px',
-                                    border: '1px solid #ddd',
-                                }}
+
+                            <div
                                 onClick={() => {
                                     openModal(preview)
                                 }}
-                            />
+                                style={{
+                                    maxWidth: '200px',
+                                    maxHeight: '1100px',
+                                    borderRadius: '8px',
+                                    border: '1px solid #ddd',
+
+                                }}
+                            >
+                                <FileViewChane file={previewFull} />
+                            </div>
                             {/* Nút xóa file */}
                             <IconButton
                                 onClick={handleRemoveFile}
@@ -500,6 +502,7 @@ const MessengerInbox = () => {
                     </div>
                 ) :
                     <>
+
                         <div className='flex items-center w-full'>
                             <label htmlFor="file-input" className='mr-1'>
                                 <IconButton component="span">
@@ -525,9 +528,7 @@ const MessengerInbox = () => {
                             <button onClick={handleSendMessenger} className="ml-2" disabled={sending}>
                                 <PaperAirplaneIcon className="h-8 w-8 fill-sky-500" />
                             </button>
-
                         </div>
-
                     </>
                 }
                 {/* Confirmation Dialog */}

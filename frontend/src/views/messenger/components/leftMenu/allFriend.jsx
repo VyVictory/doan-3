@@ -10,6 +10,7 @@ const AllFriend = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredFriends, setFilteredFriends] = useState([]);
+    const [visibleCount, setVisibleCount] = useState(6); // Items currently visible
     const navigate = useNavigate();
 
     const handleInputChange = (e) => {
@@ -46,13 +47,17 @@ const AllFriend = () => {
                 const friendName = friend.receiver
                     ? `${friend.receiver.firstName} ${friend.receiver.lastName}`
                     : friend.sender
-                        ? `${friend.sender.firstName} ${friend.sender.lastName}`
-                        : '';
+                    ? `${friend.sender.firstName} ${friend.sender.lastName}`
+                    : "";
                 return friendName.toLowerCase().includes(searchTerm.toLowerCase());
             });
             setFilteredFriends(filtered);
         }
     }, [searchTerm, friends]);
+
+    const handleSeeMore = () => {
+        setVisibleCount((prevCount) => prevCount + 6);
+    };
 
     return (
         <>
@@ -61,7 +66,7 @@ const AllFriend = () => {
             ) : (
                 <>
                     {/* Search Input */}
-                    <div className=" border-b flex justify-between items-center h-[56px]">
+                    <div className="border-b flex justify-between items-center h-[56px]">
                         <input
                             type="text"
                             value={searchTerm}
@@ -76,11 +81,11 @@ const AllFriend = () => {
 
                     {/* Scrollable Friends List */}
                     <div className="overflow-y-scroll flex-1 custom-scroll">
-                        <ul className="flex flex-col ">
+                        <ul className="flex flex-col">
                             {filteredFriends.length === 0 ? (
                                 <li className="px-2 py-4 text-center text-gray-400">Không có bạn bè nào.</li>
                             ) : (
-                                filteredFriends.map((friend, index) => (
+                                filteredFriends.slice(0, visibleCount).map((friend, index) => (
                                     <li key={index} className="hover:bg-blue-300 px-2 py-3 rounded-md shadow-sm">
                                         <button
                                             onClick={() =>
@@ -98,8 +103,16 @@ const AllFriend = () => {
                                     </li>
                                 ))
                             )}
-
                         </ul>
+
+                        {visibleCount < filteredFriends.length && (
+                            <button
+                                onClick={handleSeeMore}
+                                className="w-full py-2 text-center text-blue-500 hover:underline"
+                            >
+                                Xem thêm
+                            </button>
+                        )}
                     </div>
                 </>
             )}

@@ -2,8 +2,9 @@ import React, { useState, useEffect, useRef, useCallback, useContext } from 'rea
 import { toast } from 'react-toastify';
 import clsx from 'clsx';
 import { format } from 'date-fns';
+import { io } from 'socket.io-client';
 
-import { PaperAirplaneIcon } from '@heroicons/react/16/solid';
+import { PaperAirplaneIcon, ArrowDownIcon } from '@heroicons/react/16/solid';
 import { useLocation } from 'react-router-dom';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Box, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
@@ -13,12 +14,13 @@ import imgUser from '../../../../img/user.png';
 import user from '../../../../service/user';
 import messenger from '../../../../service/messenger';
 import { useUser } from '../../../../service/UserContext';
-import useWebSocket from '../../../../service/webSocket/usewebsocket';
+import authToken from '../../../../components/authToken';
+
+import apiuri from '../../../../service/apiuri';
 import Loading from '../../../../components/Loading';
 import { MessengerContext } from '../../layoutMessenger';
 import NotificationCss from '../../../../module/cssNotification/NotificationCss';
-import FilePreview from '../../../../components/FilePreview';
-import socket from '../../../../service/webSocket/socket';
+import FileViewChane from '../../../../components/fileViewChane';
 
 const MessengerInbox = () => {
     const { userContext } = useUser();
@@ -28,6 +30,7 @@ const MessengerInbox = () => {
     const [iduser, setIdUser] = useState(null);
     const [userdata, setUserdata] = useState({});
     const [loading, setLoading] = useState(true);
+    const [loadingHeaer, setLoadingHeader] = useState(true);
     const [sending, setSending] = useState(false); // Added sending state
     const [message, setMessage] = useState('');
     const [messengerdata, setMessengerdata] = useState([]);
@@ -36,11 +39,19 @@ const MessengerInbox = () => {
     //file
     const [file, setFile] = useState(null);
     const [preview, setPreview] = useState(null);
+    const [previewFull, setPreviewFull] = useState(null);
+
     const [hoveredMessageId, setHoveredMessageId] = useState(null);
     const [openDialog, setOpenDialog] = useState(false); // For controlling the confirmation dialog
     const [messageToRevoke, setMessageToRevoke] = useState(null); // Store message to be revoked
     const { setShowZom } = useUser();
     const [socket, setSocket] = useState(null); // Trạng thái kết nối socket
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const userId = queryParams.get('iduser');
+        setIdUser(userId);
+        setMessengerdata([])
+    }, [location.search]);
 
     const openModal = (file) => {
         setShowZom({ file: file, show: true });
@@ -59,11 +70,11 @@ const MessengerInbox = () => {
                 );
                 toast.success(res?.message || 'Bạn vừa thu hồi tin nhắn thành công', NotificationCss.Success);
             } else {
-                console.error("Failed to revoke message:", res);
+                console.log("Failed to revoke message:", res);
                 toast.error(res?.message || 'Lỗi khi thu hồi tin nhắn', NotificationCss.Fail);
             }
         } catch (error) {
-            console.error("Error revoking message:", error);
+            console.log("Error revoking message:", error);
         } finally {
             setOpenDialog(false); // Close the dialog
             setMessageToRevoke(null); // Clear the message ID
@@ -80,17 +91,32 @@ const MessengerInbox = () => {
         }
 
     };
-
-
     useEffect(() => {
-        scrollToBottom();
+        const timeout = setTimeout(() => {
+            scrollToBottom(); // Tự động cuộn mỗi khi dữ liệu tin nhắn thay đổi
+        }, 1000); // Delay of 1 second (1000ms)
+
+        return () => clearTimeout(timeout); // Cleanup the timeout on unmount or before the next invocation
     }, [messengerdata]);
 
+
     useEffect(() => {
-        const queryParams = new URLSearchParams(location.search);
-        const userId = queryParams.get('iduser');
-        setIdUser(userId);
-    }, [location.search]);
+        if (iduser === '' || !iduser) return;
+        const fetchMessengerData = async () => {
+            try {
+                const res = await messenger.getListMessengerByUser(iduser);
+                if (res.success) {
+                    // console.log('next')
+                    // console.log(res.data)
+                    setMessengerdata(res.data);
+                }
+            } catch (error) {
+                console.log('Error fetching messenger data:', error);
+            }
+        };
+        fetchMessengerData();
+
+    }, [iduser]);
 
     useEffect(() => {
         if (!iduser || iduser === '') {
@@ -107,46 +133,37 @@ const MessengerInbox = () => {
                     setError('User does not exist.');
                 }
             } catch (error) {
-                console.error('Error fetching user data:', error);
+                console.log('Error fetching user data:', error);
                 setError('An error occurred while fetching user data.');
             } finally {
                 setLoading(false);
             }
         };
+
         fetchUserData();
-        setContent('inbox')
+        setContent('inbox');
+        setLoadingHeader(false)
     }, [iduser]);
     //file
     const handleFileChange = (event) => {
         const selectedFile = event.target.files[0];
         if (selectedFile) {
             setFile(selectedFile);
+            setPreviewFull(selectedFile); // Tạo URL preview cho ảnh
             setPreview(URL.createObjectURL(selectedFile)); // Tạo URL preview cho ảnh
         }
     };
     const handleRemoveFile = () => {
         setFile(null);
         setPreview(null);
+        setPreviewFull(null)
     };
-    useEffect(() => {
-        if (iduser === '' || !iduser) return;
-        const fetchMessengerData = async () => {
-            try {
-                const res = await messenger.getListMessengerByUser(iduser);
-                if (res.success) {
-                    // console.log('next')
-                    // console.log(res.data)
-                    setMessengerdata(res.data);
-                }
-            } catch (error) {
-                console.error('Error fetching messenger data:', error);
-            }
-        };
-        fetchMessengerData();
-    }, [iduser]);
+
 
     const onMessageReceived = useCallback(
         (newMessage) => {
+            console.log('sau nay')
+            console.log(newMessage)
             if (!newMessage.receiver) {
                 newMessage.receiver = userContext._id;
             }
@@ -160,8 +177,31 @@ const MessengerInbox = () => {
         },
         [userContext._id, socket]
     );
-    useWebSocket(onMessageReceived);
+    // useWebSocket(onMessageReceived);
+    useEffect(() => {
+        if (iduser) {
+            const URL = apiuri.Socketuri();
+            const socketConnection = io(URL, {
+                extraHeaders: {
+                    Authorization: `Bearer ${authToken.getToken()}`,
+                },
+            });
+            // socketConnection.on("connect", () => {
+            // console.log("Connected to WebSocket with ID:", socketConnection.id);
+            // socket.emit("joinGroup", idGroup);
+            // console.log("Connected to WebSocket Group with ID:", idGroup);
+            // });
 
+            socketConnection.on("newmessage", (data) => {
+                onMessageReceived(data);
+            });
+            // setSocket(socketConnection);
+            return () => {
+                socketConnection.off("newmessage");
+                socketConnection.disconnect();
+            };
+        }
+    }, [iduser]);
 
 
     useEffect(() => {
@@ -243,21 +283,26 @@ const MessengerInbox = () => {
         acc[date].push(message);
         return acc;
     }, {});
-    // console.log(groupedMessages)
     return (
         <div className="flex flex-col h-full ">
             <div className="p-2 flex border-b h-14 bg-white shadow-sm">
                 <div className='w-full flex flex-row items-center'>
-                    <button onClick={() => window.location.href = `/user/${userdata?._id}`}>
-                        <img
-                            className="w-10 h-10 rounded-full mr-2"
-                            src={userdata?.avatar || imgUser}
-                            alt="User Avatar"
-                        />
-                    </button>
-                    <h3 className="font-semibold text-nowrap max-w-sm overflow-hidden text-ellipsis">
-                        {`${userdata.lastName || ''} ${userdata.firstName || ''}`.trim()}
-                    </h3>
+                    {
+                        loadingHeaer ? <Loading /> :
+                            <>
+                                <button onClick={() => window.location.href = `/user/${userdata?._id}`}>
+                                    <img
+                                        className="w-10 h-10 rounded-full mr-2"
+                                        src={userdata?.avatar || imgUser}
+                                        alt="User Avatar"
+                                    />
+                                </button>
+                                <h3 className="font-semibold text-nowrap max-w-sm overflow-hidden text-ellipsis">
+                                    {`${userdata.lastName || ''} ${userdata.firstName || ''}`.trim()}
+                                </h3>
+                            </>
+                    }
+
 
                 </div>
                 <div className=" flex justify-end">
@@ -329,7 +374,7 @@ const MessengerInbox = () => {
                                                                         className="max-w-full max-h-72 object-cover rounded-t-lg"
                                                                     >
                                                                         <source src={url} type="video/mp4" />
-                                                                        Your browser does not support the video tag.
+                                                                        Trình duyệt của bạn không hỗ trợ video.
                                                                     </video>
                                                                 ) : (
                                                                     <img
@@ -366,6 +411,19 @@ const MessengerInbox = () => {
                 ))}
                 <div ref={messagesEndRef}></div>
             </div>
+            {
+                messagesEndRef.current ? <div className=' w-full flex justify-end'
+                >
+                    <button
+                        onClick={scrollToBottom}
+                        className="relative pr-28">
+                        <ArrowDownIcon
+                            style={{ marginBottom: '20px' }}
+                            className="w-12 h-12 rounded-full opacity-20 text-gray-300 hover:bg-gray-200 hover:text-gray-400 hover:opacity-100 absolute bottom-0 left-1/2 transform -translate-x-1/2" />
+
+                    </button>
+                </div> : ''
+            }
             <div className="w-full flex p-2 border-t-2 border-gray-200 bottom-0 flex-col">
 
                 <div className='w-full'>
@@ -373,18 +431,18 @@ const MessengerInbox = () => {
                         preview &&
                         <Box sx={{ position: 'relative', display: 'inline-block' }}>
                             <div
-                                alt="Preview"
-                                style={{
-                                    maxWidth: '200px',
-                                    maxHeight: '60px',
-                                    borderRadius: '8px',
-                                    border: '1px solid #ddd',
-                                }}
                                 onClick={() => {
                                     openModal(preview)
                                 }}
+                                style={{
+                                    maxWidth: '200px',
+                                    maxHeight: '1100px',
+                                    borderRadius: '8px',
+                                    border: '1px solid #ddd',
+
+                                }}
                             >
-                                <FilePreview preview={preview} />
+                                <FileViewChane file={previewFull} />
                             </div>
                             {/* <img
                                 src={preview}

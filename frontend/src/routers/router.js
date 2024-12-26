@@ -8,7 +8,7 @@ import MyPosts from "../views/profile/components/MyPosts.jsx";
 import FriendProfile from "../views/friend/FriendProfile.jsx";
 import LayoutMessenger from "../views/messenger/layoutMessenger.js";
 import Searchpage from "../views/search/index.jsx";
-import Friendinvitation from "../views/friend/friendinvitation.jsx";
+import FriendInvitation from "../views/friend/content/friendinvitation.jsx";
 import Login from "../auth/login/index.jsx";
 import Register from "../auth/register/index.jsx";
 import LayoutSearch from "../views/search/layout.js";
@@ -17,7 +17,7 @@ import AboutOtherProfile from "../views/profile/OtherProfiles/AboutOtherProfile.
 import OtherPosts from "../views/profile/OtherProfiles/OtherPosts.jsx";
 import Bookmark from "../views/bookmark/page.jsx";
 import MyFriendCard from "../views/friend/card/myFriendCard.jsx";
-import MyAllFriend from "../views/friend/myAllFriend.jsx";
+import MyAllFriend from "../views/friend/content/myAllFriend.jsx";
 import MessengerInbox from "../views/messenger/components/content/messInbox.jsx";
 import FriendOtherProfile from "../views/profile/OtherProfiles/FriendOtherProfile.jsx";
 import authToken from "../components/authToken.jsx";
@@ -28,6 +28,8 @@ import ChangePassPage from "../auth/ChangePassPage.jsx";
 import UpdatePost from "../views/post/components/UpdatePost.jsx";
 import ForgotPass from "../auth/ForgotPass.jsx";
 import PostSearch from "../views/search/postSearch.jsx";
+import PeopleSearch from "../views/search/peopleSearch.jsx";
+import Fixconnectsocket from "./fixconnectsocket.jsx";
 
 function routers() {
     return (
@@ -36,11 +38,12 @@ function routers() {
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Home />} />
                     <Route path="/changepass" element={<ChangePassPage />} />
+                    <Route path="/fixconnectsocket" element={<Fixconnectsocket />} />
                     <Route path="/updatepost/:id" element={<UpdatePost />} />
                     <Route path="friends" element={<Myfriend />} >
-                        <Route path="" element={<Friendinvitation />} />
+                        <Route path="" element={<FriendInvitation />} />
                         <Route path="list" element={<MyAllFriend />} />
-                        <Route path="requests" element={<Friendinvitation />} />
+                        <Route path="requests" element={<FriendInvitation />} />
                     </Route>
                     <Route path="post/:id" element={<DetailPost />} />
                     <Route path="myprofile" element={<Personal />}>
@@ -65,6 +68,7 @@ function routers() {
                     <Route path="/search" element={<LayoutSearch />}>
                         <Route path="all" element={<Searchpage />} />
                         <Route path="content" element={<PostSearch />} />
+                        <Route path="user" element={<PeopleSearch />} />
                     </Route>
                 </Route>
                 {/* Redirect to login if not authenticated */}

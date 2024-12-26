@@ -4,6 +4,9 @@ import LeftMessenger from "./components/LeftMessenger";
 import RightMessenger from "./components/rightMessenger";
 import { createContext } from "react";
 import { useLocation } from "react-router-dom";
+import socket from "../../service/webSocket/socket";
+import useWebSocket from "../../service/webSocket/usewebsocket";
+
 export const MessengerContext = createContext();
 const LayoutMessenger = () => {
     const [RightShow, setRightShow] = useState(true);
@@ -26,12 +29,13 @@ const LayoutMessenger = () => {
             } else if (pathSegment === 'group') {
                 setContent('group');
             } else {
-                console.warn('Không nhận diện được path segment:', pathSegment);
+                //  console.log('Không nhận diện được path segment:', pathSegment);
             }
         }
         updateContentBasedOnURL()
 
     }, [location]);
+
     return (
         <MessengerContext.Provider value={{ RightShow, handleHiddenRight, content, setContent, setInboxData, inboxData }}>
             <div className="h-screen flex flex-row bg-gray-100 text-black" style={{ marginTop: '-68px', paddingTop: '68px' }}>
