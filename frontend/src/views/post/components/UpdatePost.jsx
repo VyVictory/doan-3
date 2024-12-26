@@ -21,6 +21,7 @@ export default function UpdatePost() {
     const [rows, setRows] = useState(3);
     const [privacy, setPrivacy] = useState('');
     const [filePreview, setFilePreview] = useState(null);
+    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         content: '',
         files: null,
@@ -35,6 +36,7 @@ export default function UpdatePost() {
                 const response = await getDetailPost(id)
                 if (response) {
                     setPosts(response.data)
+                    setVisibility(response.data.privacy);
                     const responseUserPersonal = await profileUserCurrent()
                     setUserLogin(responseUserPersonal.data)
                 }
@@ -63,7 +65,7 @@ export default function UpdatePost() {
                 // setDataPrivacy('private')
                 return <LockIcon className="text-gray-500" />;
             default:
-                return <PublicIcon className="text-blue-500" />;
+                return null;
         }
     };
 
@@ -115,6 +117,7 @@ export default function UpdatePost() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            setLoading(true);
             const response = await updatePost(id, formData.content);
             const responsePrivacy = await updatePrivacyPost(id, formData.privacy);
             if (response || responsePrivacy) {
@@ -158,7 +161,9 @@ export default function UpdatePost() {
                                 >
 
                                     {renderVisibilityIcon(visibility)} {/* Dynamically render icon */}
-                                    <span className="ml-1 text-sm">{visibility}</span>
+                                    <span className="ml-1 text-sm">
+                                        <span className="ml-1 text-sm">{visibility}</span>
+                                    </span>
                                     <ArrowDropDownIcon fontSize="small" />
                                 </button>
 
