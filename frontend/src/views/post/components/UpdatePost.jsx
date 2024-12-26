@@ -124,6 +124,9 @@ export default function UpdatePost() {
                 toast.success('Chỉnh sửa thành công.', NotificationCss.Success);
                 // window.location.href = `/post/${id}`;
             }
+            else {
+                toast.error('Chỉnh sửa thất bại.', NotificationCss.Error);
+            }
         } catch (error) {
             console.error('Error updating post:', error);
         } finally {
