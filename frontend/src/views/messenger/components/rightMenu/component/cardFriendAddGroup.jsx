@@ -9,14 +9,11 @@ const CardFriendAddGroup = ({ iduser }) => {
     const [loading, setLoading] = useState(true);
     const [anchorEl, setAnchorEl] = useState(null);
 
-    // Initialize the navigate function
-    const navigate = useNavigate();
-
     useEffect(() => {
         const fetchdata = async () => {
             if (iduser) { // Check if iduser is valid
                 try {
-                    console.log('Fetching data for id:', iduser);
+                 //   console.log('Fetching data for id:', iduser);
                     const res = await user.getProfileUser(iduser);
                     if (res.success) {
                         setUserdata(res.data);
@@ -36,11 +33,6 @@ const CardFriendAddGroup = ({ iduser }) => {
         setAnchorEl(null);
     };
 
-    const handleMessageClick = () => {
-        // Navigate to the messenger inbox with the user ID in the query params
-        navigate(`/messenger/inbox/?iduser=${userdata._id}`);
-        handleClose(); // Close the menu after clicking
-    };
 
     if (loading) {
         return <Loading />;

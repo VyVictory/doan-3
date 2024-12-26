@@ -140,7 +140,7 @@ export default function DetailPost() {
   };
 
 
-  console.log(posts)
+  // console.log(posts)
   return (
     <div className='grid justify-center '>
       <div className=' w-[600px]'>

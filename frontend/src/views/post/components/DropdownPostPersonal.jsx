@@ -1,16 +1,22 @@
 import React from 'react'
 import { PencilSquareIcon, BookmarkIcon, EllipsisHorizontalIcon, TrashIcon } from '@heroicons/react/24/outline'
 import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import NotificationCss from '../../../module/cssNotification/NotificationCss'
 import { deletePost } from '../../../service/PostService'
 export default function DropdownPostPersonal({ postId }) {
 
   const handleDeletePost = async () => {
     try {
       await deletePost(postId)
-      alert('Đã xóa bài viết')
-      window.location.reload()
+      toast.success('Xóa bài viết thành công', NotificationCss.Success);
     } catch (error) {
       console.error('Error deleting post:', error)
+    }
+    finally {
+      setTimeout(() => {
+        window.location.reload()
+      },1000)
     }
   }
 

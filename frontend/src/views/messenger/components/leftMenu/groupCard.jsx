@@ -15,7 +15,7 @@ const GroupCard = ({ group }) => {
                         setGroupdata(res.data);
                     }
                 } catch (error) {
-                    console.error("Error fetching user data:", error);
+                    //console.error("Error fetching user data:", error);
                 } finally {
                     setLoading(false); // Stop loading
                 }
@@ -34,11 +34,7 @@ const GroupCard = ({ group }) => {
     return (
         <>
             <img
-                src={
-                    groupdata?.avatar
-                        ? groupdata.avatar
-                        : imgUser
-                }
+                 src={group?.avatarGroup[0] || imgUser}
                 alt="user" className="w-12 h-12 rounded-full mr-2 border-white border-2" />
             <div className="text-start line-clamp-3 ">
                 <h3 className="font-semibold text-nowrap overflow-hidden text-ellipsis max-w-52">

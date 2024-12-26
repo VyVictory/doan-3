@@ -35,7 +35,7 @@ const ToolGroup = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                console.log("Fetching data...");
+                // console.log("Fetching data...");
                 const res = await group.getMyListChat();
 
                 if (res.success) {

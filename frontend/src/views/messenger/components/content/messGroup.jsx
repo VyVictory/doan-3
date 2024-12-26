@@ -350,7 +350,9 @@ const MessengerInbox = () => {
                                         className={`flex ${message?.sender?._id === userContext._id ? 'justify-end' : ''} `}
 
                                         onMouseEnter={() => {
-                                            if (message?.sender?._id === userContext._id) {
+                                            if (message?.sender?._id === userContext._id
+                                                
+                                            ) {
                                                 setHoveredMessageId(message._id);
                                             }
                                         }} // Set the hovered message

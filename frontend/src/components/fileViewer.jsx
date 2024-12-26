@@ -3,8 +3,6 @@ import { useUser } from '../service/UserContext';
 
 const FileViewer = ({ file }) => {
     const { setShowZom } = useUser();
-    const as =file
-    console.log(as)
     const openModal = (file) => {
         setShowZom({ file: file, show: true });
     };

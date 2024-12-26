@@ -51,7 +51,7 @@ export default function Layout() {
 
     useEffect(() => {
         if (userCurrent._id) {
-            console.log(userCurrent._id); // Log after state has been updated
+            // console.log(userCurrent._id); // Log after state has been updated
         }
     }, [userCurrent]); // This will run whenever `userCurrent` changes
 

@@ -127,7 +127,7 @@ export default function ModalStatus({ user }) {
             console.error('Lỗi:', error.response ? error.response.data : error.message);
         }
     }
-    console.log(formData)
+    // console.log(formData)
     return (
         <dialog id="my_modal_1" className="modal">
 
