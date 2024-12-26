@@ -38,7 +38,7 @@ export class PostService {
                 const uploadedImages = await Promise.all(files.map(file => this.cloudinaryService.uploadFile(file)));
                 newPost.img = uploadedImages;
             } catch (error) {
-                console.error('Error uploading images to Cloudinary:', error);
+
                 throw new HttpException('Failed to upload images', HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
@@ -82,7 +82,7 @@ export class PostService {
                 );
                 post.img = uploadedImages; 
             } catch (error) {
-                console.error('Error uploading images to Cloudinary:', error);
+                
                 throw new HttpException('Failed to upload images', HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
@@ -202,7 +202,7 @@ export class PostService {
             return await post.save();
         } catch (error) {
             // Bắt lỗi và ném lại lỗi dưới dạng HttpException nếu có lỗi
-            console.error('Error updating post privacy:', error);
+           
             throw new HttpException(
                 error.message || 'An error occurred while updating post privacy',
                 error.status || HttpStatus.INTERNAL_SERVER_ERROR,
@@ -217,25 +217,26 @@ export class PostService {
                 .exec();
             return userPosts
         } catch (error) {
-            console.error('errol', error)
+            
             throw new HttpException('Could not retrieve posts', HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 
     async findPostPrivacy(postId: string, userId: string): Promise<Post> {
         try {
+            const userIDOBJ = new Types.ObjectId(userId);
             // Truy vấn bài đăng
             const post = await this.PostModel.findById(postId);
-    
+        
             if (!post) {
                 throw new HttpException('The post does not exist', HttpStatus.NOT_FOUND);
             }
-    
+        
             // Kiểm tra quyền truy cập của bài đăng
             if (post.privacy === 'public') {
                 return post;  // Bài viết công khai có thể xem
             }
-    
+        
             if (post.privacy === 'private') {
                 if (post.author.toString() === userId) {
                     return post;  // Chỉ người tạo bài viết có thể xem
@@ -243,78 +244,113 @@ export class PostService {
                     throw new HttpException('You are not authorized to view this post', HttpStatus.UNAUTHORIZED);
                 }
             }
-    
+        
             if (post.privacy === 'friends') {
-                // Kiểm tra người dùng có phải là bạn của tác giả bài viết không
+                // Kiểm tra người dùng có phải là bạn của tác giả bài viết không hoặc là chính tác giả
+                if (post.author.toString() === userId) {
+                    return post;  // Tác giả có thể xem bài viết của chính họ
+                }
+    
                 const isFriend = await this.FriendModel.exists({
                     $or: [
                         { sender: userId, receiver: post.author.toString() },
                         { sender: post.author.toString(), receiver: userId }
                     ],
                 });
-    
+        
                 if (isFriend) {
                     return post;  // Nếu là bạn, trả về bài viết
                 } else {
                     throw new HttpException('You are not friends with the author', HttpStatus.UNAUTHORIZED);
                 }
             }
-            
-            // Nếu bài viết có privacy không hợp lệ
+    
+            if (post.privacy === 'specific') {
+                // Kiểm tra người dùng có trong danh sách allowedUsers không
+                if (post.allowedUsers.includes(userIDOBJ)) {
+                    return post;  // Người dùng được phép xem bài viết
+                } else {
+                    throw new HttpException('You are not authorized to view this post', HttpStatus.UNAUTHORIZED);
+                }
+            }
+        
             throw new HttpException('Invalid post privacy setting', HttpStatus.BAD_REQUEST);
         } catch (error) {
             throw error;
         }
     }
-    
 
     async getPostsByUser(userId: string, currentUserId?: string): Promise<Post[]> {
         try {
-
+            // Chuyển đổi `currentUserId` sang ObjectId nếu có
+            const currentUserObjectId = currentUserId ? new Types.ObjectId(currentUserId) : null;
+    
+            // Lấy tất cả bài viết của `userId`
             const posts = await this.PostModel.find({ author: userId });
     
+            // Lọc bài viết theo quyền riêng tư
             const filteredPosts = await Promise.all(
                 posts.map(async (post) => {
+                    const postAuthorObjectId = new Types.ObjectId(post.author); // Chuyển sang ObjectId nếu cần
     
-                    switch (post.privacy) {
-                        case 'public':
-                            return post;  // Bài viết công khai có thể xem
-                        case 'private':
-                            if (post.author.toString() === currentUserId) {
-                                return post;  // Chỉ người tạo bài viết mới có thể xem bài viết riêng tư
-                            }
-                            return null;
-                        case 'friends':
-                            // Kiểm tra nếu người dùng hiện tại là bạn của tác giả bài viết
-                            const isFriend = await this.FriendModel.exists({
-                                $or: [
-                                    { sender: currentUserId, receiver: post.author.toString() },
-                                    { sender: post.author.toString(), receiver: currentUserId }
-                                ],
-                            });
-                            if (isFriend) {
-                                return post;  // Nếu là bạn, trả về bài viết
-                            }
-                            return null;
-                        case 'specific':
-                            // Kiểm tra nếu người dùng hiện tại có trong danh sách người dùng được phép xem
-                            if (post.allowedUsers.map(id => id.toString()).includes(currentUserId)) {
-                                return post;
-                            }
-                            return null;
-                        default:
-                            return null;  // Trường hợp mặc định nếu không có quyền truy cập hợp lệ
+                    if (post.privacy === 'public') {
+                        return post; // Công khai, ai cũng xem được
                     }
+    
+                    if (post.privacy === 'private') {
+                        if (postAuthorObjectId.equals(currentUserObjectId)) {
+                            return post; // Chỉ tác giả mới được xem
+                        }
+                        return null; // Không đủ quyền
+                    }
+    
+                    if (post.privacy === 'friends') {
+                        // Kiểm tra người dùng hiện tại và tác giả có phải bạn bè không
+                        if (postAuthorObjectId.equals(userId)) {
+                            return post; // Tác giả luôn xem được bài viết của chính họ
+                        }
+    
+                        const isFriend = await this.FriendModel.exists({
+                            $or: [
+                                { sender: currentUserObjectId, receiver: postAuthorObjectId },
+                                { sender: postAuthorObjectId, receiver: currentUserObjectId },
+                            ],
+                        });
+    
+                        if (isFriend) {
+                            return post; // Bạn bè được phép xem
+                        }
+                        return null; // Không đủ quyền
+                    }
+    
+                    if (post.privacy === 'specific') {
+                        // Kiểm tra người dùng có nằm trong danh sách allowedUsers không
+                        if (
+                            post.allowedUsers.some((id) =>
+                                id.equals(currentUserObjectId)
+                            )
+                        ) {
+                            return post; // Người dùng được chỉ định có thể xem
+                        }
+                        return null; // Không đủ quyền
+                    }
+    
+                    return null; // Mặc định loại bỏ nếu không xác định được quyền riêng tư
                 })
             );
     
-            // Lọc bỏ những bài viết null (không có quyền truy cập)
+            // Lọc bỏ các bài viết null (người dùng không được phép xem)
             return filteredPosts.filter((post) => post !== null);
         } catch (error) {
-            console.error('Error getting posts by user:', error);
-            throw new HttpException('An error occurred while fetching posts async getpostbyuser', HttpStatus.INTERNAL_SERVER_ERROR);
+            console.error('Error in getPostsByUser:', error);
+            throw new HttpException(
+                'An error occurred while fetching posts',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
         }
     }
+    
+    
     
 
     async getHomeFeed(userId: string): Promise<PostF[]> {
@@ -337,8 +373,8 @@ export class PostService {
             // Lấy danh sách bạn bè từ bảng Friend
             const friends = await this.FriendModel.find({
                 $or: [
-                    { sender: userId }, // Bạn bè gửi kết bạn
-                    { receiver: userId }, // Bạn bè nhận kết bạn
+                    { sender: userId }, 
+                    { receiver: userId }, 
                 ],
             }).exec();
     
@@ -350,7 +386,7 @@ export class PostService {
             const conditions: Array<any> = [
                 { privacy: 'public' },
                 { privacy: 'specific', allowedUsers: userId },
-                { author: { $in: friendIds } }, // Bài viết của bạn bè (nếu không phải private)
+                { privacy: 'friends', author: { $in: friendIds } }, // Bài viết của bạn bè (nếu không phải private)
             ];
     
             // Lấy tất cả bài viết dựa trên điều kiện
@@ -385,7 +421,7 @@ export class PostService {
     
             return scoredPosts;
         } catch (error) {
-            console.error('Error in getHomeFeed:', error);
+
             throw new HttpException('An error occurred while fetching posts', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
